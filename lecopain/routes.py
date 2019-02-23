@@ -2,10 +2,6 @@ from flask import render_template, url_for,  flash, redirect, jsonify
 
 from lecopain import app, db
 
-from flask_script import Manager
-from flask_bootstrap import Bootstrap
-from flask_nav import Nav
-from flask_nav.elements import Navbar, View
 from datetime import datetime
 
 from lecopain.form import PersonForm, OrderForm
@@ -32,26 +28,7 @@ customers2 = [
     }
 ]
 
-#declare le plug-in flask-script 
-manager = Manager( app)
-#declare le plug-in flask-bootStrap
-bootstrap = Bootstrap(app)
-#j'instancie le plug-in flask-Nav
-nav = Nav()
-#je declare le plug-in dans l'application
-nav.init_app(app)
 
-#je dclare une barre de navigation contenant les routes
-mynavbar = Navbar(
-        'mysite',
-        View('Home', 'index'),
-        View('About', 'about'),
-        View('Order', 'order'),
-    )
-
-
-#je donne au plug-in ma barre de navigation
-nav.register_element('top', mynavbar)
 
 @app.route("/")
 @app.route("/home")
@@ -60,8 +37,13 @@ def index():
     return render_template('index.html', customers=customers)
 
 
-@app.route("/about", methods=['GET', 'POST'])
+@app.route("/customers", methods=['GET', 'POST'])
 def about():
+   customers = Customer.query.all()
+   return render_template('/customers/customers.html', customers=customers)
+
+@app.route("/customers/new", methods=['GET', 'POST'])
+def create_customer():
     form = PersonForm()
     if form.validate_on_submit():
         customer = Customer(firstname=form.firstname.data, lastname=form.lastname.data, email=form.email.data)
@@ -69,11 +51,9 @@ def about():
         db.session.commit()
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('index'))
-    #else:
-    #    flash(f'Failed!', 'danger')
-    return render_template('about.html', title='Person form', form=form)
+    return render_template('/customers/create_customer.html', title='Person form', form=form)
 
-@app.route("/order", methods=['GET', 'POST'])
+@app.route("/orders", methods=['GET', 'POST'])
 def order():
     form = OrderForm()
     

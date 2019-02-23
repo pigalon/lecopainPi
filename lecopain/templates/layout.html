@@ -28,10 +28,10 @@
                       <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="/about">About</a>
+                      <a class="nav-link" href="/customers">Client</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="/order">Order</a>
+                      <a class="nav-link" href="/orders">Commandes</a>
                     </li>
                   </ul>
                   <span class="navbar-text">
@@ -52,21 +52,10 @@
                             {% endfor %}
                         {% endif %}
                     {% endwith %}
-                    {% block content %}{% endblock %}
+                    {% block content %}  {% endblock %}
                   </div>
                   <div class="col-md-4">
-                    <div class="content-section">
-                      <h3>Our Sidebar</h3>
-                      <p class='text-muted'>You can put any information here you'd like.
-                        <ul class="list-group">
-                          <li class="list-group-item list-group-item-light">
-                                <a class="nav-link" href="/">Latest Posts</a></li>
-                          <li class="list-group-item list-group-item-light">Announcements</li>
-                          <li class="list-group-item list-group-item-light">Calendars</li>
-                          <li class="list-group-item list-group-item-light">etc</li>
-                        </ul>
-                      </p>
-                    </div>
+                      {% block right_menu %} {% endblock %}
                   </div>
                 </div>
             </div>
