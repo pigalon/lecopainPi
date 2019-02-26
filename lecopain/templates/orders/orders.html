@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 <h1>Home Pages</h1> 
-    {% for customer in customers %}
+    {% for order in orders %}
     <div class="card" style="width: 18rem;">
         <div class="card-body">
                 
@@ -10,10 +10,10 @@
                     <span style="font-size: 2em;">
                             <i class="fas fa-address-book "></i>
                     </span>
-                    {{customer.firstname}} - {{customer.lastname}}</h5>
+                    {{order.title}} - {{order.status}}</h5>
             <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-            <p class="card-text">{{ customer.address }} {{ customer.cp }} {{ customer.city }}</p>
-            <a href="/customers/{{customer.id}}" class="card-link">Détails</a>
+            <p class="card-text">{{ order.create_dt }}  - {{ order.customer_id }} - {{customerMap[order.customer_id]}}</p>
+            <a href="/orders/{{order.id}}" class="card-link">Détails</a>
             <a href="#" class="card-link">Another link</a>
         </div>
     </div>
@@ -25,7 +25,7 @@
     <p class='text-muted'>You can put any information here you'd like.
         <ul class="list-group">
         <li class="list-group-item list-group-item-light">
-                <a class="nav-link" href="/customers/new">Création de client</a></li>
+                <a class="nav-link" href="/orders/new">Création de client</a></li>
         <li class="list-group-item list-group-item-light">Announcements</li>
         <li class="list-group-item list-group-item-light">Calendars</li>
         <li class="list-group-item list-group-item-light">etc</li>

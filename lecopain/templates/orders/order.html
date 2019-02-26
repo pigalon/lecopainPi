@@ -17,6 +17,13 @@
                     {% endfor %}
                 </select>
             </div>
+            <div class="form-group">
+                <select class="form-control" name="orderStatus" width="300px">
+                    {% for orderStatus in orderStatusList %}
+                        <option value="{{ orderStatus }}" SELECTED>{{ orderStatus }}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
                     <input type="text" name="order_dt" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
                     <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">

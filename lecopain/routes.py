@@ -5,7 +5,7 @@ from lecopain import app, db
 from datetime import datetime
 
 from lecopain.form import PersonForm, OrderForm
-from lecopain.models import Customer, Order
+from lecopain.models import Customer, Order, OrderStatus
 
 customers2 = [
     {
@@ -38,7 +38,7 @@ def index():
 
 
 @app.route("/customers", methods=['GET', 'POST'])
-def about():
+def customers():
    customers = Customer.query.all()
    return render_template('/customers/customers.html', customers=customers)
 
@@ -53,8 +53,28 @@ def create_customer():
         return redirect(url_for('index'))
     return render_template('/customers/create_customer.html', title='Person form', form=form)
 
+@app.route("/customers/<int:customer_id>")
+def customer(customer_id):
+    customer = Customer.query.get_or_404(customer_id)
+    return render_template('/customers/customer.html', customer=customer)
+
 @app.route("/orders", methods=['GET', 'POST'])
-def order():
+def orders():
+    orders = Order.query.all()
+    customerMap = {}
+
+    for order in orders :
+        customer = Customer.query.get_or_404(order.customer_id)
+        customerMap[customer.id] = str(customer.firstname + " " + customer.lastname)
+        print("addd : " + customerMap[customer.id])
+
+    for item in customerMap.items() :
+        print (str(item))
+   
+    return render_template('/orders/orders.html', orders=orders, customerMap=customerMap)
+
+@app.route("/orders/new", methods=['GET', 'POST'])
+def order_create():
     form = OrderForm()
     
     if form.validate_on_submit():
@@ -71,12 +91,25 @@ def order():
         customers = Customer.query.all()
     #else:
     #    flash(f'Failed!', 'danger')
-    return render_template('order.html', title='order form', form=form, customers=customers)
+    orderStatusList = _get_order_status()
+
+    return render_template('order.html', title='order form', form=form, customers=customers, orderStatusList=orderStatusList)
+
+@app.route("/orders/<int:order_id>")
+def order(order_id):
+    order = Order.query.get_or_404(order_id)
+    return render_template('/orders/order.html', order=order)
+
 
 @app.route('/_get_customers/')
 def _get_customers():
     customers = [(row.id, row.firstname) for row in Customer.query.all()]
     return jsonify(customers)
+
+@app.route('/_get_order_status/')
+def _get_order_status():
+    ordersStatusList = [(row.name) for row in OrderStatus.query.all()]
+    return ordersStatusList
 
 
 if __name__ == '__main__':

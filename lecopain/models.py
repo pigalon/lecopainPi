@@ -24,3 +24,9 @@ class Order(db.Model):
 
     def __repr__(self):
         return "Order('{self.title}',{self.customer_id},'{self.order_dt}')"
+
+class OrderStatus(db.Model):
+    name = db.Column(db.String(50), primary_key=True)
+
+    def __repr__(self):
+        return "OrderStatus('{self.name}')"
