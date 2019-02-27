@@ -3,9 +3,15 @@ from flask import render_template, url_for,  flash, redirect, jsonify
 from lecopain import app, db
 
 from datetime import datetime
+import locale
 
 from lecopain.form import PersonForm, OrderForm
 from lecopain.models import Customer, Order, OrderStatus
+
+import sys  
+
+reload(sys)  
+sys.setdefaultencoding('utf8')
 
 customers2 = [
     {
@@ -27,6 +33,7 @@ customers2 = [
         'city':'Nimes'
     }
 ]
+locale.setlocale(locale.LC_TIME, "fr_FR")
 
 
 
@@ -60,6 +67,21 @@ def customer(customer_id):
 
 @app.route("/orders", methods=['GET', 'POST'])
 def orders():
+    orders = Order.query.order_by(Order.order_dt.desc()).all()
+    customerMap = {}
+
+    for order in orders :
+        customer = Customer.query.get_or_404(order.customer_id)
+        customerMap[customer.id] = str(customer.firstname + " " + customer.lastname)
+        print("addd : " + customerMap[customer.id])
+
+    for item in customerMap.items() :
+        print (str(item))
+   
+    return render_template('/orders/orders.html', orders=orders, customerMap=customerMap, title="Toutes les commandes")
+
+@app.route("/orders/month/<int:month_number>", methods=['GET', 'POST'])
+def orders_of_month(month_number):
     orders = Order.query.all()
     customerMap = {}
 
@@ -71,7 +93,7 @@ def orders():
     for item in customerMap.items() :
         print (str(item))
    
-    return render_template('/orders/orders.html', orders=orders, customerMap=customerMap)
+    return render_template('/orders/orders.html', orders=orders, customerMap=customerMap, title="Commandes du mois")
 
 @app.route("/orders/new", methods=['GET', 'POST'])
 def order_create():

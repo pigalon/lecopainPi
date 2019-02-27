@@ -52,6 +52,11 @@
                             {% endfor %}
                         {% endif %}
                     {% endwith %}
+
+                    {% if title %}
+                      <h1>Flask page - {{ title }}</h1>
+                    {% endif %}
+
                     {% block content %}  {% endblock %}
                   </div>
                   <div class="col-md-4">
