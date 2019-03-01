@@ -16,3 +16,12 @@ from lecopain.models import Customer, Order
 order = Order(title='title', customer_id=1)
 db.session.add(order)
 db.session.commit()
+
+-------
+
+from lecopain import app, db
+from lecopain.models import Customer, Order, OrderStatus, Product
+product1 = Product.query.first()
+cust = Customer.query.first()
+order = Order(title='ttt', owner=cust)
+order.selected_products.append(product1)

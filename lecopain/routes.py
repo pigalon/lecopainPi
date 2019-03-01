@@ -5,8 +5,8 @@ from lecopain import app, db
 from datetime import datetime
 import locale
 
-from lecopain.form import PersonForm, OrderForm
-from lecopain.models import Customer, Order, OrderStatus
+from lecopain.form import PersonForm, OrderForm, ProductForm
+from lecopain.models import Customer, Order, OrderStatus, Product
 
 import sys  
 
@@ -103,7 +103,7 @@ def order_create():
         #order_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.order_dt.data)
         #printf('oder : ' + str(order_dt))
         #order = Order(title=form.title.data, customer_id=int(form.customer_id.data), order_dt=datetime(form.order_dt.data))
-        order = Order(title=form.title.data, customer_id=int(form.customer_id.data), order_dt=form.order_dt.data)
+        order = Order(title=form.title.data, customer_id=int(form.customer_id.data), product_id=int(form.customer_id.data), order_dt=form.order_dt.data)
         
         db.session.add(order)
         db.session.commit()
@@ -111,16 +111,36 @@ def order_create():
         return redirect(url_for('index'))
     else:
         customers = Customer.query.all()
+        products = Product.query.all()
     #else:
     #    flash(f'Failed!', 'danger')
     orderStatusList = _get_order_status()
 
-    return render_template('order.html', title='order form', form=form, customers=customers, orderStatusList=orderStatusList)
+    return render_template('/orders/create_order.html', title='order form', form=form, customers=customers, products=products, orderStatusList=orderStatusList)
 
 @app.route("/orders/<int:order_id>")
 def order(order_id):
     order = Order.query.get_or_404(order_id)
     return render_template('/orders/order.html', order=order)
+
+
+@app.route("/products", methods=['GET', 'POST'])
+def products():
+    products = Product.query.order_by(Product.name.desc()).all()
+
+    return render_template('/products/products.html', products=products, title="Toutes les produits")
+
+@app.route("/products/new", methods=['GET', 'POST'])
+def product_create():
+    form = ProductForm()
+    print("product form : " + str(form.validate_on_submit()))
+    if form.validate_on_submit():
+        product = Product(name=form.name.data,  price=form.price.data, description=form.description.data)
+        db.session.add(product)
+        db.session.commit()
+        #flash(f'People created for {form.firstname.data}!', 'success')
+        return redirect(url_for('index'))
+    return render_template('/products/create_product.html', title='Product form', form=form)
 
 
 @app.route('/_get_customers/')
