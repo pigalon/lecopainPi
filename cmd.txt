@@ -20,7 +20,7 @@ db.session.commit()
 -------
 
 from lecopain import app, db
-from lecopain.models import Customer, Order, OrderStatus, Product
+from lecopain.models import *
 product1 = Product.query.first()
 cust = Customer.query.first()
 order = Order(title='ttt', owner=cust)
