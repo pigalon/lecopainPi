@@ -6,7 +6,7 @@ from datetime import datetime
 import locale
 
 from lecopain.form import PersonForm, OrderForm, ProductForm
-from lecopain.models import Customer, Order, OrderStatus, Product
+from lecopain.models import Customer, Order, OrderStatus, Product, Order_product
 
 import sys  
 
@@ -101,7 +101,13 @@ def order_create():
     tmp_products = request.form.getlist('products')
     tmp_quantity = request.form.getlist('quantities')
     
-    print("type :"+ str( type(tmp_products)) + str(tmp_products))
+    #print("type :"+ str( len(tmp_products)) + str(tmp_products[0]))
+
+    for i in range(0,len(tmp_products)):
+            product = Product.query.get(tmp_products[i])
+            print(str(product))
+            print(str(tmp_quantity[i]))
+
 
     if form.validate_on_submit():
 
@@ -109,9 +115,33 @@ def order_create():
         #print('oder : ' + str(order_dt))
         #order = Order(title=form.title.data, customer_id=int(form.customer_id.data), order_dt=datetime(form.order_dt.data))
         order = Order(title=form.title.data, customer_id=int(form.customer_id.data), order_dt=form.order_dt.data)
+        products = {}
+
+        for i in range(0,len(tmp_products)): 
+            product = Product.query.get(tmp_products[i])
+            order.selected_products.append(product)
+
+        for i in range(0,len(tmp_products)):
+            print('tmp_quantity : ' + str(tmp_quantity[i]))
+            print('selected : ' + str(order.selected_products[i]))
         
+        print('order : ' + str(order))
+
         db.session.add(order)
         db.session.commit()
+        print('order id : ' + str(order.id))
+
+        for i in range(0,len(tmp_products)):
+            bought_items = Order_product.query.filter(Order_product.order_id == order.id).filter(Order_product.product_id == tmp_products[i]).first()
+            bought_items.quantity = tmp_quantity[i]
+           
+
+        
+
+        db.session.commit()
+
+
+        
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('index'))
     else:

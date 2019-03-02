@@ -42,6 +42,7 @@ class Order_product(db.Model):
    
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), primary_key = True)
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), primary_key = True)
+    quantity = db.Column(db.Integer)
 
 class Order(db.Model):
     __tablename__ = 'orders'
