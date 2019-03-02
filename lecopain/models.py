@@ -51,6 +51,7 @@ class Order(db.Model):
     order_dt = db.Column(db.DateTime)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
+    status = db.Column(db.String(20), nullable=False)
     #product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
        
     #customer = db.relationship(Customer, backref=db.backref("orders", cascade="all, delete-orphan"))
