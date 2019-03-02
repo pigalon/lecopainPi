@@ -17,13 +17,13 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="form-group">
+            <!--<div class="form-group">
                     <select class="form-control" name="product_id" width="300px">
                         {% for o in products %}
                             <option value="{{ o.id }}" SELECTED>{{ o.name }}</option>
                         {% endfor %}
                     </select>
-            </div>
+            </div>-->
             <div class="form-group">
                 <select class="form-control" name="orderStatus" width="300px">
                     {% for orderStatus in orderStatusList %}
@@ -37,14 +37,23 @@
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
             </div>
-            <div class="form-group">
-                    <select class="form-control" name="product_id" width="300px">
+            <div data-toggle="fieldset" id="product-fieldset">
+                    {{ form.products }} 
+                    <select class="form-control" id="product_id" name="product_id" width="300px">
                             {% for o in products %}
                                 <option value="{{ o.id }}" SELECTED>{{ o.name }}</option>
                             {% endfor %}
-                    </select>
-                    <button >add </button>
-            </div>
+                        </select><input type="button" id="more_fields" onclick="add_fields();" value="Add More" class="btn btn-info" />
+                    <!--<button type="button" data-toggle="fieldset-add-row"
+                                                     data-target="#product-fieldset">+</button>-->
+                   <table id="tab_qn_ans">
+                       <tr>
+                           <th>id</th>
+                           <th></th>
+                       </tr>
+                       
+                   </table>
+           </div>
 
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
@@ -60,6 +69,7 @@
         );
     });
 </script>
+<script src="{{ url_for('static', filename='js/product-list.js') }}"></script>
 {% endblock %}
 
 

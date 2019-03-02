@@ -116,6 +116,7 @@ def order_create():
     #    flash(f'Failed!', 'danger')
     orderStatusList = _get_order_status()
 
+
     return render_template('/orders/create_order.html', title='order form', form=form, customers=customers, products=products, orderStatusList=orderStatusList)
 
 @app.route("/orders/<int:order_id>")

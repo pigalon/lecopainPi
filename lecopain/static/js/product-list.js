@@ -1,0 +1,55 @@
+$(function() {
+    $("div[data-toggle=fieldset]").each(function() {
+        var $this = $(this);
+            
+        //Add new entry
+        $this.find("button[data-toggle=fieldset-add-row]").click(function() {
+            var target = $($(this).data("target"));
+            console.log(target);
+            var oldrow = target.find("[data-toggle=fieldset-entry]:last");
+            var row = oldrow.clone(true, true);
+            console.log(row.find(":select")[0]);
+            var elem_id = row.find(":select")[0].id;
+            var elem_num = parseInt(elem_id.replace(/.*-(\d{1,4})-.*/m, '$1')) + 1;
+            row.attr('data-id', elem_num);
+            row.find(":select").each(function() {
+                console.log(this);
+                var id = $(this).attr('id').replace('-' + (elem_num - 1) + '-', '-' + (elem_num) + '-');
+                $(this).attr('name', id).attr('id', id).val('').removeAttr("checked");
+            });
+            row.show();
+            oldrow.after(row);
+        }); //End add new entry
+
+        //Remove row
+        $this.find("button[data-toggle=fieldset-remove-row]").click(function() {
+            if($this.find("[data-toggle=fieldset-entry]").length > 1) {
+                var thisRow = $(this).closest("[data-toggle=fieldset-entry]");
+                thisRow.remove();
+            }
+        }); //End remove row
+    });
+});
+// <tr data-toggle="fieldset-entry">
+//<td>
+//<select class="form-control" name="product_id" width="300px">
+//    {% for o in products %}
+//        <option value="{{ o.id }}" SELECTED>{{ o.name }}</option>
+//    {% endfor %}
+//</select>
+//</td>
+//<td><button type="button" data-toggle="fieldset-remove-row" id="product-0-remove">-</button></td>
+//</tr>
+function add_fields() {
+
+
+    var el = document.getElementById('product_id');
+    var text = el.options[el.selectedIndex].innerHTML;
+
+
+
+    document.getElementById('tab_qn_ans').innerHTML += '<tr data-toggle="fieldset-entry">'
+    +'<td><input type="hidden" , name="products" value="'+el.value+'"/>'+el.value+' '+text
+    +' quantité x<input type="text" size="2" name="quantity" value="1"/></td>'
+    +'<td><button type="button" data-toggle="fieldset-remove-row" id="product-0-remove">-</button></td> </tr>';
+}
