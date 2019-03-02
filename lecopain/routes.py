@@ -1,4 +1,4 @@
-from flask import render_template, url_for,  flash, redirect, jsonify
+from flask import render_template, url_for,  flash, redirect, jsonify, request
 
 from lecopain import app, db
 
@@ -98,12 +98,17 @@ def orders_of_month(month_number):
 @app.route("/orders/new", methods=['GET', 'POST'])
 def order_create():
     form = OrderForm()
+    tmp_products = request.form.getlist('products')
+    tmp_quantity = request.form.getlist('quantities')
     
+    print("type :"+ str( type(tmp_products)) + str(tmp_products))
+
     if form.validate_on_submit():
+
         #order_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.order_dt.data)
-        #printf('oder : ' + str(order_dt))
+        #print('oder : ' + str(order_dt))
         #order = Order(title=form.title.data, customer_id=int(form.customer_id.data), order_dt=datetime(form.order_dt.data))
-        order = Order(title=form.title.data, customer_id=int(form.customer_id.data), product_id=int(form.customer_id.data), order_dt=form.order_dt.data)
+        order = Order(title=form.title.data, customer_id=int(form.customer_id.data), order_dt=form.order_dt.data)
         
         db.session.add(order)
         db.session.commit()
@@ -157,4 +162,6 @@ def _get_order_status():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
 
