@@ -9,7 +9,7 @@ class PersonForm(FlaskForm):
     submit = SubmitField('Add person')
 
 class OrderForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired(), Length(min=2, max=20)])
+    title = StringField('Title')
     customer_id = IntegerField('Customer Id:', validators=[DataRequired()])
     product_id = IntegerField('Product Id:', validators=[DataRequired()])
     order_dt = DateTimeField('Order Date')

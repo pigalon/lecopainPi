@@ -1,14 +1,31 @@
-from flask import render_template, url_for,  flash, redirect, jsonify, request
-
-from lecopain import app, db
-
+from flask import Flask, Blueprint, render_template, url_for,  flash, redirect, jsonify, request
 from datetime import datetime
 import locale
-
+from lecopain import app, db
 from lecopain.form import PersonForm, OrderForm, ProductForm
 from lecopain.models import Customer, Order, OrderStatus, Product, Order_product
 
+from lecopain.controllers.customer_controller import customer_page
+from lecopain.controllers.order_controller import order_page
+from lecopain.controllers.product_controller import product_page
+
+app.register_blueprint(customer_page)
+app.register_blueprint(order_page)
+app.register_blueprint(product_page)
+
+
+customer_page = Blueprint('customer_page',  __name__,
+                        template_folder='./templates')
+order_page = Blueprint('order_page',  __name__,
+                        template_folder='./templates')
+product_page = Blueprint('product_page',  __name__,
+                        template_folder='./templates')
+
+
 import sys  
+
+#app = Flask(__name__,instance_relative_config=True)
+
 
 reload(sys)  
 sys.setdefaultencoding('utf8')
@@ -37,6 +54,8 @@ locale.setlocale(locale.LC_TIME, "fr_FR")
 
 
 
+
+
 @app.route("/")
 @app.route("/home")
 def index():
@@ -44,139 +63,9 @@ def index():
     return render_template('index.html', customers=customers)
 
 
-@app.route("/customers", methods=['GET', 'POST'])
-def customers():
-   customers = Customer.query.all()
-   return render_template('/customers/customers.html', customers=customers)
-
-@app.route("/customers/new", methods=['GET', 'POST'])
-def create_customer():
-    form = PersonForm()
-    if form.validate_on_submit():
-        customer = Customer(firstname=form.firstname.data, lastname=form.lastname.data, email=form.email.data)
-        db.session.add(customer)
-        db.session.commit()
-        #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect(url_for('index'))
-    return render_template('/customers/create_customer.html', title='Person form', form=form)
-
-@app.route("/customers/<int:customer_id>")
-def customer(customer_id):
-    customer = Customer.query.get_or_404(customer_id)
-    return render_template('/customers/customer.html', customer=customer)
-
-@app.route("/orders", methods=['GET', 'POST'])
-def orders():
-    orders = Order.query.order_by(Order.order_dt.desc()).all()
-    customerMap = {}
-
-    for order in orders :
-        customer = Customer.query.get_or_404(order.customer_id)
-        customerMap[customer.id] = str(customer.firstname + " " + customer.lastname)
-        print("addd : " + customerMap[customer.id])
-
-    for item in customerMap.items() :
-        print (str(item))
-   
-    return render_template('/orders/orders.html', orders=orders, customerMap=customerMap, title="Toutes les commandes")
-
-@app.route("/orders/month/<int:month_number>", methods=['GET', 'POST'])
-def orders_of_month(month_number):
-    orders = Order.query.all()
-    customerMap = {}
-
-    for order in orders :
-        customer = Customer.query.get_or_404(order.customer_id)
-        customerMap[customer.id] = str(customer.firstname + " " + customer.lastname)
-        print("addd : " + customerMap[customer.id])
-
-    for item in customerMap.items() :
-        print (str(item))
-   
-    return render_template('/orders/orders.html', orders=orders, customerMap=customerMap, title="Commandes du mois")
-
-@app.route("/orders/new", methods=['GET', 'POST'])
-def order_create():
-    form = OrderForm()
-    tmp_products = request.form.getlist('products')
-    tmp_quantity = request.form.getlist('quantities')
-    
-    #print("type :"+ str( len(tmp_products)) + str(tmp_products[0]))
-
-    for i in range(0,len(tmp_products)):
-            product = Product.query.get(tmp_products[i])
-            print(str(product))
-            print(str(tmp_quantity[i]))
 
 
-    if form.validate_on_submit():
 
-        #order_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.order_dt.data)
-        #print('oder : ' + str(order_dt))
-        #order = Order(title=form.title.data, customer_id=int(form.customer_id.data), order_dt=datetime(form.order_dt.data))
-        order = Order(title=form.title.data, status=form.status.data, customer_id=int(form.customer_id.data), order_dt=form.order_dt.data)
-        products = {}
-
-        for i in range(0,len(tmp_products)): 
-            product = Product.query.get(tmp_products[i])
-            order.selected_products.append(product)
-
-        for i in range(0,len(tmp_products)):
-            print('tmp_quantity : ' + str(tmp_quantity[i]))
-            print('selected : ' + str(order.selected_products[i]))
-        
-        print('order : ' + str(order))
-
-        db.session.add(order)
-        db.session.commit()
-        print('order id : ' + str(order.id))
-
-        for i in range(0,len(tmp_products)):
-            bought_items = Order_product.query.filter(Order_product.order_id == order.id).filter(Order_product.product_id == tmp_products[i]).first()
-            bought_items.quantity = tmp_quantity[i]
-           
-
-        
-
-        db.session.commit()
-
-
-        
-        #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect(url_for('index'))
-    else:
-        customers = Customer.query.all()
-        products = Product.query.all()
-    #else:
-    #    flash(f'Failed!', 'danger')
-    orderStatusList = _get_order_status()
-
-
-    return render_template('/orders/create_order.html', title='order form', form=form, customers=customers, products=products, orderStatusList=orderStatusList)
-
-@app.route("/orders/<int:order_id>")
-def order(order_id):
-    order = Order.query.get_or_404(order_id)
-    return render_template('/orders/order.html', order=order)
-
-
-@app.route("/products", methods=['GET', 'POST'])
-def products():
-    products = Product.query.order_by(Product.name.desc()).all()
-
-    return render_template('/products/products.html', products=products, title="Toutes les produits")
-
-@app.route("/products/new", methods=['GET', 'POST'])
-def product_create():
-    form = ProductForm()
-    print("product form : " + str(form.validate_on_submit()))
-    if form.validate_on_submit():
-        product = Product(name=form.name.data,  price=form.price.data, description=form.description.data)
-        db.session.add(product)
-        db.session.commit()
-        #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect(url_for('index'))
-    return render_template('/products/create_product.html', title='Product form', form=form)
 
 
 @app.route('/_get_customers/')
