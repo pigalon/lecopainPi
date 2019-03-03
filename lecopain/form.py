@@ -13,6 +13,7 @@ class OrderForm(FlaskForm):
     customer_id = IntegerField('Customer Id:', validators=[DataRequired()])
     product_id = IntegerField('Product Id:', validators=[DataRequired()])
     order_dt = DateTimeField('Order Date')
+    status = StringField('Status')
     submit = SubmitField('Add order')
 
 class ProductForm(FlaskForm):

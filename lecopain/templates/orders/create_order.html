@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="content-section">
-        <form method="POST" action="">    
+        <form method="POST" action="" style="display: inline;">    
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
             <legend class="=border-bottom mb-4">Join Today</legend>
@@ -17,45 +17,57 @@
                     {% endfor %}
                 </select>
             </div>
-            <!--<div class="form-group">
-                    <select class="form-control" name="product_id" width="300px">
-                        {% for o in products %}
-                            <option value="{{ o.id }}" SELECTED>{{ o.name }}</option>
-                        {% endfor %}
-                    </select>
-            </div>-->
             <div class="form-group">
-                <select class="form-control" name="orderStatus" width="300px">
+                <select class="form-control" name="status" width="300px">
                     {% for orderStatus in orderStatusList %}
-                        <option value="{{ orderStatus }}" SELECTED>{{ orderStatus }}</option>
+                        {% if(orderStatus == "EN COURS") %}
+                            <option value="{{ orderStatus }}" SELECTED>{{ orderStatus }}</option>
+                        {% else %}
+                            <option value="{{ orderStatus }}" >{{ orderStatus }}</option>
+                        {% endif %}    
                     {% endfor %}
                 </select>
             </div>
-            <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+            <div class="form-group">
+                <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
                     <input type="text" name="order_dt" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
                     <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
+                </div>
             </div>
-            <div data-toggle="fieldset" id="product-fieldset">
-                    {{ form.products }} 
+            <div class="form-group">
+                <div data-toggle="fieldset" id="product-fieldset">
                     <input type="hidden" name="row_nb" id="row_nb" value=0 />
-                    <select class="form-control" id="product_id" name="product_id" width="300px">
-                            {% for o in products %}
-                                <option value="{{ o.id }}" SELECTED>{{ o.name }}</option>
-                            {% endfor %}
-                    </select><input type="button" id="more_fields" onclick="add_fields();" value="Add More" class="btn btn-info" />
-                    <!--<button type="button" data-toggle="fieldset-add-row"
-                                                     data-target="#product-fieldset">+</button>-->
-                   <table id="tab_qn_ans">
-                       <tr>
-                           <th>id</th>
-                           <th></th>
-                       </tr>
-                       
-                   </table>
-           </div>
-
+                    <table width="50%">
+                        <tr>
+                            <td>
+                                <select class="form-control" id="product_id" name="product_id">
+                                {% for o in products %}
+                                    <option value="{{ o.id }}" SELECTED>{{ o.name }} - {{ o.price }} </option>
+                                {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <button type="button" id="more_fields" onclick="add_fields();" class="btn btn-info" ><i class="fa fa-plus"></i></button>
+                                <!--<div class="input-group-append" id="more_fields" onclick="add_fields();" >
+                                    <div class="input-group-text"><i class="fa fa-plus"></i></div>
+                                </div>-->
+                            </td>
+                        </tr>
+                    </table>
+                        <!--<input type="button" id="more_fields" onclick="add_fields();" value="Add More" class="btn btn-info" />-->
+                    <table id="tab_qn_ans" width="100%">
+                        <tr>
+                            <th width="20%">id</th>
+                            <th width="40%">nom</th>
+                            <th width="30%">quantité</th>
+                            <th width="10%"></th>
+                        </tr>
+                        
+                    </table>
+                </div>
+            </div>
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>

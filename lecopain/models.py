@@ -61,4 +61,4 @@ class Order(db.Model):
     #products = db.relationship('Product', secondary = 'order_product')
 
     def __repr__(self):
-        return "Order('{self.title}', {customer_id} '{self.order_dt}')"
+        return "Order('{self.title}', '{self.status}', {customer_id} '{self.order_dt}')"

@@ -114,7 +114,7 @@ def order_create():
         #order_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.order_dt.data)
         #print('oder : ' + str(order_dt))
         #order = Order(title=form.title.data, customer_id=int(form.customer_id.data), order_dt=datetime(form.order_dt.data))
-        order = Order(title=form.title.data, customer_id=int(form.customer_id.data), order_dt=form.order_dt.data)
+        order = Order(title=form.title.data, status=form.status.data, customer_id=int(form.customer_id.data), order_dt=form.order_dt.data)
         products = {}
 
         for i in range(0,len(tmp_products)): 
