@@ -2,6 +2,9 @@ from lecopain.models import Order, Product, Customer
 from lecopain import app, db
 from lecopain.form import OrderForm
 
+from sqlalchemy import extract
+from datetime import datetime
+
 from flask import Blueprint, render_template, redirect, url_for, Flask, request
 
 app = Flask(__name__, instance_relative_config=True)
@@ -24,9 +27,17 @@ def orders():
    
     return render_template('/orders/orders.html', orders=orders, customerMap=customerMap, title="Toutes les commandes")
 
-@order_page.route("/orders/month/<int:month_number>", methods=['GET', 'POST'])
-def orders_of_month(month_number):
-    orders = Order.query.all()
+@order_page.route("/orders/year/<int:year_number>/month/<int:month_number>", methods=['GET', 'POST'])
+def orders_of_month(year_number, month_number):
+    print(str(datetime.today().month) + " - " + str(datetime.today().day))
+    
+    if(year_number == 0) :
+        year_number = datetime.now().year
+    
+    if(month_number == 0) :
+        month_number = datetime.now().month
+
+    orders = Order.query.filter(extract('year', Order.order_dt) == year_number).filter(extract('month', Order.order_dt) == month_number).all()
     customerMap = {}
 
     for order in orders :
@@ -38,6 +49,34 @@ def orders_of_month(month_number):
         print (str(item))
    
     return render_template('/orders/orders.html', orders=orders, customerMap=customerMap, title="Commandes du mois")
+
+@order_page.route("/orders/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
+def orders_of_day(year_number, month_number, day_number):
+    print(str(datetime.today().month) + " - " + str(datetime.today().day))
+    if(year_number == 0) :
+        year_number = datetime.now().year
+    
+    if(month_number == 0) :
+        month_number = datetime.now().month
+    
+    if(day_number == 0) :
+        day_number = datetime.now().month
+
+    orders = Order.query.filter(extract('year', Order.order_dt) == year_number).filter(extract('month', Order.order_dt) == month_number).filter(extract('day', Order.order_dt) == day_number).all()
+    
+    customerMap = {}
+
+    for order in orders :
+        customer = Customer.query.get_or_404(order.customer_id)
+        customerMap[customer.id] = str(customer.firstname + " " + customer.lastname)
+        print("addd : " + customerMap[customer.id])
+
+    for item in customerMap.items() :
+        print (str(item))
+   
+    return render_template('/orders/orders.html', orders=orders, customerMap=customerMap, title="Commandes du mois")
+
+
 
 @order_page.route("/orders/new", methods=['GET', 'POST'])
 def order_create():

@@ -29,3 +29,8 @@ def create_customer():
 def customer(customer_id):
     customer = Customer.query.get_or_404(customer_id)
     return render_template('/customers/customer.html', customer=customer)
+
+@customer_page.route("/customers/city/<string:city_name>", methods=['GET', 'POST'])
+def customers_by_city(city_name):
+   customers = Customer.query.filter(Customer.city == city_name).all()
+   return render_template('/customers/customers.html', customers=customers)

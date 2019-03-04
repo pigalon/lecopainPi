@@ -1,20 +1,26 @@
 {% extends "layout.html" %}
 {% block content %}
-<h1>Home Pages</h1> 
+<h1>Clients</h1> 
     {% for customer in customers %}
-    <div class="card" style="width: 18rem;">
-        <div class="card-body">
-                
-                      
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-header">
+                <span style="font-size: 24px;">
+                        <i class="fas fa-address-book "></i>
+                </span> Référence : {{customer.id}}
+        </div>
+        <div class="card-body">           
             <h5 class="card-title">
-                    <span style="font-size: 2em;">
-                            <i class="fas fa-address-book "></i>
-                    </span>
-                    {{customer.firstname}} - {{customer.lastname}}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-            <p class="card-text">{{ customer.address }} {{ customer.cp }} {{ customer.city }}</p>
-            <a href="/customers/{{customer.id}}" class="card-link">Détails</a>
-            <a href="#" class="card-link">Another link</a>
+                {{customer.firstname}} {{customer.lastname}}    
+            </h5>
+            <h6 class="card-subtitle mb-2 text-muted" style="font-size:13px;">{{ customer.address }} {{ customer.cp }} {{ customer.city }}</h6>
+            <p class="card-text" style="font-size:11px;"></p>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">                 
+                <a href="/customers/{{customer.id}}" class="card-link">Détails</a>
+                <a href="/customers/{{customer.id}}/update" class="card-link">Modifier</a>
+                <a href="/customers/{{customer.id}}/delete" class="card-link">Supprimer</a>
+            </small>
         </div>
     </div>
     {% endfor %}
@@ -25,8 +31,9 @@
     <p class='text-muted'>You can put any information here you'd like.
         <ul class="list-group">
         <li class="list-group-item list-group-item-light">
-                <a class="nav-link" href="/customers/new">Création de client</a></li>
-        <li class="list-group-item list-group-item-light">Announcements</li>
+            <a class="nav-link" href="/customers/new">Création de client</a></li>
+        <li class="list-group-item list-group-item-light">
+            <a class="nav-link" href="/customers/city/Langlade">Clients de Langlade</a></li>
         <li class="list-group-item list-group-item-light">Calendars</li>
         <li class="list-group-item list-group-item-light">etc</li>
         </ul>

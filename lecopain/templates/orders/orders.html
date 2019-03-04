@@ -1,30 +1,35 @@
 {% extends "layout.html" %}
 {% block content %}
     {% for order in orders %}
-    <div class="card" style="width: 18rem;">
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-header">
+            {% if order.status == 'ANNULEE' %}
+                <span class="btn btn-secondary" style="font-size: 1,8em;">             
+            {% endif %}
+            {% if order.status == 'EN COURS' %}
+            <span class="btn btn-warning" style="font-size: 1,8em;">
+            {% endif %}
+            {% if order.status == 'PAYEE' %}
+            <span class="btn btn-success" style="font-size: 1,8em;">
+            {% endif %}
+            {% if order.status == 'DEFAULT' %}
+            <span class="btn btn-danger" style="font-size: 1,8em;">
+            {% endif %}
+                <i class="fas fa-cart-arrow-down "></i>
+            </span>
+            Reference : {{order.id}}
+        </div>        
         <div class="card-body">
-                
-                      
-            <h5 class="card-title">
-                {% if order.status == 'ANNULEE' %}
-                    <span class="btn btn-secondary" style="font-size: 1,8em;">             
-                {% endif %}
-                {% if order.status == 'EN COURS' %}
-                <span class="btn btn-warning" style="font-size: 1,8em;">
-                {% endif %}
-                {% if order.status == 'PAYEE' %}
-                <span class="btn btn-success" style="font-size: 1,8em;">
-                {% endif %}
-                {% if order.status == 'DEFAULT' %}
-                <span class="btn btn-danger" style="font-size: 1,8em;">
-                {% endif %}
-                    <i class="fas fa-cart-arrow-down "></i>
-                </span>
-                    Reference : {{order.id}}</h5>
+            <h5 class="card-title"></h5>
             <h6 class="card-subtitle mb-2 text-muted">Client : - {{ order.customer_id }} - {{customerMap[order.customer_id]}}</h6>
             <p class="card-text">{{ order.order_dt.strftime('%A %d %B %Y') }} </p>
-            <a href="/orders/{{order.id}}" class="card-link">Détails</a>
-            <a href="#" class="card-link">Another link</a>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">
+                <a href="/orders/{{order.id}}" class="card-link">Détails</a>    
+                <a href="/orders/update/{{order.id}}" class="card-link">Modifier</a>
+                <a href="/orders/delete/{{order.id}}" class="card-link">Supprimer</a>
+            </small>
         </div>
     </div>
     {% endfor %}
@@ -35,10 +40,11 @@
     <p class='text-muted'>You can put any information here you'd like.
         <ul class="list-group">
         <li class="list-group-item list-group-item-light">
-                <a class="nav-link" href="/orders/new">Création de commande</a></li>
+            <a class="nav-link" href="/orders/new">Création de commande</a></li>
         <li class="list-group-item list-group-item-light">
-                <a class="nav-link" href="/orders/month/0">Commandes du mois</a></li>
-        <li class="list-group-item list-group-item-light">Calendars</li>
+            <a class="nav-link" href="/orders/year/0/month/0">Commandes du mois</a></li>
+        <li class="list-group-item list-group-item-light">
+            <a class="nav-link" href="/orders/year/0/month/0/day/0">Commandes du jour</a></li>
         <li class="list-group-item list-group-item-light">etc</li>
         </ul>
     </p>

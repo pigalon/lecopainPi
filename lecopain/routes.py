@@ -53,20 +53,11 @@ customers2 = [
 locale.setlocale(locale.LC_TIME, "fr_FR")
 
 
-
-
-
 @app.route("/")
 @app.route("/home")
 def index():
     customers = Customer.query.all()
     return render_template('index.html', customers=customers)
-
-
-
-
-
-
 
 @app.route('/_get_customers/')
 def _get_customers():
@@ -77,7 +68,6 @@ def _get_customers():
 def _get_order_status():
     ordersStatusList = [(row.name) for row in OrderStatus.query.all()]
     return ordersStatusList
-
 
 if __name__ == '__main__':
     app.run(debug=True)
