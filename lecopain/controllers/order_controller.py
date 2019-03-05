@@ -1,4 +1,4 @@
-from lecopain.models import Order, Product, Customer
+from lecopain.models import Order, Product, Customer, OrderStatus, Order_product
 from lecopain import app, db
 from lecopain.form import OrderForm
 
@@ -147,3 +147,8 @@ def delete_order(order_id):
     db.session.delete(order)
     db.session.commit()
     return jsonify({})
+
+@app.route('/_get_order_status/')
+def _get_order_status():
+    ordersStatusList = [(row.name) for row in OrderStatus.query.all()]
+    return ordersStatusList

@@ -64,10 +64,6 @@ def _get_customers():
     customers = [(row.id, row.firstname) for row in Customer.query.all()]
     return jsonify(customers)
 
-@app.route('/_get_order_status/')
-def _get_order_status():
-    ordersStatusList = [(row.name) for row in OrderStatus.query.all()]
-    return ordersStatusList
 
 if __name__ == '__main__':
     app.run(debug=True)
