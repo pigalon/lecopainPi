@@ -5,13 +5,14 @@ from lecopain.form import OrderForm
 from sqlalchemy import extract
 from datetime import datetime
 
-from flask import Blueprint, render_template, redirect, url_for, Flask, request
+from flask import Blueprint, render_template, redirect, url_for, Flask, request, jsonify
 
 app = Flask(__name__, instance_relative_config=True)
 
 
 order_page = Blueprint('order_page', __name__,
                         template_folder='../templates')
+
 @order_page.route("/orders", methods=['GET', 'POST'])
 def orders():
     orders = Order.query.order_by(Order.order_dt.desc()).all()
@@ -112,8 +113,9 @@ def order_create():
         print('order id : ' + str(order.id))
 
         for i in range(0,len(tmp_products)):
-            bought_items = Order_product.query.filter(Order_product.order_id == order.id).filter(Order_product.product_id == tmp_products[i]).first()
-            bought_items.quantity = tmp_quantity[i]
+            bought_item = Order_product.query.filter(Order_product.order_id == order.id).filter(Order_product.product_id == tmp_products[i]).first()
+            bought_item.quantity = tmp_quantity[i]
+            bought_item.price = order.selected_products[i].price
  
         db.session.commit()
         
@@ -129,7 +131,19 @@ def order_create():
 
     return render_template('/orders/create_order.html', title='order form', form=form, customers=customers, products=products, orderStatusList=orderStatusList)
 
-@order_page.route("/orders/<int:order_id>")
+@order_page.route("/orders/<int:order_id>", methods=['GET', 'POST'])
 def order(order_id):
     order = Order.query.get_or_404(order_id)
     return render_template('/orders/order.html', order=order)
+
+@order_page.route("/orders/delete/<int:order_id>")
+def display_delete_order(order_id):
+    order = Order.query.get_or_404(order_id)
+    return render_template('/orders/order_delete.html', order=order)
+
+@order_page.route("/orders/<int:order_id>", methods=['DELETE'])
+def delete_order(order_id):
+    order = Order.query.get_or_404(order_id)
+    db.session.delete(order)
+    db.session.commit()
+    return jsonify({})
