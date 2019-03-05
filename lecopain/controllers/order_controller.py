@@ -75,7 +75,7 @@ def orders_of_day(year_number, month_number, day_number):
     for item in customerMap.items() :
         print (str(item))
    
-    return render_template('/orders/orders.html', orders=orders, customerMap=customerMap, title="Commandes du mois")
+    return render_template('/orders/orders.html', orders=orders, customerMap=customerMap, title="Commandes du jour")
 
 
 
@@ -84,13 +84,9 @@ def order_create():
     form = OrderForm()
     tmp_products = request.form.getlist('products')
     tmp_quantity = request.form.getlist('quantities')
-    
-    #print("type :"+ str( len(tmp_products)) + str(tmp_products[0]))
 
     for i in range(0,len(tmp_products)):
             product = Product.query.get(tmp_products[i])
-            print(str(product))
-            print(str(tmp_quantity[i]))
 
     if form.validate_on_submit():
 
@@ -102,15 +98,8 @@ def order_create():
             product = Product.query.get(tmp_products[i])
             order.selected_products.append(product)
 
-        for i in range(0,len(tmp_products)):
-            print('tmp_quantity : ' + str(tmp_quantity[i]))
-            print('selected : ' + str(order.selected_products[i]))
-        
-        print('order : ' + str(order))
-
         db.session.add(order)
         db.session.commit()
-        print('order id : ' + str(order.id))
 
         for i in range(0,len(tmp_products)):
             bought_item = Order_product.query.filter(Order_product.order_id == order.id).filter(Order_product.product_id == tmp_products[i]).first()
@@ -120,7 +109,7 @@ def order_create():
         db.session.commit()
         
         #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect(url_for('index'))
+        return redirect(url_for('order_page.orders'))
     else:
         customers = Customer.query.all()
         products = Product.query.all()
@@ -128,8 +117,8 @@ def order_create():
     #    flash(f'Failed!', 'danger')
     orderStatusList = _get_order_status()
 
-
     return render_template('/orders/create_order.html', title='order form', form=form, customers=customers, products=products, orderStatusList=orderStatusList)
+
 
 @order_page.route("/orders/<int:order_id>", methods=['GET', 'POST'])
 def order(order_id):
