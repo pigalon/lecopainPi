@@ -125,6 +125,27 @@ def order(order_id):
     order = Order.query.get_or_404(order_id)
     return render_template('/orders/order.html', order=order)
 
+@order_page.route("/orders/update/<int:order_id>")
+def display_update_order(order_id):
+    order = Order.query.get_or_404(order_id)
+    form = OrderForm()
+    form.customer_id.data = order.customer_id
+    form.order_dt.data = order.order_dt
+    form.status.data = order.status
+    form.title.data = order.title
+    
+
+    tmp_products = request.form.getlist('products')
+    tmp_quantity = request.form.getlist('quantities')
+
+    for i in range(0,len(tmp_products)):
+        product = Product.query.get(tmp_products[i])
+
+    customers = Customer.query.all()
+    products = Product.query.all()
+    orderStatusList = _get_order_status()
+    return render_template('/orders/order_update.html', order=order, title='order form', form=form, customers=customers, products=products, selected_products=order.selected_products,  orderStatusList=orderStatusList)
+
 @order_page.route("/orders/delete/<int:order_id>")
 def display_delete_order(order_id):
     order = Order.query.get_or_404(order_id)

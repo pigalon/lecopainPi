@@ -23,7 +23,6 @@ def customers():
             print(str(order.order_dt))
     return render_template('/customers/customers.html', customers=customers, new_orders= new_orders, cpt=0)
 
-
 @customer_page.route("/customers/new", methods=['GET', 'POST'])
 def create_customer():
     form = PersonForm()
