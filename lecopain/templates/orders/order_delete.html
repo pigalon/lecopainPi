@@ -1,7 +1,7 @@
 
 {% extends "layout.html" %}
 {% block content %}
-    <h1>Commande</h1>
+    <h1>Formulaire de suppression de Commande</h1>
     <div class="content-section">
         <p>Référence : {{order.id}}</p>
         <p>Date {{order.order_dt}}</p>
@@ -16,7 +16,7 @@
         {% endfor %}
     </div>
     <div class="content-section">
-            Etes-vous sûr de vouloir supprimer ce produit ?
+            Etes-vous sûr de vouloir supprimer cette commande ?
         </div>
     <div class="content-section">
         <table><tr>

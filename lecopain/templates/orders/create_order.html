@@ -5,12 +5,13 @@
         <form method="POST" action="" style="display: inline;">    
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-            <legend class="=border-bottom mb-4">Join Today</legend>
+            <legend class="=border-bottom mb-4"></legend>
             <div class="form-group">
-                {{ form.title.label(class="form-control-label") }}
+                Titre :
                 {{ form.title(class="form-control form-control-sm") }}
             </div>
             <div class="form-group">
+                Choix du client :
                 <select class="form-control" name="customer_id" width="300px">
                     {% for o in customers %}
                         <option value="{{ o.id }}" SELECTED>{{ o.firstname }}</option>
@@ -18,6 +19,7 @@
                 </select>
             </div>
             <div class="form-group">
+                Choix de l'état de la commande :
                 <select class="form-control" name="status" width="300px">
                     {% for orderStatus in orderStatusList %}
                         {% if(orderStatus == "EN COURS") %}
@@ -29,6 +31,7 @@
                 </select>
             </div>
             <div class="form-group">
+                Saisie de la date de la commande :
                 <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
                     <input type="text" name="order_dt" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
                     <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
@@ -37,6 +40,7 @@
                 </div>
             </div>
             <div class="form-group">
+                Choix du produit à ajouter à la commande
                 <div data-toggle="fieldset" id="product-fieldset">
                     <input type="hidden" name="row_nb" id="row_nb" value=0 />
                     <table width="50%">

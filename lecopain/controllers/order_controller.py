@@ -118,7 +118,7 @@ def order_create():
     #    flash(f'Failed!', 'danger')
     orderStatusList = _get_order_status()
 
-    return render_template('/orders/create_order.html', title='order form', form=form, customers=customers, products=products, orderStatusList=orderStatusList)
+    return render_template('/orders/create_order.html', title='Creation de commande', form=form, customers=customers, products=products, orderStatusList=orderStatusList)
 
 
 @order_page.route("/orders/<int:order_id>", methods=['GET', 'POST'])
@@ -182,12 +182,12 @@ def display_update_order(order_id):
         
 
     orderStatusList = _get_order_status()
-    return render_template('/orders/order_update.html', order=order, title='order form', form=form, customers=customers, products=products, selected_products=order.selected_products,  orderStatusList=orderStatusList, order_product_selection=order_product_selection)
+    return render_template('/orders/order_update.html', order=order, title='Mise a jour de commande', form=form, customers=customers, products=products, selected_products=order.selected_products,  orderStatusList=orderStatusList, order_product_selection=order_product_selection)
 
 @order_page.route("/orders/delete/<int:order_id>")
 def display_delete_order(order_id):
     order = Order.query.get_or_404(order_id)
-    return render_template('/orders/order_delete.html', order=order)
+    return render_template('/orders/order_delete.html', order=order, title='Suppression de commande')
 
 @order_page.route("/orders/<int:order_id>", methods=['DELETE'])
 def delete_order(order_id):

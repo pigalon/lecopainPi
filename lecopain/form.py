@@ -6,7 +6,7 @@ class PersonForm(FlaskForm):
     firstname = StringField('firstName', validators=[DataRequired(), Length(min=2, max=20)])
     lastname = StringField('LastName', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Length(min=2, max=200)])
-    submit = SubmitField('Add person')
+    submit = SubmitField('Valider')
 
 class OrderForm(FlaskForm):
     title = StringField('Title')
@@ -14,10 +14,10 @@ class OrderForm(FlaskForm):
     product_id = IntegerField('Product Id:', validators=[DataRequired()])
     order_dt = DateTimeField('Order Date')
     status = StringField('Status')
-    submit = SubmitField('Add order')
+    submit = SubmitField('Valider')
 
 class ProductForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     price = DecimalField('Price')
     description = StringField('Description')
-    submit = SubmitField('Add product')
+    submit = SubmitField('Valider')
