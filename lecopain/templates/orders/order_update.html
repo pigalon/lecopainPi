@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block content %}
-{{form.order_dt.data}}
+
     <div class="content-section">
         <form method="POST" action="" style="display: inline;">    
             {{ form.hidden_tag() }}
@@ -46,7 +46,7 @@
             </div>
             <div class="form-group">
                 <div data-toggle="fieldset" id="product-fieldset">
-                    <input type="hidden" name="row_nb" id="row_nb" value=0 />
+                    <input type="hidden" name="row_nb" id="row_nb" value={{selected_products|length}} />
                     <table width="50%">
                         <tr>
                             <td>
@@ -70,7 +70,14 @@
                             <th width="30%">quantité</th>
                             <th width="10%"></th>
                         </tr>
-                        
+                        {% for selected_product in selected_products %}
+                        <tr data-toggle="fieldset-entry" name="tr_{{loop.index-1}}">
+                            <td><input type="hidden" , name="products" value="{{selected_product.id}}"/>Ref-{{selected_product.id}}</td>
+                            <td>{{selected_product.name}} </td>
+                            <td> <b>x</b> <input type="number" style="width: 7em" name="quantities" value="{{order_product_selection[loop.index-1].quantity}}"/></td>
+                            <td><button type="button" id="product-{{loop.index-1}}-remove" onclick="remove_fields({{loop.index-1}});" class="btn btn-warning" ><i class="fa fa-minus"></i></button></td> 
+                        </tr>
+                        {% endfor%}                      
                     </table>
                 </div>
             </div>

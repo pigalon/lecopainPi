@@ -83,7 +83,7 @@ def orders_of_day(year_number, month_number, day_number):
 def order_create():
     form = OrderForm()
     tmp_products = request.form.getlist('products')
-    tmp_quantity = request.form.getlist('quantities')
+    tmp_quantities = request.form.getlist('quantities')
 
     for i in range(0,len(tmp_products)):
             product = Product.query.get(tmp_products[i])
@@ -103,7 +103,7 @@ def order_create():
 
         for i in range(0,len(tmp_products)):
             bought_item = Order_product.query.filter(Order_product.order_id == order.id).filter(Order_product.product_id == tmp_products[i]).first()
-            bought_item.quantity = tmp_quantity[i]
+            bought_item.quantity = tmp_quantities[i]
             bought_item.price = order.selected_products[i].price
  
         db.session.commit()
@@ -125,26 +125,63 @@ def order(order_id):
     order = Order.query.get_or_404(order_id)
     return render_template('/orders/order.html', order=order)
 
-@order_page.route("/orders/update/<int:order_id>")
+@order_page.route("/orders/update/<int:order_id>", methods=['GET', 'POST'])
 def display_update_order(order_id):
     order = Order.query.get_or_404(order_id)
     form = OrderForm()
-    form.customer_id.data = order.customer_id
-    form.order_dt.data = order.order_dt
-    form.status.data = order.status
-    form.title.data = order.title
-    
-
-    tmp_products = request.form.getlist('products')
-    tmp_quantity = request.form.getlist('quantities')
-
-    for i in range(0,len(tmp_products)):
-        product = Product.query.get(tmp_products[i])
 
     customers = Customer.query.all()
     products = Product.query.all()
+    
+    order_product_selection = Order_product.query.filter(Order_product.order_id == order.id).all()
+    
+    
+
+    print('update form : ' + str(order.id))
+
+    if form.validate_on_submit():
+        print('update form validate : ' + str(order.id))
+
+        #order_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.order_dt.data)
+        orderForm = Order(title=form.title.data, status=form.status.data, customer_id=int(form.customer_id.data), order_dt=form.order_dt.data)
+        order.title = orderForm.title
+        order.status = orderForm.status
+        order.customer_id = orderForm.customer_id
+        order.order_dt = orderForm.order_dt
+        products = {}
+
+        Order_product.query.filter(Order_product.order_id == order.id).delete()
+
+        tmp_products = request.form.getlist('products')
+        tmp_quantities = request.form.getlist('quantities')
+
+        for i in range(0,len(tmp_products)): 
+            product = Product.query.get(tmp_products[i])
+            order.selected_products.append(product)
+
+        #db.session.add(order)
+        db.session.commit()
+
+        
+        for i in range(0,len(tmp_products)):
+            bought_item = Order_product.query.filter(Order_product.order_id == order.id).filter(Order_product.product_id == tmp_products[i]).first()
+            bought_item.quantity = tmp_quantities[i]
+            bought_item.price = order.selected_products[i].price
+            print(str(bought_item.order_id)+ " - "+ str(bought_item.product_id) +" - "+ str(tmp_quantities[i]) +" - "+ str(i) + "")
+ 
+        db.session.commit()
+        
+        #flash(f'People created for {form.firstname.data}!', 'success')
+        return redirect(url_for('order_page.orders'))
+    else:
+        form.customer_id.data = order.customer_id
+        form.order_dt.data = order.order_dt
+        form.status.data = order.status
+        form.title.data = order.title
+        
+
     orderStatusList = _get_order_status()
-    return render_template('/orders/order_update.html', order=order, title='order form', form=form, customers=customers, products=products, selected_products=order.selected_products,  orderStatusList=orderStatusList)
+    return render_template('/orders/order_update.html', order=order, title='order form', form=form, customers=customers, products=products, selected_products=order.selected_products,  orderStatusList=orderStatusList, order_product_selection=order_product_selection)
 
 @order_page.route("/orders/delete/<int:order_id>")
 def display_delete_order(order_id):
