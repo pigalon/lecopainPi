@@ -84,6 +84,7 @@ def order_create():
     form = OrderForm()
     tmp_products = request.form.getlist('products')
     tmp_quantities = request.form.getlist('quantities')
+    tmp_prices = request.form.getlist('prices')
 
     for i in range(0,len(tmp_products)):
             product = Product.query.get(tmp_products[i])
@@ -104,10 +105,10 @@ def order_create():
         for i in range(0,len(tmp_products)):
             bought_item = Order_product.query.filter(Order_product.order_id == order.id).filter(Order_product.product_id == tmp_products[i]).first()
             bought_item.quantity = tmp_quantities[i]
-            bought_item.price = order.selected_products[i].price
+            bought_item.price = tmp_prices[i]
  
         db.session.commit()
-        
+
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('order_page.orders'))
     else:

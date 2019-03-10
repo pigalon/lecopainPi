@@ -66,15 +66,17 @@
                     <table id="tab_qn_ans" width="100%">
                         <tr>
                             <th width="20%">id</th>
-                            <th width="40%">nom</th>
+                            <th width="35%">nom</th>
                             <th width="30%">quantité</th>
+                            <th width="30%">prix</th>
                             <th width="10%"></th>
                         </tr>
                         {% for selected_product in selected_products %}
                         <tr data-toggle="fieldset-entry" name="tr_{{loop.index-1}}">
                             <td><input type="hidden" , name="products" value="{{selected_product.id}}"/>Ref-{{selected_product.id}}</td>
                             <td>{{selected_product.name}} </td>
-                            <td> <b>x</b> <input type="number" style="width: 7em" name="quantities" value="{{order_product_selection[loop.index-1].quantity}}"/></td>
+                            <td> <b>x</b> <input type="number" style="width: 5em" name="quantities" value="{{order_product_selection[loop.index-1].quantity}}"/></td>
+                            <td> <input type="number" style="width: 5em" name="prices" value="{{order_product_selection[loop.index-1].price}}"/><b>€</b></td>
                             <td><button type="button" id="product-{{loop.index-1}}-remove" onclick="remove_fields({{loop.index-1}});" class="btn btn-warning" ><i class="fa fa-minus"></i></button></td> 
                         </tr>
                         {% endfor%}                      
