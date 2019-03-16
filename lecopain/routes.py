@@ -22,13 +22,8 @@ product_page = Blueprint('product_page',  __name__,
                         template_folder='./templates')
 
 
-import sys  
-
 #app = Flask(__name__,instance_relative_config=True)
 
-
-reload(sys)  
-sys.setdefaultencoding('utf8')
 
 customers2 = [
     {
@@ -66,7 +61,6 @@ def _get_customers():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
+     app.run(host='0.0.0.0', port=5000)
 
 

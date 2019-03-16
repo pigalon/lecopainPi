@@ -25,3 +25,19 @@ product1 = Product.query.first()
 cust = Customer.query.first()
 order = Order(title='ttt', owner=cust)
 order.selected_products.append(product1)
+
+Docker
+--------
+docker build -t flask_lecopain .
+docker run -it -d --name flask_lecopain -p 5000:5000 -p80:80 flask_lecopain
+docker exec -it flask_lecopain /bin/sh
+docker container ls
+docker logs flask_lecopain
+docker container stop flask_lecopain
+docker container rm flask_lecopain
+docker image rm flask_lecopain
+
+docker image build -t python-flask-lecopain .
+docker run -it --rm -d -v /Users/pierrick/dev/work/python/lecopain:/home/python_app -w /home/python_app/lecopain -p5000:5000 --name lecopain python-flask-lecopain /bin/bash -c "FLASK_APP=routes.py flask run --host=0.0.0.0"
+
+
