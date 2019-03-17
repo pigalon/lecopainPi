@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Vendeurs</h1>
+    {% set count = O %}
+    {% for vendor in vendors %}
+    <div class="card border-dark mb-3" style="width: 40rem;">
+        <div class="card-header">
+                <span style="float: left; font-size: 2em;">
+                    <i class="fas fa-address-book "> </i> &nbsp;
+                </span> 
+                <br>
+                <b>Vendeur n° {{vendor.id}}</b>
+        </div>
+        <div class="card-body">           
+            <h5 class="card-title">
+                {{vendor.name}}  
+            </h5>  
+            <p class="card-text" style="font-size:11px;"></p>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">                 
+                <a href="/vendors/{{vendor.id}}" class="card-link">Détails</a>
+                <a href="/vendors/{{vendor.id}}/update" class="card-link">Modifier</a>
+                <a href="/vendors/{{vendor.id}}/delete" class="card-link">Supprimer</a>
+                <span style="float: right">
+                        <b> Dernière commande : </b>
+                        {% if new_orders[loop.index-1] is not none %}  
+                            {{ new_orders[loop.index-1].order_dt.strftime('%A %d %B %Y') }}
+                        {% endif%}
+                </span>
+            </small>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}
+{% block right_menu %}
+<div class="content-section">
+    <h3>Menu des vendeurs</h3>
+    <p class='text-muted'>
+        <ul class="list-group">
+        <li class="list-group-item list-group-item-light">
+            <a class="nav-link" href="/vendors/new">Création de vendeur</a></li>
+        </ul>
+    </p>
+</div>
+{% endblock %}

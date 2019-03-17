@@ -8,6 +8,12 @@ class PersonForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Length(min=2, max=200)])
     submit = SubmitField('Valider')
 
+class VendorForm(FlaskForm):
+    name = StringField('name', validators=[DataRequired(), Length(min=2, max=20)])
+    email = StringField('Email', validators=[DataRequired(), Length(min=2, max=200)])
+    submit = SubmitField('Valider')
+
+
 class OrderForm(FlaskForm):
     title = StringField('Title')
     customer_id = IntegerField('Customer Id:', validators=[DataRequired()])

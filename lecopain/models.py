@@ -12,7 +12,6 @@ class Customer(db.Model):
     email = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     orders = db.relationship('Order', backref='owner', lazy=True)
-    #products = db.relationship("Product", secondary="orders")
 
     def __repr__(self):
         return "Customer('{self.firstname}','{self.lastname}','{self.email}')"
@@ -30,9 +29,6 @@ class Product(db.Model):
     description = db.Column(db.String(250))
     price = db.Column(db.Float)
     selections = db.relationship('Order', secondary = 'order_product', backref=db.backref('selected_products'))
-    #customers = db.relationship("Customer", secondary="orders")
-    #orders = db.relationship('Order', secondary = 'order_product')
-   
 
     def __repr__(self):
         return "Product('{self.name}',{self.price}, '{self.description}')"
@@ -53,13 +49,17 @@ class Order(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
     status = db.Column(db.String(20), nullable=False)
-    #product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
-       
-    #customer = db.relationship(Customer, backref=db.backref("orders", cascade="all, delete-orphan"))
-    #product = db.relationship(Product, backref=db.backref("orders", cascade="all, delete-orphan"))
-    
-
-    #products = db.relationship('Product', secondary = 'order_product')
-
+    vendor_id = db.Column(db.Integer, db.ForeignKey('vendors.id'), nullable=False)
+ 
     def __repr__(self):
         return "Order('{self.title}', '{self.status}', {customer_id} '{self.order_dt}')"
+
+class Vendor(db.Model):
+    __tablename__ = 'vendors'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(200), nullable=False)
+    orders = db.relationship('Order', backref='vendor', lazy=True)
+
+    def __repr__(self):
+        return "Vendor('{self.name}')"
