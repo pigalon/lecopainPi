@@ -25,8 +25,8 @@
         <div class="card-footer">
             <small class="text-muted">                 
                 <a href="/customers/{{customer.id}}" class="card-link">Détails</a>
-                <a href="/customers/{{customer.id}}/update" class="card-link">Modifier</a>
-                <a href="/customers/{{customer.id}}/delete" class="card-link">Supprimer</a>
+                <a href="/customers/update/{{customer.id}}" class="card-link">Modifier</a>
+                <a href="/customers/delete/{{customer.id}}" class="card-link">Supprimer</a>
                 <span style="float: right">
                         <b> Dernière commande : </b>
                         {% if new_orders[loop.index-1] is not none %}  

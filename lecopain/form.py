@@ -6,6 +6,9 @@ class PersonForm(FlaskForm):
     firstname = StringField('firstName', validators=[DataRequired(), Length(min=2, max=20)])
     lastname = StringField('LastName', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Length(min=2, max=200)])
+    address = StringField('Email', validators=[DataRequired(), Length(min=2, max=200)])
+    cp = StringField('Email', validators=[DataRequired(), Length(min=2, max=200)])
+    city = StringField('Email', validators=[DataRequired(), Length(min=2, max=200)])
     submit = SubmitField('Valider')
 
 class VendorForm(FlaskForm):
