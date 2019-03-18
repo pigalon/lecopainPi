@@ -6,25 +6,23 @@
         <p>Référence : {{customer.id}}</p>
         <p>{{customer.firstname}} {{customer.lastname}}</p>
     </div>
-    </div>
     <div class="content-section">
             Etes-vous sûr de vouloir supprimer ce client ?
-        </div>
+    </div>
     <div class="content-section">
         <table>
             <tr>
                 <td>
-                    <button type="button" onclick="delete_order({{customer.id}})" class="btn btn-danger">Supprimer</button>
+                    <button type="button" onclick="delete_customer({{customer.id}})" class="btn btn-danger">Supprimer</button>
                 </td>
                 <td>
-                    <button class="btn btn-secondary" type="cancel" onclick="javascript:window.location='/orders';">Annuler</button>
+                    <button class="btn btn-secondary" type="cancel" onclick="javascript:window.location='/customers';">Annuler</button>
                 </td>
             </tr>
         </table>  
-    </div>
-    
-
+    </div>    
 {% endblock %}
+
 {% block right_menu %}
 <div class="content-section">
     <h3>Our Sidebar</h3>
@@ -40,7 +38,21 @@
     </p>
 </div>
 {% endblock %}
-        
+{% block scripts %} 
+
+    <script>
+        function delete_customer(customer_id) {
+
+            $.ajax({
+                type: "DELETE",
+                url: '/customers/' + customer_id,
+                success: function(msg){
+                    location.href = "/customers";
+                }
+            });
+        };
+    </script>
+{% endblock %}
         
 
 

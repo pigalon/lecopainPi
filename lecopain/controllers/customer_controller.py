@@ -28,19 +28,31 @@ def create_customer():
     form = PersonForm()
     if form.validate_on_submit():
         customer = Customer(firstname=form.firstname.data, lastname=form.lastname.data, email=form.email.data)
-        customer = form.address.data
-        customer = form.cp.data
-        customer = form.city.data
+        customer.address = form.address.data
+        customer.cp = form.cp.data
+        customer.city = form.city.data
         db.session.add(customer)
         db.session.commit()
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('index'))
     return render_template('/customers/create_customer.html', title='Person form', form=form)
 
+#####################################################################
+#                                                                   #
+#####################################################################
 @customer_page.route("/customers/city/<string:city_name>", methods=['GET', 'POST'])
 def customers_by_city(city_name):
-   customers = Customer.query.filter(Customer.city == city_name).all()
-   return render_template('/customers/customers.html', customers=customers)
+   
+    new_orders=[]
+    customerManager = CustomerManager()
+    customers = Customer.query.filter(Customer.city == city_name).all()
+    for customer in customers :
+        new_orders.append(customerManager.get_last_order(customer))
+    for order in new_orders :
+        if order != None :
+            print(str(order.order_dt))
+
+    return render_template('/customers/customers.html', customers=customers, new_orders= new_orders, cpt=0)
 
 #####################################################################
 #                                                                   #
@@ -62,13 +74,14 @@ def display_update_order(customer_id):
         print('update form validate : ' + str(customer.id))
 
         #order_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.order_dt.data)
-        customer = Customer(firstname=form.firstname.data, lastname=form.lastname.data, email=form.email.data)
+        customer.firstname = form.firstname.data
+        customer.lastname=form.lastname.data
+        customer.email=form.email.data
         customer.address = form.address.data
         customer.cp = form.cp.data
         customer.city = form.city.data
 
         db.session.commit()
-
         
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('customer_page.customers'))
@@ -95,7 +108,7 @@ def display_delete_customer(customer_id):
 #####################################################################
 #                                                                   #
 #####################################################################
-@customer_page.route("/orders/<int:customer_id>", methods=['DELETE'])
+@customer_page.route("/customers/<int:customer_id>", methods=['DELETE'])
 def delete_customer(customer_id):
     customer = Customer.query.get_or_404(customer_id)
     db.session.delete(customer)
