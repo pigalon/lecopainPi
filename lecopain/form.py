@@ -21,6 +21,7 @@ class OrderForm(FlaskForm):
     title = StringField('Title')
     customer_id = IntegerField('Customer Id:', validators=[DataRequired()])
     product_id = IntegerField('Product Id:', validators=[DataRequired()])
+    vendor_id = IntegerField('Product Id:', validators=[DataRequired()])
     order_dt = DateTimeField('Order Date')
     status = StringField('Status')
     submit = SubmitField('Valider')
@@ -29,4 +30,5 @@ class ProductForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     price = DecimalField('Price')
     description = StringField('Description')
+    vendor_id = IntegerField('Product Id:', validators=[DataRequired()])
     submit = SubmitField('Valider')

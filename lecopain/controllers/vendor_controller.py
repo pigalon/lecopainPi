@@ -63,7 +63,7 @@ def display_update_order(vendor_id):
         form.email.data = vendor.email
         
 
-    return render_template('/vendors/vendor_update.html', vendor=vendor, title='Mise a jour de vendeur', form=form)
+    return render_template('/vendors/update_vendor.html', vendor=vendor, title='Mise a jour de vendeur', form=form)
 
 
 #####################################################################
@@ -72,7 +72,7 @@ def display_update_order(vendor_id):
 @vendor_page.route("/vendors/delete/<int:vendor_id>")
 def display_delete_vendor(vendor_id):
     vendor = Vendor.query.get_or_404(vendor_id)
-    return render_template('/vendors/vendor_delete.html', vendor=vendor, title='Suppression de vendeur')
+    return render_template('/vendors/delete_vendor.html', vendor=vendor, title='Suppression de vendeur')
 
 #####################################################################
 #                                                                   #

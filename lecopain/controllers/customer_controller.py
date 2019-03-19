@@ -94,7 +94,7 @@ def display_update_order(customer_id):
         form.city.data = customer.city
         
 
-    return render_template('/customers/customer_update.html', customer=customer, title='Mise a jour de client', form=form)
+    return render_template('/customers/update_customer.html', customer=customer, title='Mise a jour de client', form=form)
 
 
 #####################################################################
@@ -103,7 +103,7 @@ def display_update_order(customer_id):
 @customer_page.route("/customers/delete/<int:customer_id>")
 def display_delete_customer(customer_id):
     customer = Customer.query.get_or_404(customer_id)
-    return render_template('/customers/customer_delete.html', customer=customer, title='Suppression de client')
+    return render_template('/customers/delete_customer.html', customer=customer, title='Suppression de client')
 
 #####################################################################
 #                                                                   #

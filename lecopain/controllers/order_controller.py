@@ -173,7 +173,7 @@ def display_update_order(order_id):
         
 
     orderStatusList = _get_order_status()
-    return render_template('/orders/order_update.html', order=order, title='Mise a jour de commande', form=form, customers=customers, products=products, selected_products=order.selected_products,  orderStatusList=orderStatusList, order_product_selection=order_product_selection)
+    return render_template('/orders/update_order.html', order=order, title='Mise a jour de commande', form=form, customers=customers, products=products, selected_products=order.selected_products,  orderStatusList=orderStatusList, order_product_selection=order_product_selection)
 
 #####################################################################
 #                                                                   #
@@ -181,7 +181,7 @@ def display_update_order(order_id):
 @order_page.route("/orders/delete/<int:order_id>")
 def display_delete_order(order_id):
     order = Order.query.get_or_404(order_id)
-    return render_template('/orders/order_delete.html', order=order, title='Suppression de commande')
+    return render_template('/orders/delete_order.html', order=order, title='Suppression de commande')
 
 #####################################################################
 #                                                                   #
