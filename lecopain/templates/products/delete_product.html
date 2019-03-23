@@ -1,27 +1,18 @@
 
 {% extends "layout.html" %}
 {% block content %}
-    <h1>Formulaire de suppression de Commande</h1>
+    <h1>Formulaire de suppression de produit</h1>
     <div class="content-section">
-        <p>Référence : {{order.id}}</p>
-        <p>Date {{order.order_dt}}</p>
-    </div>
-    <div>
-        <h3>Liste des produits</h3>
+        <p>Référence : {{product.id}}</p>
+        <p>Date {{product.name}}</p>
     </div>
     <div class="content-section">
-        {% for product in order.selected_products %}
-            <p>{{product.name}}</p>
-            <p>{{product.price}}</p>
-        {% endfor %}
-    </div>
-    <div class="content-section">
-            Etes-vous sûr de vouloir supprimer cette commande ?
+            Etes-vous sûr de vouloir supprimer ce produit ?
         </div>
     <div class="content-section">
         <table><tr>
         <td>
-            <button type="button" onclick="delete_order({{order.id}})" class="btn btn-danger">Supprimer</button>
+            <button type="button" onclick="delete_product({{product.id}})" class="btn btn-danger">Supprimer</button>
         </td>
         <td><button class="btn btn-secondary" type="cancel" onclick="javascript:window.location='/orders';">Annuler</button></td>
         </tr></table>  
@@ -35,9 +26,7 @@
     <p class='text-muted'>You can put any information here you'd like.
         <ul class="list-group">
         <li class="list-group-item list-group-item-light">
-                <a class="nav-link" href="/customers/new">Création de client</a></li>
-        <li class="list-group-item list-group-item-light">
-                <a class="nav-link" href="/customers/city/Langlade">Clients de Langlade</a></li>
+                <a class="nav-link" href="/products/new">Création de client</a></li>
         <li class="list-group-item list-group-item-light">Calendars</li>
         <li class="list-group-item list-group-item-light">etc</li>
         </ul>
@@ -48,13 +37,13 @@
 {% block scripts %} 
 
     <script>
-        function delete_order(order_id) {
+        function delete_product(product_id) {
 
             $.ajax({
                 type: "DELETE",
-                url: '/orders/' + order_id,
+                url: '/products/' + product_id,
                 success: function(msg){
-                    location.href = "/orders";
+                    location.href = "/products";
                 }
             });
         };

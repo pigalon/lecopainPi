@@ -19,6 +19,14 @@
                 {{ form.description(class="form-control form-control-sm")}}
             </div>
             <div class="form-group">
+                Choix du vendeur :
+                <select class="form-control" id="vendor_id" name="vendor_id">
+                    {% for vendor in vendors %}
+                        <option value="{{ vendor.id }}" >{{ vendor.name }}</option>  
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>
         </form>

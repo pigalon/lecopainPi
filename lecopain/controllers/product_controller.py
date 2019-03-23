@@ -1,4 +1,4 @@
-from lecopain.models import Product
+from lecopain.models import Product, Vendor
 from lecopain import app, db
 from lecopain.form import ProductForm
 from flask import Blueprint, render_template, redirect, url_for, Flask
@@ -8,12 +8,25 @@ app = Flask(__name__, instance_relative_config=True)
 
 product_page = Blueprint('product_page', __name__,
                         template_folder='../templates')
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@product_page.route("/products/<int:product_id>")
+def product(product_id):
+    product = Product.query.get_or_404(product_id)
+    vendor = Vendor.query.get_or_404(product.vendor_id)
+    return render_template('/products/product.html', product=product, vendor=vendor)
+#####################################################################
+#                                                                   #
+#####################################################################
 @product_page.route("/products", methods=['GET', 'POST'])
 def products():
     products = Product.query.order_by(Product.name.desc()).all()
-
     return render_template('/products/products.html', products=products, title="Toutes les produits")
-
+#####################################################################
+#                                                                   #
+#####################################################################
 @product_page.route("/products/new", methods=['GET', 'POST'])
 def product_create():
     form = ProductForm()

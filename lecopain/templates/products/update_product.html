@@ -8,11 +8,31 @@
             <fieldset class="form-group">
             <legend class="=border-bottom mb-4"></legend>
             <div class="form-group">
-                {{ form.title.label(class="form-control-label") }}
-                {{ form.title(class="form-control form-control-sm") }}
-            </div>
+                    {{ form.name.label(class="form-control-label") }}
+                    {{ form.name(class="form-control form-control-sm") }}
+                </div>
+                <div class="form-group">
+                    {{ form.price.label(class="form-control-label")}}
+                    {{ form.price(class="form-control form-control-sm")}}
+                </div>
+                <div class="form-group">
+                    {{ form.description.label(class="form-control-label")}}
+                    {{ form.description(class="form-control form-control-sm")}}
+                </div>
+                <div class="form-group">
+                    Choix du vendeur :
+                    <select class="form-control" id="vendor_id" name="vendor_id">
+                        {% for vendor in vendors %}
+                            {% if vendor.id == form.vendor.data %}
+                                <option value="{{ vendor.id }}" SELECTED>{{ vendor.name }}</option>
+                            {% else %}
+                                <option value="{{ vendor.id }}" >{{ vendor.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
             <div class="form-group">
-                <select class="form-control" name="customer_id" width="300px">
+                <select class="form-control" name="product_id" width="300px">
                     {% for customer in customers %}
                         {% if customer.id == form.customer_id.data %}
                         {{ customer.id }} {{form.customer_id.data}}
@@ -35,54 +55,7 @@
                     {% endfor %}
                 </select>
             </div>
-            <input type="hidden" name="order_dth" id="order_dth" value="{{form.order_dt.data}}"/>
-            <div class="form-group">
-                <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                    <input type="text" name="order_dt" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
-                    <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div data-toggle="fieldset" id="product-fieldset">
-                    <input type="hidden" name="row_nb" id="row_nb" value={{selected_products|length}} />
-                    <table width="50%">
-                        <tr>
-                            <td>
-                                <select class="form-control" id="product_id" name="product_id">
-                                {% for o in products %}
-                                    <option value="{{ o.id }}" SELECTED>{{ o.name }} - {{ o.price }} </option>
-                                {% endfor %}
-                                </select>
-                            </td>
-                            <td>
-                                <button type="button" id="more_fields" onclick="add_fields();" class="btn btn-primary" ><i class="fa fa-plus"></i></button>
-                                
-                            </td>
-                        </tr>
-                    </table>
-    
-                    <table id="tab_qn_ans" width="100%">
-                        <tr>
-                            <th width="20%">id</th>
-                            <th width="35%">nom</th>
-                            <th width="30%">quantité</th>
-                            <th width="30%">prix</th>
-                            <th width="10%"></th>
-                        </tr>
-                        {% for selected_product in selected_products %}
-                        <tr data-toggle="fieldset-entry" name="tr_{{loop.index-1}}">
-                            <td><input type="hidden" , name="products" value="{{selected_product.id}}"/>Ref-{{selected_product.id}}</td>
-                            <td>{{selected_product.name}} </td>
-                            <td> <b>x</b> <input type="number" style="width: 5em" name="quantities" value="{{order_product_selection[loop.index-1].quantity}}"/></td>
-                            <td> <input type="number" style="width: 5em" name="prices" value="{{order_product_selection[loop.index-1].price}}"/><b>€</b></td>
-                            <td><button type="button" id="product-{{loop.index-1}}-remove" onclick="remove_fields({{loop.index-1}});" class="btn btn-warning" ><i class="fa fa-minus"></i></button></td> 
-                        </tr>
-                        {% endfor%}                      
-                    </table>
-                </div>
-            </div>
+ 
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>
