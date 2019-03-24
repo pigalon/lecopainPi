@@ -8,49 +8,36 @@
             <fieldset class="form-group">
             <legend class="=border-bottom mb-4"></legend>
             <div class="form-group">
-                    {{ form.name.label(class="form-control-label") }}
-                    {{ form.name(class="form-control form-control-sm") }}
-                </div>
-                <div class="form-group">
-                    {{ form.price.label(class="form-control-label")}}
-                    {{ form.price(class="form-control form-control-sm")}}
-                </div>
-                <div class="form-group">
-                    {{ form.description.label(class="form-control-label")}}
-                    {{ form.description(class="form-control form-control-sm")}}
-                </div>
-                <div class="form-group">
-                    Choix du vendeur :
-                    <select class="form-control" id="vendor_id" name="vendor_id">
-                        {% for vendor in vendors %}
-                            {% if vendor.id == form.vendor.data %}
-                                <option value="{{ vendor.id }}" SELECTED>{{ vendor.name }}</option>
-                            {% else %}
-                                <option value="{{ vendor.id }}" >{{ vendor.name }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
+                {{ form.name.label(class="form-control-label") }}
+                {{ form.name(class="form-control form-control-sm") }}
+            </div>
             <div class="form-group">
-                <select class="form-control" name="product_id" width="300px">
-                    {% for customer in customers %}
-                        {% if customer.id == form.customer_id.data %}
-                        {{ customer.id }} {{form.customer_id.data}}
-                            <option value="{{ customer.id }}" SELECTED>{{ customer.firstname }} {{ customer.lastname }}</option>
+                {{ form.price.label(class="form-control-label")}}
+                {{ form.price(class="form-control form-control-sm")}}
+            </div>
+            <div class="form-group">
+                {{ form.description.label(class="form-control-label")}}
+                {{ form.description(class="form-control form-control-sm")}}
+            </div>
+            <div class="form-group">
+                Choix du vendeur :
+                <select class="form-control" id="vendor_id" name="vendor_id">
+                    {% for vendor in vendors %}
+                        {% if vendor.id == form.vendor_id.data %}
+                            <option value="{{ vendor.id }}" SELECTED>{{ vendor.name }}</option>
                         {% else %}
-                        {{ customer.id }} {{form.customer_id.data}}
-                            <option value="{{ customer.id }}"> {{ customer.firstname }} {{ customer.lastname }}</option>
+                            <option value="{{ vendor.id }}" >{{ vendor.name }}</option>
                         {% endif %}
                     {% endfor %}
                 </select>
             </div>
             <div class="form-group">
                 <select class="form-control" name="status" width="300px">
-                    {% for orderStatus in orderStatusList %}
-                        {% if(orderStatus == form.status.data) %}
-                            <option value="{{ orderStatus }}" SELECTED>{{ orderStatus }}</option>
+                    {% for productStatus in productStatusList %}
+                        {% if(productStatus == form.status.data) %}
+                            <option value="{{ productStatus }}" SELECTED>{{ productStatus }}</option>
                         {% else %}
-                            <option value="{{ orderStatus }}" >{{ orderStatus }}</option>
+                            <option value="{{ productStatus }}" >{{ productStatus }}</option>
                         {% endif %}    
                     {% endfor %}
                 </select>

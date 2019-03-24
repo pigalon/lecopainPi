@@ -31,4 +31,5 @@ class ProductForm(FlaskForm):
     price = DecimalField('Price')
     description = StringField('Description')
     vendor_id = IntegerField('Vendor Id:', validators=[DataRequired()])
+    status = StringField('Status')
     submit = SubmitField('Valider')

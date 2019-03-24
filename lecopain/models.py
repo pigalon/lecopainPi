@@ -28,11 +28,18 @@ class Product(db.Model):
     name = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(250))
     price = db.Column(db.Float)
+    status = db.Column(db.String(20))
     selections = db.relationship('Order', secondary = 'order_product', backref=db.backref('selected_products'))
     vendor_id = db.Column(db.Integer, db.ForeignKey('vendors.id'), nullable=False)
 
     def __repr__(self):
         return "Product('{self.name}',{self.price}, '{self.description}')"
+
+class ProductStatus(db.Model):
+    name = db.Column(db.String(50), primary_key=True)
+
+    def __repr__(self):
+        return "ProductStatus('{self.name}')"
 
 class Order_product(db.Model):
     __tablename__ = 'order_product'
@@ -50,7 +57,6 @@ class Order(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
     status = db.Column(db.String(20), nullable=False)
-    vendor_id = db.Column(db.Integer, db.ForeignKey('vendors.id'), nullable=False)
  
     def __repr__(self):
         return "Order('{self.title}', '{self.status}', {customer_id} '{self.order_dt}')"
@@ -60,7 +66,7 @@ class Vendor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(200), nullable=False)
-    orders = db.relationship('Order', backref='vendor', lazy=True)
+    products = db.relationship('Product', backref='vendor', lazy=True)
 
     def __repr__(self):
         return "Vendor('{self.name}')"

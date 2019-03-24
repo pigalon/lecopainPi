@@ -1,21 +1,28 @@
 {% extends "layout.html" %}
 {% block content %}
     {% for product in products %}
-    <div class="card" style="width: 18rem;">
+    <div class="card border-dark mb-3" style="width: 40rem;">
+        <div class="card-header">
+            <span style="font-size: 1,8em;">
+                    <i class="fas fa-shopping-basket "></i>
+            </span>
+            Référence : <span style="color:red">{{product.id}}</span>
+            <span style="float: right"><b>{{ product.name }}</b></span>
+        </div>        
         <div class="card-body">
-                
-                      
-            <h5 class="card-title">
-                    <span style="font-size: 2em;">
-                            <i class="fas fa-shopping-basket "></i>
-                    </span>
-                    {{product.name}}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Prix : {{product.price}} €</h6>
-            <p class="card-text">{{ product.desccription}}</p>
-            <a href="/products/{{product.id}}" class="card-link">Détails</a>
-            <a href="#" class="card-link">Another link</a>
+            <h5 class="card-title"></h5>
+            <h6 class="card-subtitle mb-2 text-muted">Prix : {{product.price }}€</h6>
+            <p class="card-text"> Vendeur : {{product.vendor.name}} </p>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">
+                <a href="/products/{{product.id}}" class="card-link">Détails</a>    
+                <a href="/products/update/{{product.id}}" class="card-link">Modifier</a>
+                <a href="/products/delete/{{product.id}}" class="card-link">Supprimer</a>
+            </small>
         </div>
     </div>
+    
     {% endfor %}
 {% endblock %}
 {% block right_menu %}
