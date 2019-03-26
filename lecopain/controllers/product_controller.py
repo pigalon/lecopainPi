@@ -1,7 +1,7 @@
 from lecopain.models import Product, Vendor, ProductStatus
 from lecopain import app, db
 from lecopain.form import ProductForm
-from flask import Blueprint, render_template, redirect, url_for, Flask
+from flask import Blueprint, render_template, redirect, url_for, Flask, jsonify
 
 app = Flask(__name__, instance_relative_config=True)
 
@@ -30,6 +30,7 @@ def products():
 @product_page.route("/products/new", methods=['GET', 'POST'])
 def product_create():
     form = ProductForm()
+    vendors = Vendor.query.all()
     print("product form : " + str(form.validate_on_submit()))
     if form.validate_on_submit():
         product = Product(name=form.name.data,  price=form.price.data, description=form.description.data)
@@ -38,7 +39,7 @@ def product_create():
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('index'))
     productStatusList = _get_product_status()
-    return render_template('/products/create_product.html', title='Product form', form=form, productStatusList=productStatusList)
+    return render_template('/products/create_product.html', title='Product form', form=form, productStatusList=productStatusList, vendors=vendors)
 
 #####################################################################
 #                                                                   #
@@ -66,7 +67,7 @@ def display_update_product(product_id):
 
        
         #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect(url_for('product_page.produts'))
+        return redirect(url_for('product_page.products'))
     else:
         form.vendor_id.data = product.vendor_id
         form.description.data = product.description
@@ -81,7 +82,25 @@ def display_update_product(product_id):
 #####################################################################
 #                                                                   #
 #####################################################################
-@app.route('/_get_product_status/')
+@product_page.route('/_get_product_status/')
 def _get_product_status():
     productsStatusList = [(row.name) for row in ProductStatus.query.all()]
     return productsStatusList
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@product_page.route("/products/delete/<int:product_id>")
+def display_delete_product(product_id):
+    product = Product.query.get_or_404(product_id)
+    return render_template('/products/delete_product.html', product=product, title='Suppression de produit')
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@product_page.route("/products/<int:product_id>", methods=['DELETE'])
+def delete_order(product_id):
+    product = Product.query.get_or_404(product_id)
+    db.session.delete(product)
+    db.session.commit()
+    return jsonify({})

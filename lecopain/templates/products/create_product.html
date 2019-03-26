@@ -19,13 +19,17 @@
                 {{ form.description(class="form-control form-control-sm")}}
             </div>
             <div class="form-group">
-                Choix du vendeur :
-                <select class="form-control" id="vendor_id" name="vendor_id">
-                    {% for vendor in vendors %}
-                        <option value="{{ vendor.id }}" >{{ vendor.name }}</option>  
-                    {% endfor %}
-                </select>
-            </div>
+                    Choix du vendeur :
+                    <select class="form-control" id="vendor_id" name="vendor_id">
+                        {% for vendor in vendors %}
+                            {% if vendor.id == form.vendor_id.data %}
+                                <option value="{{ vendor.id }}" SELECTED>{{ vendor.name }}</option>
+                            {% else %}
+                                <option value="{{ vendor.id }}" >{{ vendor.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
 
             <div class="form-group">
                     Choix de l'état du produit :
