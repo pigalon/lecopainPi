@@ -57,6 +57,7 @@ class Order(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
     status = db.Column(db.String(20), nullable=False)
+    vendor_id = db.Column(db.Integer)
  
     def __repr__(self):
         return "Order('{self.title}', '{self.status}', {customer_id} '{self.order_dt}')"
