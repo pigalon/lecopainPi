@@ -58,6 +58,8 @@ class Order(db.Model):
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
     status = db.Column(db.String(20), nullable=False)
     vendor_id = db.Column(db.Integer)
+    delivery_id = db.Column(db.Integer, db.ForeignKey('deliveries.id'))
+
  
     def __repr__(self):
         return "Order('{self.title}', '{self.status}', {customer_id} '{self.order_dt}')"
@@ -71,3 +73,24 @@ class Vendor(db.Model):
 
     def __repr__(self):
         return "Vendor('{self.name}')"
+
+class Delivery(db.Model):
+    __tablename__ = 'deliveries'
+    id = db.Column(db.Integer, primary_key=True)
+    reference = db.Column(db.String(50), nullable=False)
+    delivery_dt = db.Column(db.DateTime)
+    address = db.Column(db.String(200))
+    cp = db.Column(db.String(20))
+    city = db.Column(db.String(50))
+    status = db.Column(db.String(20), nullable=False)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
+    orders = db.relationship('Order', backref='delivery', lazy=True)
+
+    def __repr__(self):
+        return "Vendor('{self.name}')"
+
+class DeliveryStatus(db.Model):
+    name = db.Column(db.String(50), primary_key=True)
+
+    def __repr__(self):
+        return "DeliveryStatus('{self.name}')"

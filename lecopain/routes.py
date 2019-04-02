@@ -9,11 +9,15 @@ from lecopain.controllers.customer_controller import customer_page
 from lecopain.controllers.order_controller import order_page
 from lecopain.controllers.product_controller import product_page
 from lecopain.controllers.vendor_controller import vendor_page
+from lecopain.controllers.delivery_controller import delivery_page
+
 
 app.register_blueprint(customer_page)
 app.register_blueprint(order_page)
 app.register_blueprint(product_page)
 app.register_blueprint(vendor_page)
+app.register_blueprint(delivery_page)
+
 
 
 customer_page = Blueprint('customer_page',  __name__,
@@ -23,6 +27,8 @@ order_page = Blueprint('order_page',  __name__,
 product_page = Blueprint('product_page',  __name__,
                         template_folder='./templates')
 vendor_page = Blueprint('vendor_page',  __name__,
+                        template_folder='./templates')
+delivery_page = Blueprint('delivery_page',  __name__,
                         template_folder='./templates')
 
 
