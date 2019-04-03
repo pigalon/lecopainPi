@@ -35,7 +35,7 @@ class ProductForm(FlaskForm):
     submit = SubmitField('Valider')
 
 class DeliveryForm(FlaskForm):
-    reference = StringField('Name', validators=[DataRequired()])
+    reference = StringField('Reference', validators=[DataRequired()])
     delivery_dt = DateTimeField('Order Date')
     customer_id = IntegerField('Customer Id:', validators=[DataRequired()])
     status = StringField('Status')

@@ -145,7 +145,7 @@ def display_update_delivery(delivery_id):
         form.customer_id.data = delivery.customer_id
         form.order_dt.data = delivery.delivery_dt
         form.status.data = delivery.status
-        form.title.data = delivery.title
+        form.reference.data = delivery.reference
         
 
     orderStatusList = _get_delivery_status()

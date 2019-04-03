@@ -1,37 +1,37 @@
 {% extends "layout.html" %}
 {% block content %}
-    {% for order in orders %}
+    {% for delivery in deliveries %}
     <div class="card border-dark mb-3" style="width: 40rem;">
         <div class="card-header">
-            {% if order.status == 'ANNULEE' %}
+            {% if delivery.status == 'ANNULEE' %}
                 <span class="btn btn-secondary" style="font-size: 1,8em;">             
             {% endif %}
-            {% if order.status == 'EN COURS' %}
+            {% if delivery.status == 'NON LIVREE' %}
             <span class="btn btn-warning" style="font-size: 1,8em;">
             {% endif %}
-            {% if order.status == 'PAYEE' %}
+            {% if delivery.status == 'LIVREE' %}
             <span class="btn btn-success" style="font-size: 1,8em;">
             {% endif %}
-            {% if order.status == 'EN DEFAULT' %}
+            {% if delivery.status == 'EN DEFAULT' %}
             <span class="btn btn-danger" style="font-size: 1,8em;">
             {% endif %}
                 <i class="fas fa-cart-arrow-down "></i>
             </span>
-            Référence : <span style="color:red">{{order.id}}</span>
-            <span style="float: right"><b>{{ order.order_dt.strftime('%A %d %B %Y') }}</b></span>
+            Référence : <span style="color:red">{{delivery.id}}</span>
+            <span style="float: right"><b>{{ delivery.delivery_dt.strftime('%A %d %B %Y') }}</b></span>
         </div>        
         <div class="card-body">
             <h5 class="card-title"></h5>
-            <h6 class="card-subtitle mb-2 text-muted">Client : n° {{ order.customer_id }} - {{map['CUSTOMER'][order.customer_id]}}</h6>
-            <p class="card-text"> {{ map['ADDRESS'][order.customer_id] }} </p>
+            <h6 class="card-subtitle mb-2 text-muted">Client : n° {{ delivery.customer_id }} - {{map['CUSTOMER'][delivery.customer_id]}}</h6>
+            <p class="card-text"> {{ map['ADDRESS'][delivery.customer_id] }} </p>
         </div>
         <div class="card-footer">
             <small class="text-muted">
-                <a href="/orders/{{order.id}}" class="card-link">Détails</a>    
-                <a href="/orders/update/{{order.id}}" class="card-link">Modifier</a>
-                <a href="/orders/delete/{{order.id}}" class="card-link">Supprimer</a>
+                <a href="/deliveries/{{delivery.id}}" class="card-link">Détails</a>    
+                <a href="/deliveries/update/{{delivery.id}}" class="card-link">Modifier</a>
+                <a href="/deliveries/delete/{{delivery.id}}" class="card-link">Supprimer</a>
             </small>
-            <span style="float: right">Nb d'articles : <b>{{ map['NB_PRODUCTS'][order.customer_id] }}</b> - Prix Total : <b>{{ map['TOTAL'][order.customer_id] }} €</b></span>
+            <span style="float: right">Nb de commandes : <b>{{ map['NB_ORDERS'][delivery.customer_id] }}</b> </span>
         </div>
     </div>
     {% endfor %}
@@ -42,11 +42,11 @@
     <p class='text-muted'>
         <ul class="list-group">
         <li class="list-group-item list-group-item-light">
-            <a class="nav-link" href="/orders/new">Création de commande</a></li>
+            <a class="nav-link" href="/deliveries/new">Création de livraison</a></li>
         <li class="list-group-item list-group-item-light">
-            <a class="nav-link" href="/orders/year/0/month/0">Commandes du mois</a></li>
+            <a class="nav-link" href="/deliveries/year/0/month/0">Livraisons du mois</a></li>
         <li class="list-group-item list-group-item-light">
-            <a class="nav-link" href="/orders/year/0/month/0/day/0">Commandes du jour</a></li>
+            <a class="nav-link" href="/deliveries/year/0/month/0/day/0">Livraisons du jour</a></li>
         </ul>
     </p>
 </div>
