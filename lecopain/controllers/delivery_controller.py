@@ -1,6 +1,7 @@
 from lecopain.models import Order, Product, Customer, DeliveryStatus, Delivery
 from lecopain import app, db
 from lecopain.form import DeliveryForm
+from lecopain.services.delivery_manager import DeliveryManager
 
 from sqlalchemy import extract
 from datetime import datetime
@@ -12,17 +13,19 @@ app = Flask(__name__, instance_relative_config=True)
 delivery_page = Blueprint('delivery_page', __name__,
                         template_folder='../templates')
 
+delivery_services = DeliveryManager()
+
 
 #####################################################################
 #                                                                   #
 #####################################################################
 @delivery_page.route("/deliveries", methods=['GET', 'POST'])
-def orders():
+def deliveries():
     
     deliveries = Delivery.query.order_by(Delivery.delivery_dt.desc()).all()
-    #map = delivery_services.get_maps_from_deliveries(deliveries)
+    map = delivery_services.get_maps_from_deliveries(deliveries)
 
-    return render_template('/deliveries/deliveries.html', deliveries=deliveries, title="Toutes les livraisons")
+    return render_template('/deliveries/deliveries.html', deliveries=deliveries, title="Toutes les livraisons", map=map)
 
 #####################################################################
 #                                                                   #
@@ -40,13 +43,13 @@ def deliveries_of_month(year_number, month_number):
     deliveries = Delivery.query.filter(extract('year', Delivery.delivery_dt) == year_number).filter(extract('month', Delivery.delivery_dt) == month_number).all()
     #map = order_services.get_maps_from_orders(orders)
    
-    return render_template('/deliveries/orders.html', deliveries=deliveries, title="Commandes du mois")
+    return render_template('/deliveries/deliveries.html', deliveries=deliveries, title="livraisons du mois")
 
 #####################################################################
 #                                                                   #
 #####################################################################
 @delivery_page.route("/deliveries/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
-def orders_of_day(year_number, month_number, day_number):
+def deliveries_of_day(year_number, month_number, day_number):
     print(str(datetime.today().month) + " - " + str(datetime.today().day))
     if(year_number == 0) :
         year_number = datetime.now().year
@@ -59,7 +62,7 @@ def orders_of_day(year_number, month_number, day_number):
 
     deliveries = Delivery.query.filter(extract('year', Delivery.delivery_dt) == year_number).filter(extract('month', Delivery.delivery_dt) == month_number).filter(extract('day', Delivery.delivery_dt) == day_number).all()
     
-    #map = order_services.get_maps_from_orders(orders)
+    map = delivery_services.get_maps_from_orders(deliveries)
 
     return render_template('/deliveries/deliveries.html', deliveries=deliveries, title="Livraisons du jour")
 
@@ -91,7 +94,7 @@ def delivery_create():
     #    flash(f'Failed!', 'danger')
     deliveryStatusList = _get_delivery_status()
 
-    return render_template('/deliveries/create_delivery.html', title='Creation de livraison', form=form, customers=customers, orders=orders, deliveryStatusList=deliveryStatusList)
+    return render_template('/deliveries/create_delivery.html', title='Creation de livraison', form=form, customers=customers, deliveryStatusList=deliveryStatusList)
 
 #####################################################################
 #                                                                   #
@@ -99,7 +102,7 @@ def delivery_create():
 @delivery_page.route("/deliveries/<int:delivery_id>", methods=['GET', 'POST'])
 def delivery(delivery_id):
     delivery = Delivery.query.get_or_404(delivery_id)
-    return render_template('/deliveries/order.html', delivery=delivery)
+    return render_template('/deliveries/delivery.html', delivery=delivery)
 
 #####################################################################
 #                                                                   #
@@ -140,7 +143,7 @@ def display_update_delivery(delivery_id):
     
         
         #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect(url_for('order_page.orders'))
+        return redirect(url_for('delivery_page.deliveries'))
     else:
         form.customer_id.data = delivery.customer_id
         form.order_dt.data = delivery.delivery_dt
@@ -149,7 +152,7 @@ def display_update_delivery(delivery_id):
         
 
     orderStatusList = _get_delivery_status()
-    return render_template('/deliveries/update_order.html', delivery=delivery, title='Mise a jour de livraison', form=form, customers=customers, products=products, selected_products=delivery.selected_products,  deliveryStatusList=orderStatusList, order_product_selection=order_product_selection)
+    return render_template('/deliveries/update_delivery.html', delivery=delivery, title='Mise a jour de livraison', form=form, customers=customers, products=products, selected_products=delivery.selected_products,  deliveryStatusList=orderStatusList, order_product_selection=order_product_selection)
 
 #####################################################################
 #                                                                   #

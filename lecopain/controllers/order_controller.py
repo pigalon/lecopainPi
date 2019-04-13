@@ -1,7 +1,7 @@
 from lecopain.models import Order, Product, Customer, OrderStatus, Order_product
 from lecopain import app, db
 from lecopain.form import OrderForm
-from lecopain.services.order_manager import OrderManager 
+from lecopain.services.order_manager import OrderManager
 
 from sqlalchemy import extract
 from datetime import datetime
