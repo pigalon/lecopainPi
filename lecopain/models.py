@@ -34,6 +34,16 @@ class Product(db.Model):
 
     def __repr__(self):
         return "Product('{self.name}',{self.price}, '{self.description}')"
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'price': self.price,
+            'status': self.status,
+            'vendor_id':self.vendor_id
+        }
 
 class ProductStatus(db.Model):
     name = db.Column(db.String(50), primary_key=True)

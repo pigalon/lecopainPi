@@ -5,3 +5,11 @@ Flask-bootstrap
 Flask-Nav
 Flask-script
 Flask-sqlalchemy
+
+Jinja2
+MarkupSafe
+Werkzeug
+docopt
+itsdangerous
+records
+tablib

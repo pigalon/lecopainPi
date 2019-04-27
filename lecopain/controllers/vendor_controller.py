@@ -3,6 +3,7 @@ from lecopain.services.vendor_manager import VendorManager
 from lecopain import app, db
 from lecopain.form import VendorForm
 from flask import Blueprint, render_template, redirect, url_for, Flask, jsonify
+from sqlalchemy.orm import load_only
 
 
 app = Flask(__name__, instance_relative_config=True)
@@ -83,3 +84,25 @@ def delete_vendor(vendor_id):
     db.session.delete(vendor)
     db.session.commit()
     return jsonify({})
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@vendor_page.route("/_getjs_vendors/")
+def getjs_vendors():
+    vendors = Vendor.query.options(load_only("name")).all()
+    js_vendors = []
+    data = {}
+    data['id'] = " "
+    data['name'] = " "
+    js_vendors.append(data)
+
+    for vendor in vendors :
+
+        data = {}
+        data['id'] = str(vendor.id)
+        data['name'] = vendor.name
+        print('vendor.name : ' + vendor.name)
+        js_vendors.append(data)
+
+    return jsonify({'vendors': js_vendors})

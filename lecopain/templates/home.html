@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Flask Riot.js Starter App</title>
+    <script src="{{ url_for('static', filename='js/reqwest.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/riot+compiler.js') }}"></script>
+
+    <!--<script src="../static/reqwest.js" charset="utf-8"></script>
+    <script src="../static/riot+compiler.js" charset="utf-8"></script>-->
+  </head>
+  <body>
+    <app></app>
+
+    <script type="riot/tag">
+      <app>
+        <h1>Flask Riot.js Starter</h1>
+        <div each={item in items}>
+          {item.body}
+          <a href="#" onclick={deleteItem}>X</a>
+        </div>
+        <input type="text" name="body"/><button onclick={addItem}>+</button>
+        <h4>Documentation</h4>
+        <a href="http://riotjs.com" target="_blank">Riot.js</a>
+        <a href="http://flask.pocoo.org/" target="_blank">Flask</a>
+        addItem(e){
+          body = this.body.value
+          reqwest({
+            method: 'POST',
+            url: '/items.json',
+            data: {body: body}
+          }, function(resp){
+            window.items.push(resp.item)
+            riot.update()
+          })
+        }
+        deleteItem(e){
+          body = e.item.item.body
+          reqwest({
+            method:'DELETE',
+            url: '/items.json',
+            data: {body: body}
+          }, function(resp){
+            window.items.splice(window.items.indexOf(e.item.item), 1)
+            riot.update()
+          })
+        }
+        reqwest('/items.json', function(resp){
+          window.items = resp.items
+          riot.update()
+        })
+      </app>
+    </script>
+
+    <script>riot.mount('*')</script>
+  </body>
+</html>

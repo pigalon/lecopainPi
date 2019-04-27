@@ -1,7 +1,8 @@
 from lecopain.models import Product, Vendor, ProductStatus
 from lecopain import app, db
 from lecopain.form import ProductForm
-from flask import Blueprint, render_template, redirect, url_for, Flask, jsonify
+from flask import session, Blueprint, render_template, redirect, url_for, Flask, jsonify
+from sqlalchemy.orm import load_only
 
 app = Flask(__name__, instance_relative_config=True)
 
@@ -104,3 +105,26 @@ def delete_order(product_id):
     db.session.delete(product)
     db.session.commit()
     return jsonify({})
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@product_page.route("/_getjs_products/<int:vendor_id>")
+def getjs_products(vendor_id):
+    products = Product.query.filter(Product.vendor_id == vendor_id).options(load_only("name")).all()
+    js_products = []
+    data = {}
+    data['id'] = " "
+    data['name'] = " "
+    js_products.append(data)
+
+
+    for product in products :
+
+        data = {}
+        data['id'] = str(product.id)
+        data['name'] = product.name
+
+        js_products.append(data)
+
+    return jsonify({'products': js_products})

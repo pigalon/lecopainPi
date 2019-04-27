@@ -64,6 +64,10 @@ def index():
     customers = Customer.query.all()
     return render_template('index.html', customers=customers)
 
+@app.route("/home2")
+def home():
+    return render_template('home.html')
+
 @app.route('/_get_customers/')
 def _get_customers():
     customers = [(row.id, row.firstname) for row in Customer.query.all()]

@@ -17,68 +17,73 @@
     </head>
     <body>
        
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                <a class="navbar-brand" href="#">L'éco pain</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                  <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarText">
-                  <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                      <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="/customers">Clients</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="/orders">Commandes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/products">Produits</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/vendors">Vendeurs</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="/deliveries">Livraisons</a>
-                  </li>
-                  </ul>
-                  <span class="navbar-text">
-                    Navbar text with an inline element
-                  </span>
-                </div>
-              </nav>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">L'éco pain</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/customers">Clients</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/orders">Commandes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/products">Produits</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/vendors">Vendeurs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/deliveries">Livraisons</a>
+          </li>
+          </ul>
+          <span class="navbar-text">
+            Navbar text with an inline element
+          </span>
+        </div>
+      </nav>
 
-        <div class="container">
-                <div class="row">
-                  <div class="col-md-8">
-                    {% with messages = get_flashed_messages(with_categories=true) %}
-                        {% if messages %}
-                            {% for category, message in messages %}
-                                <div class="alert alert-{{ category }}">
-                                    {{ message }}
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-                    {% endwith %}
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
 
-                    {% if title %}
-                      <h1>{{ title }}</h1>
-                    {% endif %}
+            {% if title %}
+              <h1>{{ title }}</h1>
+            {% endif %}
 
-                    {% block content %}  {% endblock %}
-                  </div>
-                  <div class="col-md-4">
-                      {% block right_menu %} {% endblock %}
-                  </div>
-                </div>
-            </div>
+            {% block content %}  {% endblock %}
+          </div>
+          <div class="col-md-4">
+              {% block right_menu %} {% endblock %}
+          </div>
+        </div>
+      </div>
+
+      <app></app>
             
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+        <script src="{{ url_for('static', filename='js/reqwest.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/riot+compiler.js') }}"></script>
+
         {% block scripts %}{% endblock %}
 
     </body>

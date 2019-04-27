@@ -196,7 +196,15 @@ def delete_order(order_id):
 #####################################################################
 #                                                                   #
 #####################################################################
-@app.route('/_get_order_status/')
+@order_page.route('/_get_order_status/')
 def _get_order_status():
     ordersStatusList = [(row.name) for row in OrderStatus.query.all()]
     return ordersStatusList
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@order_page.route('/_getjs_order_status/')
+def _getjs_order_status():
+    ordersStatusList = [(row.name) for row in OrderStatus.query.all()]
+    return jsonify({'orders_status': ordersStatusList})

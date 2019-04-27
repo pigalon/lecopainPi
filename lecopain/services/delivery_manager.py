@@ -15,7 +15,7 @@ class DeliveryManager():
         for delivery in deliveries :
             customer = Customer.query.get_or_404(delivery.customer_id)
             customerMap[customer.id] = str(customer.firstname + " " + customer.lastname)
-            addressMap[customer.id] = customer.address + str( " " + customer.cp + " " + customer.city.encode("iso-8859-1" ) )
+            addressMap[customer.id] = customer.address #+ str( " " + customer.cp + " " + customer.city.encode("iso-8859-1" ) )
 
 
         for item in customerMap.items() :
