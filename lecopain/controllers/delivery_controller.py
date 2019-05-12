@@ -22,10 +22,14 @@ delivery_services = DeliveryManager()
 #####################################################################
 @delivery_page.route("/deliveries", methods=['GET', 'POST'])
 def deliveries():
+    print(" deliveries ")
     
     deliveries = Delivery.query.order_by(Delivery.delivery_dt.desc()).all()
+    print(" deliveries 2 - size : " + str(len(deliveries)))
+    
     map = delivery_services.get_maps_from_deliveries(deliveries)
-
+    print(" deliveries fin")
+    
     return render_template('/deliveries/deliveries.html', deliveries=deliveries, title="Toutes les livraisons", map=map)
 
 #####################################################################
@@ -148,14 +152,14 @@ def display_update_delivery(delivery_id):
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('delivery_page.deliveries'))
     else:
-        form.customer_id.data = delivery.customer_id
+        form.customer_order_id.data = delivery.customer_order_id
         form.delivery_dt.data = delivery.delivery_dt
         form.status.data = delivery.status
         form.reference.data = delivery.reference
         
 
     orderStatusList = _get_delivery_status()
-    return render_template('/deliveries/update_delivery.html', delivery=delivery, title='Mise a jour de livraison', form=form, customers=customers, products=products, selected_products=delivery.selected_products,  deliveryStatusList=orderStatusList, order_product_selection=order_product_selection)
+    return render_template('/deliveries/update_delivery.html', delivery=delivery, title='Mise a jour de livraison', form=form, customers=customers, products=products,  deliveryStatusList=orderStatusList)
 
 #####################################################################
 #                                                                   #

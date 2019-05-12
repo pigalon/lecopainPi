@@ -43,14 +43,14 @@ class OrderManager()                       :
 
         order = self.create_order_with_his_products(order=order, tmp_products=tmp_products)
         db.session.add(order)
-        #db.session.commit()           
+        db.session.commit()           
         self.create_corresponding_purchases(order=order, tmp_products=tmp_products, tmp_quantities=tmp_quantities, tmp_prices=tmp_prices)
         #db.session.commit()
         
         vendorOrders = self.generate_vendor_orders(order=order)
         for vendorOrder in vendorOrders :
            db.session.add(vendorOrder)
-        delivery = Delivery(reference=order.title ,delivery_dt=order.delivery_dt, status='NON_LIVREE', customer_order_id=order.customer_id)     
+        delivery = Delivery(reference=order.title ,delivery_dt=order.delivery_dt, status='NON_LIVREE', customer_order_id=order.id)     
         db.session.add(delivery)
         db.session.commit()
         
