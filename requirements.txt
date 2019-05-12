@@ -6,6 +6,7 @@ Flask-Nav
 Flask-script
 Flask-sqlalchemy
 
+Requests
 Jinja2
 MarkupSafe
 Werkzeug

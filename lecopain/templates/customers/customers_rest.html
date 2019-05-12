@@ -29,9 +29,6 @@
                 <a href="/customers/delete/{{customer.id}}" class="card-link">Supprimer</a>
                 <span style="float: right">
                         <b> Dernière commande : </b>
-                        {% if new_orders[loop.index-1] is not none %}  
-                            {{ new_orders[loop.index-1].delivery_dt.strftime('%A %d %B %Y') }}
-                        {% endif%}
                 </span>
             </small>
         </div>

@@ -20,9 +20,9 @@ class VendorForm(FlaskForm):
 class OrderForm(FlaskForm):
     title = StringField('Title')
     customer_id = IntegerField('Customer Id:', validators=[DataRequired()])
-    product_id = IntegerField('Product Id:', validators=[DataRequired()])
-    vendor_id = IntegerField('Product Id:', validators=[DataRequired()])
-    order_dt = DateTimeField('Order Date')
+    #product_id = IntegerField('Product Id:', validators=[DataRequired()])
+    #vendor_id = IntegerField('Product Id:', validators=[DataRequired()])
+    delivery_dt = DateTimeField('Delivery Date')
     status = StringField('Status')
     submit = SubmitField('Valider')
 

@@ -56,7 +56,7 @@ def display_update_product(product_id):
     if form.validate_on_submit():
         print('update form validate : ' + str(product.id))
 
-        #order_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.order_dt.data)
+        #delivery_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.delivery_dt.data)
         productForm = Product(name=form.name.data, price=form.price.data, status=form.status.data, vendor_id=int(form.vendor_id.data), description=form.description.data)
         product.name = productForm.name
         product.status = productForm.status

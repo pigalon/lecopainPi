@@ -1,5 +1,5 @@
 from lecopain import app, db
-from lecopain.models import Customer, Order
+from lecopain.dao.customer import Customer, CustomerOrder
 
 class CustomerManager():
 
@@ -9,7 +9,7 @@ class CustomerManager():
             if(newer_order == None) :
                 print("newer from null")
                 newer_order = order
-            elif (order.order_dt > newer_order.order_dt) :
+            elif (order.delivery_dt > newer_order.delivery_dt) :
                 newer_order = order
                 print("newer from other")
         return newer_order

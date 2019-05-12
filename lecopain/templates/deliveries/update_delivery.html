@@ -35,10 +35,10 @@
                     {% endfor %}
                 </select>
             </div>
-            <input type="hidden" name="order_dth" id="order_dth" value="{{form.order_dt.data}}"/>
+            <input type="hidden" name="delivery_dth" id="delivery_dth" value="{{form.delivery_dt.data}}"/>
             <div class="form-group">
                 <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                    <input type="text" name="order_dt" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
+                    <input type="text" name="delivery_dt" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
                     <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
@@ -104,7 +104,7 @@
         $('#datetimepicker1').datetimepicker(
             
             {format : 'YYYY-MM-DD HH:mm:ss',
-        defaultDate : document.getElementById("order_dth").value}
+        defaultDate : document.getElementById("delivery_dth").value}
         );
     });
 </script>

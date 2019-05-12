@@ -3,7 +3,7 @@
 
   <h3>{ opts.title }</h3>
 
-  <ul>
+  <!--<ul>
     <li each={ items.filter(whatShow) }>
       <label class={ completed: done }>
         <input type="checkbox" checked={ done } onclick={ parent.toggle }> { name }
@@ -18,7 +18,7 @@
 
     <button type="button" disabled={ items.filter(onlyDone).length == 0 } onclick={ removeAllDone }>
     X{ items.filter(onlyDone).length } </button>
-  </form>
+  </form>-->
 
 
   <table>
@@ -39,17 +39,19 @@
   </tr>
   </table>
 
+   <form onsubmit={ products }>
+    <button type="button" disabled={ products.filter(onlyDone).length == 0 } onclick={ removeAllDone }>
+    X{ items.filter(onlyDone).length } </button>
+  </form>
+
   <ul>
     <li each={ selected_products.filter(whatShow) }>
       <label class={ completed: done }>
-        <input type="checkbox" checked={ done } onclick={ parent.toggle }> { id } - { name }
+        <input type="hidden" name="products" value="{id}"/> 
+        <input type="checkbox" checked={ done } onclick={ parent.toggle }> { id } - { name }</input>
       </label>
     </li>
   </ul>
-
-
-
-
 
 
   <!-- this script tag is optional -->
@@ -63,13 +65,19 @@
     this.vendors = []
     this.products = []
 
+    /******************************************
+     at page init : 
+       mount riotjs module
+       load vendors list
+    *******************************************/
+    
     this.on('mount', function(){
-
       self.load_vendors()
-  
     })
 
-
+    /******************************************
+       load vendors list
+    *******************************************/
 
     load_vendors(){
       var url = 'http://localhost:5000/_getjs_vendors/'; //random adress
@@ -84,7 +92,10 @@
             }
         });
     }
-    
+
+    /******************************************
+       load products list
+    *******************************************/
     load_products(){
         vendor_id = this.refs.vendor.value
         var url = 'http://localhost:5000/_getjs_products/'+vendor_id;
@@ -99,6 +110,10 @@
             }
         });
     }
+
+    /******************************************
+       add product to the list (baket)
+    *******************************************/
     addProduct(e){
       
       product_id = this.refs.product.value
@@ -109,10 +124,9 @@
 
       if (product_name) {
         this.selected_products.push({ id : product_id, name: product_name })
-        this.text = this.refs.input.value = ''
+        //this.text = this.refs.input.value = ''
       }
       e.preventDefault()
-
 
     }
 
@@ -139,23 +153,23 @@
     }
 
     removeAllDone(e) {
-      this.items = this.items.filter(function(item) {
-        return !item.done
+      this.products = this.products.filter(function(product) {
+        return !product.done
       })
     }
 
     // an two example how to filter items on the list
-    whatShow(item) {
-      return !item.hidden
+    whatShow(product) {
+      return !product.hidden
     }
 
-    onlyDone(item) {
-      return item.done
+    onlyDone(product) {
+      return product.done
     }
 
     toggle(e) {
-      var item = e.item
-      item.done = !item.done
+      var product = e.product
+      product.done = !product.done
       return true
     }
 

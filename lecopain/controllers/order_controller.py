@@ -1,4 +1,5 @@
-from lecopain.models import Order, Product, Customer, OrderStatus, Order_product
+from lecopain.models import Product, OrderStatus, Order_product
+from lecopain.dao.customer import Customer, CustomerOrder
 from lecopain import app, db
 from lecopain.form import OrderForm
 from lecopain.services.order_manager import OrderManager
@@ -13,7 +14,7 @@ app = Flask(__name__, instance_relative_config=True)
 order_page = Blueprint('order_page', __name__,
                         template_folder='../templates')
 
-order_services = OrderManager()
+orderServices = OrderManager()
 
 #####################################################################
 #                                                                   #
@@ -21,8 +22,8 @@ order_services = OrderManager()
 @order_page.route("/orders", methods=['GET', 'POST'])
 def orders():
     
-    orders = Order.query.order_by(Order.order_dt.desc()).all()
-    map = order_services.get_maps_from_orders(orders)
+    orders = CustomerOrder.query.order_by(CustomerOrder.delivery_dt.desc()).all()
+    map = orderServices.get_maps_from_orders(orders)
 
     return render_template('/orders/orders.html', orders=orders, title="Toutes les commandes", map=map)
 
@@ -39,8 +40,8 @@ def orders_of_month(year_number, month_number):
     if(month_number == 0) :
         month_number = datetime.now().month
 
-    orders = Order.query.filter(extract('year', Order.order_dt) == year_number).filter(extract('month', Order.order_dt) == month_number).all()
-    map = order_services.get_maps_from_orders(orders)
+    orders = CustomerOrder.query.filter(extract('year', CustomerOrder.delivery_dt) == year_number).filter(extract('month', CustomerOrder.delivery_dt) == month_number).all()
+    map = orderServices.get_maps_from_orders(orders)
    
     return render_template('/orders/orders.html', orders=orders, map=map, title="Commandes du mois")
 
@@ -59,9 +60,9 @@ def orders_of_day(year_number, month_number, day_number):
     if(day_number == 0) :
         day_number = datetime.now().month
 
-    orders = Order.query.filter(extract('year', Order.order_dt) == year_number).filter(extract('month', Order.order_dt) == month_number).filter(extract('day', Order.order_dt) == day_number).all()
+    orders = CustomerOrder.query.filter(extract('year', CustomerOrder.delivery_dt) == year_number).filter(extract('month', CustomerOrder.delivery_dt) == month_number).filter(extract('day', CustomerOrder.delivery_dt) == day_number).all()
     
-    map = order_services.get_maps_from_orders(orders)
+    map = orderServices.get_maps_from_orders(orders)
 
     return render_template('/orders/orders.html', orders=orders, map=map, title="Commandes du jour")
 
@@ -71,39 +72,20 @@ def orders_of_day(year_number, month_number, day_number):
 #####################################################################
 @order_page.route("/orders/new", methods=['GET', 'POST'])
 def order_create():
-    form = OrderForm()
-    tmp_products = request.form.getlist('products')
+    form           = OrderForm()
+    tmp_products   = request.form.getlist('products')
     tmp_quantities = request.form.getlist('quantities')
-    tmp_prices = request.form.getlist('prices')
-
-    for i in range(0,len(tmp_products)):
-            product = Product.query.get(tmp_products[i])
+    tmp_prices     = request.form.getlist('prices')
 
     if form.validate_on_submit():
-
-        #order_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.order_dt.data)
-        order = Order(title=form.title.data, status=form.status.data, customer_id=int(form.customer_id.data), order_dt=form.order_dt.data)
-        products = {}
-
-        for i in range(0,len(tmp_products)): 
-            product = Product.query.get(tmp_products[i])
-            order.selected_products.append(product)
-
-        db.session.add(order)
-        db.session.commit()
-
-        for i in range(0,len(tmp_products)):
-            bought_item = Order_product.query.filter(Order_product.order_id == order.id).filter(Order_product.product_id == tmp_products[i]).first()
-            bought_item.quantity = tmp_quantities[i]
-            bought_item.price = tmp_prices[i]
- 
-        db.session.commit()
-
+        #delivery_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.delivery_dt.data)
+        order = CustomerOrder(title=form.title.data, status=form.status.data, customer_id=int(form.customer_id.data), delivery_dt=form.delivery_dt.data)
+        orderServices.create_customer_order(order=order, tmp_products=tmp_products, tmp_quantities=tmp_quantities, tmp_prices=tmp_prices)
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('order_page.orders'))
     else:
         customers = Customer.query.all()
-        products = Product.query.all()
+        products  = Product.query.all()
     #else:
     #    flash(f'Failed!', 'danger')
     orderStatusList = _get_order_status()
@@ -115,7 +97,7 @@ def order_create():
 #####################################################################
 @order_page.route("/orders/<int:order_id>", methods=['GET', 'POST'])
 def order(order_id):
-    order = Order.query.get_or_404(order_id)
+    order = CustomerOrder.query.get_or_404(order_id)
     return render_template('/orders/order.html', order=order)
 
 #####################################################################
@@ -123,7 +105,7 @@ def order(order_id):
 #####################################################################
 @order_page.route("/orders/update/<int:order_id>", methods=['GET', 'POST'])
 def display_update_order(order_id):
-    order = Order.query.get_or_404(order_id)
+    order = CustomerOrder.query.get_or_404(order_id)
     form = OrderForm()
 
     customers = Customer.query.all()
@@ -134,12 +116,12 @@ def display_update_order(order_id):
     if form.validate_on_submit():
         print('update form validate : ' + str(order.id))
 
-        #order_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.order_dt.data)
-        orderForm = Order(title=form.title.data, status=form.status.data, customer_id=int(form.customer_id.data), order_dt=form.order_dt.data)
+        #delivery_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.delivery_dt.data)
+        orderForm = CustomerOrder(title=form.title.data, status=form.status.data, customer_id=int(form.customer_id.data), delivery_dt=form.delivery_dt.data)
         order.title = orderForm.title
         order.status = orderForm.status
         order.customer_id = orderForm.customer_id
-        order.order_dt = orderForm.order_dt
+        order.delivery_dt = orderForm.delivery_dt
         products = {}
 
         Order_product.query.filter(Order_product.order_id == order.id).delete()
@@ -167,7 +149,7 @@ def display_update_order(order_id):
         return redirect(url_for('order_page.orders'))
     else:
         form.customer_id.data = order.customer_id
-        form.order_dt.data = order.order_dt
+        form.delivery_dt.data = order.delivery_dt
         form.status.data = order.status
         form.title.data = order.title
         
@@ -180,7 +162,7 @@ def display_update_order(order_id):
 #####################################################################
 @order_page.route("/orders/delete/<int:order_id>")
 def display_delete_order(order_id):
-    order = Order.query.get_or_404(order_id)
+    order = CustomerOrder.query.get_or_404(order_id)
     return render_template('/orders/delete_order.html', order=order, title='Suppression de commande')
 
 #####################################################################
@@ -188,7 +170,7 @@ def display_delete_order(order_id):
 #####################################################################
 @order_page.route("/orders/<int:order_id>", methods=['DELETE'])
 def delete_order(order_id):
-    order = Order.query.get_or_404(order_id)
+    order = CustomerOrder.query.get_or_404(order_id)
     db.session.delete(order)
     db.session.commit()
     return jsonify({})

@@ -21,7 +21,7 @@ def vendors():
         new_orders.append(vendorManager.get_last_order(vendor))
     for order in new_orders :
         if order != None :
-            print(str(order.order_dt))
+            print(str(order.delivery_dt))
     return render_template('/vendors/vendors.html', vendors=vendors, new_orders= new_orders, cpt=0)
 
 @vendor_page.route("/vendors/new", methods=['GET', 'POST'])
@@ -51,7 +51,7 @@ def display_update_order(vendor_id):
     if form.validate_on_submit():
         print('update form validate : ' + str(vendor.id))
 
-        #order_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.order_dt.data)
+        #delivery_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.delivery_dt.data)
         vendor.name = form.name.data
         vendor.email=form.email.data
 

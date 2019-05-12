@@ -1,7 +1,8 @@
-from lecopain.models import Order, Product, Customer, DeliveryStatus, Delivery, Vendor
+from lecopain.models import Product, DeliveryStatus, Delivery, Vendor
 from lecopain import app, db
 from lecopain.form import DeliveryForm
 from lecopain.services.delivery_manager import DeliveryManager
+from lecopain.dao.customer import Customer, CustomerOrder
 
 from sqlalchemy import extract
 from datetime import datetime
@@ -81,7 +82,7 @@ def delivery_create():
 
     if form.validate_on_submit():
 
-        #order_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.order_dt.data)
+        #delivery_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.delivery_dt.data)
         delivery = Delivery(reference=form.reference.data, status=form.status.data, customer_id=int(form.customer_id.data), delivery_dt=form.delivery_dt.data)
 
         db.session.add(delivery)
@@ -122,7 +123,7 @@ def display_update_delivery(delivery_id):
     if form.validate_on_submit():
         print('update form validate : ' + str(delivery.id))
 
-        #order_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.order_dt.data)
+        #delivery_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.delivery_dt.data)
         deliveryForm = Delivery(reference=form.reference.data, status=form.status.data, customer_id=int(form.customer_id.data), delivery_dt=form.delivery_dt.data)
         delivery.reference = deliveryForm.reference
         delivery.status = deliveryForm.status
@@ -148,7 +149,7 @@ def display_update_delivery(delivery_id):
         return redirect(url_for('delivery_page.deliveries'))
     else:
         form.customer_id.data = delivery.customer_id
-        form.order_dt.data = delivery.delivery_dt
+        form.delivery_dt.data = delivery.delivery_dt
         form.status.data = delivery.status
         form.reference.data = delivery.reference
         
