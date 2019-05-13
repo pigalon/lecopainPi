@@ -26,12 +26,13 @@ def json2obj(data): return json.loads(data, object_hook=_json_object_hook)
 def customers():
     new_orders=[]
     #customerManager = CustomerManager()
-    rest_response = requests.get('http://localhost:5000/customers/rest')
-
-    x = json2obj(rest_response.text)
-    print(str(x))
+    
+    #rest_response = requests.get('http://localhost:5000/customers/rest')
+    #x = json2obj(rest_response.text)
+    #print(str(x))
+    
     #return r.text
-    #customers = Customer.query.all()
+    customers = Customer.query.all()
 
     #for customer in customers :
     #    new_orders.append(customerManager.get_last_order(customer))
@@ -39,7 +40,7 @@ def customers():
     #    if order != None :
     #        print(str(order.delivery_dt))
     #return render_template('/customers/customers.html', customers=customers, new_orders= new_orders, cpt=0)
-    return render_template('/customers/customers_rest.html', customers=x, cpt=0)
+    return render_template('/customers/customers_rest.html', customers=customers, cpt=0)
 
 @customer_page.route("/customers/new", methods=['GET', 'POST'])
 def create_customer():
@@ -64,13 +65,14 @@ def customers_by_city(city_name):
     new_orders=[]
     customerManager = CustomerManager()
     customers = Customer.query.filter(Customer.city == city_name).all()
-    for customer in customers :
-        new_orders.append(customerManager.get_last_order(customer))
-    for order in new_orders :
-        if order != None :
-            print(str(order.delivery_dt))
+    #for customer in customers :
+    #    new_orders.append(customerManager.get_last_order(customer))
+    
+    #for order in new_orders :
+    #    if order != None :
+    #        print(str(order.delivery_dt))
 
-    return render_template('/customers/customers.html', customers=customers, new_orders= new_orders, cpt=0)
+    return render_template('/customers/customers_rest.html', customers=customers, cpt=0)
 
 #####################################################################
 #                                                                   #

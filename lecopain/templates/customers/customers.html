@@ -27,12 +27,12 @@
                 <a href="/customers/{{customer.id}}" class="card-link">Détails</a>
                 <a href="/customers/update/{{customer.id}}" class="card-link">Modifier</a>
                 <a href="/customers/delete/{{customer.id}}" class="card-link">Supprimer</a>
-                <span style="float: right">
+                <!--<span style="float: right">
                         <b> Dernière commande : </b>
                         {% if new_orders[loop.index-1] is not none %}  
                             {{ new_orders[loop.index-1].delivery_dt.strftime('%A %d %B %Y') }}
                         {% endif%}
-                </span>
+                </span>-->
             </small>
         </div>
     </div>
