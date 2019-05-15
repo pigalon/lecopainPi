@@ -40,7 +40,9 @@ def orders_of_month(year_number, month_number):
     if(month_number == 0) :
         month_number = datetime.now().month
 
-    orders = CustomerOrder.query.filter(extract('year', CustomerOrder.delivery_dt) == year_number).filter(extract('month', CustomerOrder.delivery_dt) == month_number).all()
+    orders = CustomerOrder.query.filter(
+        extract('year', CustomerOrder.delivery_dt) == year_number).filter(
+            extract('month', CustomerOrder.delivery_dt) == month_number).all()
     map = orderServices.get_maps_from_orders(orders)
    
     return render_template('/orders/orders.html', orders=orders, map=map, title="Commandes du mois")
@@ -108,7 +110,7 @@ def display_update_order(order_id):
     order = CustomerOrder.query.get_or_404(order_id)
     form = OrderForm()
 
-    customers = Customer.query.all()
+    customer = Customer.query.get_or_404(order.customer_id)
     products = Product.query.all()
     
     order_product_selection = Order_product.query.filter(Order_product.order_id == order.id).all()
@@ -118,9 +120,9 @@ def display_update_order(order_id):
 
         #delivery_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.delivery_dt.data)
         orderForm = CustomerOrder(title=form.title.data, status=form.status.data, customer_id=int(form.customer_id.data), delivery_dt=form.delivery_dt.data)
-        order.title = orderForm.title
+        #order.title = orderForm.title
         order.status = orderForm.status
-        order.customer_id = orderForm.customer_id
+        #order.customer_id = orderForm.customer_id
         order.delivery_dt = orderForm.delivery_dt
         products = {}
 
@@ -155,7 +157,7 @@ def display_update_order(order_id):
         
 
     orderStatusList = _get_order_status()
-    return render_template('/orders/update_order.html', order=order, title='Mise a jour de commande', form=form, customers=customers, products=products, selected_products=order.selected_products,  orderStatusList=orderStatusList, order_product_selection=order_product_selection)
+    return render_template('/orders/update_order.html', order=order, title='Mise a jour de commande', form=form, customer=customer, products=products, selected_products=order.selected_products,  orderStatusList=orderStatusList, order_product_selection=order_product_selection)
 
 #####################################################################
 #                                                                   #
