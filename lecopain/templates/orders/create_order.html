@@ -22,7 +22,7 @@
                 Choix de l'état de la commande :
                 <select class="form-control" name="status" width="300px">
                     {% for orderStatus in orderStatusList %}
-                        {% if(orderStatus == "EN COURS") %}
+                        {% if(orderStatus == "CREE") %}
                             <option value="{{ orderStatus }}" SELECTED>{{ orderStatus }}</option>
                         {% else %}
                             <option value="{{ orderStatus }}" >{{ orderStatus }}</option>
