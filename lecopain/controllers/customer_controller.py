@@ -22,6 +22,9 @@ def customers_json():
 def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
 def json2obj(data): return json.loads(data, object_hook=_json_object_hook)
 
+#####################################################################
+#                                                                   #
+#####################################################################
 @customer_page.route("/customers", methods=['GET', 'POST'])
 def customers():
     new_orders=[]
@@ -42,6 +45,9 @@ def customers():
     #return render_template('/customers/customers.html', customers=customers, new_orders= new_orders, cpt=0)
     return render_template('/customers/customers_rest.html', customers=customers, cpt=0)
 
+#####################################################################
+#                                                                   #
+#####################################################################
 @customer_page.route("/customers/new", methods=['GET', 'POST'])
 def create_customer():
     form = PersonForm()
@@ -53,7 +59,7 @@ def create_customer():
         db.session.add(customer)
         db.session.commit()
         #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect(url_for('index'))
+        return redirect('/customers')
     return render_template('/customers/create_customer.html', title='Person form', form=form)
 
 #####################################################################
