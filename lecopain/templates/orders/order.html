@@ -16,10 +16,9 @@
     <div class="content-section">
         {% for product in order.selected_products %}
             <p>Désignation : {{product.name}} - prix : {{product.price}} € - quantité : 
-                    {% for product_order in product.selections %}
-                    {{product_order.id}} test : {{product_order.quantity}} : {{product_order.order_id}} : {{product_order.product_id}}
+                    {% for product_order in bought_items %}
                         {% if product_order.product_id == product.id %}
-                            {{product_order.quantity}}
+                           X {{product_order.quantity}}
                         {% endif%}
                     {% endfor %}
             </p>

@@ -100,7 +100,9 @@ def order_create():
 @order_page.route("/orders/<int:order_id>", methods=['GET', 'POST'])
 def order(order_id):
     order = CustomerOrder.query.get_or_404(order_id)
-    return render_template('/orders/order.html', order=order)
+    bought_items = Order_product.query.filter(Order_product.order_id == order.id).all()
+
+    return render_template('/orders/order.html', order=order, bought_items=bought_items)
 
 #####################################################################
 #                                                                   #
