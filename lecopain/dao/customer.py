@@ -38,7 +38,8 @@ class CustomerOrder(db.Model)   :
     created_at                  = db.Column(db.DateTime, nullable                               = False, default = datetime.utcnow)
     customer_id                 = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable = False)
     status                      = db.Column(db.String(20), nullable                             = False)
-
+    vendorOrders                = db.relationship('VendorOrder', backref = 'customerOrder', lazy = True)
+    
     def to_dict(self)           : 
         return {
             'id'                : self.id,

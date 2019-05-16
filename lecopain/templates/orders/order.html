@@ -3,18 +3,38 @@
 {% block content %}
     <h1>Commande</h1>
     <div class="content-section">
-        <p>Référence : {{order.id}}</p>
-        <p>Date {{order.delivery_dt}}</p>
+        <p>Référence : {{order.id}} - Titre {{order.title}}</p>
+        <p>Commande créée le : {{order.order_dt}}</p>
     </div>
     <div>
-        <h3>Liste des produits</h3>
+        <h3>Livraison</h3>
+    </div>
+        <p>Date de livraison {{order.delivery_dt}}</p>
+    <div>
+        <h3>Liste des produits de la commande</h3>
     </div>
     <div class="content-section">
         {% for product in order.selected_products %}
-            <p>{{product.name}}</p>
-            <p>{{product.price}}</p>
+            <p>Désignation : {{product.name}} - prix : {{product.price}} € - quantité : 
+                    {% for product_order in product.selections %}
+                    {{product_order.id}} test : {{product_order.quantity}} : {{product_order.order_id}} : {{product_order.product_id}}
+                        {% if product_order.product_id == product.id %}
+                            {{product_order.quantity}}
+                        {% endif%}
+                    {% endfor %}
+            </p>
         {% endfor %}
     </div>
+    <div>
+        <h3>Liste des commandes vendeur</h3>
+    </div>
+    <div class="content-section">
+        {% for vendorOrder in order.vendorOrders %}
+            <p><b>Commande n° {{vendorOrder.id}} </b> pour le vendeur n° {{vendorOrder.vendor.id}} - nom : {{vendorOrder.vendor.name}}</p>
+            <p> ---- statut de la commande vendeur : {{vendorOrder.status}}</p>
+        {% endfor %}
+    </div>
+
     
 {% endblock %}
 {% block right_menu %}

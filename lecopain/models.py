@@ -49,10 +49,12 @@ class Order_product(db.Model) :
 
 class Vendor(db.Model)        : 
     __tablename__             = 'vendors'
-    id                        = db.Column(db.Integer, primary_key                                      = True)
-    name                      = db.Column(db.String(50), nullable                                      = False)
-    email                     = db.Column(db.String(200), nullable                                     = False)
-    products                  = db.relationship('Product', backref                                     = 'vendor', lazy           = True)
+    id                        = db.Column(db.Integer, primary_key  = True)
+    name                      = db.Column(db.String(50), nullable  = False)
+    email                     = db.Column(db.String(200), nullable = False)
+    products                  = db.relationship('Product', backref = 'vendor', lazy = True)
+    vendorOrders              = db.relationship('VendorOrder', backref = 'vendor', lazy = True)
+    
 
     def __repr__(self)        : 
         return "Vendor('{self.name}')"
@@ -61,7 +63,7 @@ class VendorOrder(db.Model)   :
     __tablename__             = 'vendor_orders'
     id                        = db.Column(db.Integer, primary_key                                      = True)
     title                     = db.Column(db.String(50), nullable                                      = False)
-    vendor_id                 = db.Column(db.Integer, db.ForeignKey('vendor_orders.id'), nullable      = False)
+    vendor_id                 = db.Column(db.Integer, db.ForeignKey('vendors.id'), nullable      = False)
     customer_order_id         = db.Column(db.Integer, db.ForeignKey('customer_orders.id'), nullable    = False)
     status                    = db.Column(db.String(20), nullable                                      = False)
     
