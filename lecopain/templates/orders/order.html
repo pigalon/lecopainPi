@@ -1,38 +1,67 @@
 
 {% extends "layout.html" %}
 {% block content %}
-    <h1>Commande</h1>
-    <div class="content-section">
-        <p>Référence : {{order.id}} - Titre {{order.title}}</p>
-        <p>Commande créée le : {{order.order_dt}}</p>
-    </div>
-    <div>
-        <h3>Livraison</h3>
-    </div>
-        <p>Date de livraison {{order.delivery_dt}}</p>
-    <div>
-        <h3>Liste des produits de la commande</h3>
-    </div>
-    <div class="content-section">
-        {% for product in order.selected_products %}
-            <p>Désignation : {{product.name}} - prix : {{product.price}} € - quantité : 
+
+<br>
+    <div class="card  " >
+        <div class="card-header text-white bg-info">
+                Commande client
+        </div>
+        <div class="card-body">
+          <h5 class="card-title"> N° {{order.id}} - {{order.title}}</h5>
+          <p class="card-text">Commande créée le : {{order.order_dt}}</p>
+          <br>
+          <p><b>Liste des articles :</b></p>
+          <ul class="list-group list-group-flush">
+          {% for product in order.selected_products %}
+            <li class="list-group-item">
+                {{product.name}}  
                     {% for product_order in bought_items %}
                         {% if product_order.product_id == product.id %}
-                           X {{product_order.quantity}}
+                        <span class="badge badge-warning">x {{product_order.quantity}}</span> 
                         {% endif%}
                     {% endfor %}
-            </p>
-        {% endfor %}
-    </div>
-    <div>
-        <h3>Liste des commandes vendeur</h3>
-    </div>
-    <div class="content-section">
-        {% for vendorOrder in order.vendorOrders %}
-            <p><b>Commande n° {{vendorOrder.id}} </b> pour le vendeur n° {{vendorOrder.vendor.id}} - nom : {{vendorOrder.vendor.name}}</p>
-            <p> ---- statut de la commande vendeur : {{vendorOrder.status}}</p>
-        {% endfor %}
-    </div>
+                    <span class="badge badge-primary">{{product.price}} €</span> 
+            </li>
+          {% endfor %}
+        </ul>
+
+        </div>
+
+      </div>
+
+      <br>
+      <div class="card">
+          <div class="card-header text-white bg-info">
+                  Livraison
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Date de livraison {{order.delivery_dt}}</h5>
+            <p class="card-text">adresse ici</p>
+  
+          </div>
+  
+        </div>
+        <br>
+        <div class="card">
+            <div class="card-header text-white bg-info" >
+                    Commandes Vendeurs
+            </div>
+            <div class="card-body">
+              <h5 class="card-title"></h5>
+              <p class="card-text"></p>
+                <ul class="list-group list-group-flush">
+                {% for vendorOrder in order.vendorOrders %}
+                <li class="list-group-item">
+                    <b>Commande n° {{vendorOrder.id}} </b>  <span class="badge badge-warning">{{vendorOrder.status}}</span>
+                    <b>Vendeur n° {{vendorOrder.vendor.id}} </b> - {{vendorOrder.vendor.name}}</p>
+                </li>    
+
+                {% endfor %}
+                </ul>
+            </div>
+    
+          </div>
 
     
 {% endblock %}
