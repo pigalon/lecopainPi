@@ -2,38 +2,36 @@
 {% block content %}
 <h1>Clients</h1>
     {% set count = O %}
-    {% for customer in customers %}
-    <div class="card border-dark mb-3" style="width: 40rem;">
-        <div class="card-header">
-                <span style="float: left; font-size: 2em;">
-                    <i class="fas fa-address-book "> </i> &nbsp;
-                </span> 
-                <br>
-                <b>Client n° {{customer.id}}</b>
-                <span style="float: right"><b>{{ customer.city }}</b></span>
-        </div>
-        <div class="card-body">           
-            <h5 class="card-title">
-                {{customer.firstname}} {{customer.lastname}}    
-            </h5>
-            <h6 class="card-subtitle mb-2 text-muted" style="font-size:13px;"><b>Adresse : </b>
-                {{ customer.address }} {{ customer.cp }} {{ customer.city }}<br><br>
-                
-            </h6>   
-            <p class="card-text" style="font-size:11px;"></p>
-        </div>
-        <div class="card-footer">
-            <small class="text-muted">                 
-                <a href="/customers/{{customer.id}}" class="card-link">Détails</a>
-                <a href="/customers/update/{{customer.id}}" class="card-link">Modifier</a>
-                <a href="/customers/delete/{{customer.id}}" class="card-link">Supprimer</a>
-                <span style="float: right">
-                        <b>  </b>
-                </span>
-            </small>
-        </div>
-    </div>
-    {% endfor %}
+   
+    <table class="table table-striped">
+            <thead>
+                <tr>
+                <th scope="col">id</th>
+                <th scope="col">Prénom</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Adresse</th>
+                <th scope="col">Code postal</th>
+                <th scope="col">Ville</th>
+                <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for customer in customers %}
+                <tr>
+                <th scope="row">{{ customer.id }}</th>
+                <td>{{ customer.firstname }}</td>
+                <td>{{ customer.lastname }}</td>
+                <td>{{ customer.address }}</td>
+                <td>{{ customer.cp }}</td>
+                <td>{{ customer.city }}</td>
+                <td><a href="/customers/{{customer.id}}" class="text-dark" alt="Détails"><i class="fas fa-eye"></i></a></span>
+                    <a href="/customers/update/{{customer.id}}" class="text-secondary alt="Editer"><i class="fas fa-edit"></i></a>
+                    <a href="/customers/update/{{customer.id}}" class="text-danger alt="Supprimer"><i class="fas fa-trash-alt"></i></a>
+                </td>
+                </tr>
+            {%endfor%}
+            </tbody>
+        </table>
 {% endblock %}
 {% block right_menu %}
 <div class="content-section">

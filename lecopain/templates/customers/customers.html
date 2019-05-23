@@ -3,6 +3,7 @@
 <h1>Clients</h1>
     {% set count = O %}
     {% for customer in customers %}
+
     <div class="card border-dark mb-3" style="width: 40rem;">
         <div class="card-header">
                 <span style="float: left; font-size: 2em;">
@@ -37,6 +38,33 @@
         </div>
     </div>
     {% endfor %}
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col">id</th>
+            <th scope="col">Prénom</th>
+            <th scope="col">Nom</th>
+            <th scope="col">Adresse</th>
+            <th scope="col">Code postal</th>
+            <th scope="col">Ville</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for customer in customers %}
+            <tr>
+            <th scope="row">{{ customer.id }}</th>
+            <td>{{ customer.firstname }}</td>
+            <td>{{ customer.lastname }}</td>
+            <td>{{ customer.address }}</td>
+            <td>{{ customer.cp }}</td>
+            <td>{{ customer.city }}</td>
+            </tr>
+        {%endfor%}
+        </tbody>
+    </table>
+    
+
 {% endblock %}
 {% block right_menu %}
 <div class="content-section">

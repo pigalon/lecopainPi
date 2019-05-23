@@ -32,7 +32,6 @@ def orders():
 #####################################################################
 @order_page.route("/orders/year/<int:year_number>/month/<int:month_number>", methods=['GET', 'POST'])
 def orders_of_month(year_number, month_number):
-    print(str(datetime.today().month) + " - " + str(datetime.today().day))
     
     if(year_number == 0) :
         year_number = datetime.now().year
@@ -52,7 +51,6 @@ def orders_of_month(year_number, month_number):
 #####################################################################
 @order_page.route("/orders/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
 def orders_of_day(year_number, month_number, day_number):
-    print(str(datetime.today().month) + " - " + str(datetime.today().day))
     if(year_number == 0) :
         year_number = datetime.now().year
     
@@ -100,9 +98,13 @@ def order_create():
 @order_page.route("/orders/<int:order_id>", methods=['GET', 'POST'])
 def order(order_id):
     order = CustomerOrder.query.get_or_404(order_id)
+    customer = Customer.query.get_or_404(order.customer_id)
+    products = order.selected_products
+    products.sort(key=lambda x: x.vendor_id, reverse=True)
+    sorted_products = sorted(products, key=lambda x: x.vendor_id, reverse=True)
     bought_items = Order_product.query.filter(Order_product.order_id == order.id).all()
 
-    return render_template('/orders/order.html', order=order, bought_items=bought_items)
+    return render_template('/orders/order.html', order=order, bought_items=bought_items, products=sorted_products, customer=customer)
 
 #####################################################################
 #                                                                   #
@@ -118,8 +120,6 @@ def display_update_order(order_id):
     order_product_selection = Order_product.query.filter(Order_product.order_id == order.id).all()
 
     if form.validate_on_submit():
-        print('update form validate : ' + str(order.id))
-
         #delivery_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.delivery_dt.data)
         orderForm = CustomerOrder(title=form.title.data, status=form.status.data, customer_id=int(form.customer_id.data), delivery_dt=form.delivery_dt.data)
         #order.title = orderForm.title
@@ -145,7 +145,6 @@ def display_update_order(order_id):
             bought_item = Order_product.query.filter(Order_product.order_id == order.id).filter(Order_product.product_id == tmp_products[i]).first()
             bought_item.quantity = tmp_quantities[i]
             bought_item.price = order.selected_products[i].price
-            print(str(bought_item.order_id)+ " - "+ str(bought_item.product_id) +" - "+ str(tmp_quantities[i]) +" - "+ str(i) + "")
  
         db.session.commit()
         
