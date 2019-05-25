@@ -38,7 +38,7 @@ def product_create():
         db.session.add(product)
         db.session.commit()
         #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect(url_for('index'))
+        return redirect(url_for('product_page.products'))
     productStatusList = _get_product_status()
     return render_template('/products/create_product.html', title='Product form', form=form, productStatusList=productStatusList, vendors=vendors)
 

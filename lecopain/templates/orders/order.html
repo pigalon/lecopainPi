@@ -9,13 +9,21 @@
         </div>
         <div class="card-body">
           <h5 class="card-title"> N° {{order.id}} - {{order.title}}</h5>
-          <p class="card-text">Commande créée le : {{order.order_dt}} par {{customer.firstname}} {{customer.lastname}}</p>
+          <p class="card-text">Commande créée le : <b style="color:rgb(199, 94, 94);">{{ order.created_at.strftime('%A %d %B %Y a %Hh:%Mmn' ) }}</b> par <b style="color:rgb(199, 94, 94);">{{customer.firstname}} {{customer.lastname}}</b></p>
           <br>
-          <p><b>Liste des articles :</b></p>
+          <p><b>Liste des articles triés par vendeur :</b></p>
           <ul class="list-group list-group-flush">
           {% set total = {'value': 0.00} %}
+          {% set vendor = {'value': ''} %}
           {% for product in order.selected_products %}
+            {% if vendor.value != product.vendor.name %}
+            <li class="list-group-item bg-light">
+                    <b>{{product.vendor.name}}</b>
+                    {% set vendor = {'value': product.vendor.name} %}
+            </li>
+            {% endif%}
             <li class="list-group-item">
+                
                 <span class="badge badge-primary">{{product.price}} €</span> 
                 {{product.name}}  
                     {% for product_order in bought_items %}
@@ -42,8 +50,8 @@
                   Livraison
           </div>
           <div class="card-body">
-            <h5 class="card-title">Date de livraison {{order.delivery_dt}}</h5>
-            <p class="card-text">adresse ici</p>
+            <h5 class="card-title">Date de livraison {{ order.delivery_dt.strftime('%A %d %B %Y a %Hh:%Mmn') }}</h5>
+            <p class="card-text">Adresse  : {{ customer.address }} {{ customer.cp }} {{ customer.city }} </p>
   
           </div>
   
@@ -62,13 +70,11 @@
                     <b>Commande n° {{vendorOrder.id}} </b>  <span class="badge badge-warning">{{vendorOrder.status}}</span>
                     <b>Vendeur n° {{vendorOrder.vendor.id}} </b> - {{vendorOrder.vendor.name}}</p>
                 </li>    
-
                 {% endfor %}
                 </ul>
             </div>
     
           </div>
-
     
 {% endblock %}
 {% block right_menu %}

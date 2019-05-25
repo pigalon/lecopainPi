@@ -34,11 +34,14 @@ class CustomerOrder(db.Model)   :
     __tablename__               = 'customer_orders'
     id                          = db.Column(db.Integer, primary_key                             = True)
     title                       = db.Column(db.String(50), nullable                             = False)
-    delivery_dt                 = db.Column(db.DateTime)
     created_at                  = db.Column(db.DateTime, nullable                               = False, default = datetime.utcnow)
     customer_id                 = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable = False)
     status                      = db.Column(db.String(20), nullable                             = False)
     vendorOrders                = db.relationship('VendorOrder', backref = 'customerOrder', lazy = True)
+    delivery                    = db.relationship('Delivery', uselist=False)
+    delivery_dt                 = db.Column(db.DateTime)
+    payement_status             = db.Column(db.String(20), nullable                             = False)
+    
     
     def to_dict(self)           : 
         return {

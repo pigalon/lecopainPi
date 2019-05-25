@@ -25,8 +25,6 @@ class OrderManager()                       :
             totalMap[order.id]       = total
             nb_productsMap[order.id] = len(bought_items)  
 
-        for item in customerMap.items(): 
-            print (str(item))
 
         map['CUSTOMER']                    = customerMap
         map['NB_PRODUCTS']                 = nb_productsMap
@@ -38,6 +36,7 @@ class OrderManager()                       :
     #
     def create_customer_order(self, order, tmp_products, tmp_quantities, tmp_prices): 
         products = {}
+        order.created_at = datetime.datetime.now()
 
         order = self.create_order_with_his_products(order=order, tmp_products=tmp_products)
         db.session.add(order)

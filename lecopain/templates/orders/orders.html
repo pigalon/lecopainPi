@@ -9,13 +9,22 @@
             {% if order.status == 'CREE' %}
             <span class="btn btn-warning" style="font-size: 1,8em;">
             {% endif %}
-            {% if order.status == 'PAYEE' %}
+            {% if order.status == 'LIVREE' %}
             <span class="btn btn-success" style="font-size: 1,8em;">
             {% endif %}
-            {% if order.status == 'EN DEFAULT' %}
-            <span class="btn btn-danger" style="font-size: 1,8em;">
-            {% endif %}
                 <i class="fas fa-cart-arrow-down "></i>
+            </span>
+            
+            {% if order.payement_status == 'PAYEE' %}
+            <span class="btn btn-success" style="font-size: 1,9em;">
+            {% endif %}
+            {% if order.payement_status == 'NON_PAYEE' and order.status != 'LIVREE'%}
+            <span class="btn btn-warning" style="font-size: 1,9em;">
+            {% endif %}
+            {% if order.payement_status == 'NON_PAYEE' and order.status == 'LIVREE'%}
+            <span class="btn btn-danger" style="font-size: 1,9em;">
+            {% endif %}
+                <i class="fas fa-piggy-bank "></i>
             </span>
             Référence : <span style="color:red">{{order.id}}</span>
             <span style="float: right"><b>{{ order.delivery_dt.strftime('%A %d %B %Y') }}</b></span>
