@@ -47,7 +47,7 @@ class OrderManager()                       :
         vendorOrders = self.generate_vendor_orders(order=order)
         for vendorOrder in vendorOrders :
            db.session.add(vendorOrder)
-        delivery = Delivery(reference=order.title ,delivery_dt=order.delivery_dt, status='NON_LIVREE', customer_order_id=order.id)     
+        delivery = Delivery(reference=order.title ,delivery_dt=order.delivery_dt, status='NON_LIVREE', customer_order_id=order.id, customer_id=order.customer_id)     
         db.session.add(delivery)
         db.session.commit()
         

@@ -14,7 +14,15 @@
     integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous" />
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
-  {% if title %}
+  <!--<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.1/fullcalendar.min.css" type="text/css" rel="stylesheet" /> -->
+  <!--<link rel="stylesheet" href="{{ url_for('static', filename='foundation/stylesheets/foundation.min.css') }}">-->
+  <!--<link rel="stylesheet" href="{{ url_for('static', filename='foundation/stylesheets/app.css') }}">-->
+ 
+  <!--<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fullcalendar/core/main.css')}}" />  
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fullcalendar/daygrid/main.css')}}" />  
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fullcalendar/timegrid/main.css')}}" /> 
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fullcalendar/list/main.css')}}" />-->
+    {% if title %}
   <title>Flask page - {{ title }}</title>
   {% endif %}
 </head>
@@ -94,6 +102,7 @@
   </script>
   <script src="{{ url_for('static', filename='js/reqwest.js') }}"></script>
   <script src="{{ url_for('static', filename='js/riot+compiler.js') }}"></script>
+  <!--<script src="{{ url_for('static', filename='foundation/javascripts/modernizr.foundation.js') }}"></script>-->
 
   {% block scripts %}{% endblock %}
 

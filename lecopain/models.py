@@ -79,7 +79,7 @@ class Delivery(db.Model)      :
     delivery_dt               = db.Column(db.DateTime)
     status                    = db.Column(db.String(20), nullable                                      = False)
     customer_order_id         = db.Column(db.Integer, db.ForeignKey('customer_orders.id'), nullable    = False)
-    
+    customer_id               = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable    = False)
 
 
     def __repr__(self)        : 

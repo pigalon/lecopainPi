@@ -1,5 +1,15 @@
 {% extends "layout.html" %}
 {% block content %}
+
+    <div class="form-group">
+        Choix du client :<br>
+        <select class="form-control" name="customer_id" style="width: 38rem; display:inline-block" >
+            <option value="" SELECTED>Tous</option>
+            {% for o in customers %}
+                <option value="{{ o.id }}">{{ o.firstname }}</option>
+            {% endfor %}
+        </select><button type="button" id="more_fields" onclick="search_order_by_customer();" class="btn btn-primary display:inline-block" ><i class="fa fa-search"></i></button>
+    </div>
     {% for order in orders %}
     <div class="card border-dark mb-3" style="width: 40rem;">
         <div class="card-header">

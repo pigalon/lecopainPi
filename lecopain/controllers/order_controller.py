@@ -23,9 +23,10 @@ orderServices = OrderManager()
 def orders():
     
     orders = CustomerOrder.query.order_by(CustomerOrder.delivery_dt.desc()).all()
+    customers = Customer.query.all()
     map = orderServices.get_maps_from_orders(orders)
 
-    return render_template('/orders/orders.html', orders=orders, title="Toutes les commandes", map=map)
+    return render_template('/orders/orders.html', orders=orders, customers=customers, title="Toutes les commandes", map=map)
 
 #####################################################################
 #                                                                   #
