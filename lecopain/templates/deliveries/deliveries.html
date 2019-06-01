@@ -3,23 +3,29 @@
 
     <style type="text/css"><!--
         td.past-month {
-            color: #bbb;
+            color: rgb(187, 187, 187);
         }
         td.filled-day {
-            color: #000000;
-            background: #b7deeb;
+            color: #e70909;
+            background: #f3d2c9;
         }
         th {
-            background: rgb(86, 142, 227)
+            color: #fafbfc;
+            background: rgb(11, 4, 77)
         }
     </style>
      <div class="form-group">
         Choix du client :<br>
-        <select class="form-control" name="customer_id" style="width: 38rem; display:inline-block" >
-            {% for o in customers %}
-                <option value="{{ o.id }}">{{ o.firstname }} {{ o.lastname }}</option>
+
+        <select class="form-control" id="customer_id" name="customer_id" style="width: 38rem; display:inline-block" >
+            {% for cust in customers %}
+                {% if cust.id == customer.id %}
+                    <option value="{{ cust.id }}" SELECTED>{{ cust.firstname }} {{ cust.lastname }}</option>
+                {% else %}
+                    <option value="{{ cust.id }}">{{ cust.firstname }} {{ cust.lastname }}</option>
+                {% endif %}
             {% endfor %}
-        </select><button type="button" id="more_fields" onclick="search_order_by_customer();" class="btn btn-primary display:inline-block" ><i class="fa fa-search"></i></button>
+        </select><button type="button" id="more_fields" onclick="reload_by_customer();" class="btn btn-primary display:inline-block" ><i class="fa fa-search"></i></button>
     </div>
 
 
@@ -27,9 +33,9 @@
         {% set month = cal[0] %}
         {% set current_month = month_param %}
         <div>
-            <h1>{{ ['', 'January', 'Febuary', 'March', 'April',
+            <h5 align="center"> {{ ['', 'January', 'Febuary', 'March', 'April',
                 'Mai', 'Juin', 'July', 'August',
-                'September', 'October', 'November', 'December'][month_param] }} {{ year }}</h1>
+                'September', 'October', 'November', 'December'][month_param] }} {{ year }}</h5>
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -61,7 +67,7 @@
                         
                         {{ date.day }}
                         {% if customer_order_id != null %}
-                            <p align="center"><a href="/orders/{{ customer_order_id }}" class="btn btn-warning" >C</a></p>
+                            <p align="center"><a href="/orders/{{ customer_order_id }}" class="btn btn-danger" >L</a></p>
                         {% else %}
                             <center>-</center>
                         {% endif %}    
@@ -196,6 +202,21 @@ $(document).ready(function() {
 
         calendar.render();
       });*/
+
+    function reload_by_customer() {
+        var customer_id = document.getElementById('customer_id').value;
+        var url = window.location.href;    
+       // if (url.indexOf('?') > -1){
+       //     url += '/'
+       // }else{
+       //     url += '?param=1'
+       // }
+       last_index = url.lastIndexOf('/');
+       start_url = url.substr(0, last_index+1) 
+       url = start_url + customer_id
+       window.location.href = url;
+                
+    }
         
 </script>
  <!-- Included JS Files (Uncompressed) -->

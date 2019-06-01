@@ -39,6 +39,7 @@ def deliveries(customer_id):
     deliveries = Delivery.query.filter(Delivery.customer_id == customer_id).filter(extract('year', Delivery.delivery_dt) == year).filter(extract('month', Delivery.delivery_dt) == month).all()
     
     customers = Customer.query.all()
+    customer = Customer.query.get_or_404(customer_id)
     
     #deliveries = Delivery.query.filter().order_by(Delivery.delivery_dt.desc()).all()
     map_deliveries = {}
@@ -62,7 +63,7 @@ def deliveries(customer_id):
     for i in range (0, len(cal_list)):
         print(str(cal_list[i]))
     
-    return render_template('/deliveries/deliveries.html', deliveries=deliveries, title="Toutes les livraisons", map=map, year=year, cal=cal_list, month_param=month, map_deliveries=map_deliveries, customers=customers)
+    return render_template('/deliveries/deliveries.html', customer=customer, title="", map=map, year=year, cal=cal_list, month_param=month, map_deliveries=map_deliveries, customers=customers)
 
 #####################################################################
 #                                                                   #
