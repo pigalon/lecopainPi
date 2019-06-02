@@ -34,13 +34,15 @@ def deliveries(customer_id):
     if(month == 0) :
         month = datetime.now().month
         
-
-
-    deliveries = Delivery.query.filter(Delivery.customer_id == customer_id).filter(extract('year', Delivery.delivery_dt) == year).filter(extract('month', Delivery.delivery_dt) == month).all()
+    if(customer_id == 0 or customer_id == None):
+        deliveries = Delivery.query.filter(extract('year', Delivery.delivery_dt) == year).filter(extract('month', Delivery.delivery_dt) == month).all()
+        customer = Customer()
+        customer.id = 0
+    else :    
+        deliveries = Delivery.query.filter(Delivery.customer_id == customer_id).filter(extract('year', Delivery.delivery_dt) == year).filter(extract('month', Delivery.delivery_dt) == month).all()
+        customer = Customer.query.get_or_404(customer_id)
     
     customers = Customer.query.all()
-    customer = Customer.query.get_or_404(customer_id)
-    
     #deliveries = Delivery.query.filter().order_by(Delivery.delivery_dt.desc()).all()
     map_deliveries = {}
     for delivery in deliveries :
@@ -102,7 +104,7 @@ def deliveries_of_day(year_number, month_number, day_number):
     
     map = delivery_services.get_maps_from_orders(deliveries)
 
-    return render_template('/deliveries/deliveries.html', deliveries=deliveries, title="Livraisons du jour")
+    return render_template('/orders/year/'+year_number+'/month/'+month_number+'/day/'+day_number+'.html', deliveries=deliveries, title="Livraisons du jour")
 
 
 #####################################################################

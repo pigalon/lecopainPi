@@ -18,7 +18,12 @@
         Choix du client :<br>
 
         <select class="form-control" id="customer_id" name="customer_id" style="width: 38rem; display:inline-block" >
-            {% for cust in customers %}
+            {% if customer.id == null or customer.id == 0 %}
+                <option value="0" SELECTED>Tous</option>
+            {% else %}
+            <option value="0">Tous</option>
+            {% endif %}
+            {% for cust in customers %}               
                 {% if cust.id == customer.id %}
                     <option value="{{ cust.id }}" SELECTED>{{ cust.firstname }} {{ cust.lastname }}</option>
                 {% else %}
@@ -33,7 +38,14 @@
         {% set month = cal[0] %}
         {% set current_month = month_param %}
         <div>
-            <h5 align="center"> {{ ['', 'January', 'Febuary', 'March', 'April',
+            <h5 align="center"> 
+                {% if customer.id == 0 %}
+                Toutes les livraisons des clients pour
+                {% else %}
+                Livraisons de {{customer.firstname}} {{customer.lastname}} pour 
+                {% endif %}
+
+                {{ ['', 'January', 'Febuary', 'March', 'April',
                 'Mai', 'Juin', 'July', 'August',
                 'September', 'October', 'November', 'December'][month_param] }} {{ year }}</h5>
             <table class="table table-bordered">
@@ -66,7 +78,10 @@
                         {% endif %}
                         
                         {{ date.day }}
-                        {% if customer_order_id != null %}
+
+                        {% if customer_order_id != null and customer.id == 0 %}
+                            <p align="center"><a href="/orders/year/{{ date.year }}/month/{{ date.month }}/day/{{ date.day }}" class="btn btn-danger" >D</a></p>
+                        {% elif customer_order_id != null and customer.id > 0 %}
                             <p align="center"><a href="/orders/{{ customer_order_id }}" class="btn btn-danger" >L</a></p>
                         {% else %}
                             <center>-</center>
@@ -86,131 +101,9 @@
 {% block scripts %} 
 <script type="text/javascript">
 
-
-/*
-$(document).ready(function() { 
-    $('#bootstrapModalFullCalendar').fullCalendar({
-        events:[
-                {
-                color: '#FFBF00',
-                description: '',
-                start: '2019-05-05',
-                title: 'All day event'
-                }
-            ],
-        header: {
-            left: '',
-            center: 'prev title next',
-            right: ''
-        },
-        eventClick:  function(event, jsEvent, view) {
-            $('#modalTitle').html(event.title);
-            $('#modalBody').html(event.description);
-            $('#eventUrl').attr('href',event.url);
-            $('#fullCalModal').modal();
-        }
-    });
-});*/
-/*    document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-          navLinks: true, // can click day/week names to navigate views
-          selectable: true,
-          selectMirror: true,
-          businessHours: true,
-          editable: true,
-          plugins: [ 'interaction', 'dayGrid','timeGrid', 'list' ],
-          events: function(info, successCallback, failureCallback) {
-                req.get('http://localhost:5000/_getjs_delivery_event/customer/1')
-                .type('json')
-                .query({
-                    start: info.start.valueOf(),
-                    end: info.end.valueOf()
-                })
-                .end(function(err, res) {
-
-                    if (err) {
-                    failureCallback(err);
-                    } else {
-
-                    successCallback(
-                        Array.prototype.slice.call( // convert to array
-                        res.getElementsByTagName('event')
-                        ).map(function(eventEl) {
-                        return {
-                            title: eventEl.getAttribute('title'),
-                            start: eventEl.getAttribute('start')
-                        }
-                        })
-                    )
-                    }
-                })
-            },*/
-          /*events: function(start, end, timezone, callback) {
-            jQuery.ajax({
-                    url: 'http://localhost:5000/_getjs_delivery_event/customer/1',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        // our hypothetical feed requires UNIX timestamps
-                        start: start.unix(),
-                        end: end.unix()
-                    },
-                    success: function(doc) {
-                        var events = [];
-                        if(!!doc.result){
-                            $.map( doc.result, function( r ) {
-                                events.push({
-                                    id: r.id,
-                                    title: r.title,
-                                    start: r.date_start,
-                                    end: r.date_end
-                                });
-                            });
-                        }
-                        callback(events);
-                    }
-                });
-            },*/
-   /*       events: [
-            {
-                title: 'All Day Event',
-                start: '2019-05-01',
-                color: '#FFBF00'
-                //rendering: 'background'
-            }],*/
-     /*       eventClick:  function(event, jsEvent, view) {
-                alert('ttttt')
-
-                //set the values and open the modal
-
-                //$("#eventInfo").html(event.description);
-                //$("#eventLink").attr('href', event.url);
-                //$("#eventContent").dialog({ modal: true, title: event.title });
-            },
-            loading: function(bool) {
-                document.getElementById('loading').style.display =
-                bool ? 'block' : 'none';
-            }
-
-        });
-
-        //-$("#calendar").on("click", "td[data-event]", function() {
-        //    alert('test');
-        //})
-
-        calendar.render();
-      });*/
-
     function reload_by_customer() {
         var customer_id = document.getElementById('customer_id').value;
         var url = window.location.href;    
-       // if (url.indexOf('?') > -1){
-       //     url += '/'
-       // }else{
-       //     url += '?param=1'
-       // }
        last_index = url.lastIndexOf('/');
        start_url = url.substr(0, last_index+1) 
        url = start_url + customer_id
@@ -219,34 +112,8 @@ $(document).ready(function() {
     }
         
 </script>
- <!-- Included JS Files (Uncompressed) -->
-        <!--
-        <script src="{{ url_for('static', filename='foundation/javascripts/modernizr.foundation.js') }}"></script>
-        <script src="{{ url_for('static', filename='foundation/javascripts/jquery.js') }}"></script>
-        <script src="{{ url_for('static', filename='foundation/javascripts/jquery.foundation.mediaQueryToggle.js') }}"></script>
-        <script src="{{ url_for('static', filename='foundation/javascripts/jquery.foundation.reveal.js') }}"></script>
-        <script src="{{ url_for('static', filename='foundation/javascripts/jquery.foundation.orbit.js') }}"></script>
-        <script src="{{ url_for('static', filename='foundation/javascripts/jquery.foundation.navigation.js') }}"></script>
-        <script src="{{ url_for('static', filename='foundation/javascripts/jquery.foundation.buttons.js') }}"></script>
-        <script src="{{ url_for('static', filename='foundation/javascripts/jquery.foundation.tabs.js') }}"></script>
-        <script src="{{ url_for('static', filename='foundation/javascripts/jquery.foundation.forms.js') }}"></script>
-        <script src="{{ url_for('static', filename='foundation/javascripts/jquery.foundation.tooltips.js') }}"></script>
-        <script src="{{ url_for('static', filename='foundation/javascripts/jquery.foundation.accordion.js') }}"></script>
-        <script src="{{ url_for('static', filename='foundation/javascripts/jquery.placeholder.js') }}"></script>
-        <script src="{{ url_for('static', filename='foundation/javascripts/jquery.foundation.alerts.js') }}"></script>
-        -->
-        <!-- Included JS Files (Compressed) -->
+ 
         <script src="{{ url_for('static', filename='foundation/javascripts/foundation.min.js') }}"></script>
-        <!-- Initialize JS Plugins -->
-        <!--<script src="{{ url_for('static', filename='foundation/javascripts/app.js') }}"></script>-->
-<!--<script src="//code.jquery.com/jquery.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.2/moment.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.1/fullcalendar.min.js"></script>   --> 
-<!--<script src="{{ url_for('static', filename='fullcalendar/core/main.js') }}"></script>
-<script src="{{ url_for('static', filename='fullcalendar/daygrid/main.js') }}"></script>
-<script src="{{ url_for('static', filename='fullcalendar/interaction/main.js') }}"></script>
-<script src="{{ url_for('static', filename='fullcalendar/timegrid/main.js') }}"></script>
-<script src="{{ url_for('static', filename='fullcalendar/list/main.js') }}"></script>-->
 
 
 {% endblock %}
