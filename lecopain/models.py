@@ -46,6 +46,15 @@ class Order_product(db.Model) :
  
     def __repr__(self)        : 
         return "CustomerOrder('{self.title}', '{self.status}', {customer_id} '{self.delivery_dt}')"
+    
+    def to_dict(self)         : 
+        return {
+            'order_id'        : self.order_id,
+            'product_id'      : self.product_id,
+            'quantity'        : self.quantity,
+            'price'           : self.price
+        }
+
 
 class Vendor(db.Model)        : 
     __tablename__             = 'vendors'

@@ -18,28 +18,42 @@ delivery_page = Blueprint('delivery_page', __name__,
 
 delivery_services = DeliveryManager()
 
+class Event():
+    title = ''
+    description = ''
+    start='2019-05-05'
+    color='#FFBF00'
+
+    def __init__(self, title, description, start, color): 
+        self.title = title
+        self.description = description
+        self.start = start
+        self.color = color
+    def to_dict(self)           : 
+        return {
+            'title'             : self.title,
+            'description'       : self.description,
+            'start'            : self.start,
+            'color'            : self.color
+        }
+
 
 #####################################################################
 #                                                                   #
 #####################################################################
-@delivery_page.route("/deliveries/<int:customer_id>", methods=['GET', 'POST'])
+@delivery_page.route("/deliveries/customers/<int:customer_id>", methods=['GET', 'POST'])
 def deliveries(customer_id):
-    print(" deliveries ")
-  
-    year = date.today().year
-    month = date.today().month  
-    if(year == 0) :
-        year = datetime.now().year
     
-    if(month == 0) :
-        month = datetime.now().month
+    year_number = datetime.now().year
+    
+    month_number = datetime.now().month
         
     if(customer_id == 0 or customer_id == None):
-        deliveries = Delivery.query.filter(extract('year', Delivery.delivery_dt) == year).filter(extract('month', Delivery.delivery_dt) == month).all()
+        deliveries = Delivery.query.filter(extract('year', Delivery.delivery_dt) == year_number).filter(extract('month', Delivery.delivery_dt) == month_number).all()
         customer = Customer()
         customer.id = 0
     else :    
-        deliveries = Delivery.query.filter(Delivery.customer_id == customer_id).filter(extract('year', Delivery.delivery_dt) == year).filter(extract('month', Delivery.delivery_dt) == month).all()
+        deliveries = Delivery.query.filter(Delivery.customer_id == customer_id).filter(extract('year', Delivery.delivery_dt) == year_number).filter(extract('month', Delivery.delivery_dt) == month_number).all()
         customer = Customer.query.get_or_404(customer_id)
     
     customers = Customer.query.all()
@@ -48,49 +62,60 @@ def deliveries(customer_id):
     for delivery in deliveries :
         map_deliveries[delivery.delivery_dt.day * delivery.delivery_dt.month] = delivery.customer_order_id
     
-    print(" deliveries 2 - size : " + str(len(map_deliveries)))
-    for key in map_deliveries :
-        print(str(key))
-    
     map = delivery_services.get_maps_from_deliveries(deliveries)
-    print(" deliveries fin")
     
     cal = Calendar(0)
-
-
     cal_list = [
-        cal.monthdatescalendar(year, month)
+        cal.monthdatescalendar(year_number, month_number)
         for i in range(1)
     ]
-    for i in range (0, len(cal_list)):
-        print(str(cal_list[i]))
     
-    return render_template('/deliveries/deliveries.html', customer=customer, title="", map=map, year=year, cal=cal_list, month_param=month, map_deliveries=map_deliveries, customers=customers)
+    return render_template('/deliveries/deliveries.html', customer=customer, title="", map=map, year=year_number, cal=cal_list, month_param=month_number, map_deliveries=map_deliveries, customers=customers)
 
 #####################################################################
 #                                                                   #
 #####################################################################
-@delivery_page.route("/deliveries/year/<int:year_number>/month/<int:month_number>", methods=['GET', 'POST'])
-def deliveries_of_month(year_number, month_number):
-    print(str(datetime.today().month) + " - " + str(datetime.today().day))
+@delivery_page.route("/deliveries/customers/<int:customer_id>/year/<int:year_number>/month/<int:month_number>", methods=['GET', 'POST'])
+def deliveries_of_month(customer_id, year_number, month_number):
     
     if(year_number == 0) :
         year_number = datetime.now().year
     
     if(month_number == 0) :
         month_number = datetime.now().month
+ 
+        
+    if(customer_id == 0 or customer_id == None):
+        deliveries = Delivery.query.filter(extract('year', Delivery.delivery_dt) == year_number).filter(extract('month', Delivery.delivery_dt) == month_number).all()
+        customer = Customer()
+        customer.id = 0
+    else :    
+        deliveries = Delivery.query.filter(Delivery.customer_id == customer_id).filter(extract('year', Delivery.delivery_dt) == year_number).filter(extract('month', Delivery.delivery_dt) == month_number).all()
+        customer = Customer.query.get_or_404(customer_id)
+    
+    customers = Customer.query.all()
+    
+    map_deliveries = {}
+    for delivery in deliveries :
+        map_deliveries[delivery.delivery_dt.day * delivery.delivery_dt.month] = delivery.customer_order_id
 
-    deliveries = Delivery.query.filter(extract('year', Delivery.delivery_dt) == year_number).filter(extract('month', Delivery.delivery_dt) == month_number).all()
-    #map = order_services.get_maps_from_orders(orders)
-   
-    return render_template('/deliveries/deliveries.html', deliveries=deliveries, title="livraisons du mois")
+    map = delivery_services.get_maps_from_deliveries(deliveries)
+    
+    cal = Calendar(0)
+
+    cal_list = [
+        cal.monthdatescalendar(year_number, month_number)
+        for i in range(1)
+    ]
+
+    return render_template('/deliveries/deliveries.html', customer=customer, title="", map=map, year=year_number, cal=cal_list, month_param=month_number, map_deliveries=map_deliveries, customers=customers)
 
 #####################################################################
 #                                                                   #
 #####################################################################
 @delivery_page.route("/deliveries/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
 def deliveries_of_day(year_number, month_number, day_number):
-    print(str(datetime.today().month) + " - " + str(datetime.today().day))
+
     if(year_number == 0) :
         year_number = datetime.now().year
     
@@ -157,34 +182,15 @@ def display_update_delivery(delivery_id):
     customers = Customer.query.all()
     products = Product.query.all()
     
-    #order_product_selection = Delivery_product.query.filter(Delivery_product.delivery_id == order.id).all()
 
     if form.validate_on_submit():
-        print('update form validate : ' + str(delivery.id))
 
-        #delivery_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.delivery_dt.data)
         deliveryForm = Delivery(reference=form.reference.data, status=form.status.data, customer_id=int(form.customer_id.data), delivery_dt=form.delivery_dt.data)
         delivery.reference = deliveryForm.reference
         delivery.status = deliveryForm.status
         delivery.customer_id = deliveryForm.customer_id
         delivery.delivery_dt = deliveryForm.delivery_dt
-        #products = {}
-
-        #Delivery_product.query.filter(Delivery_product.order_id == order.id).delete()
-
-        #tmp_products = request.form.getlist('products')
-        #tmp_quantities = request.form.getlist('quantities')
-
-        #for i in range(0,len(tmp_products)): 
-        #    product = Product.query.get(tmp_products[i])
-        #    order.selected_products.append(product)
-
-        #db.session.add(order)
         db.session.commit()
-
-    
-        
-        #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('delivery_page.deliveries'))
     else:
         form.customer_order_id.data = delivery.customer_order_id
@@ -220,25 +226,6 @@ def delete_delivery(delivery_id):
 def _get_delivery_status():
     deliveriesStatusList = [(row.name) for row in DeliveryStatus.query.all()]
     return deliveriesStatusList
-
-class Event():
-    title = ''
-    description = ''
-    start='2019-05-05'
-    color='#FFBF00'
-
-    def __init__(self, title, description, start, color): 
-        self.title = title
-        self.description = description
-        self.start = start
-        self.color = color
-    def to_dict(self)           : 
-        return {
-            'title'             : self.title,
-            'description'       : self.description,
-            'start'            : self.start,
-            'color'            : self.color
-        }
 
 #####################################################################
 #                                                                   #

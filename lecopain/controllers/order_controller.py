@@ -16,6 +16,22 @@ order_page = Blueprint('order_page', __name__,
 
 orderServices = OrderManager()
 
+class BoughtProduct():
+    product = None
+    quantity = 0
+    
+
+    def __init__(self, product, quantity): 
+        self.product = product
+        self.quantity = quantity
+
+    def to_dict(self)           : 
+        return {
+            'product'             : self.product.to_dict(),
+            'quantity'              : self.quantity
+        }
+    
+
 #####################################################################
 #                                                                   #
 #####################################################################
@@ -66,6 +82,42 @@ def orders_of_day(year_number, month_number, day_number):
     map = orderServices.get_maps_from_orders(orders)
 
     return render_template('/orders/orders.html', orders=orders, map=map, title="Commandes du jour")
+
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@order_page.route("/order_products/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
+def order_products_of_day(year_number, month_number, day_number):
+    if(year_number == 0) :
+        year_number = datetime.now().year
+    
+    if(month_number == 0) :
+        month_number = datetime.now().month
+    
+    if(day_number == 0) :
+        day_number = datetime.now().month
+
+    orders = CustomerOrder.query.filter(extract('year', CustomerOrder.delivery_dt) == year_number).filter(extract('month', CustomerOrder.delivery_dt) == month_number).filter(extract('day', CustomerOrder.delivery_dt) == day_number).all()
+    products_of_day_list = []
+    for order in orders :
+        for product in order.selected_products :
+            order_product = Order_product.query.filter(Order_product.order_id == order.id).filter(Order_product.product_id == product.id).first()
+            
+            lenght_list = len(products_of_day_list)
+            bAdded = False
+            
+            for index, item in enumerate(products_of_day_list):
+                if item.product.id == product.id:
+                    products_of_day_list[index].quantity += order_product.quantity
+                    bAdded = True
+                
+            if(len(products_of_day_list)<1 or bAdded == False):
+                products_of_day_list.append(BoughtProduct(product=product, quantity=order_product.quantity))
+    
+    map = orderServices.get_maps_from_orders(orders)
+
+    return render_template('/orders/orders_by_day.html', orders=orders, map=map, bought_products=products_of_day_list, title="Commandes du jour")
 
 
 #####################################################################
