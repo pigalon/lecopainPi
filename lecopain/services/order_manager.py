@@ -18,12 +18,15 @@ class OrderManager()                       :
  
             bought_items = Order_product.query.filter(Order_product.order_id == order.id).all()
             total = 0
+            quantity = 0
             for bought_item in bought_items:
-                total = total + bought_item.price
+                total += bought_item.price * bought_item.quantity
+                quantity += bought_item.quantity
+                
                 
 
             totalMap[order.id]       = total
-            nb_productsMap[order.id] = len(bought_items)  
+            nb_productsMap[order.id] = quantity  
 
 
         map['CUSTOMER']                    = customerMap
