@@ -10,4 +10,5 @@ db                                    = SQLAlchemy(app)
 main                                  = Blueprint('main', __name__)
 
 
-from lecopain import routes, models
+from lecopain import routes 
+from lecopain.dao import models

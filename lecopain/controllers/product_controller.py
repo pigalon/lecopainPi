@@ -1,14 +1,17 @@
-from lecopain.models import Product, Vendor, ProductStatus
+from lecopain.dao.models import Product, Vendor, ProductStatus
 from lecopain import app, db
 from lecopain.form import ProductForm
 from flask import session, Blueprint, render_template, redirect, url_for, Flask, jsonify
 from sqlalchemy.orm import load_only
+from lecopain.services.product_manager import ProductManager
 
 app = Flask(__name__, instance_relative_config=True)
 
 
 product_page = Blueprint('product_page', __name__,
                         template_folder='../templates')
+
+productManager = ProductManager()
 
 #####################################################################
 #                                                                   #
@@ -56,26 +59,13 @@ def display_update_product(product_id):
     if form.validate_on_submit():
         print('update form validate : ' + str(product.id))
 
-        #delivery_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.delivery_dt.data)
-        productForm = Product(name=form.name.data, price=form.price.data, status=form.status.data, vendor_id=int(form.vendor_id.data), description=form.description.data)
-        product.name = productForm.name
-        product.status = productForm.status
-        product.vendor_id = productForm.vendor_id
-        product.description = productForm.description
-        product.price = productForm.price
+        productManager.update_product(form, product)
 
-        db.session.commit()
-
-       
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('product_page.products'))
     else:
-        form.vendor_id.data = product.vendor_id
-        form.description.data = product.description
-        form.status.data = product.status
-        form.name.data = product.name
-        form.price.data = product.price
         
+        productManager.convert_product_to_form(product=product, form=form)
 
     productStatusList = _get_product_status()
     return render_template('/products/update_product.html', product=product, title='Mise a jour de produit', form=form, vendors=vendors,  productStatusList=productStatusList)

@@ -1,4 +1,4 @@
-from lecopain.models import Product, OrderStatus, Order_product
+from lecopain.dao.models import Product, OrderStatus, Order_product
 from lecopain.dao.customer import Customer, CustomerOrder
 from lecopain import app, db
 from lecopain.form import OrderForm
@@ -15,21 +15,6 @@ order_page = Blueprint('order_page', __name__,
                         template_folder='../templates')
 
 orderServices = OrderManager()
-
-class BoughtProduct():
-    product = None
-    quantity = 0
-    
-
-    def __init__(self, product, quantity): 
-        self.product = product
-        self.quantity = quantity
-
-    def to_dict(self)           : 
-        return {
-            'product'             : self.product.to_dict(),
-            'quantity'              : self.quantity
-        }
     
 
 #####################################################################
@@ -99,22 +84,7 @@ def order_products_of_day(year_number, month_number, day_number):
         day_number = datetime.now().month
 
     orders = CustomerOrder.query.filter(extract('year', CustomerOrder.delivery_dt) == year_number).filter(extract('month', CustomerOrder.delivery_dt) == month_number).filter(extract('day', CustomerOrder.delivery_dt) == day_number).all()
-    products_of_day_list = []
-    for order in orders :
-        for product in order.selected_products :
-            order_product = Order_product.query.filter(Order_product.order_id == order.id).filter(Order_product.product_id == product.id).first()
-            
-            lenght_list = len(products_of_day_list)
-            bAdded = False
-            
-            for index, item in enumerate(products_of_day_list):
-                if item.product.id == product.id:
-                    products_of_day_list[index].quantity += order_product.quantity
-                    bAdded = True
-                
-            if(len(products_of_day_list)<1 or bAdded == False):
-                products_of_day_list.append(BoughtProduct(product=product, quantity=order_product.quantity))
-    
+    products_of_day_list = orderServices.get_resume_products_list_from_orders(orders)
     map = orderServices.get_maps_from_orders(orders)
 
     return render_template('/orders/orders_by_day.html', orders=orders, map=map, bought_products=products_of_day_list, title="Commandes du jour")
@@ -131,7 +101,6 @@ def order_create():
     tmp_prices     = request.form.getlist('prices')
 
     if form.validate_on_submit():
-        #delivery_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.delivery_dt.data)
         order = CustomerOrder(title=form.title.data, status=form.status.data, customer_id=int(form.customer_id.data), delivery_dt=form.delivery_dt.data)
         orderServices.create_customer_order(order=order, tmp_products=tmp_products, tmp_quantities=tmp_quantities, tmp_prices=tmp_prices)
         #flash(f'People created for {form.firstname.data}!', 'success')
@@ -164,6 +133,7 @@ def order(order_id):
 #####################################################################
 @order_page.route("/orders/update/<int:order_id>", methods=['GET', 'POST'])
 def display_update_order(order_id):
+    
     order = CustomerOrder.query.get_or_404(order_id)
     form = OrderForm()
 
@@ -173,36 +143,22 @@ def display_update_order(order_id):
     order_product_selection = Order_product.query.filter(Order_product.order_id == order.id).all()
 
     if form.validate_on_submit():
-        #delivery_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.delivery_dt.data)
         orderForm = CustomerOrder(title=form.title.data, status=form.status.data, customer_id=int(form.customer_id.data), delivery_dt=form.delivery_dt.data)
-        #order.title = orderForm.title
+        # update order first
         order.status = orderForm.status
-        #order.customer_id = orderForm.customer_id
         order.delivery_dt = orderForm.delivery_dt
         products = {}
-
-        Order_product.query.filter(Order_product.order_id == order.id).delete()
-
-        tmp_products = request.form.getlist('products')
-        tmp_quantities = request.form.getlist('quantities')
-
-        for i in range(0,len(tmp_products)): 
-            product = Product.query.get(tmp_products[i])
-            order.selected_products.append(product)
-
-        #db.session.add(order)
-        db.session.commit()
-
         
-        for i in range(0,len(tmp_products)):
-            bought_item = Order_product.query.filter(Order_product.order_id == order.id).filter(Order_product.product_id == tmp_products[i]).first()
-            bought_item.quantity = tmp_quantities[i]
-            bought_item.price = order.selected_products[i].price
- 
-        db.session.commit()
+        # get the new list of products and quantities
+        tmp_products   = request.form.getlist('products')
+        tmp_quantities = request.form.getlist('quantities')
+        tmp_prices     = request.form.getlist('prices')
+
+        orderServices.update_customer_order(order=order, products=tmp_products, quantities=tmp_quantities, prices=tmp_prices)
         
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('order_page.orders'))
+    
     else:
         form.customer_id.data = order.customer_id
         form.delivery_dt.data = order.delivery_dt

@@ -1,4 +1,4 @@
-from lecopain.models import Product, DeliveryStatus, Delivery, Vendor
+from lecopain.dao.models import Product, DeliveryStatus, Delivery, Vendor
 from lecopain import app, db
 from lecopain.form import DeliveryForm
 from lecopain.services.delivery_manager import DeliveryManager

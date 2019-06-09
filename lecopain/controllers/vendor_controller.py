@@ -1,4 +1,4 @@
-from lecopain.models import Vendor
+from lecopain.dao.models import Vendor
 from lecopain.services.vendor_manager import VendorManager
 from lecopain import app, db
 from lecopain.form import VendorForm
