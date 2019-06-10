@@ -3,8 +3,7 @@ from datetime import datetime
 import locale
 from lecopain import app, db
 from lecopain.form import PersonForm, OrderForm, ProductForm
-from lecopain.dao.models import OrderStatus, Product, Order_product
-from lecopain.dao.customer import Customer, CustomerOrder
+from lecopain.dao.models import Customer, CustomerOrder, OrderStatus, Product, Order_product
 
 from lecopain.controllers.customer_controller import customer_page
 from lecopain.controllers.order_controller import order_page

@@ -1,6 +1,5 @@
 from lecopain import app, db
-from lecopain.dao.models import Order_product
-from lecopain.dao.customer import Customer, CustomerOrder
+from lecopain.dao.models import Customer, CustomerOrder, Order_product
 
 class DeliveryManager():
 

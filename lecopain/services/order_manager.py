@@ -1,10 +1,8 @@
 from datetime import datetime
 
 from lecopain import app, db
-from lecopain.dao.customer import Customer, CustomerOrder
 from lecopain.dto.BoughtProduct import BoughtProduct
-from lecopain.dao.models import (Delivery, Order_product, Product, Vendor,
-                             VendorOrder)
+from lecopain.dao.models import Delivery, Order_product, Product, Vendor,VendorOrder, Customer, CustomerOrder
 
 
 class OrderManager()                       : 

@@ -1,4 +1,4 @@
-from lecopain.dao.customer import Customer
+from lecopain.dao.models import Customer
 from lecopain.services.customer_manager import CustomerManager
 from lecopain import app, db
 from lecopain.form import PersonForm

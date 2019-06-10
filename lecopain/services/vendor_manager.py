@@ -1,6 +1,5 @@
 from lecopain import app, db
-from lecopain.dao.models import Vendor, VendorOrder
-from lecopain.dao.customer import CustomerOrder
+from lecopain.dao.models import CustomerOrder, Vendor, VendorOrder
 
 class VendorManager():
 
