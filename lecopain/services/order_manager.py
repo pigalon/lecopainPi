@@ -82,6 +82,7 @@ class OrderManager()                       :
         order = self.create_product_purchases(order, products, quantities, prices)
         
         delivery = Delivery.query.filter(Delivery.customer_order_id == order.id).first()
+        
         db.session.commit()
         
 
@@ -110,10 +111,10 @@ class OrderManager()                       :
     
     ##########################################
     #
-        def create_default_delivery(self, order):
-            delivery = Delivery(reference=order.title ,delivery_dt=order.delivery_dt, status='NON_LIVREE', customer_order_id=order.id, customer_id=order.customer_id)     
-            db.session.add(delivery)
-            db.session.commit()
+    def create_default_delivery(self, order):
+        delivery = Delivery(reference=order.title ,delivery_dt=order.delivery_dt, status='NON_LIVREE', customer_order_id=order.id, customer_id=order.customer_id)     
+        db.session.add(delivery)
+        db.session.commit()
     
     
     #########################################

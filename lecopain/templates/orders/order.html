@@ -2,6 +2,16 @@
 {% extends "layout.html" %}
 {% block content %}
 
+  <table align="center">
+    <tr>
+      <td valign="center">Actions sur la commande</td>
+    </tr>
+    <tr>
+      <td><a href="/orders/{{ customer_order_id }}" class="btn btn-outline-primary" >Annuler</a><a href="/orders/{{ customer_order_id }}" class="btn btn-outline-primary">Changer Date livraison</a>
+    </tr>
+  </table>
+
+<br>
 <br>
     <div class="card  " >
         <div class="card-header text-white bg-info">

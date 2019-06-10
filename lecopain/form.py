@@ -22,7 +22,7 @@ class OrderForm(FlaskForm):
     customer_id = IntegerField('Customer Id:', validators=[DataRequired()])
     #product_id = IntegerField('Product Id:', validators=[DataRequired()])
     #vendor_id = IntegerField('Product Id:', validators=[DataRequired()])
-    delivery_dt = DateTimeField('Delivery Date')
+    delivery_dt = DateTimeField('Delivery Date', format='%d/%m/%Y %H:%M:%S')
     status = StringField('Status')
     submit = SubmitField('Valider')
 
