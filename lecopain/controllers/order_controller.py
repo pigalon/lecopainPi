@@ -1,4 +1,4 @@
-from lecopain.dao.models import Customer, CustomerOrder, Product, OrderStatus, Order_product
+from lecopain.dao.models import Customer, CustomerOrder, Product, OrderStatus, Order_product, Delivery
 from lecopain import app, db
 from lecopain.form import OrderForm
 from lecopain.services.order_manager import OrderManager
@@ -167,6 +167,43 @@ def display_update_order(order_id):
 
     orderStatusList = _get_order_status()
     return render_template('/orders/update_order.html', order=order, title='Mise a jour de commande', form=form, customer=customer, products=products, selected_products=order.selected_products,  orderStatusList=orderStatusList, order_product_selection=order_product_selection)
+
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@order_page.route("/orders/update/<int:order_id>/time", methods=['GET', 'POST'])
+def display_update_order_time(order_id):
+    
+    order = CustomerOrder.query.get_or_404(order_id)
+    customer = Customer.query.get_or_404(order.customer_id)
+    form = OrderForm()
+
+   
+    if form.validate_on_submit():
+        orderForm = CustomerOrder(title=form.title.data, status=form.status.data, customer_id=int(form.customer_id.data), delivery_dt=form.delivery_dt.data)
+        # update order first
+        
+        order.delivery_dt = orderForm.delivery_dt
+        
+        delivery = Delivery.query.filter(Delivery.customer_order_id == order.id).first()
+        delivery.delivery_dt = orderForm.delivery_dt
+        
+        db.session.commit()
+
+        #flash(f'People created for {form.firstname.data}!', 'success')
+        return redirect(url_for('order_page.orders'))
+    
+    else:
+        form.customer_id.data = order.customer_id
+        form.delivery_dt.data = order.delivery_dt
+        form.status.data = order.status
+        form.title.data = order.title
+        
+
+    orderStatusList = _get_order_status()
+    return render_template('/orders/update_time.html', customer=customer, order=order, title='Mise a jour du jour de la commande', form=form)
+
 
 #####################################################################
 #                                                                   #

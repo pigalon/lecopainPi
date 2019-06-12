@@ -7,7 +7,7 @@
       <td valign="center">Actions sur la commande</td>
     </tr>
     <tr>
-      <td><a href="/orders/{{ customer_order_id }}" class="btn btn-outline-primary" >Annuler</a><a href="/orders/{{ customer_order_id }}" class="btn btn-outline-primary">Changer Date livraison</a>
+      <td><a href="/orders/{{ order.id }}/time" class="btn btn-outline-primary" >Annuler</a><a href="/orders/update/{{ order.id }}/time" class="btn btn-outline-primary">Changer Date livraison</a>
     </tr>
   </table>
 
@@ -34,15 +34,16 @@
             {% endif%}
             <li class="list-group-item">
                 
-                <span class="badge badge-primary">{{product.price}} €</span> 
-                {{product.name}}  
-                    {% for product_order in bought_items %}
-                        {% if product_order.product_id == product.id %}
-                        <span class="badge badge-warning">x {{product_order.quantity}}</span> 
-                        {% if total.update({"value": (product_order.quantity * product.price)|float + total.value|float }) %} {% endif %}
-                        <span style="float: right"> {{ "%.2f"|format(product_order.quantity * product.price) }}€</span>
-                        {% endif%}
-                    {% endfor %}
+              <span class="badge badge-primary">{{product.price}} €</span> 
+              {{product.name}}  
+                {% for product_order in bought_items %}
+                    {% if product_order.product_id == product.id %}
+                    <span class="badge badge-warning">x {{product_order.quantity}}</span> 
+                    {% if total.update({"value": (product_order.quantity * product.price)|float + total.value|float }) %} 
+                    {% endif %}
+                    <span style="float: right"> {{ "%.2f"|format(product_order.quantity * product.price) }}€</span>
+                    {% endif%}
+                {% endfor %}
             </li>
           {% endfor %}
           <li class="list-group-item">
