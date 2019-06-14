@@ -1,6 +1,6 @@
-from lecopain.dao.models import Customer, CustomerOrder, Product, OrderStatus, Order_product, Delivery
+from lecopain.dao.models import Customer, CustomerOrder, Product, OrderStatus, Order_product, Delivery, VendorOrder
 from lecopain import app, db
-from lecopain.form import OrderForm
+from lecopain.form import OrderForm, OrderAnnulationForm
 from lecopain.services.order_manager import OrderManager
 
 from sqlalchemy import extract
@@ -203,6 +203,37 @@ def display_update_order_time(order_id):
 
     orderStatusList = _get_order_status()
     return render_template('/orders/update_time.html', customer=customer, order=order, title='Mise a jour du jour de la commande', form=form)
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@order_page.route("/orders/<int:order_id>/annulation", methods=['GET', 'POST'])
+def display_update_order_annulation(order_id):
+    
+    order = CustomerOrder.query.get_or_404(order_id)
+    customer = Customer.query.get_or_404(order.customer_id)
+    form = OrderAnnulationForm()
+
+    print("::::::::" + str(form.submit))
+   
+    if form.submit != None:
+        # update order first
+        
+        order.status = 'ANNULEE'
+        
+        delivery = Delivery.query.filter(Delivery.customer_order_id == order.id).first()
+        delivery.status = 'ANNULEE'
+        
+        vendorOrders = VendorOrder.query.filter(VendorOrder.customer_order_id == order.id).all()
+        for vendorOrder in vendorOrders:
+            vendorOrder.status = 'ANNULEE'
+        
+        db.session.commit()
+
+        #flash(f'People created for {form.firstname.data}!', 'success')
+        return redirect(url_for('order_page.orders'))
+        
+    return render_template('/orders/annulation_order.html', customer=customer, selected_products=order.selected_products, order=order, title='Mise a jour du jour de la commande', form=form)
 
 
 #####################################################################

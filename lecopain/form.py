@@ -41,3 +41,6 @@ class DeliveryForm(FlaskForm):
     customer_order_id = IntegerField('Customer Order Id:', validators=[DataRequired()])
     status = StringField('Status')
     submit = SubmitField('Valider')
+    
+class OrderAnnulationForm(FlaskForm):
+    submit = SubmitField('Annulation')
