@@ -163,3 +163,26 @@ class OrderManager()                       :
         for product in order.selected_products:
             vendorIds.add(product.vendor_id)
         return vendorIds
+    
+    #########################################@
+    #
+    def update_order_status(self, order_id, order_status, payement_status, delivery_status): 
+        order = CustomerOrder.query.get_or_404(order_id)
+    
+        if order_status != None:
+           order.status = order_status 
+    
+        if(payement_status != None):
+            order.payement_status = payement_status
+        
+        delivery = Delivery.query.filter(Delivery.customer_order_id == order_id).first()
+        if delivery != None and delivery_status != None :
+            delivery.status = delivery_status
+        
+        vendorOrders = VendorOrder.query.filter(VendorOrder.customer_order_id == order_id).all()
+        for vendorOrder in vendorOrders:
+            if order_status != None :
+                vendorOrder.status = order_status
+        
+        db.session.commit()
+    

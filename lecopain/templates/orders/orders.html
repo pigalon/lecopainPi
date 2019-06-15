@@ -50,7 +50,7 @@
                 <a href="/orders/update/{{order.id}}" class="card-link">Modifier</a>
                 <a href="/orders/delete/{{order.id}}" class="card-link">Supprimer</a>
             </small>
-            <span style="float: right">Nb d'articles : <b>{{ map['NB_PRODUCTS'][order.id] }}</b> - Prix Total : <b>{{ map['TOTAL'][order.id] }} €</b></span>
+            <span style="float: right">Nb d'articles : <b>{{ map['NB_PRODUCTS'][order.id] }}</b> - Prix Total : <b>{{ "%.2f"|format(map['TOTAL'][order.id]) }} €</b></span>
         </div>
     </div>
     {% endfor %}

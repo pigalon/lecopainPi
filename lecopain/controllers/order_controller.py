@@ -207,33 +207,43 @@ def display_update_order_time(order_id):
 #####################################################################
 #                                                                   #
 #####################################################################
-@order_page.route("/orders/<int:order_id>/annulation", methods=['GET', 'POST'])
+@order_page.route("/orders/update/<int:order_id>/annulation", methods=['GET', 'POST'])
 def display_update_order_annulation(order_id):
     
-    order = CustomerOrder.query.get_or_404(order_id)
-    customer = Customer.query.get_or_404(order.customer_id)
-    form = OrderAnnulationForm()
+    orderServices.update_order_status(order_id, 'ANNULEE', None, 'ANNULEE')
+        
+    return redirect(url_for('order_page.orders'))
+        
 
-    print("::::::::" + str(form.submit))
-   
-    if form.submit != None:
-        # update order first
+#####################################################################
+#                                                                   #
+#####################################################################
+@order_page.route("/orders/update/<int:order_id>/created", methods=['GET', 'POST'])
+def display_update_order_created(order_id):
+    
+    orderServices.update_order_status(order_id, 'CREE', 'NON_PAYEE', 'NON_LIVREE')
+    
+    return redirect(url_for('order_page.orders'))
         
-        order.status = 'ANNULEE'
-        
-        delivery = Delivery.query.filter(Delivery.customer_order_id == order.id).first()
-        delivery.status = 'ANNULEE'
-        
-        vendorOrders = VendorOrder.query.filter(VendorOrder.customer_order_id == order.id).all()
-        for vendorOrder in vendorOrders:
-            vendorOrder.status = 'ANNULEE'
-        
-        db.session.commit()
+#####################################################################
+#                                                                   #
+#####################################################################
+@order_page.route("/orders/update/<int:order_id>/paid", methods=['GET', 'POST'])
+def display_update_order_paid(order_id):
+    
+    orderServices.update_order_status(order_id, None, 'PAYEE', 'NON_LIVREE')
+  
+    return redirect(url_for('order_page.orders'))
 
-        #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect(url_for('order_page.orders'))
-        
-    return render_template('/orders/annulation_order.html', customer=customer, selected_products=order.selected_products, order=order, title='Mise a jour du jour de la commande', form=form)
+#####################################################################
+#                                                                   #
+#####################################################################
+@order_page.route("/orders/update/<int:order_id>/delivered", methods=['GET', 'POST'])
+def display_update_order_delivered(order_id):
+    
+    orderServices.update_order_status(order_id, 'LIVREE', None, 'LIVREE')
+    
+    return redirect(url_for('order_page.orders'))
 
 
 #####################################################################
@@ -250,6 +260,15 @@ def display_delete_order(order_id):
 @order_page.route("/orders/<int:order_id>", methods=['DELETE'])
 def delete_order(order_id):
     order = CustomerOrder.query.get_or_404(order_id)
+    
+    delivery = Delivery.query.filter(Delivery.customer_order_id == order_id).first()
+    if delivery != None:
+        db.session.delete(delivery)
+    
+    vendorOrders = VendorOrder.query.filter(VendorOrder.customer_order_id == order_id).all()
+    for vendorOrder in vendorOrders:
+        db.session.delete(vendorOrder)
+            
     db.session.delete(order)
     db.session.commit()
     return jsonify({})

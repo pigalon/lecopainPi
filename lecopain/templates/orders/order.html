@@ -7,7 +7,13 @@
       <td valign="center">Actions sur la commande</td>
     </tr>
     <tr>
-      <td><a href="/orders/{{ order.id }}/annulation" class="btn btn-outline-primary" >Annuler</a><a href="/orders/update/{{ order.id }}/time" class="btn btn-outline-primary">Changer Date livraison</a>
+      <td>
+        <a href="/orders/update/{{ order.id }}/annulation" class="btn btn-outline-dark" >Annuler Commande </a>
+        <a href="/orders/update/{{ order.id }}/created" class="btn btn-outline-dark" >Créée </a>
+        <a href="/orders/update/{{ order.id }}/paid" class="btn btn-outline-dark">Payée</a>
+        <a href="/orders/update/{{ order.id }}/delivered" class="btn btn-outline-dark">Livrée</a>
+        <a href="/orders/update/{{ order.id }}/time" class="btn btn-outline-dark">Date livraison</a>
+      </td>
     </tr>
   </table>
 
