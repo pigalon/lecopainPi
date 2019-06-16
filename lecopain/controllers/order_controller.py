@@ -19,10 +19,15 @@ orderServices = OrderManager()
 #####################################################################
 #                                                                   #
 #####################################################################
-@order_page.route("/orders", methods=['GET', 'POST'])
-def orders():
+@order_page.route("/orders/customers/<int:customer_id>", methods=['GET', 'POST'])
+def orders(customer_id):
     
-    orders = CustomerOrder.query.order_by(CustomerOrder.delivery_dt.desc()).all()
+    if customer_id == 0 or  customer_id == None:
+    
+        orders = CustomerOrder.query.order_by(CustomerOrder.delivery_dt.desc()).all()    
+    else : 
+        orders = CustomerOrder.query.filter(CustomerOrder.customer_id==customer_id).order_by(CustomerOrder.delivery_dt.desc()).all()
+
     customers = Customer.query.all()
     map = orderServices.get_maps_from_orders(orders)
 
@@ -31,27 +36,33 @@ def orders():
 #####################################################################
 #                                                                   #
 #####################################################################
-@order_page.route("/orders/year/<int:year_number>/month/<int:month_number>", methods=['GET', 'POST'])
-def orders_of_month(year_number, month_number):
+@order_page.route("/orders/customers/<int:customer_id>/year/<int:year_number>/month/<int:month_number>", methods=['GET', 'POST'])
+def orders_of_month(customer_id, year_number, month_number):
     
     if(year_number == 0) :
         year_number = datetime.now().year
     
     if(month_number == 0) :
         month_number = datetime.now().month
-
-    orders = CustomerOrder.query.filter(
-        extract('year', CustomerOrder.delivery_dt) == year_number).filter(
+        
+    if customer_id == 0 or  customer_id == None:
+        orders = CustomerOrder.query.filter(extract('year', CustomerOrder.delivery_dt) == year_number).filter(
+            extract('month', CustomerOrder.delivery_dt) == month_number).all()    
+    else : 
+        orders = CustomerOrder.query.filter(CustomerOrder.customer_id == customer_id).filter(
+            extract('year', CustomerOrder.delivery_dt) == year_number).filter(
             extract('month', CustomerOrder.delivery_dt) == month_number).all()
+
+    customers = Customer.query.all()
     map = orderServices.get_maps_from_orders(orders)
    
-    return render_template('/orders/orders.html', orders=orders, map=map, title="Commandes du mois")
+    return render_template('/orders/orders.html', customers=customers, orders=orders, map=map, title="Commandes du mois")
 
 #####################################################################
 #                                                                   #
 #####################################################################
-@order_page.route("/orders/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
-def orders_of_day(year_number, month_number, day_number):
+@order_page.route("/orders/customers/<int:customer_id>/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
+def orders_of_day(customer_id, year_number, month_number, day_number):
     if(year_number == 0) :
         year_number = datetime.now().year
     
@@ -60,19 +71,26 @@ def orders_of_day(year_number, month_number, day_number):
     
     if(day_number == 0) :
         day_number = datetime.now().month
+        
+    if customer_id == 0 or  customer_id == None:
+        orders = CustomerOrder.query.filter(extract('year', CustomerOrder.delivery_dt) == year_number).filter(
+            extract('month', CustomerOrder.delivery_dt) == month_number).all()    
+    else : 
+        orders = CustomerOrder.query.filter(CustomerOrder.customer_id == customer_id).filter(
+            extract('year', CustomerOrder.delivery_dt) == year_number).filter(
+            extract('month', CustomerOrder.delivery_dt) == month_number).all()
 
-    orders = CustomerOrder.query.filter(extract('year', CustomerOrder.delivery_dt) == year_number).filter(extract('month', CustomerOrder.delivery_dt) == month_number).filter(extract('day', CustomerOrder.delivery_dt) == day_number).all()
-    
+    customers = Customer.query.all() 
     map = orderServices.get_maps_from_orders(orders)
 
-    return render_template('/orders/orders.html', orders=orders, map=map, title="Commandes du jour")
+    return render_template('/orders/orders.html', customers=customers, orders=orders, map=map, title="Commandes du jour")
 
 
 #####################################################################
 #                                                                   #
 #####################################################################
-@order_page.route("/order_products/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
-def order_products_of_day(year_number, month_number, day_number):
+@order_page.route("/order_products/<int:customer_id>/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
+def order_products_of_day(customer_id, year_number, month_number, day_number):
     if(year_number == 0) :
         year_number = datetime.now().year
     
@@ -81,9 +99,21 @@ def order_products_of_day(year_number, month_number, day_number):
     
     if(day_number == 0) :
         day_number = datetime.now().month
+        
+        
+    if customer_id == 0 or  customer_id == None:
+        orders = CustomerOrder.query.filter(extract('year', CustomerOrder.delivery_dt) == year_number).filter(
+            extract('month', CustomerOrder.delivery_dt) == month_number).filter(
+            extract('day', CustomerOrder.delivery_dt) == day_number).all()    
+    else : 
+        orders = CustomerOrder.query.filter(CustomerOrder.customer_id == customer_id).filter(
+            extract('year', CustomerOrder.delivery_dt) == year_number).filter(
+            extract('month', CustomerOrder.delivery_dt) == month_number).filter(
+            extract('day', CustomerOrder.delivery_dt) == day_number).all()
 
     orders = CustomerOrder.query.filter(extract('year', CustomerOrder.delivery_dt) == year_number).filter(extract('month', CustomerOrder.delivery_dt) == month_number).filter(extract('day', CustomerOrder.delivery_dt) == day_number).all()
     products_of_day_list = orderServices.get_resume_products_list_from_orders(orders)
+    customers = Customer.query.all() 
     map = orderServices.get_maps_from_orders(orders)
 
     return render_template('/orders/orders_by_day.html', orders=orders, map=map, bought_products=products_of_day_list, title="Commandes du jour")

@@ -3,8 +3,8 @@
 
     <div class="form-group">
         Choix du client :<br>
-        <select class="form-control" name="customer_id" style="width: 38rem; display:inline-block" >
-            <option value="" SELECTED>Tous</option>
+        <select class="form-control" name="customer_id" id="customer_id" style="width: 38rem; display:inline-block" >
+            <option value="O" SELECTED>Tous</option>
             {% for o in customers %}
                 <option value="{{ o.id }}">{{ o.firstname }}</option>
             {% endfor %}
@@ -63,12 +63,27 @@
         <li class="list-group-item list-group-item-light">
             <a class="nav-link" href="/orders/new">Création de commande</a></li>
         <li class="list-group-item list-group-item-light">
-            <a class="nav-link" href="/orders/year/0/month/0">Commandes du mois</a></li>
+            <a class="nav-link" href="/orders/customers/0/year/0/month/0">Commandes du mois</a></li>
         <li class="list-group-item list-group-item-light">
-            <a class="nav-link" href="/orders/year/0/month/0/day/0">Commandes du jour</a></li>
+            <a class="nav-link" href="/orders/customers/0/year/0/month/0/day/0">Commandes du jour</a></li>
+        <li class="list-group-item list-group-item-light">
+            <a class="nav-link" href="/orders/customers/0">Commandes des clients</a></li>
         </ul>
     </p>
 </div>
 {% endblock %}
+{% block scripts %} 
+
+    <script>
+        function search_order_by_customer() {
+
+            var customer_id = document.getElementById('customer_id');
+
+            window.location = '/orders/customers/' + customer_id.value;
+
+        };
+    </script>
+{% endblock %}
+
 
 
