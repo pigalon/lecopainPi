@@ -133,7 +133,7 @@ def order_create():
         order = CustomerOrder(title=form.title.data, status=form.status.data, customer_id=int(form.customer_id.data), delivery_dt=form.delivery_dt.data)
         orderServices.create_customer_order(order=order, tmp_products=tmp_products, tmp_quantities=tmp_quantities, tmp_prices=tmp_prices)
         #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect(url_for('order_page.orders'))
+        redirect('/orders/customers/0')
     else:
         customers = Customer.query.all()
         products  = Product.query.all()
@@ -186,7 +186,7 @@ def display_update_order(order_id):
         orderServices.update_customer_order(order=order, products=tmp_products, quantities=tmp_quantities, prices=tmp_prices)
         
         #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect(url_for('order_page.orders'))
+        return redirect('/orders/customers/0')
     
     else:
         form.customer_id.data = order.customer_id
@@ -222,7 +222,7 @@ def display_update_order_time(order_id):
         db.session.commit()
 
         #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect(url_for('order_page.orders'))
+        return redirect('/orders/customers/0')
     
     else:
         form.customer_id.data = order.customer_id
@@ -242,7 +242,7 @@ def display_update_order_annulation(order_id):
     
     orderServices.update_order_status(order_id, 'ANNULEE', None, 'ANNULEE')
         
-    return redirect(url_for('order_page.orders'))
+    return redirect('/orders/customers/0')
         
 
 #####################################################################
@@ -253,7 +253,7 @@ def display_update_order_created(order_id):
     
     orderServices.update_order_status(order_id, 'CREE', 'NON_PAYEE', 'NON_LIVREE')
     
-    return redirect(url_for('order_page.orders'))
+    return redirect('/orders/customers/0')
         
 #####################################################################
 #                                                                   #
@@ -263,7 +263,7 @@ def display_update_order_paid(order_id):
     
     orderServices.update_order_status(order_id, None, 'PAYEE', 'NON_LIVREE')
   
-    return redirect(url_for('order_page.orders'))
+    return redirect('/orders/customers/0')
 
 #####################################################################
 #                                                                   #
@@ -273,7 +273,7 @@ def display_update_order_delivered(order_id):
     
     orderServices.update_order_status(order_id, 'LIVREE', None, 'LIVREE')
     
-    return redirect(url_for('order_page.orders'))
+    return redirect('/orders/customers/0')
 
 
 #####################################################################
