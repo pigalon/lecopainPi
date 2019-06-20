@@ -3,7 +3,7 @@ from datetime import datetime
 from lecopain import app, db
 from lecopain.dto.BoughtProduct import BoughtProduct
 from lecopain.dao.models import Delivery, Order_product, Product, Vendor,VendorOrder, Customer, CustomerOrder
-
+import json
 
 class OrderManager()                       : 
 
@@ -185,4 +185,32 @@ class OrderManager()                       :
                 vendorOrder.status = order_status
         
         db.session.commit()
+
+
+    
+       
+    def calculate_delivery(self, order):
+        base_delivery_price_bases = ''' [{"nb":1, "price":0.6}, {"nb":2, "price":1.16},{"nb":3, "price":1.62}, {"nb":4, "price":2.05}, {"nb":5, "price":2.20}, {"nb":6, "price":2.70}] '''
+        prices = json.loads(base_delivery_price_bases)
+        
+        customer = Customer.query.get_or_404(order.customer_id)
+        nb_products  = len(order.selected_products)
+        delivery_price = 0.00
+
+        
+        if nb_products < 7 : 
+            for base in prices : 
+                print('base : ' + str(base['nb']))
+                if base['nb'] == nb_products :
+                    delivery_price = float(base['price'])
+            if customer.city.lower() != 'langlade' :
+                delivery_price += 0.05 * nb_products
+                
+        else :
+            delivery_price = 0,60 + 0,40 * (nb_products-1)
+            if customer.city.lower() != 'langlade' :
+                delivery_price += 0.05 * nb_products
+                
+        return delivery_price
+                     
     

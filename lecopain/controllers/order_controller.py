@@ -149,6 +149,10 @@ def order_create():
 @order_page.route("/orders/<int:order_id>", methods=['GET', 'POST'])
 def order(order_id):
     order = CustomerOrder.query.get_or_404(order_id)
+    
+    price = orderServices.calculate_delivery(order)
+    print("price : " + str(price))
+    
     customer = Customer.query.get_or_404(order.customer_id)
     products = order.selected_products
     products.sort(key=lambda x: x.vendor_id, reverse=True)
