@@ -122,13 +122,10 @@ def deliveries_of_day(year_number, month_number, day_number):
         month_number = datetime.now().month
     
     if(day_number == 0) :
-        day_number = datetime.now().month
+        day_number = datetime.now().day
 
     deliveries = Delivery.query.filter(extract('year', Delivery.delivery_dt) == year_number).filter(extract('month', Delivery.delivery_dt) == month_number).filter(extract('day', Delivery.delivery_dt) == day_number).all()
-    
-    map = delivery_services.get_maps_from_orders(deliveries)
-
-    return render_template('/orders/year/'+year_number+'/month/'+month_number+'/day/'+day_number+'.html', deliveries=deliveries, title="Livraisons du jour")
+    return render_template('/orders/customers/0'+str(year_number)+'/month/'+str(month_number)+'/day/'+str(day_number)+'.html', deliveries=deliveries, title="Livraisons du jour")
 
 
 #####################################################################

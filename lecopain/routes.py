@@ -34,27 +34,6 @@ delivery_page                                      = Blueprint('delivery_page', 
 
 #app                                               = Flask(__name__,instance_relative_config = True)
 
-
-customers2                                         = [
-    {
-        'id'                                       : 1,
-        'firstname'                                : 'Jean',
-        'lastname'                                 : 'Delatour',
-        'email'                                    : 'jean.delatour@gmail.com',
-        'address'                                  : '30 Rue Haute',
-        'cp'                                       : '30413',
-        'city'                                     : 'Langlade'
-    },
-    {
-        'id'                                       : 2,
-        'firstname'                                : 'Suzanne',
-        'lastname'                                 : 'Vega',
-        'email'                                    : 'suzanne.vega@gmail.com',
-        'address'                                  : '58 Rue de Barcelone',
-        'cp'                                       : '30000',
-        'city'                                     : 'Nimes'
-    }
-]
 locale.setlocale(locale.LC_TIME, "fr_FR")
 
 
@@ -62,7 +41,7 @@ locale.setlocale(locale.LC_TIME, "fr_FR")
 @app.route("/home")
 def index()                                        : 
     customers                                      = Customer.query.all()
-    return render_template('index.html', customers = customers)
+    return render_template('base.html', customers = customers)
 
 @app.route("/home2")
 def home()                                         : 

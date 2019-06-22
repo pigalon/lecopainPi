@@ -70,15 +70,17 @@ def orders_of_day(customer_id, year_number, month_number, day_number):
         month_number = datetime.now().month
     
     if(day_number == 0) :
-        day_number = datetime.now().month
+        day_number = datetime.now().day
         
     if customer_id == 0 or  customer_id == None:
         orders = CustomerOrder.query.filter(extract('year', CustomerOrder.delivery_dt) == year_number).filter(
-            extract('month', CustomerOrder.delivery_dt) == month_number).all()    
+            extract('month', CustomerOrder.delivery_dt) == month_number).filter(
+            extract('day', CustomerOrder.delivery_dt) == day_number).all()    
     else : 
         orders = CustomerOrder.query.filter(CustomerOrder.customer_id == customer_id).filter(
             extract('year', CustomerOrder.delivery_dt) == year_number).filter(
-            extract('month', CustomerOrder.delivery_dt) == month_number).all()
+            extract('month', CustomerOrder.delivery_dt) == month_number).filter(
+            extract('day', CustomerOrder.delivery_dt) == day_number).all()
 
     customers = Customer.query.all() 
     map = orderServices.get_maps_from_orders(orders)
@@ -89,7 +91,7 @@ def orders_of_day(customer_id, year_number, month_number, day_number):
 #####################################################################
 #                                                                   #
 #####################################################################
-@order_page.route("/order_products/<int:customer_id>/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
+@order_page.route("/orders/resume/customers/<int:customer_id>/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
 def order_products_of_day(customer_id, year_number, month_number, day_number):
     if(year_number == 0) :
         year_number = datetime.now().year

@@ -103,7 +103,7 @@
                         {{ date.day }}
 
                         {% if customer_order_id != null and customer.id == 0 %}
-                            <p align="center"><a href="/order_products/year/{{ date.year }}/month/{{ date.month }}/day/{{ date.day }}" class="btn btn-danger" >D</a></p>
+                            <p align="center"><a href="/orders/resume/customers/0/year/{{ date.year }}/month/{{ date.month }}/day/{{ date.day }}" class="btn btn-danger" >D</a></p>
                         {% elif customer_order_id != null and customer.id > 0 %}
                             <p align="center"><a href="/orders/{{ customer_order_id }}" class="btn btn-danger" >L</a></p>
                         {% else %}
@@ -144,15 +144,15 @@
 {% endblock %}
 {% block right_menu %}
 <div class="content-section">
-    <h3>Menu des commandes</h3>
+    <h3>Menu </h3>
     <p class='text-muted'>
         <ul class="list-group">
-        <li class="list-group-item list-group-item-light">
-            <a class="nav-link" href="/deliveries/new">Création de livraison</a></li>
-        <li class="list-group-item list-group-item-light">
-            <a class="nav-link" href="/deliveries/customers/0year/0/month/0">Livraisons du mois</a></li>
-        <li class="list-group-item list-group-item-light">
-            <a class="nav-link" href="/deliveries/customers/0/year/0/month/0/day/0">Livraisons du jour</a></li>
+            <li class="list-group-item list-group-item-light">
+                <a class="nav-link" href="/orders/customers/0/year/0/month/0">Commandes du mois</a></li>
+            <li class="list-group-item list-group-item-light">
+                <a class="nav-link" href="/orders/customers/0/year/0/month/0/day/0">Commandes du jour</a></li>
+            <li class="list-group-item list-group-item-light">
+                <a class="nav-link" href="/orders/customers/0">Commandes des clients</a></li>
         </ul>
     </p>
 </div>

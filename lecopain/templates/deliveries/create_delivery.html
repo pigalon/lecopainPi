@@ -41,44 +41,6 @@
             </div>
 
             <div class="form-group">
-                    Saisie de la date de la livraison :
-                    <todo id="test"></todo>
-            </div>
-
-            <!--
-            <div class="form-group">
-                Choix du produit à ajouter à la livraison
-                <div data-toggle="fieldset" id="product-fieldset">
-                    <input type="hidden" name="row_nb" id="row_nb" value=0 />
-                    <table width="50%">
-                        <tr>
-                            <td>
-                                <select class="form-control" id="product_id" name="product_id">
-                                {% for o in products %}
-                                    <option value="{{ o.id }}" SELECTED>{{ o.name }} - {{ o.price }} </option>
-                                {% endfor %}
-                                </select>
-                            </td>
-                            <td>
-                                <button type="button" id="more_fields" onclick="add_fields();" class="btn btn-primary" ><i class="fa fa-plus"></i></button>
-                                
-                            </td>
-                        </tr>
-                    </table>
-    
-                    <table id="tab_qn_ans" width="100%">
-                        <tr>
-                            <th width="20%">id</th>
-                            <th width="35%">nom</th>
-                            <th width="30%">quantité</th>
-                            <th width="30%">prix</th>
-                            <th width="10%"></th>
-                        </tr>
-                        
-                    </table>
-                </div>
-            </div> -->
-            <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>
             {% if form.errors %}
@@ -104,24 +66,4 @@
 <script src="{{ url_for('static', filename='js/product-list.js') }}"></script>
 
 <script src="{{ url_for('static', filename='tag/deliveries/todo.tag') }}" type="riot/tag"></script>
-
-<script>
-
-
-    riot.mount('#test', {
-    title: 'I want to behave!',
-    items: [
-        { name: 'Avoid excessive caffeine', done: true },
-        { name: 'Hidden item',  hidden: true },
-        { name: 'Be less provocative'  },
-        { name: 'Be nice to people' }
-    ],
-    selected_products: []
-    })
-
-    
-       
-
-   
-</script>
 {% endblock %}

@@ -1,34 +1,26 @@
-{% block doc -%}
-<!DOCTYPE html>
-<html{% block html_attribs %}{% endblock html_attribs %}>
-{%- block html %}
-  <head>
-    {%- block head %}
-    <title>{% block title %}{{title|default}}{% endblock title %}</title>
 
-    {%- block metas %}
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {%- endblock metas %}
+{% extends "layout.html" %}
+{% block content %}
 
-    {%- block styles %}
-    <!-- Bootstrap -->
-    <link href="{{bootstrap_find_resource('css/bootstrap.css', cdn='bootstrap')}}" rel="stylesheet">
-    {%- endblock styles %}
-    {%- endblock head %}
-  </head>
-  <body{% block body_attribs %}{% endblock body_attribs %}>
-    {% block body -%}
-    {% block navbar %}
-    {%- endblock navbar %}
-    {% block content -%}
-    {%- endblock content %}
+    
+{% endblock %}
+{% block right_menu %}
+<div class="content-section">
+    <h3>Menu des commandes</h3>
+    <p class='text-muted'>Une commande client génère des commandes vendeur
+        <ul class="list-group">
+        <li class="list-group-item list-group-item-light">
+                <a class="nav-link" href="/orders/new">Création de commande</a></li>
+        <li class="list-group-item list-group-item-light">
+                <a class="nav-link" href="/orders">Liste des commandes</a></li>
+        <li class="list-group-item list-group-item-light">Calendars</li>
+        <li class="list-group-item list-group-item-light">etc</li>
+        </ul>
+    </p>
+</div>
+{% endblock %}
 
-    {% block scripts %}
-    <script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>
-    <script src="{{bootstrap_find_resource('js/bootstrap.js', cdn='bootstrap')}}"></script>
-    {%- endblock scripts %}
-    {%- endblock body %}
-  </body>
-{%- endblock html %}
-</html>
-{% endblock doc -%}
+
+
+
+
