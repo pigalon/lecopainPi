@@ -1,34 +1,40 @@
 {% extends "layout.html" %}
 {% block content %}
-    {% for product in products %}
-    <div class="card border-dark mb-3" style="width: 40rem;">
-        <div class="card-header">
-            <span style="font-size: 1,8em;">
-                    <i class="fas fa-shopping-basket "></i>
-            </span>
-            Référence : <span style="color:red">{{product.id}}</span>
-            <span style="margin:auto;"><b> ----> {{ product.name }}</b></span>
-        </div>        
-        <div class="card-body">
-            <h5 class="card-title"></h5>
-            <h6 class="card-subtitle mb-2 text-muted">Prix : {{product.price }}€</h6>
-            <p class="card-text"> Vendeur : {{product.vendor.name}} </p>
-        </div>
-        <div class="card-footer">
-            <small class="text-muted">
-                <a href="/products/{{product.id}}" class="card-link">Détails</a>    
-                <a href="/products/update/{{product.id}}" class="card-link">Modifier</a>
-                <a href="/products/delete/{{product.id}}" class="card-link">Supprimer</a>
-            </small>
-        </div>
-    </div>
-    
-    {% endfor %}
+
+    {% set count = O %}
+   
+    <table class="table table-striped">
+            <thead>
+                <tr>
+                <th scope="col">id</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Vendeur</th>
+                <th scope="col">Prix</th>
+                <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for product in products %}
+                <tr>
+                <th scope="row">{{ product.id }}</th>
+                <td>{{ product.name }}</td>
+                <td>{{ product.vendor.name }}</td>
+                <td>{{ product.price }}</td>
+                <td><a href="/products/{{product.id}}" class="text-dark" alt="Détails"><i class="fas fa-eye"></i></a></span>
+                    <a href="/products/update/{{product.id}}" class="text-secondary alt="Editer"><i class="fas fa-edit"></i></a>
+                    <a href="/products/delete/{{product.id}}" class="text-danger alt="Supprimer"><i class="fas fa-trash-alt"></i></a>
+                </td>
+                </tr>
+            {%endfor%}
+            </tbody>
+        </table>
+
+
 {% endblock %}
 {% block right_menu %}
 <div class="content-section">
-    <h3>Menu des produits</h3>
-    <p class='text-muted'>You can put any information here you'd like.
+    <h3></h3><img src="{{ url_for('static', filename='img/logo.jpg') }}" width="150" height="120"> 
+    <p class='text-muted'>
         <ul class="list-group">
         <li class="list-group-item list-group-item-light">
                 <a class="nav-link" href="/products/new">Création de produit</a></li>

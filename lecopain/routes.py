@@ -3,7 +3,7 @@ from datetime import datetime
 import locale
 from lecopain import app, db
 from lecopain.form import PersonForm, OrderForm, ProductForm
-from lecopain.dao.models import Customer, CustomerOrder, OrderStatus, Product, Order_product
+from lecopain.dao.models import Customer, CustomerOrder, Product, Vendor
 
 from lecopain.controllers.customer_controller import customer_page
 from lecopain.controllers.order_controller import order_page
@@ -40,8 +40,12 @@ locale.setlocale(locale.LC_TIME, "fr_FR")
 @app.route("/")
 @app.route("/home")
 def index()                                        : 
-    customers                                      = Customer.query.all()
-    return render_template('base.html', customers = customers)
+    customers_nb = Customer.query.count()
+    orders_nb = CustomerOrder.query.count()
+    products_nb = Product.query.count()
+    vendors_nb = Vendor.query.count()
+    
+    return render_template('base.html', customers_nb=customers_nb, orders_nb=orders_nb, products_nb=products_nb, vendors_nb=vendors_nb)
 
 @app.route("/home2")
 def home()                                         : 

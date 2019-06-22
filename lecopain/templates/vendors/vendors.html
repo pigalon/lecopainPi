@@ -1,37 +1,33 @@
 {% extends "layout.html" %}
 {% block content %}
 <h1>Vendeurs</h1>
-    {% set count = O %}
-    {% for vendor in vendors %}
-    <div class="card border-dark mb-3" style="width: 40rem;">
-        <div class="card-header">
-                <span style="float: left; font-size: 2em;">
-                    <i class="fas fa-address-book "> </i> &nbsp;
-                </span> 
-                <br>
-                <b>Vendeur n° {{vendor.id}}</b>
-        </div>
-        <div class="card-body">           
-            <h5 class="card-title">
-                {{vendor.name}}  
-            </h5>  
-            <p class="card-text" style="font-size:11px;"></p>
-        </div>
-        <div class="card-footer">
-            <small class="text-muted">                 
-                <a href="/vendors/{{vendor.id}}" class="card-link">Détails</a>
-                <a href="/vendors/update/{{vendor.id}}" class="card-link">Modifier</a>
-                <a href="/vendors/delete/{{vendor.id}}" class="card-link">Supprimer</a>
-                <span style="float: right">
-                        <b> Dernière commande : </b>
-                        {% if new_orders[loop.index-1] is not none %}  
-                            {{ new_orders[loop.index-1].delivery_dt.strftime('%A %d %B %Y') }}
-                        {% endif%}
-                </span>
-            </small>
-        </div>
-    </div>
-    {% endfor %}
+
+{% set count = O %}
+   
+    <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col">id</th>
+            <th scope="col">Nom</th>
+            <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for vendor in vendors %}
+            <tr>
+            <th scope="row">{{ vendor.id }}</th>
+            <td>{{ vendor.name }}</td>
+            <td><a href="/vendors/{{vendor.id}}" class="text-dark" alt="Détails"><i class="fas fa-eye"></i></a></span>
+                <a href="/vendors/update/{{vendor.id}}" class="text-secondary alt="Editer"><i class="fas fa-edit"></i></a>
+                <a href="/vendors/delete/{{vendor.id}}" class="text-danger alt="Supprimer"><i class="fas fa-trash-alt"></i></a>
+            </td>
+            </tr>
+        {%endfor%}
+        </tbody>
+    </table>
+
+
+   
 {% endblock %}
 {% block right_menu %}
 <div class="content-section">
