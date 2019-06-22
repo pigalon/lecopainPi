@@ -40,4 +40,5 @@ docker image rm flask_lecopain
 docker image build -t python-flask-lecopain .
 docker run -it --rm -d -v /Users/pierrick/dev/work/python/lecopain:/home/python_app -w /home/python_app/lecopain -p5000:5000 --name lecopain python-flask-lecopain /bin/bash -c "FLASK_APP=routes.py flask run --host=0.0.0.0"
 
+docker run -it --rm -d -v share/CACHEDEV1_DATA/homes/pierrick/python/db -v /share/CACHEDEV1_DATA/homes/pierrick/python/projects/lecopainPi:/home/python_app -w /home/python_app/lecopain -p5000:5000 --name lecopain python-flask-lecopain /bin/bash -c "FLASK_APP=routes.py flask run --host=0.0.0.0"
 
