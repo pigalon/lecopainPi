@@ -34,7 +34,7 @@ delivery_page                                      = Blueprint('delivery_page', 
 
 #app                                               = Flask(__name__,instance_relative_config = True)
 
-locale.setlocale(locale.LC_TIME, "fr_FR")
+#locale.setlocale(locale.LC_TIME, "fr_FR")
 
 
 @app.route("/")
