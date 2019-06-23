@@ -196,21 +196,30 @@ class OrderManager()                       :
         customer = Customer.query.get_or_404(order.customer_id)
         nb_products  = len(order.selected_products)
         delivery_price = 0.00
+        rules_detail = ''
 
         
-        if nb_products < 7 : 
+        if nb_products < 7 :
+            rules_detail += 'inferieur a 7 articles et ' 
             for base in prices : 
                 print('base : ' + str(base['nb']))
                 if base['nb'] == nb_products :
                     delivery_price = float(base['price'])
             if customer.city.lower() != 'langlade' :
+                rules_detail += 'en dehors de langlade 0,05 par articles en sup' 
                 delivery_price += 0.05 * nb_products
+            else:
+                rules_detail += 'commune de langlade pas de supplement '
                 
         else :
+            rules_detail += 'superieur a 7 articles et ' 
             delivery_price = 0,60 + 0,40 * (nb_products-1)
             if customer.city.lower() != 'langlade' :
+                rules_detail += 'en dehors de langlade 0,05 par articles en sup '
                 delivery_price += 0.05 * nb_products
+            else:
+                rules_detail += 'commune de langlade pas de supplement ' 
                 
-        return delivery_price
+        return delivery_price, rules_detail
                      
     

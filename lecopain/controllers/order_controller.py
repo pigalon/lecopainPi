@@ -152,8 +152,7 @@ def order_create():
 def order(order_id):
     order = CustomerOrder.query.get_or_404(order_id)
     
-    price = orderServices.calculate_delivery(order)
-    print("price : " + str(price))
+    price, rules = orderServices.calculate_delivery(order)
     
     customer = Customer.query.get_or_404(order.customer_id)
     products = order.selected_products
@@ -161,7 +160,7 @@ def order(order_id):
     sorted_products = sorted(products, key=lambda x: x.vendor_id, reverse=True)
     bought_items = Order_product.query.filter(Order_product.order_id == order.id).all()
 
-    return render_template('/orders/order.html', order=order, bought_items=bought_items, products=sorted_products, customer=customer)
+    return render_template('/orders/order.html', order=order, bought_items=bought_items, products=sorted_products, customer=customer, delivery_price=price, rules=rules)
 
 #####################################################################
 #                                                                   #

@@ -30,6 +30,7 @@
           <p><b>Liste des articles triés par vendeur :</b></p>
           <ul class="list-group list-group-flush">
           {% set total = {'value': 0.00} %}
+          {% set nb_products = {'value': 0} %}
           {% set vendor = {'value': ''} %}
           {% for product in order.selected_products %}
             {% if vendor.value != product.vendor.name %}
@@ -47,13 +48,20 @@
                     <span class="badge badge-warning">x {{product_order.quantity}}</span> 
                     {% if total.update({"value": (product_order.quantity * product.price)|float + total.value|float }) %} 
                     {% endif %}
-                    <span style="float: right"> {{ "%.2f"|format(product_order.quantity * product.price) }}€</span>
+                    {% if nb_products.update({"value": (product_order.quantity + nb_products.value) }) %} 
+                    {% endif %}
+                    <span style="float: right"> {{ (product_order.quantity * product.price) }}€</span>
                     {% endif%}
                 {% endfor %}
             </li>
           {% endfor %}
           <li class="list-group-item">
-                <b><span style="float: right">Total : {{ "%.2f"|format(total.value|float) }}€</span></b>
+                <b><span style="float: right">Nb articles : {{nb_products.value}} - Prix Total : {{ "%.2f"|format(total.value|float) }}€</span></b>
+          </li>
+          <li class="list-group-item">
+                <b><span style="float: right">Prix de la livraison : {{delivery_price}} €</span></b>
+                <br>
+                <p><b>Règles de calcul :</b> {{rules}} </p>
           </li>
         </ul>
 
