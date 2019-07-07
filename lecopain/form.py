@@ -44,3 +44,8 @@ class DeliveryForm(FlaskForm):
     
 class OrderAnnulationForm(FlaskForm):
     submit = SubmitField('Annulation')
+
+class LoginForm(FlaskForm):
+    username = StringField('Username')
+    password = PasswordField('Password')
+    submit = SubmitField('Submit')

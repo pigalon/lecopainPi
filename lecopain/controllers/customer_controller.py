@@ -3,6 +3,7 @@ from lecopain.services.customer_manager import CustomerManager
 from lecopain import app, db
 from lecopain.form import PersonForm
 from flask import Blueprint, render_template, redirect, url_for, Flask, jsonify
+from flask_login import login_required
 import requests
 import json
 from collections import namedtuple
@@ -26,6 +27,7 @@ def json2obj(data): return json.loads(data, object_hook=_json_object_hook)
 #                                                                   #
 #####################################################################
 @customer_page.route("/customers", methods=['GET', 'POST'])
+@login_required
 def customers():
     new_orders=[]
     #customerManager = CustomerManager()
@@ -49,6 +51,7 @@ def customers():
 #                                                                   #
 #####################################################################
 @customer_page.route("/customers/new", methods=['GET', 'POST'])
+@login_required
 def create_customer():
     form = PersonForm()
     if form.validate_on_submit():
@@ -66,6 +69,7 @@ def create_customer():
 #                                                                   #
 #####################################################################
 @customer_page.route("/customers/city/<string:city_name>", methods=['GET', 'POST'])
+@login_required
 def customers_by_city(city_name):
    
     new_orders=[]
@@ -84,6 +88,7 @@ def customers_by_city(city_name):
 #                                                                   #
 #####################################################################
 @customer_page.route("/customers/<int:customer_id>")
+@login_required
 def customer(customer_id):
     customer = Customer.query.get_or_404(customer_id)
     return render_template('/customers/customer.html', customer=customer)
@@ -92,6 +97,7 @@ def customer(customer_id):
 #                                                                   #
 #####################################################################
 @customer_page.route("/customers/update/<int:customer_id>", methods=['GET', 'POST'])
+@login_required
 def display_update_order(customer_id):
     customer = Customer.query.get_or_404(customer_id)
     form = PersonForm()
@@ -127,6 +133,7 @@ def display_update_order(customer_id):
 #                                                                   #
 #####################################################################
 @customer_page.route("/customers/delete/<int:customer_id>")
+@login_required
 def display_delete_customer(customer_id):
     customer = Customer.query.get_or_404(customer_id)
     return render_template('/customers/delete_customer.html', customer=customer, title='Suppression de client')
@@ -135,6 +142,7 @@ def display_delete_customer(customer_id):
 #                                                                   #
 #####################################################################
 @customer_page.route("/customers/<int:customer_id>", methods=['DELETE'])
+@login_required
 def delete_customer(customer_id):
     customer = Customer.query.get_or_404(customer_id)
     db.session.delete(customer)

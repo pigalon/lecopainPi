@@ -1,5 +1,7 @@
 from lecopain import db
 from datetime import datetime
+from flask_login import UserMixin
+from lecopain import login_manager
 
 class Customer(db.Model)        : 
     __tablename__               = 'customers'
@@ -151,3 +153,21 @@ class DeliveryStatus(db.Model):
 
     def __repr__(self)        : 
         return "DeliveryStatus('{self.name}')"
+
+class User(UserMixin, db.Model):
+    __tablename__             = 'users'
+    id                        = db.Column(db.Integer, primary_key                                      = True)
+    username                  = db.Column(db.String(50), nullable                                      = False)
+    email                     = db.Column(db.String(50), nullable                                      = False)
+    password                  = db.Column(db.String(100), nullable                                     = False)
+    joined_at                 = db.Column(db.DateTime)
+    is_admin                  = db.Column(db.Boolean)
+
+    def __repr__(self)        : 
+        return "User('{self.name}')"
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
+

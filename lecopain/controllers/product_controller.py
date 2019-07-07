@@ -2,6 +2,7 @@ from lecopain.dao.models import Product, Vendor, ProductStatus
 from lecopain import app, db
 from lecopain.form import ProductForm
 from flask import session, Blueprint, render_template, redirect, url_for, Flask, jsonify
+from flask_login import login_required
 from sqlalchemy.orm import load_only
 from lecopain.services.product_manager import ProductManager
 
@@ -17,6 +18,7 @@ productManager = ProductManager()
 #                                                                   #
 #####################################################################
 @product_page.route("/products/<int:product_id>")
+@login_required
 def product(product_id):
     product = Product.query.get_or_404(product_id)
     vendor = Vendor.query.get_or_404(product.vendor_id)
@@ -25,6 +27,7 @@ def product(product_id):
 #                                                                   #
 #####################################################################
 @product_page.route("/products", methods=['GET', 'POST'])
+@login_required
 def products():
     products = Product.query.order_by(Product.name.desc()).all()
     return render_template('/products/products.html', products=products, title="Toutes les produits")
@@ -32,6 +35,7 @@ def products():
 #                                                                   #
 #####################################################################
 @product_page.route("/products/new", methods=['GET', 'POST'])
+@login_required
 def product_create():
     form = ProductForm()
     vendors = Vendor.query.all()
@@ -49,6 +53,7 @@ def product_create():
 #                                                                   #
 #####################################################################
 @product_page.route("/products/update/<int:product_id>", methods=['GET', 'POST'])
+@login_required
 def display_update_product(product_id):
     product = Product.query.get_or_404(product_id)
     form = ProductForm()
@@ -74,6 +79,7 @@ def display_update_product(product_id):
 #                                                                   #
 #####################################################################
 @product_page.route('/_get_product_status/')
+@login_required
 def _get_product_status():
     productsStatusList = [(row.name) for row in ProductStatus.query.all()]
     return productsStatusList
@@ -82,6 +88,7 @@ def _get_product_status():
 #                                                                   #
 #####################################################################
 @product_page.route("/products/delete/<int:product_id>")
+@login_required
 def display_delete_product(product_id):
     product = Product.query.get_or_404(product_id)
     return render_template('/products/delete_product.html', product=product, title='Suppression de produit')
@@ -90,6 +97,7 @@ def display_delete_product(product_id):
 #                                                                   #
 #####################################################################
 @product_page.route("/products/<int:product_id>", methods=['DELETE'])
+@login_required
 def delete_order(product_id):
     product = Product.query.get_or_404(product_id)
     db.session.delete(product)
@@ -100,6 +108,7 @@ def delete_order(product_id):
 #                                                                   #
 #####################################################################
 @product_page.route("/_getjs_products/<int:vendor_id>")
+@login_required
 def getjs_products(vendor_id):
     products = Product.query.filter(Product.vendor_id == vendor_id).options(load_only("name")).all()
     js_products = []

@@ -9,6 +9,7 @@ from calendar import Calendar
 from datetime import date
 
 from flask import Blueprint, render_template, redirect, url_for, Flask, request, jsonify
+from flask_login import login_required
 
 app = Flask(__name__, instance_relative_config=True)
 
@@ -41,6 +42,7 @@ class Event():
 #                                                                   #
 #####################################################################
 @delivery_page.route("/deliveries/customers/<int:customer_id>", methods=['GET', 'POST'])
+@login_required
 def deliveries(customer_id):
     
     year_number = datetime.now().year
@@ -75,6 +77,7 @@ def deliveries(customer_id):
 #                                                                   #
 #####################################################################
 @delivery_page.route("/deliveries/customers/<int:customer_id>/year/<int:year_number>/month/<int:month_number>", methods=['GET', 'POST'])
+@login_required
 def deliveries_of_month(customer_id, year_number, month_number):
     
     if(year_number == 0) :
@@ -113,6 +116,7 @@ def deliveries_of_month(customer_id, year_number, month_number):
 #                                                                   #
 #####################################################################
 @delivery_page.route("/deliveries/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
+@login_required
 def deliveries_of_day(year_number, month_number, day_number):
 
     if(year_number == 0) :
@@ -132,6 +136,7 @@ def deliveries_of_day(year_number, month_number, day_number):
 #                                                                   #
 #####################################################################
 @delivery_page.route("/deliveries/new", methods=['GET', 'POST'])
+@login_required
 def delivery_create():
     form = DeliveryForm()
 
@@ -163,6 +168,7 @@ def delivery_create():
 #                                                                   #
 #####################################################################
 @delivery_page.route("/deliveries/<int:delivery_id>", methods=['GET', 'POST'])
+@login_required
 def delivery(delivery_id):
     delivery = Delivery.query.get_or_404(delivery_id)
     return render_template('/deliveries/delivery.html', delivery=delivery)
@@ -171,6 +177,7 @@ def delivery(delivery_id):
 #                                                                   #
 #####################################################################
 @delivery_page.route("/deliveries/update/<int:delivery_id>", methods=['GET', 'POST'])
+@login_required
 def display_update_delivery(delivery_id):
     delivery = Delivery.query.get_or_404(delivery_id)
     form = DeliveryForm()
@@ -202,6 +209,7 @@ def display_update_delivery(delivery_id):
 #                                                                   #
 #####################################################################
 @delivery_page.route("/deliveries/delete/<int:delivery_id>")
+@login_required
 def display_delete_delivery(delivery_id):
     delivery = Delivery.query.get_or_404(delivery_id)
     return render_template('/deliveries/delete_delivery.html', delivery=delivery, title='Suppression de livraison')
@@ -210,6 +218,7 @@ def display_delete_delivery(delivery_id):
 #                                                                   #
 #####################################################################
 @delivery_page.route("/deliveries/<int:delivery_id>", methods=['DELETE'])
+@login_required
 def delete_delivery(delivery_id):
     delivery = Delivery.query.get_or_404(delivery_id)
     db.session.delete(delivery)
@@ -219,6 +228,7 @@ def delete_delivery(delivery_id):
 #                                                                   #
 #####################################################################
 @delivery_page.route('/_get_delivery_status/')
+@login_required
 def _get_delivery_status():
     deliveriesStatusList = [(row.name) for row in DeliveryStatus.query.all()]
     return deliveriesStatusList
@@ -227,6 +237,7 @@ def _get_delivery_status():
 #                                                                   #
 #####################################################################
 @delivery_page.route('/_getjs_delivery_event/customer/<int:customer_id>')
+@login_required
 def _getjs_delivery_event(customer_id):
     events=[]
     

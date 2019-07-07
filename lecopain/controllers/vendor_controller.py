@@ -3,6 +3,7 @@ from lecopain.services.vendor_manager import VendorManager
 from lecopain import app, db
 from lecopain.form import VendorForm
 from flask import Blueprint, render_template, redirect, url_for, Flask, jsonify
+from flask_login import login_required
 from sqlalchemy.orm import load_only
 
 
@@ -13,6 +14,7 @@ vendor_page = Blueprint('vendor_page', __name__,
                         template_folder='../templates')
 
 @vendor_page.route("/vendors", methods=['GET', 'POST'])
+@login_required
 def vendors():
     new_orders=[]
     vendorManager = VendorManager()
@@ -25,6 +27,7 @@ def vendors():
     return render_template('/vendors/vendors.html', vendors=vendors, new_orders= new_orders, cpt=0)
 
 @vendor_page.route("/vendors/new", methods=['GET', 'POST'])
+@login_required
 def create_vendor():
     form = VendorForm()
     if form.validate_on_submit():
@@ -36,6 +39,7 @@ def create_vendor():
     return render_template('/vendors/create_vendor.html', title='Formulaire Vendeur', form=form)
 
 @vendor_page.route("/vendors/<int:vendor_id>")
+@login_required
 def vendor(vendor_id):
     vendor = Vendor.query.get_or_404(vendor_id)
     return render_template('/vendors/vendor.html', vendor=vendor)
@@ -44,6 +48,7 @@ def vendor(vendor_id):
 #                                                                   #
 #####################################################################
 @vendor_page.route("/vendors/update/<int:vendor_id>", methods=['GET', 'POST'])
+@login_required
 def display_update_order(vendor_id):
     vendor = Vendor.query.get_or_404(vendor_id)
     form = VendorForm()
@@ -71,6 +76,7 @@ def display_update_order(vendor_id):
 #                                                                   #
 #####################################################################
 @vendor_page.route("/vendors/delete/<int:vendor_id>")
+@login_required
 def display_delete_vendor(vendor_id):
     vendor = Vendor.query.get_or_404(vendor_id)
     return render_template('/vendors/delete_vendor.html', vendor=vendor, title='Suppression de vendeur')
@@ -79,6 +85,7 @@ def display_delete_vendor(vendor_id):
 #                                                                   #
 #####################################################################
 @vendor_page.route("/vendors/<int:vendor_id>", methods=['DELETE'])
+@login_required
 def delete_vendor(vendor_id):
     vendor = Vendor.query.get_or_404(vendor_id)
     db.session.delete(vendor)
@@ -89,6 +96,7 @@ def delete_vendor(vendor_id):
 #                                                                   #
 #####################################################################
 @vendor_page.route("/_getjs_vendors/")
+@login_required
 def getjs_vendors():
     vendors = Vendor.query.options(load_only("name")).all()
     js_vendors = []

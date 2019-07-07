@@ -7,6 +7,7 @@ from sqlalchemy import extract
 from datetime import datetime
 
 from flask import Blueprint, render_template, redirect, url_for, Flask, request, jsonify
+from flask_login import login_required
 
 app = Flask(__name__, instance_relative_config=True)
 
@@ -20,6 +21,7 @@ orderServices = OrderManager()
 #                                                                   #
 #####################################################################
 @order_page.route("/orders/customers/<int:customer_id>", methods=['GET', 'POST'])
+@login_required
 def orders(customer_id):
     
     if customer_id == 0 or  customer_id == None:
@@ -37,6 +39,7 @@ def orders(customer_id):
 #                                                                   #
 #####################################################################
 @order_page.route("/orders/customers/<int:customer_id>/year/<int:year_number>/month/<int:month_number>", methods=['GET', 'POST'])
+@login_required
 def orders_of_month(customer_id, year_number, month_number):
     
     if(year_number == 0) :
@@ -62,6 +65,7 @@ def orders_of_month(customer_id, year_number, month_number):
 #                                                                   #
 #####################################################################
 @order_page.route("/orders/customers/<int:customer_id>/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
+@login_required
 def orders_of_day(customer_id, year_number, month_number, day_number):
     if(year_number == 0) :
         year_number = datetime.now().year
@@ -92,6 +96,7 @@ def orders_of_day(customer_id, year_number, month_number, day_number):
 #                                                                   #
 #####################################################################
 @order_page.route("/orders/resume/customers/<int:customer_id>/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
+@login_required
 def order_products_of_day(customer_id, year_number, month_number, day_number):
     if(year_number == 0) :
         year_number = datetime.now().year
@@ -125,6 +130,7 @@ def order_products_of_day(customer_id, year_number, month_number, day_number):
 #                                                                   #
 #####################################################################
 @order_page.route("/orders/new", methods=['GET', 'POST'])
+@login_required
 def order_create():
     form           = OrderForm()
     tmp_products   = request.form.getlist('products')
@@ -149,6 +155,7 @@ def order_create():
 #                                                                   #
 #####################################################################
 @order_page.route("/orders/<int:order_id>", methods=['GET', 'POST'])
+@login_required
 def order(order_id):
     order = CustomerOrder.query.get_or_404(order_id)
     
@@ -166,6 +173,7 @@ def order(order_id):
 #                                                                   #
 #####################################################################
 @order_page.route("/orders/update/<int:order_id>", methods=['GET', 'POST'])
+@login_required
 def display_update_order(order_id):
     
     order = CustomerOrder.query.get_or_404(order_id)
@@ -208,6 +216,7 @@ def display_update_order(order_id):
 #                                                                   #
 #####################################################################
 @order_page.route("/orders/update/<int:order_id>/time", methods=['GET', 'POST'])
+@login_required
 def display_update_order_time(order_id):
     
     order = CustomerOrder.query.get_or_404(order_id)
@@ -243,6 +252,7 @@ def display_update_order_time(order_id):
 #                                                                   #
 #####################################################################
 @order_page.route("/orders/update/<int:order_id>/annulation", methods=['GET', 'POST'])
+@login_required
 def display_update_order_annulation(order_id):
     
     orderServices.update_order_status(order_id, 'ANNULEE', None, 'ANNULEE')
@@ -254,6 +264,7 @@ def display_update_order_annulation(order_id):
 #                                                                   #
 #####################################################################
 @order_page.route("/orders/update/<int:order_id>/created", methods=['GET', 'POST'])
+@login_required
 def display_update_order_created(order_id):
     
     orderServices.update_order_status(order_id, 'CREE', 'NON_PAYEE', 'NON_LIVREE')
@@ -264,6 +275,7 @@ def display_update_order_created(order_id):
 #                                                                   #
 #####################################################################
 @order_page.route("/orders/update/<int:order_id>/paid", methods=['GET', 'POST'])
+@login_required
 def display_update_order_paid(order_id):
     
     orderServices.update_order_status(order_id, None, 'PAYEE', 'NON_LIVREE')
@@ -274,6 +286,7 @@ def display_update_order_paid(order_id):
 #                                                                   #
 #####################################################################
 @order_page.route("/orders/update/<int:order_id>/delivered", methods=['GET', 'POST'])
+@login_required
 def display_update_order_delivered(order_id):
     
     orderServices.update_order_status(order_id, 'LIVREE', None, 'LIVREE')
@@ -285,6 +298,7 @@ def display_update_order_delivered(order_id):
 #                                                                   #
 #####################################################################
 @order_page.route("/orders/delete/<int:order_id>")
+@login_required
 def display_delete_order(order_id):
     order = CustomerOrder.query.get_or_404(order_id)
     return render_template('/orders/delete_order.html', order=order, title='Suppression de commande')
@@ -293,6 +307,7 @@ def display_delete_order(order_id):
 #                                                                   #
 #####################################################################
 @order_page.route("/orders/<int:order_id>", methods=['DELETE'])
+@login_required
 def delete_order(order_id):
     order = CustomerOrder.query.get_or_404(order_id)
     
@@ -312,6 +327,7 @@ def delete_order(order_id):
 #                                                                   #
 #####################################################################
 @order_page.route('/_get_order_status/')
+@login_required
 def _get_order_status():
     ordersStatusList = [(row.name) for row in OrderStatus.query.all()]
     return ordersStatusList
@@ -320,6 +336,7 @@ def _get_order_status():
 #                                                                   #
 #####################################################################
 @order_page.route('/_getjs_order_status/')
+@login_required
 def _getjs_order_status():
     ordersStatusList = [(row.name) for row in OrderStatus.query.all()]
     return jsonify({'orders_status': ordersStatusList})

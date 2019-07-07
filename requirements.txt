@@ -5,6 +5,8 @@ Flask-bootstrap
 Flask-Nav
 Flask-script
 Flask-sqlalchemy
+flask-login
+flask_sslify
 
 Requests
 Jinja2
@@ -14,3 +16,4 @@ docopt
 itsdangerous
 records
 tablib
+pyopenssl
