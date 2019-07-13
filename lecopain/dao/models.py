@@ -176,7 +176,6 @@ class User(db.Model, UserMixin):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
-        print("psssss : " + str(self.password) + " - " + str(password))
         return check_password_hash(self.password, password)
 
     def __repr__(self):
@@ -187,16 +186,5 @@ def get_user(username):
   return User.query.filter(User.username == username).first()
 
 
-#@login.request_loader
-#def request_loader(request):
-    
-#    username = request.form.get('username')
-#    user = User.query.filter(User.username == username).first()
-    
-    # DO NOT ever store passwords in plaintext and always compare password
-    # hashes using constant-time comparison!
-#    user.is_authenticated = request.form['password'] == user.password
-
-#    return user
 
 

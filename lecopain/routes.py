@@ -46,7 +46,6 @@ user_page                                          = Blueprint('user_page',  __n
 
 @app.route("/")
 @app.route("/home", methods=['GET', 'POST'])
-#@login_required
 def home():
     if current_user.is_authenticated:
         customers_nb = Customer.query.count()
@@ -57,27 +56,14 @@ def home():
     else :
         return redirect(url_for('user_page.login'))
 
-#@app.route('/login', methods=['POST'])
-#def do_admin_login():
-#    if request.form['password'] == 'password' and request.form['username'] == 'admin':
-#        session['logged_in'] = True
-#    else:
-#        flash('wrong password!')
-#    return home()
-
-#@app.route("/logout")
-#def logout():
-#    session['logged_in'] = False
-#    return home()
-
 
 @app.route("/home2")
-def home2()                                         : 
+def home2() : 
     return render_template('home.html')
 
 @app.route('/_get_customers/')
-def _get_customers()                               : 
-    customers                                      = [(row.id, row.firstname) for row in Customer.query.all()]
+def _get_customers() : 
+    customers = [(row.id, row.firstname) for row in Customer.query.all()]
     return jsonify(customers)
 
 
