@@ -2,6 +2,7 @@ from lecopain import db
 from datetime import datetime
 from flask_login import UserMixin
 from lecopain import login_manager
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class Customer(db.Model)        : 
     __tablename__               = 'customers'
@@ -154,20 +155,48 @@ class DeliveryStatus(db.Model):
     def __repr__(self)        : 
         return "DeliveryStatus('{self.name}')"
 
-class User(UserMixin, db.Model):
+class User(db.Model, UserMixin):
     __tablename__             = 'users'
-    id                        = db.Column(db.Integer, primary_key                                      = True)
-    username                  = db.Column(db.String(50), nullable                                      = False)
-    email                     = db.Column(db.String(50), nullable                                      = False)
-    password                  = db.Column(db.String(100), nullable                                     = False)
+    
+    id                        = db.Column(db.Integer, primary_key = True)
+    username                  = db.Column(db.String(50), nullable = False)
+    email                     = db.Column(db.String(50), nullable = False)
+    password                  = db.Column(db.String(100), nullable= False)
     joined_at                 = db.Column(db.DateTime)
     is_admin                  = db.Column(db.Boolean)
 
-    def __repr__(self)        : 
-        return "User('{self.name}')"
+
+    def get_id(self):
+        return self.username
+
+    def is_active(self):
+       return True
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        print("psssss : " + str(self.password) + " - " + str(password))
+        return check_password_hash(self.password, password)
+
+    def __repr__(self):
+       return " "
 
 @login_manager.user_loader
-def load_user(id):
-    return User.query.get(int(id))
+def get_user(username):
+  return User.query.filter(User.username == username).first()
+
+
+#@login.request_loader
+#def request_loader(request):
+    
+#    username = request.form.get('username')
+#    user = User.query.filter(User.username == username).first()
+    
+    # DO NOT ever store passwords in plaintext and always compare password
+    # hashes using constant-time comparison!
+#    user.is_authenticated = request.form['password'] == user.password
+
+#    return user
 
 

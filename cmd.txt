@@ -45,14 +45,17 @@ docker run -it -d -v /share/CACHEDEV1_DATA/homes/pierrick/python/db:/db -v /shar
 
 docker run -it --rm -d -v /Users/pierrick/dev/db:/db -v /Users/pierrick/dev/work/python/lecopain:/home/python_app -w /home/python_app/lecopain -p5001:5000 --name lecopain python-flask-lecopain /bin/bash -c "FLASK_APP=routes.py flask run --host=0.0.0.0"
 
+--------
+Local + https + Auth
+python run.py True /Users/pierrick/dev/key/lecopain
+
 
 ---------
 Docker & Lecopain + https + authentication
 ---------
-docker run -it -d -v /share/CACHEDEV1_DATA/homes/pierrick/python/db:/db -v /share/CACHEDEV1_DATA/homes/pierrick/python/projects/lecopainPi:/home/python_app -w /home/python_app -p5001:5000 --name lecopain python-flask-lecopain /bin/bash -c "python3 run.py False /homes/pierrick/key/lecopain"
+docker run -it -d -v /share/CACHEDEV1_DATA/homes/pierrick/python/db:/db -v /share/CACHEDEV1_DATA/homes/pierrick/python/projects/lecopainPi:/home/python_app -v /share/CACHEDEV1_DATA/homes/pierrick/key/lecopain:/home/key -w /home/python_app -p5001:5000 --name lecopain python-flask-lecopain /bin/bash -c "pip3 install -r requirements.txt; python3 run.py False /home/key"
 
 docker image build -t lecopain .
-docker exec -it lecopain /bin/sh
+docker exec -it lecopain /bin/bash
 
-docker run -it -d -v /share/CACHEDEV1_DATA/homes/pierrick/python/db:/db -v /share/CACHEDEV1_DATA/homes/pierrick/python/projects/lecopainPi:/home/python_app -v /homes/pierrick/key/lecopain:/home/key-w /home/python_app -p5001:5000 --name lecopain python-flask-lecopain /bin/bash -c "pip3 install -r requirements.txt; python3 run.py False /home/key"
 

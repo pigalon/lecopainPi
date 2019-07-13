@@ -1,9 +1,9 @@
 from flask import Flask, Blueprint, render_template, url_for,  flash, redirect, jsonify, request, session
-from flask_login import login_required
+from flask_login import login_required, current_user
 from datetime import datetime
 import locale
 from lecopain import app, db
-from lecopain.form import PersonForm, OrderForm, ProductForm
+from lecopain.form import PersonForm, OrderForm, ProductForm, LoginForm
 from lecopain.dao.models import Customer, CustomerOrder, Product, Vendor, User
 
 from lecopain.controllers.customer_controller import customer_page
@@ -45,23 +45,17 @@ user_page                                          = Blueprint('user_page',  __n
 
 
 @app.route("/")
-@app.route("/home")
+@app.route("/home", methods=['GET', 'POST'])
+#@login_required
 def home():
-    print(generate_password_hash('melina30'))
-    if not session.get('logged_in'):
-        return render_template('login.html')
-    else:
+    if current_user.is_authenticated:
         customers_nb = Customer.query.count()
         orders_nb = CustomerOrder.query.count()
         products_nb = Product.query.count()
         vendors_nb = Vendor.query.count()
-
-        user = User()
-        for attr in dir(user):
-            print("user.%s = %r" % (attr, getattr(user, attr)))
-        
         return render_template('base.html', customers_nb=customers_nb, orders_nb=orders_nb, products_nb=products_nb, vendors_nb=vendors_nb)
-
+    else :
+        return redirect(url_for('user_page.login'))
 
 #@app.route('/login', methods=['POST'])
 #def do_admin_login():
@@ -71,10 +65,11 @@ def home():
 #        flash('wrong password!')
 #    return home()
 
-@app.route("/logout")
-def logout():
-    session['logged_in'] = False
-    return home()
+#@app.route("/logout")
+#def logout():
+#    session['logged_in'] = False
+#    return home()
+
 
 @app.route("/home2")
 def home2()                                         : 
@@ -86,9 +81,10 @@ def _get_customers()                               :
     return jsonify(customers)
 
 
-@app.login_manager.user_loader
-def load_user(user_id):
-    return User.get(user_id)
+@app.route("/settings")
+@login_required
+def settings():
+    pass
 
 if __name__ == '__main__': 
      app.run(host                                  = '0.0.0.0', port                         = 5000)
