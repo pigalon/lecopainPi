@@ -340,3 +340,14 @@ def _get_order_status():
 def _getjs_order_status():
     ordersStatusList = [(row.name) for row in OrderStatus.query.all()]
     return jsonify({'orders_status': ordersStatusList})
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@order_page.route('/_getjs_order_count/')
+@login_required
+def _getjs_order_count():
+    order_count = CustomerOrder.query.count()
+    return jsonify({'orders_count': order_count})
+
+

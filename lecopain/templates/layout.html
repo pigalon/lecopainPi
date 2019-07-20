@@ -21,8 +21,8 @@
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fullcalendar/daygrid/main.css')}}" />  
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fullcalendar/timegrid/main.css')}}" /> 
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fullcalendar/list/main.css')}}" />-->
-    {% if title %}
-  <title>Flask page - {{ title }}</title>
+  {% if title %}
+    <title>Flask page - {{ title }}</title>
   {% endif %}
 
   
@@ -55,6 +55,9 @@
           <a class="nav-link" href="/deliveries/customers/0">Livraisons</a>
         </li>
       </ul>
+      <a href="" class="notif"><span class="notification_count">2<span></a>
+      <mytag>
+      </mytag>
       <span class="navbar-text">
          <a href="/logout"><p style="color:white;font-size:18px;"><i class="fa fa-eject"></i></p></a>
       </span>
@@ -64,6 +67,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-8">
+
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
@@ -103,6 +107,11 @@
   <script src="{{ url_for('static', filename='js/riot+compiler.js') }}"></script>
   <script src="{{ url_for('static', filename='js/moment/fr.js') }}"></script>
   <!--<script src="{{ url_for('static', filename='foundation/javascripts/modernizr.foundation.js') }}"></script>-->
+  <script src="{{ url_for('static', filename='tag/navbar/orders_count.tag') }}" type="riot/tag"></script>
+  <script>
+    riot.mount("mytag");
+ </script> 
+ 
 
   {% block scripts %}{% endblock %}
 
