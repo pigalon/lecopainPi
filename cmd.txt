@@ -58,4 +58,7 @@ docker run -it -d -v /share/CACHEDEV1_DATA/homes/pierrick/python/db:/db -v /shar
 docker image build -t lecopain .
 docker exec -it lecopain /bin/bash
 
+Pour une bonne redirection vers l'extérieur
+---------------------------------
+docker run -it -d --net qnet-static-eth0-4c0713 --ip 192.168.1.56 -v /share/CACHEDEV1_DATA/homes/pierrick/python/db:/db -v /share/CACHEDEV1_DATA/homes/pierrick/python/projects/lecopainPi:/home/python_app -v /share/CACHEDEV1_DATA/homes/pierrick/key/lecopain:/home/key -w /home/python_app -p5001:5000 --name lecopain python-flask-lecopain /bin/bash -c "pip3 install -r requirements.txt; python3 run.py False /home/key"
 
