@@ -203,6 +203,15 @@ def get_user(username):
   return User.query.filter(User.username == username).first()
 
 
+class Event(db.Model):
+    __tablename__       = 'events'
+    
+    id                  = db.Column(db.Integer, primary_key = True)
+    id_element          = db.Column(db.String(50), nullable = False)
+    action              = db.Column(db.String(50), nullable = False)
+    type_element        = db.Column(db.String(100), nullable= False)
+    at                  = db.Column(db.DateTime)
+
 
 
 
