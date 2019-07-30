@@ -2,8 +2,9 @@ from datetime import datetime
 
 from lecopain import app, db
 from lecopain.dto.BoughtProduct import BoughtProduct
-from lecopain.dao.models import Delivery, Order_product, Product, Vendor,VendorOrder, Customer, CustomerOrder
+from lecopain.dao.models import Delivery, Order_product, Product, Vendor,VendorOrder, Customer, CustomerOrder, OrderStatus_Enum
 import json
+
 
 class OrderManager()                       : 
 
@@ -187,7 +188,8 @@ class OrderManager()                       :
         db.session.commit()
 
 
-    
+    #########################################@
+    #    
        
     def calculate_delivery(self, order):
         base_delivery_price_bases = ''' [{"nb":1, "price":0.6}, {"nb":2, "price":1.16},{"nb":3, "price":1.62}, {"nb":4, "price":2.05}, {"nb":5, "price":2.20}, {"nb":6, "price":2.70}] '''
@@ -222,4 +224,15 @@ class OrderManager()                       :
                 
         return delivery_price, rules_detail
                      
-    
+    #########################################@
+    # 
+
+    def get_in_progess_orders_counter(self):
+        return CustomerOrder.query.filter(CustomerOrder.status == OrderStatus_Enum.CREE.value).count()
+
+    #########################################@
+    # 
+
+    def get_latest_orders_counter(self):
+        print("date : " + str(date('now', 'start of day','-2 days') ))
+        return CustomerOrder.query.filter(CustomerOrder.created_at > date('now', 'start of day','-2 days') ).count()

@@ -347,7 +347,9 @@ def _getjs_order_status():
 @order_page.route('/_getjs_order_count/')
 @login_required
 def _getjs_order_count():
-    order_count = CustomerOrder.query.count()
-    return jsonify({'orders_count': order_count})
+    total_orders_count = CustomerOrder.query.count()
+    in_progress_orders_count = orderServices.get_in_progess_orders_counter()
+    latest_orders_count = orderServices.get_latest_orders_counter()
+    return jsonify({'total_orders_count': total_orders_count, 'in_progress_orders_count':in_progress_orders_count})
 
 

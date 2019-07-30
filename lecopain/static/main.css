@@ -15,12 +15,7 @@ a.notif {
   background-size: contain;
   text-decoration: none;
 }
-.num {
-  position: absolute;
-  right: 11px;
-  top: 6px;
-  color: #fff;
-}
+
 
 .notification_count
 {
@@ -39,3 +34,9 @@ margin-top: -11px;*/
 font-size: 11px;
 }
 
+.num {
+  position: absolute;
+  right: 11px;
+  top: 6px;
+  color: #fff;
+}

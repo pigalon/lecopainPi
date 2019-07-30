@@ -3,6 +3,23 @@ from datetime import datetime
 from flask_login import UserMixin
 from lecopain import login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
+from aenum import Enum
+
+class OrderStatus_Enum(Enum):
+    ANNULEE="ANNULEE"
+    DEFAUT="DEFAUT"
+    CREE="CREE"
+    TERMINEE="TERMINEE"
+    
+class DeliveryStatus_Enum(Enum):
+    ANNULEE="ANNULEE"
+    LIVREE="LIVREE"
+    DEFAUT="DEFAUT"
+    CREE="CREE"
+    
+class PaymentStatus_Enum(Enum):
+    NON_PAYEE="NON_PAYEE"
+    PAYEE="PAYEE"
 
 class Customer(db.Model)        : 
     __tablename__               = 'customers'
@@ -186,13 +203,8 @@ def get_user(username):
   return User.query.filter(User.username == username).first()
 
 
-class Event(db.Model):
-    __tablename__       = 'events'
-    
-    id                  = db.Column(db.Integer, primary_key = True)
-    id_element          = db.Column(db.String(50), nullable = False)
-    action              = db.Column(db.String(50), nullable = False)
-    type_element        = db.Column(db.String(100), nullable= False)
-    at                  = db.Column(db.DateTime)
+
+
+
    
 

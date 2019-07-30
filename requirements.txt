@@ -17,3 +17,4 @@ itsdangerous
 records
 tablib
 pyopenssl
+aenum
