@@ -2,19 +2,11 @@ Flask
 Flask-wtf
 Flask-restful
 Flask-bootstrap
-Flask-Nav
 Flask-script
 Flask-sqlalchemy
 flask-login
-flask_sslify
 
 Requests
 Jinja2
-MarkupSafe
 Werkzeug
-docopt
-itsdangerous
-records
-tablib
-pyopenssl
 aenum

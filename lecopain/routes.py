@@ -12,6 +12,8 @@ from lecopain.controllers.product_controller import product_page
 from lecopain.controllers.vendor_controller import vendor_page
 from lecopain.controllers.delivery_controller import delivery_page
 from lecopain.controllers.user_controller import user_page
+from lecopain.controllers.subscription_controller import subscription_page
+
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -22,6 +24,7 @@ app.register_blueprint(product_page)
 app.register_blueprint(vendor_page)
 app.register_blueprint(delivery_page)
 app.register_blueprint(user_page)
+app.register_blueprint(subscription_page)
 
 
 
@@ -36,6 +39,8 @@ vendor_page                                        = Blueprint('vendor_page',  _
 delivery_page                                      = Blueprint('delivery_page',  __name__,
                         template_folder            = './templates')
 user_page                                          = Blueprint('user_page',  __name__,
+                        template_folder            = './templates')
+subscription_page                                  = Blueprint('subscription_page',  __name__,
                         template_folder            = './templates')
 
 

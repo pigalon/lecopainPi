@@ -21,6 +21,10 @@ class PaymentStatus_Enum(Enum):
     NON_PAYEE="NON_PAYEE"
     PAYEE="PAYEE"
 
+class SubscriptionStatus_Enum(Enum):
+    EN_COURS="EN COURS"
+    TERMINE="TERMINE"
+
 class Customer(db.Model)        : 
     __tablename__               = 'customers'
     id                          = db.Column(db.Integer, primary_key                             = True)
@@ -53,15 +57,16 @@ class Customer(db.Model)        :
 
 class CustomerOrder(db.Model)   : 
     __tablename__               = 'customer_orders'
-    id                          = db.Column(db.Integer, primary_key                             = True)
-    title                       = db.Column(db.String(50), nullable                             = False)
-    created_at                  = db.Column(db.DateTime, nullable                               = False, default = datetime.utcnow)
-    customer_id                 = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable = False)
-    status                      = db.Column(db.String(20), nullable                             = False)
-    vendorOrders                = db.relationship('VendorOrder', backref = 'customerOrder', lazy = True)
-    delivery                    = db.relationship('Delivery', uselist=False)
+    id                          = db.Column(db.Integer, primary_key                                 = True)
+    title                       = db.Column(db.String(50), nullable                                 = False)
+    created_at                  = db.Column(db.DateTime, nullable                                   = False, default = datetime.utcnow)
+    customer_id                 = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable     = False)
+    status                      = db.Column(db.String(20), nullable                                 = False)
+    vendorOrders                = db.relationship('VendorOrder', backref = 'customerOrder', lazy    = True)
+    delivery                    = db.relationship('Delivery', uselist                               =False)
     delivery_dt                 = db.Column(db.DateTime)
-    payement_status             = db.Column(db.String(20), nullable                             = False)
+    payement_status             = db.Column(db.String(20), nullable                                 = False)
+    subscription_id             = db.Column(db.Integer, nullable                                    = True)
     
     
     def to_dict(self)           : 
@@ -116,8 +121,6 @@ class Order_product(db.Model) :
     quantity                  = db.Column(db.Integer)
     price                     = db.Column(db.Float)
  
-    def __repr__(self)        : 
-        return "CustomerOrder('{self.title}', '{self.status}', {customer_id} '{self.delivery_dt}')"
     
     def to_dict(self)         : 
         return {
@@ -202,7 +205,35 @@ class User(db.Model, UserMixin):
 def get_user(username):
   return User.query.filter(User.username == username).first()
 
+class Subscription(db.Model)    :
 
+    __tablename__               = 'subscriptions'
+    id                          = db.Column(db.Integer, primary_key                             = True)
+    customer_id                 = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable = False)
+    frequency                   = db.Column(db.String(1))
+    number_day                  = db.Column(db.Integer)
+    start                       = db.Column(db.DateTime)
+    end                         = db.Column(db.DateTime)
+    status                      = db.Column(db.String(40))
+    payement_status             = db.Column(db.String(20), nullable                             = False)
+    promotion                   = db.Column(db.String(200))
+    
+
+class Subscription_product(db.Model) : 
+    __tablename__             = 'subscription_product'
+   
+    subscription_id           = db.Column(db.Integer, db.ForeignKey('subscriptions.id'), primary_key   = True)
+    product_id                = db.Column(db.Integer, db.ForeignKey('products.id'), primary_key        = True)
+    quantity                  = db.Column(db.Integer)
+    price                     = db.Column(db.Float)
+    
+    def to_dict(self)         : 
+        return {
+            'subscription_id' : self.subscription_id,
+            'product_id'      : self.product_id,
+            'quantity'        : self.quantity,
+            'price'           : self.price
+        }
 
 
 

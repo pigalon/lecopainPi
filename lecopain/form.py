@@ -49,3 +49,14 @@ class LoginForm(FlaskForm):
     username = StringField('Username')
     password = PasswordField('Password')
     submit = SubmitField('Submit')
+
+class SubscriptionForm(FlaskForm):
+    title = StringField('Title')
+    customer_id = IntegerField('Customer Id:', validators=[DataRequired()])
+    frequency   = StringField('Frequence')
+    number_day  = StringField('Nombre de jour')
+    start       = DateTimeField('Date de debut', format='%d/%m/%Y %H:%M:%S')
+    end         = DateTimeField('Date de fin', format='%d/%m/%Y %H:%M:%S')
+    status      = StringField('Status')
+    promotion   = StringField('Promotion')
+    submit      = SubmitField('Valider')
