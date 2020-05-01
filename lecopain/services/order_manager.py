@@ -234,5 +234,5 @@ class OrderManager()                       :
     # 
 
     def get_latest_orders_counter(self):
-        print("date : " + str(date('now', 'start of day','-2 days') ))
+        #print("date : " + str(date('now', 'start of day','-2 days') ))
         return CustomerOrder.query.filter(CustomerOrder.created_at > date('now', 'start of day','-2 days') ).count()
