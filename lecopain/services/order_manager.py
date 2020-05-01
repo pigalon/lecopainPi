@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 from lecopain import app, db
 from lecopain.dto.BoughtProduct import BoughtProduct
