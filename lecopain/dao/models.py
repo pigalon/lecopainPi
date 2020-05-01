@@ -182,6 +182,10 @@ class User(db.Model, UserMixin):
     joined_at                 = db.Column(db.DateTime)
     is_admin                  = db.Column(db.Boolean)
 
+    def __repr__(self)        : 
+        return "User('{self.username}', '{self.email}', '{self.password}')"
+
+
 
     def get_id(self):
         return self.username
