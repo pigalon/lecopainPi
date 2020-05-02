@@ -4,10 +4,8 @@ from flask_login import LoginManager
 
 app                                   = Flask(__name__)
 app.secret_key = 'super secret string'
+app.config.from_object('config.BaseConfig')
 
-
-app.config['SECRET_KEY']              = '5791628bb0b13ce0c676dfde280ba245'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////db/site.db'
 db                                    = SQLAlchemy(app)
 
 main                                  = Blueprint('main', __name__)

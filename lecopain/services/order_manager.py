@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 from lecopain import app, db
 from lecopain.dto.BoughtProduct import BoughtProduct
@@ -16,7 +16,6 @@ class OrderManager()                       :
                 
                 order_product = Order_product.query.filter(Order_product.order_id == order.id).filter(Order_product.product_id == product.id).first()
                 
-                lenght_list = len(products)
                 bAdded = False
                 
                 for index, item in enumerate(products):
@@ -42,7 +41,7 @@ class OrderManager()                       :
         for order in orders : 
             customer = Customer.query.get_or_404(order.customer_id)
             customerMap[order.id] = str(customer.firstname + " " + customer.lastname)
- 
+
             bought_items = Order_product.query.filter(Order_product.order_id == order.id).all()
             total = 0
             quantity = 0
@@ -64,11 +63,8 @@ class OrderManager()                       :
     #########################################@
     #
     def create_customer_order(self, order, tmp_products, tmp_quantities, tmp_prices): 
-        products = {}
         order.created_at = datetime.now()
-
         order = self.create_product_purchases(order, tmp_products, tmp_quantities, tmp_prices)
-            
         self.create_default_delivery(order)
 
         
@@ -77,13 +73,8 @@ class OrderManager()                       :
     def update_customer_order(self, order, products, quantities, prices): 
         
         order.created_at = datetime.now()
-        
         self.delete_every_order_dependencies(order)
-        
         order = self.create_product_purchases(order, products, quantities, prices)
-        
-        delivery = Delivery.query.filter(Delivery.customer_order_id == order.id).first()
-        
         db.session.commit()
         
 
@@ -98,7 +89,7 @@ class OrderManager()                       :
 
         vendorOrders = self.generate_vendor_orders(order=order)
         for vendorOrder in vendorOrders :
-           db.session.add(vendorOrder)
+            db.session.add(vendorOrder)
         return order
     #########################################@
     #
@@ -107,7 +98,6 @@ class OrderManager()                       :
         for i in range(0,len(tmp_products)): 
             product = Product.query.get(tmp_products[i])
             order.selected_products.append(product)
-     
         return order
     
     ##########################################
@@ -135,7 +125,6 @@ class OrderManager()                       :
         for i in range(0,len(tmp_products)): 
             product = Product.query.get(tmp_products[i])
             order.selected_products.append(product)
-     
         return order
 
     #########################################@
@@ -171,7 +160,7 @@ class OrderManager()                       :
         order = CustomerOrder.query.get_or_404(order_id)
     
         if order_status != None:
-           order.status = order_status 
+            order.status = order_status 
     
         if(payement_status != None):
             order.payement_status = payement_status
@@ -190,7 +179,6 @@ class OrderManager()                       :
 
     #########################################@
     #    
-       
     def calculate_delivery(self, order):
         base_delivery_price_bases = ''' [{"nb":1, "price":0.6}, {"nb":2, "price":1.16},{"nb":3, "price":1.62}, {"nb":4, "price":2.05}, {"nb":5, "price":2.20}, {"nb":6, "price":2.70}] '''
         prices = json.loads(base_delivery_price_bases)
@@ -223,7 +211,6 @@ class OrderManager()                       :
                 rules_detail += 'commune de langlade pas de supplement ' 
                 
         return delivery_price, rules_detail
-                     
     #########################################@
     # 
 
@@ -234,5 +221,5 @@ class OrderManager()                       :
     # 
 
     def get_latest_orders_counter(self):
-        print("date : " + str(date('now', 'start of day','-2 days') ))
-        return CustomerOrder.query.filter(CustomerOrder.created_at > date('now', 'start of day','-2 days') ).count()
+        date_since_2_days = date('now', 'start of day','-2 days')
+        return CustomerOrder.query.filter(CustomerOrder.created_at > date_since_2_days).count()
