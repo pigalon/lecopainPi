@@ -70,7 +70,7 @@ class CustomerOrder(db.Model):
         'VendorOrder', backref='customerOrder', lazy=True)
     delivery = db.relationship('Delivery', uselist=False)
     delivery_dt = db.Column(db.DateTime)
-    payement_status = db.Column(db.String(20), nullable=False)
+    payment_status = db.Column(db.String(20), nullable=False)
 
     def to_dict(self):
         return {

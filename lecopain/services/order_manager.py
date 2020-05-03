@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 
 from lecopain import app, db
 from lecopain.dto.BoughtProduct import BoughtProduct
@@ -161,14 +161,14 @@ class OrderManager():
 
     # @
     #
-    def update_order_status(self, order_id, order_status, payement_status, delivery_status):
+    def update_order_status(self, order_id, order_status, payment_status, delivery_status):
         order = CustomerOrder.query.get_or_404(order_id)
 
         if order_status != None:
             order.status = order_status
 
-        if(payement_status != None):
-            order.payement_status = payement_status
+        if(payment_status != None):
+            order.payment_status = payment_status
 
         delivery = Delivery.query.filter(
             Delivery.customer_order_id == order_id).first()
@@ -227,5 +227,5 @@ class OrderManager():
     #
 
     def get_latest_orders_counter(self):
-        date_since_2_days = date('now', 'start of day', '-2 days')
+        date_since_2_days = date.today() - timedelta(days=2)
         return CustomerOrder.query.filter(CustomerOrder.created_at > date_since_2_days).count()
