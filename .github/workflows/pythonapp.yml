@@ -41,3 +41,6 @@ jobs:
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: true
+      - name: ls the folder
+        run: |
+          ls -al .
