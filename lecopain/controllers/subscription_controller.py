@@ -1,4 +1,4 @@
-from lecopain.dao.models import Subscription, Subscription_product, Product , SubscriptionStatus_Enum, Customer
+from lecopain.dao.models import Subscription, Subscription_product, Product , SubscriptionFrequency_Enum, Customer
 from lecopain import app, db
 from lecopain.form import SubscriptionForm
 from lecopain.services.subscription_manager import SubscriptionManager
@@ -55,7 +55,7 @@ def subscription_create():
         products  = Product.query.all()
     #else:
     #    flash(f'Failed!', 'danger')
-    subscriptionStatusList = _get_subscription_status()
+    subscriptionStatusList = _get_subscription_frequency()
 
     return render_template('/subscriptions/create_subscription.html', title='Creation d\'abonnement', form=form, customers=customers, products=products, subscriptionStatusList=subscriptionStatusList)
 
@@ -63,8 +63,8 @@ def subscription_create():
 #####################################################################
 #                                                                   #
 #####################################################################
-@subscription_page.route('/_get_subscription_status/')
+@subscription_page.route('/_get_subscription_frequency/')
 @login_required
-def _get_subscription_status():
-    subscriptionsStatusList = [(row.name) for row in SubscriptionStatus_Enum]
-    return subscriptionsStatusList
+def _get_subscription_frequency():
+    subscriptionsFrequencyList = [(row.name) for row in SubscriptionFrequency_Enum]
+    return subscriptionsFrequencyList

@@ -30,6 +30,12 @@ class SubscriptionStatus_Enum(Enum):
     TERMINE = "TERMINE"
 
 
+class SubscriptionFrequency_Enum(Enum):
+    JOUR = "JOUR"
+    SEMAINE = "SEMAINE"
+    MOIS = "MOIS"
+
+
 class Customer(db.Model):
     __tablename__ = 'customers'
     id = db.Column(db.Integer, primary_key=True)
@@ -229,6 +235,41 @@ class User(db.Model, UserMixin):
 @login_manager.user_loader
 def get_user(username):
     return User.query.filter(User.username == username).first()
+
+
+class Subscription(db.Model):
+
+    __tablename__ = 'subscriptions'
+    id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey(
+        'customers.id'), nullable=False)
+    frequency = db.Column(db.String(1))
+    days_in = db.Column(db.String(20))
+    days_out = db.Column(db.String(20))
+    start = db.Column(db.DateTime)
+    end = db.Column(db.DateTime)
+    status = db.Column(db.String(40))
+    payement_status = db.Column(db.String(20), nullable=False)
+    promotion = db.Column(db.String(200))
+
+
+class Subscription_product(db.Model):
+    __tablename__ = 'subscription_product'
+
+    subscription_id = db.Column(db.Integer, db.ForeignKey(
+        'subscriptions.id'), primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey(
+        'products.id'), primary_key=True)
+    quantity = db.Column(db.Integer)
+    price = db.Column(db.Float)
+
+    def to_dict(self):
+        return {
+            'subscription_id': self.subscription_id,
+            'product_id': self.product_id,
+            'quantity': self.quantity,
+            'price': self.price
+        }
 
 
 class Subscription(db.Model):
