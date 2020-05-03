@@ -25,6 +25,11 @@ class SubscriptionStatus_Enum(Enum):
     EN_COURS="EN COURS"
     TERMINE="TERMINE"
 
+class SubscriptionFrequency_Enum(Enum):
+    JOUR    ="JOUR"
+    SEMAINE ="SEMAINE"
+    MOIS    ="MOIS"
+
 class Customer(db.Model)        : 
     __tablename__               = 'customers'
     id                          = db.Column(db.Integer, primary_key                             = True)
@@ -211,7 +216,8 @@ class Subscription(db.Model)    :
     id                          = db.Column(db.Integer, primary_key                             = True)
     customer_id                 = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable = False)
     frequency                   = db.Column(db.String(1))
-    number_day                  = db.Column(db.Integer)
+    days_in                     = db.Column(db.String(20))
+    days_out                    = db.Column(db.String(20))
     start                       = db.Column(db.DateTime)
     end                         = db.Column(db.DateTime)
     status                      = db.Column(db.String(40))
