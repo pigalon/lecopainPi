@@ -19,3 +19,5 @@ records
 tablib
 pyopenssl
 aenum
+
+codecov
