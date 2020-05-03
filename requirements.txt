@@ -21,3 +21,4 @@ pyopenssl
 aenum
 
 codecov
+coverage
