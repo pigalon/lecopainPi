@@ -23,4 +23,3 @@ exclude_lines =
 ignore_errors = True
 
 [xml]
-directory = .
