@@ -10,7 +10,7 @@ app = Flask(__name__, instance_relative_config=True)
 
 
 product_page = Blueprint('product_page', __name__,
-                        template_folder='../templates')
+                         template_folder='../templates')
 
 productManager = ProductManager()
 
@@ -30,7 +30,7 @@ def product(product_id):
 @login_required
 def products():
     products = Product.query.order_by(Product.name.desc()).all()
-    return render_template('/products/products.html', products=products, title="Toutes les produits")
+    return render_template('/products/products.html', products=products, title="Tous les produits")
 #####################################################################
 #                                                                   #
 #####################################################################
@@ -41,7 +41,8 @@ def product_create():
     vendors = Vendor.query.all()
     print("product form : " + str(form.validate_on_submit()))
     if form.validate_on_submit():
-        product = Product(name=form.name.data,  price=form.price.data, description=form.description.data)
+        product = Product(
+            name=form.name.data,  price=form.price.data, description=form.description.data)
         db.session.add(product)
         db.session.commit()
         #flash(f'People created for {form.firstname.data}!', 'success')
@@ -59,7 +60,6 @@ def display_update_product(product_id):
     form = ProductForm()
 
     vendors = Vendor.query.all()
-    
 
     if form.validate_on_submit():
         print('update form validate : ' + str(product.id))
@@ -69,7 +69,7 @@ def display_update_product(product_id):
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('product_page.products'))
     else:
-        
+
         productManager.convert_product_to_form(product=product, form=form)
 
     productStatusList = _get_product_status()
@@ -110,15 +110,14 @@ def delete_order(product_id):
 @product_page.route("/_getjs_products/<int:vendor_id>")
 @login_required
 def getjs_products(vendor_id):
-    products = Product.query.filter(Product.vendor_id == vendor_id).options(load_only("name")).all()
+    products = Product.query.filter(
+        Product.vendor_id == vendor_id).options(load_only("name")).all()
     js_products = []
     data = {}
     data['id'] = " "
     data['name'] = " "
     js_products.append(data)
-
-
-    for product in products :
+    for product in products:
 
         data = {}
         data['id'] = str(product.id)
