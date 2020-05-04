@@ -1,4 +1,4 @@
-#lecopainPi
+# LecopainPi
 
 
 ![Python application](https://github.com/pigalon/lecopainPi/workflows/Python%20application/badge.svg) 
