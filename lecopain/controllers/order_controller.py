@@ -147,11 +147,8 @@ def order_create():
             order=order, tmp_products=tmp_products, tmp_quantities=tmp_quantities, tmp_prices=tmp_prices)
         #flash(f'People created for {form.firstname.data}!', 'success')
         redirect('/orders/customers/0')
-    else:
-        #customers = Customer.query.all()
-        products = Product.query.all()
-    # else:
-    #    flash(f'Failed!', 'danger')
+
+    products = Product.query.all()
     orderStatusList = _get_order_status()
     customers = Customer.query.all()
 
@@ -211,11 +208,10 @@ def display_update_order(order_id):
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect('/orders/customers/0')
 
-    else:
-        form.customer_id.data = order.customer_id
-        form.delivery_dt.data = order.delivery_dt
-        form.status.data = order.status
-        form.title.data = order.title
+    form.customer_id.data = order.customer_id
+    form.delivery_dt.data = order.delivery_dt
+    form.status.data = order.status
+    form.title.data = order.title
 
     orderStatusList = _get_order_status()
     return render_template('/orders/update_order.html', order=order, title='Mise a jour de commande', form=form, customer=customer, products=products, selected_products=order.selected_products,  orderStatusList=orderStatusList, line_selection=line_selection)
@@ -248,11 +244,10 @@ def display_update_order_time(order_id):
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect('/orders/customers/0')
 
-    else:
-        form.customer_id.data = order.customer_id
-        form.delivery_dt.data = order.delivery_dt
-        form.status.data = order.status
-        form.title.data = order.title
+    form.customer_id.data = order.customer_id
+    form.delivery_dt.data = order.delivery_dt
+    form.status.data = order.status
+    form.title.data = order.title
 
     orderStatusList = _get_order_status()
     return render_template('/orders/update_time.html', customer=customer, order=order, title='Mise a jour du jour de la commande', form=form)
