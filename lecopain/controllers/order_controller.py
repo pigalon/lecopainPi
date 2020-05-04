@@ -20,9 +20,15 @@ orderServices = OrderManager()
 #####################################################################
 #                                                                   #
 #####################################################################
+@order_page.route("/orders", methods=['GET', 'POST'])
+@login_required
+def orders():
+    return orders_customer(0)
+
+
 @order_page.route("/orders/customers/<int:customer_id>", methods=['GET', 'POST'])
 @login_required
-def orders(customer_id):
+def orders_customer(customer_id):
 
     if customer_id == 0 or customer_id == None:
 
