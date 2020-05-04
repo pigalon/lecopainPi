@@ -4,10 +4,45 @@ from lecopain import app, db
 from lecopain.dto.BoughtProduct import BoughtProduct
 from lecopain.dao.models import Delivery, Line, Product, Vendor, VendorOrder, Customer, CustomerOrder, OrderStatus_Enum
 import json
+from sqlalchemy import extract
 
 
 class OrderManager():
 
+    ##############################################
+    # Orders list ordered by date
+    ###############################################
+    def build_orders_list(self, customer_id, date_tab):
+        year, month, day = date_tab
+
+        if(year == 0):
+            year = datetime.now().year
+
+        if(month == 0):
+            month = datetime.now().month
+
+        if(day == 0):
+            day = datetime.now().day
+
+        orders = None
+
+        if customer_id != 0 and customer_id is not None:
+            orders = CustomerOrder.query.filter(
+                CustomerOrder.customer_id == customer_id)
+
+        orders = CustomerOrder.query.filter(
+            extract('year', CustomerOrder.delivery_dt) == year).filter(
+                extract('month', CustomerOrder.delivery_dt) == month)
+
+        if day is not None:
+            orders = orders.filter(
+                extract('day', CustomerOrder.delivery_dt) == day)
+
+        return orders.all()
+
+    ##############################################
+    # products list from order
+    ###############################################
     def get_resume_products_list_from_orders(self, orders):
         products = []
         for order in orders:
