@@ -1,6 +1,6 @@
 from lecopain.dao.models import Customer
 from lecopain.services.customer_manager import CustomerManager
-from lecopain import app, db
+from lecopain.app import app, db
 from lecopain.form import PersonForm
 from flask import Blueprint, render_template, redirect, url_for, Flask, jsonify
 from flask_login import login_required

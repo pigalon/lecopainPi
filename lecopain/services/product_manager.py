@@ -1,6 +1,6 @@
 from lecopain.form import ProductForm
 from lecopain.dao.models import Product
-from lecopain import app, db
+from lecopain.app import app, db
 
 
 class ProductManager():

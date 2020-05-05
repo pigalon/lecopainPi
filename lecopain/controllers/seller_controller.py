@@ -1,6 +1,6 @@
 from lecopain.dao.models import Seller
 from lecopain.services.seller_manager import SellerManager
-from lecopain import app, db
+from lecopain.app import app, db
 from lecopain.form import SellerForm
 from flask import Blueprint, render_template, redirect, url_for, Flask, jsonify
 from flask_login import login_required

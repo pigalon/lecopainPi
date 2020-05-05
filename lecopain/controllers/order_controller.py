@@ -1,5 +1,5 @@
 from lecopain.dao.models import Customer, CustomerOrder, Product, OrderStatus, Line, Shipping, SellerOrder
-from lecopain import app, db
+from lecopain.app import app, db
 from lecopain.form import OrderForm, OrderAnnulationForm
 from lecopain.services.order_manager import OrderManager
 

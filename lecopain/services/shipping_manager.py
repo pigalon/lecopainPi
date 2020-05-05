@@ -1,4 +1,4 @@
-from lecopain import app, db
+from lecopain.app import app, db
 from lecopain.dao.models import Customer, CustomerOrder, Line
 
 

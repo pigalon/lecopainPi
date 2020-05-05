@@ -8,6 +8,7 @@ Flask-sqlalchemy
 flask-login
 flask_sslify
 Flask-Testing==0.4.2
+flask-restplus
 
 Requests
 Jinja2

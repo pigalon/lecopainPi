@@ -1,7 +1,7 @@
-from lecopain import db
+from lecopain.app import db
 from datetime import datetime
 from flask_login import UserMixin
-from lecopain import login_manager
+from lecopain.app import login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from aenum import Enum
 

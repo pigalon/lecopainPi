@@ -1,5 +1,5 @@
 from lecopain.dao.models import Product, Seller, ProductStatus
-from lecopain import app, db
+from lecopain.app import app, db
 from lecopain.form import ProductForm
 from flask import session, Blueprint, render_template, redirect, url_for, Flask, jsonify
 from flask_login import login_required

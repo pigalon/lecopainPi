@@ -2,7 +2,7 @@ from flask import Flask, Blueprint, render_template, url_for,  flash, redirect, 
 from flask_login import login_required, current_user
 from datetime import datetime
 import locale
-from lecopain import app, db
+from lecopain.app import app, db, api
 from lecopain.form import PersonForm, OrderForm, ProductForm, LoginForm
 from lecopain.dao.models import Customer, CustomerOrder, Product, Seller, User
 
@@ -55,9 +55,10 @@ def home():
         return redirect(url_for('user_page.login'))
 
 
-@app.route("/home2")
+@app.route("/home2", methods=['GET', 'POST'])
 def home2():
-    return render_template('home.html')
+    customers = [(row.id, row.firstname) for row in Customer.query.all()]
+    return jsonify(customers)
 
 
 @app.route('/_get_customers/')

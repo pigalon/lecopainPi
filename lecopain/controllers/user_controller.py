@@ -1,4 +1,4 @@
-from lecopain import app, db, login_manager
+from lecopain.app import app, db, login_manager
 from flask_login import login_required
 from flask import Blueprint, render_template, redirect, url_for, Flask, jsonify, request, flash, session
 from werkzeug.urls import url_parse

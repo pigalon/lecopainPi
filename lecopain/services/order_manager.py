@@ -1,6 +1,6 @@
 from datetime import datetime, date, timedelta
 
-from lecopain import app, db
+from lecopain.app import app, db
 from lecopain.dto.BoughtProduct import BoughtProduct
 from lecopain.dao.models import Shipping, Line, Product, Seller, SellerOrder, Customer, CustomerOrder, OrderStatus_Enum
 import json
