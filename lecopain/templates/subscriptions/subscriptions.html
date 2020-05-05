@@ -31,7 +31,7 @@
                 <i class="fas fa-piggy-bank "></i>
             </span>
             Référence : <span style="color:red">{{subscription.id}}</span>
-            <span style="float: right"><b>{{ subscription.start.strftime('%A %d %B %Y') }} à {{ subscription.end.strftime('%A %d %B %Y') }}</b>b></span>
+            <span style="float: right"><b>{{ subscription.start_date.strftime('%A %d %B %Y') }} à {{ subscription.end_date.strftime('%A %d %B %Y') }}</b>b></span>
         </div>        
         <div class="card-body">
             <h5 class="card-title"></h5>
@@ -44,7 +44,7 @@
                 <a href="/subscriptions/update/{{order.id}}" class="card-link">Modifier</a>
                 <a href="/subscriptions/delete/{{order.id}}" class="card-link">Supprimer</a>
             </small>
-            <span style="float: right">Nb d'articles : <b>{{ map['NB_PRODUCTS'][order.id] }}</b> - Prix Total : <b>{{ "%.2f"|format(map['TOTAL'][order.id]) }} €</b></span>
+            <!--<span style="float: right">Nb d'articles : <b>{{ map['NB_PRODUCTS'][order.id] }}</b> - Prix Total : <b>{{ "%.2f"|format(map['TOTAL'][order.id]) }} €</b></span> -->
         </div>
     </div>
     {% endfor %}
