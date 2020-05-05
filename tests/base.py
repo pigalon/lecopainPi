@@ -3,7 +3,7 @@ from lecopain import app, db
 import unittest
 import sys
 import os
-from factories import AdminFactory
+from factories import AdminFactory, ProductFactory
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -21,7 +21,9 @@ class BaseTestCase(unittest.TestCase):
     def setUp(self):
         self.app = self.create_app()
         db.create_all()
-        AdminFactory.create()
+
+        self.create_users()
+        self.create_products()
 
     def login(self, username, password):
         return self.client.post('/login', data=dict(
@@ -33,3 +35,11 @@ class BaseTestCase(unittest.TestCase):
         db.session.remove()
         db.drop_all()
         db.get_engine(self.app).dispose()
+
+    def create_users(self):
+        AdminFactory.create()
+
+    def create_products(self):
+        ProductFactory.create(name='product1', price=1.00)
+        ProductFactory.create(name='product2', price=2.00)
+        ProductFactory.create(name='product3', price=3.00)
