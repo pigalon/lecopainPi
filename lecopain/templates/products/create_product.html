@@ -20,12 +20,12 @@
             </div>
             <div class="form-group">
                     Choix du vendeur :
-                    <select class="form-control" id="vendor_id" name="vendor_id">
-                        {% for vendor in vendors %}
-                            {% if vendor.id == form.vendor_id.data %}
-                                <option value="{{ vendor.id }}" SELECTED>{{ vendor.name }}</option>
+                    <select class="form-control" id="seller_id" name="seller_id">
+                        {% for seller in sellers %}
+                            {% if seller.id == form.seller_id.data %}
+                                <option value="{{ seller.id }}" SELECTED>{{ seller.name }}</option>
                             {% else %}
-                                <option value="{{ vendor.id }}" >{{ vendor.name }}</option>
+                                <option value="{{ seller.id }}" >{{ seller.name }}</option>
                             {% endif %}
                         {% endfor %}
                     </select>

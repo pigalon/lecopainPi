@@ -1,21 +1,18 @@
-
 {% extends "layout.html" %}
 {% block content %}
-    <h1>Commande</h1>
+    <h1>Page Vendeur</h1>
     <div class="content-section">
-        <p>Référence : {{order.id}}</p>
-        <p>Date {{order.delivery_dt}}</p>
+        <p>{{seller.name}}</p>
     </div>
     <div>
-        <h3>Liste des produits</h3>
+        <h3>Liste des commandes</h3>
     </div>
     <div class="content-section">
-        {% for product in order.selected_products %}
-            <p>{{product.name}}</p>
-            <p>{{product.price}}</p>
+        {% for order in seller.orders %}
+            <p>{{order.title}}</p>
+            <p>{{order.shipping_dt}}</p>
         {% endfor %}
     </div>
-    
 {% endblock %}
 {% block right_menu %}
 <div class="content-section">
@@ -23,17 +20,13 @@
     <p class='text-muted'>You can put any information here you'd like.
         <ul class="list-group">
         <li class="list-group-item list-group-item-light">
-                <a class="nav-link" href="/customers/new">Création de client</a></li>
-        <li class="list-group-item list-group-item-light">
-                <a class="nav-link" href="/customers/city/Langlade">Clients de Langlade</a></li>
+                <a class="nav-link" href="/sellers/new">Création de vendeur</a></li>
         <li class="list-group-item list-group-item-light">Calendars</li>
         <li class="list-group-item list-group-item-light">etc</li>
         </ul>
     </p>
 </div>
 {% endblock %}
-
-
 
 
 

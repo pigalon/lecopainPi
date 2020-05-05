@@ -3,8 +3,8 @@
 {% block content %}
     <h1>Formulaire de suppression de Vendeur</h1>
     <div class="content-section">
-        <p>Référence : {{vendor.id}}</p>
-        <p>{{vendor.name}} - {{vendor.email}}</p>
+        <p>Référence : {{seller.id}}</p>
+        <p>{{seller.name}} - {{seller.email}}</p>
     </div>
     <div class="content-section">
             Etes-vous sûr de vouloir supprimer ce vendeur ?
@@ -13,10 +13,10 @@
         <table>
             <tr>
                 <td>
-                    <button type="button" onclick="delete_vendor({{vendor.id}})" class="btn btn-danger">Supprimer</button>
+                    <button type="button" onclick="delete_seller({{seller.id}})" class="btn btn-danger">Supprimer</button>
                 </td>
                 <td>
-                    <button class="btn btn-secondary" type="cancel" onclick="javascript:window.location='/vendors';">Annuler</button>
+                    <button class="btn btn-secondary" type="cancel" onclick="javascript:window.location='/sellers';">Annuler</button>
                 </td>
             </tr>
         </table>  
@@ -29,7 +29,7 @@
     <p class='text-muted'>
         <ul class="list-group">
         <li class="list-group-item list-group-item-light">
-                <a class="nav-link" href="/vendors/new">Création de vendeur</a></li>
+                <a class="nav-link" href="/sellers/new">Création de vendeur</a></li>
         <li class="list-group-item list-group-item-light">Calendars</li>
         <li class="list-group-item list-group-item-light">etc</li>
         </ul>
@@ -39,13 +39,13 @@
 {% block scripts %} 
 
     <script>
-        function delete_vendor(vendor_id) {
+        function delete_seller(seller_id) {
 
             $.ajax({
                 type: "DELETE",
-                url: '/vendors/' + vendor_id,
+                url: '/sellers/' + seller_id,
                 success: function(msg){
-                    location.href = "/vendors";
+                    location.href = "/sellers";
                 }
             });
         };

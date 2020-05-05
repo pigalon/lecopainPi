@@ -1,7 +1,7 @@
-from lecopain import db
+from lecopain.app import db
 from datetime import datetime
 from flask_login import UserMixin
-from lecopain import login_manager
+from lecopain.app import login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from aenum import Enum
 
@@ -13,7 +13,7 @@ class OrderStatus_Enum(Enum):
     TERMINEE = "TERMINEE"
 
 
-class DeliveryStatus_Enum(Enum):
+class ShippingStatus_Enum(Enum):
     ANNULEE = "ANNULEE"
     LIVREE = "LIVREE"
     DEFAUT = "DEFAUT"
@@ -77,20 +77,31 @@ class CustomerOrder(db.Model):
     customer_id = db.Column(db.Integer, db.ForeignKey(
         'customers.id'), nullable=False)
     status = db.Column(db.String(20), nullable=False)
-    vendorOrders = db.relationship(
-        'VendorOrder', backref='customerOrder', lazy=True)
-    delivery = db.relationship('Delivery', uselist=False)
-    delivery_dt = db.Column(db.DateTime)
-    payement_status = db.Column(db.String(20), nullable=False)
-    subscription_id = db.Column(db.Integer, nullable=True)
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'title': self.title,
-            'delivery_dt': self.delivery_dt,
-            'status': self.status
-        }
+
+<< << << < HEAD
+vendorOrders = db.relationship(
+    'VendorOrder', backref='customerOrder', lazy=True)
+shipping = db.relationship('Shipping', uselist=False)
+shipping_dt = db.Column(db.DateTime)
+payement_status = db.Column(db.String(20), nullable=False)
+subscription_id = db.Column(db.Integer, nullable=True)
+== == == =
+sellerOrders = db.relationship(
+    'SellerOrder', backref='customerOrder', lazy=True)
+shipping = db.relationship('Shipping', uselist=False)
+shipping_dt = db.Column(db.DateTime)
+payment_status = db.Column(db.String(20), nullable=False)
+>>>>>> > master
+
+
+def to_dict(self):
+    return {
+        'id': self.id,
+        'title': self.title,
+        'shipping_dt': self.shipping_dt,
+        'status': self.status
+    }
 
 
 class OrderStatus(db.Model):
@@ -109,9 +120,9 @@ class Product(db.Model):
     status = db.Column(db.String(20))
     selections = db.relationship(
         'CustomerOrder', secondary='lines', backref=db.backref('selected_products'))
-    #selections_for_vendor    = db.relationship('VendorOrder', secondary = 'vendor_product', backref = db.backref('selected_products'))
-    vendor_id = db.Column(db.Integer, db.ForeignKey(
-        'vendors.id'), nullable=False)
+    #selections_for_seller    = db.relationship('SellerOrder', secondary = 'seller_product', backref = db.backref('selected_products'))
+    seller_id = db.Column(db.Integer, db.ForeignKey(
+        'sellers.id'), nullable=False)
 
     def __repr__(self):
         return "Product('{self.name}',{self.price}, '{self.description}')"
@@ -123,7 +134,7 @@ class Product(db.Model):
             'description': self.description,
             'price': self.price,
             'status': self.status,
-            'vendor_id': self.vendor_id
+            'seller_id': self.seller_id
         }
 
 
@@ -145,7 +156,7 @@ class Line(db.Model):
     price = db.Column(db.Float)
 
     def __repr__(self):
-        return "CustomerOrder('{self.title}', '{self.status}', {customer_id} '{self.delivery_dt}')"
+        return "CustomerOrder('{self.title}', '{self.status}', {customer_id} '{self.shipping_dt}')"
 
     def to_dict(self):
         return {
@@ -156,37 +167,37 @@ class Line(db.Model):
         }
 
 
-class Vendor(db.Model):
-    __tablename__ = 'vendors'
+class Seller(db.Model):
+    __tablename__ = 'sellers'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(200), nullable=False)
-    products = db.relationship('Product', backref='vendor', lazy=True)
-    vendorOrders = db.relationship('VendorOrder', backref='vendor', lazy=True)
+    products = db.relationship('Product', backref='seller', lazy=True)
+    sellerOrders = db.relationship('SellerOrder', backref='seller', lazy=True)
 
     def __repr__(self):
-        return "Vendor('{self.name}')"
+        return "Seller('{self.name}')"
 
 
-class VendorOrder(db.Model):
-    __tablename__ = 'vendor_orders'
+class SellerOrder(db.Model):
+    __tablename__ = 'seller_orders'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
-    vendor_id = db.Column(db.Integer, db.ForeignKey(
-        'vendors.id'), nullable=False)
+    seller_id = db.Column(db.Integer, db.ForeignKey(
+        'sellers.id'), nullable=False)
     customer_order_id = db.Column(db.Integer, db.ForeignKey(
         'customer_orders.id'), nullable=False)
     status = db.Column(db.String(20), nullable=False)
 
     def __repr__(self):
-        return "VendorOrder('{self.title}', '{self.status}', {customer_order_id} '{self.vendor_id}')"
+        return "SellerOrder('{self.title}', '{self.status}', {customer_order_id} '{self.seller_id}')"
 
 
-class Delivery(db.Model):
-    __tablename__ = 'deliveries'
+class Shipping(db.Model):
+    __tablename__ = 'shippings'
     id = db.Column(db.Integer, primary_key=True)
     reference = db.Column(db.String(50), nullable=False)
-    delivery_dt = db.Column(db.DateTime)
+    shipping_dt = db.Column(db.DateTime)
     status = db.Column(db.String(20), nullable=False)
     customer_order_id = db.Column(db.Integer, db.ForeignKey(
         'customer_orders.id'), nullable=False)
@@ -194,14 +205,14 @@ class Delivery(db.Model):
         'customers.id'), nullable=False)
 
     def __repr__(self):
-        return "Vendor('{self.reference}', '{self.delivery_dt}', '{self.status}', '{self.customer_order_id}')"
+        return "Seller('{self.reference}', '{self.shipping_dt}', '{self.status}', '{self.customer_order_id}')"
 
 
-class DeliveryStatus(db.Model):
+class ShippingStatus(db.Model):
     name = db.Column(db.String(50), primary_key=True)
 
     def __repr__(self):
-        return "DeliveryStatus('{self.name}')"
+        return "ShippingStatus('{self.name}')"
 
 
 class User(db.Model, UserMixin):

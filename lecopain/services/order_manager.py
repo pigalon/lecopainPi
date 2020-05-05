@@ -1,13 +1,48 @@
 from datetime import datetime, date, timedelta
 
-from lecopain import app, db
+from lecopain.app import app, db
 from lecopain.dto.BoughtProduct import BoughtProduct
-from lecopain.dao.models import Delivery, Line, Product, Vendor, VendorOrder, Customer, CustomerOrder, OrderStatus_Enum
+from lecopain.dao.models import Shipping, Line, Product, Seller, SellerOrder, Customer, CustomerOrder, OrderStatus_Enum
 import json
+from sqlalchemy import extract
 
 
 class OrderManager():
 
+    ##############################################
+    # Orders list ordered by date
+    ###############################################
+    def build_orders_list(self, customer_id, date_tab):
+        year, month, day = date_tab
+
+        if(year == 0):
+            year = datetime.now().year
+
+        if(month == 0):
+            month = datetime.now().month
+
+        if(day == 0):
+            day = datetime.now().day
+
+        orders = None
+
+        if customer_id != 0 and customer_id is not None:
+            orders = CustomerOrder.query.filter(
+                CustomerOrder.customer_id == customer_id)
+
+        orders = CustomerOrder.query.filter(
+            extract('year', CustomerOrder.shipping_dt) == year).filter(
+                extract('month', CustomerOrder.shipping_dt) == month)
+
+        if day is not None:
+            orders = orders.filter(
+                extract('day', CustomerOrder.shipping_dt) == day)
+
+        return orders.all()
+
+    ##############################################
+    # products list from order
+    ###############################################
     def get_resume_products_list_from_orders(self, orders):
         products = []
         for order in orders:
@@ -65,7 +100,7 @@ class OrderManager():
         order.created_at = datetime.now()
         order = self.create_product_purchases(
             order, tmp_products, tmp_quantities, tmp_prices)
-        self.create_default_delivery(order)
+        self.create_default_shipping(order)
 
     # @
     #
@@ -89,9 +124,9 @@ class OrderManager():
         self.create_corresponding_purchases(
             order=order, tmp_products=tmp_products, tmp_quantities=tmp_quantities, tmp_prices=tmp_prices)
 
-        vendorOrders = self.generate_vendor_orders(order=order)
-        for vendorOrder in vendorOrders:
-            db.session.add(vendorOrder)
+        sellerOrders = self.generate_seller_orders(order=order)
+        for sellerOrder in sellerOrders:
+            db.session.add(sellerOrder)
         return order
     # @
     #
@@ -104,10 +139,10 @@ class OrderManager():
 
     ##########################################
     #
-    def create_default_delivery(self, order):
-        delivery = Delivery(reference=order.title, delivery_dt=order.delivery_dt,
+    def create_default_shipping(self, order):
+        shipping = Shipping(reference=order.title, shipping_dt=order.shipping_dt,
                             status='NON_LIVREE', customer_order_id=order.id, customer_id=order.customer_id)
-        db.session.add(delivery)
+        db.session.add(shipping)
         db.session.commit()
 
     #########################################
@@ -117,9 +152,9 @@ class OrderManager():
         # delete Line relation to recreate
         Line.query.filter(Line.order_id == order.id).delete()
 
-        # TODO : missing delete vendor order !!!!
-        VendorOrder.query.filter(
-            VendorOrder.customer_order_id == order.id).delete()
+        # TODO : missing delete seller order !!!!
+        SellerOrder.query.filter(
+            SellerOrder.customer_order_id == order.id).delete()
 
     # @
     #
@@ -142,26 +177,26 @@ class OrderManager():
 
     # @
     #
-    def generate_vendor_orders(self, order):
-        vendorOrders = []
-        vendorIds = self.get_vendors_from_products(order)
-        for vendorId in vendorIds:
-            vendorOrders.append(VendorOrder(
-                title=order.title, status='CREE', customer_order_id=order.id, vendor_id=vendorId))
+    def generate_seller_orders(self, order):
+        sellerOrders = []
+        sellerIds = self.get_sellers_from_products(order)
+        for sellerId in sellerIds:
+            sellerOrders.append(SellerOrder(
+                title=order.title, status='CREE', customer_order_id=order.id, seller_id=sellerId))
 
-        return vendorOrders
+        return sellerOrders
 
     # @
     #
-    def get_vendors_from_products(self, order):
-        vendorIds = set()
+    def get_sellers_from_products(self, order):
+        sellerIds = set()
         for product in order.selected_products:
-            vendorIds.add(product.vendor_id)
-        return vendorIds
+            sellerIds.add(product.seller_id)
+        return sellerIds
 
     # @
     #
-    def update_order_status(self, order_id, order_status, payment_status, delivery_status):
+    def update_order_status(self, order_id, order_status, payment_status, shipping_status):
         order = CustomerOrder.query.get_or_404(order_id)
 
         if order_status != None:
@@ -170,29 +205,29 @@ class OrderManager():
         if(payment_status != None):
             order.payment_status = payment_status
 
-        delivery = Delivery.query.filter(
-            Delivery.customer_order_id == order_id).first()
-        if delivery != None and delivery_status != None:
-            delivery.status = delivery_status
+        shipping = Shipping.query.filter(
+            Shipping.customer_order_id == order_id).first()
+        if shipping != None and shipping_status != None:
+            shipping.status = shipping_status
 
-        vendorOrders = VendorOrder.query.filter(
-            VendorOrder.customer_order_id == order_id).all()
-        for vendorOrder in vendorOrders:
+        sellerOrders = SellerOrder.query.filter(
+            SellerOrder.customer_order_id == order_id).all()
+        for sellerOrder in sellerOrders:
             if order_status != None:
-                vendorOrder.status = order_status
+                sellerOrder.status = order_status
 
         db.session.commit()
 
     # @
     #
 
-    def calculate_delivery(self, order):
-        base_delivery_price_bases = ''' [{"nb":1, "price":0.6}, {"nb":2, "price":1.16},{"nb":3, "price":1.62}, {"nb":4, "price":2.05}, {"nb":5, "price":2.20}, {"nb":6, "price":2.70}] '''
-        prices = json.loads(base_delivery_price_bases)
+    def calculate_shipping(self, order):
+        base_shipping_price_bases = ''' [{"nb":1, "price":0.6}, {"nb":2, "price":1.16},{"nb":3, "price":1.62}, {"nb":4, "price":2.05}, {"nb":5, "price":2.20}, {"nb":6, "price":2.70}] '''
+        prices = json.loads(base_shipping_price_bases)
 
         customer = Customer.query.get_or_404(order.customer_id)
         nb_products = len(order.selected_products)
-        delivery_price = 0.00
+        shipping_price = 0.00
         rules_detail = ''
 
         if nb_products < 7:
@@ -200,23 +235,23 @@ class OrderManager():
             for base in prices:
                 print('base : ' + str(base['nb']))
                 if base['nb'] == nb_products:
-                    delivery_price = float(base['price'])
+                    shipping_price = float(base['price'])
             if customer.city.lower() != 'langlade':
                 rules_detail += 'en dehors de langlade 0,05 par articles en sup'
-                delivery_price += 0.05 * nb_products
+                shipping_price += 0.05 * nb_products
             else:
                 rules_detail += 'commune de langlade pas de supplement '
 
         else:
             rules_detail += 'superieur a 7 articles et '
-            delivery_price = 0, 60 + 0, 40 * (nb_products-1)
+            shipping_price = 0, 60 + 0, 40 * (nb_products-1)
             if customer.city.lower() != 'langlade':
                 rules_detail += 'en dehors de langlade 0,05 par articles en sup '
-                delivery_price += 0.05 * nb_products
+                shipping_price += 0.05 * nb_products
             else:
                 rules_detail += 'commune de langlade pas de supplement '
 
-        return delivery_price, rules_detail
+        return shipping_price, rules_detail
     # @
     #
 

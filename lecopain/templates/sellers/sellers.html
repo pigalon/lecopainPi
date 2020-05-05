@@ -13,13 +13,13 @@
             </tr>
         </thead>
         <tbody>
-        {% for vendor in vendors %}
+        {% for seller in sellers %}
             <tr>
-            <th scope="row">{{ vendor.id }}</th>
-            <td>{{ vendor.name }}</td>
-            <td><a href="/vendors/{{vendor.id}}" class="text-dark" alt="Détails"><i class="fas fa-eye"></i></a></span>
-                <a href="/vendors/update/{{vendor.id}}" class="text-secondary alt="Editer"><i class="fas fa-edit"></i></a>
-                <a href="/vendors/delete/{{vendor.id}}" class="text-danger alt="Supprimer"><i class="fas fa-trash-alt"></i></a>
+            <th scope="row">{{ seller.id }}</th>
+            <td>{{ seller.name }}</td>
+            <td><a href="/sellers/{{seller.id}}" class="text-dark" alt="Détails"><i class="fas fa-eye"></i></a></span>
+                <a href="/sellers/update/{{seller.id}}" class="text-secondary alt="Editer"><i class="fas fa-edit"></i></a>
+                <a href="/sellers/delete/{{seller.id}}" class="text-danger alt="Supprimer"><i class="fas fa-trash-alt"></i></a>
             </td>
             </tr>
         {%endfor%}
@@ -35,7 +35,7 @@
     <p class='text-muted'>
         <ul class="list-group">
         <li class="list-group-item list-group-item-light">
-            <a class="nav-link" href="/vendors/new">Création de vendeur</a></li>
+            <a class="nav-link" href="/sellers/new">Création de vendeur</a></li>
         </ul>
     </p>
 </div>

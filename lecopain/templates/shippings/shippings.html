@@ -88,7 +88,7 @@
                 <tr>
                     {% for date in week %}
                         {% set index = (date.day | int) * (date.month | int) %}
-                        {% set customer_order_id = map_deliveries[index] %}
+                        {% set customer_order_id = map_shippings[index] %}
                         
                         {% if date.month == current_month %}
                             {% if customer_order_id != null %}

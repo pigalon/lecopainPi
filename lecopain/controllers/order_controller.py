@@ -1,5 +1,5 @@
-from lecopain.dao.models import Customer, CustomerOrder, Product, OrderStatus, Line, Delivery, VendorOrder
-from lecopain import app, db
+from lecopain.dao.models import Customer, CustomerOrder, Product, OrderStatus, Line, Shipping, SellerOrder
+from lecopain.app import app, db
 from lecopain.form import OrderForm, OrderAnnulationForm
 from lecopain.services.order_manager import OrderManager
 
@@ -20,17 +20,23 @@ orderServices = OrderManager()
 #####################################################################
 #                                                                   #
 #####################################################################
+@order_page.route("/orders", methods=['GET', 'POST'])
+@login_required
+def orders():
+    return orders_customer(0)
+
+
 @order_page.route("/orders/customers/<int:customer_id>", methods=['GET', 'POST'])
 @login_required
-def orders(customer_id):
+def orders_customer(customer_id):
 
     if customer_id == 0 or customer_id == None:
 
         orders = CustomerOrder.query.order_by(
-            CustomerOrder.delivery_dt.desc()).all()
+            CustomerOrder.shipping_dt.desc()).all()
     else:
         orders = CustomerOrder.query.filter(CustomerOrder.customer_id == customer_id).order_by(
-            CustomerOrder.delivery_dt.desc()).all()
+            CustomerOrder.shipping_dt.desc()).all()
 
     customers = Customer.query.all()
     map = orderServices.get_maps_from_orders(orders)
@@ -44,19 +50,8 @@ def orders(customer_id):
 @login_required
 def orders_of_month(customer_id, year_number, month_number):
 
-    if(year_number == 0):
-        year_number = datetime.now().year
-
-    if(month_number == 0):
-        month_number = datetime.now().month
-
-    if customer_id == 0 or customer_id == None:
-        orders = CustomerOrder.query.filter(extract('year', CustomerOrder.delivery_dt) == year_number).filter(
-            extract('month', CustomerOrder.delivery_dt) == month_number).all()
-    else:
-        orders = CustomerOrder.query.filter(CustomerOrder.customer_id == customer_id).filter(
-            extract('year', CustomerOrder.delivery_dt) == year_number).filter(
-            extract('month', CustomerOrder.delivery_dt) == month_number).all()
+    date_tab = [year_number, month_number, None]
+    orders = orderServices.build_orders_list(customer_id, date_tab)
 
     customers = Customer.query.all()
     map = orderServices.get_maps_from_orders(orders)
@@ -69,24 +64,9 @@ def orders_of_month(customer_id, year_number, month_number):
 @order_page.route("/orders/customers/<int:customer_id>/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
 @login_required
 def orders_of_day(customer_id, year_number, month_number, day_number):
-    if(year_number == 0):
-        year_number = datetime.now().year
 
-    if(month_number == 0):
-        month_number = datetime.now().month
-
-    if(day_number == 0):
-        day_number = datetime.now().day
-
-    if customer_id == 0 or customer_id == None:
-        orders = CustomerOrder.query.filter(extract('year', CustomerOrder.delivery_dt) == year_number).filter(
-            extract('month', CustomerOrder.delivery_dt) == month_number).filter(
-            extract('day', CustomerOrder.delivery_dt) == day_number).all()
-    else:
-        orders = CustomerOrder.query.filter(CustomerOrder.customer_id == customer_id).filter(
-            extract('year', CustomerOrder.delivery_dt) == year_number).filter(
-            extract('month', CustomerOrder.delivery_dt) == month_number).filter(
-            extract('day', CustomerOrder.delivery_dt) == day_number).all()
+    date_tab = [year_number, month_number, day_number]
+    orders = orderServices.build_orders_list(customer_id, date_tab)
 
     customers = Customer.query.all()
     map = orderServices.get_maps_from_orders(orders)
@@ -100,27 +80,12 @@ def orders_of_day(customer_id, year_number, month_number, day_number):
 @order_page.route("/orders/resume/customers/<int:customer_id>/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
 @login_required
 def order_products_of_day(customer_id, year_number, month_number, day_number):
-    if(year_number == 0):
-        year_number = datetime.now().year
 
-    if(month_number == 0):
-        month_number = datetime.now().month
+    date_tab = [year_number, month_number, day_number]
+    orders = orderServices.build_orders_list(customer_id, date_tab)
 
-    if(day_number == 0):
-        day_number = datetime.now().month
-
-    if customer_id == 0 or customer_id == None:
-        orders = CustomerOrder.query.filter(extract('year', CustomerOrder.delivery_dt) == year_number).filter(
-            extract('month', CustomerOrder.delivery_dt) == month_number).filter(
-            extract('day', CustomerOrder.delivery_dt) == day_number).all()
-    else:
-        orders = CustomerOrder.query.filter(CustomerOrder.customer_id == customer_id).filter(
-            extract('year', CustomerOrder.delivery_dt) == year_number).filter(
-            extract('month', CustomerOrder.delivery_dt) == month_number).filter(
-            extract('day', CustomerOrder.delivery_dt) == day_number).all()
-
-    orders = CustomerOrder.query.filter(extract('year', CustomerOrder.delivery_dt) == year_number).filter(extract(
-        'month', CustomerOrder.delivery_dt) == month_number).filter(extract('day', CustomerOrder.delivery_dt) == day_number).all()
+    orders = CustomerOrder.query.filter(extract('year', CustomerOrder.shipping_dt) == year_number).filter(extract(
+        'month', CustomerOrder.shipping_dt) == month_number).filter(extract('day', CustomerOrder.shipping_dt) == day_number).all()
     products_of_day_list = orderServices.get_resume_products_list_from_orders(
         orders)
     customers = Customer.query.all()
@@ -142,16 +107,13 @@ def order_create():
 
     if form.validate_on_submit():
         order = CustomerOrder(title=form.title.data, status=form.status.data, customer_id=int(
-            form.customer_id.data), delivery_dt=form.delivery_dt.data)
+            form.customer_id.data), shipping_dt=form.shipping_dt.data)
         orderServices.create_customer_order(
             order=order, tmp_products=tmp_products, tmp_quantities=tmp_quantities, tmp_prices=tmp_prices)
         #flash(f'People created for {form.firstname.data}!', 'success')
         redirect('/orders/customers/0')
-    else:
-        #customers = Customer.query.all()
-        products = Product.query.all()
-    # else:
-    #    flash(f'Failed!', 'danger')
+
+    products = Product.query.all()
     orderStatusList = _get_order_status()
     customers = Customer.query.all()
 
@@ -165,16 +127,16 @@ def order_create():
 def order(order_id):
     order = CustomerOrder.query.get_or_404(order_id)
 
-    price, rules = orderServices.calculate_delivery(order)
+    price, rules = orderServices.calculate_shipping(order)
 
     customer = Customer.query.get_or_404(order.customer_id)
     products = order.selected_products
-    products.sort(key=lambda x: x.vendor_id, reverse=True)
-    sorted_products = sorted(products, key=lambda x: x.vendor_id, reverse=True)
+    products.sort(key=lambda x: x.seller_id, reverse=True)
+    sorted_products = sorted(products, key=lambda x: x.seller_id, reverse=True)
     bought_items = Line.query.filter(
         Line.order_id == order.id).all()
 
-    return render_template('/orders/order.html', order=order, bought_items=bought_items, products=sorted_products, customer=customer, delivery_price=price, rules=rules)
+    return render_template('/orders/order.html', order=order, bought_items=bought_items, products=sorted_products, customer=customer, shipping_price=price, rules=rules)
 
 #####################################################################
 #                                                                   #
@@ -194,10 +156,10 @@ def display_update_order(order_id):
 
     if form.validate_on_submit():
         orderForm = CustomerOrder(title=form.title.data, status=form.status.data, customer_id=int(
-            form.customer_id.data), delivery_dt=form.delivery_dt.data)
+            form.customer_id.data), shipping_dt=form.shipping_dt.data)
         # update order first
         order.status = orderForm.status
-        order.delivery_dt = orderForm.delivery_dt
+        order.shipping_dt = orderForm.shipping_dt
         products = {}
 
         # get the new list of products and quantities
@@ -211,11 +173,10 @@ def display_update_order(order_id):
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect('/orders/customers/0')
 
-    else:
-        form.customer_id.data = order.customer_id
-        form.delivery_dt.data = order.delivery_dt
-        form.status.data = order.status
-        form.title.data = order.title
+    form.customer_id.data = order.customer_id
+    form.shipping_dt.data = order.shipping_dt
+    form.status.data = order.status
+    form.title.data = order.title
 
     orderStatusList = _get_order_status()
     return render_template('/orders/update_order.html', order=order, title='Mise a jour de commande', form=form, customer=customer, products=products, selected_products=order.selected_products,  orderStatusList=orderStatusList, line_selection=line_selection)
@@ -234,25 +195,24 @@ def display_update_order_time(order_id):
 
     if form.validate_on_submit():
         orderForm = CustomerOrder(title=form.title.data, status=form.status.data, customer_id=int(
-            form.customer_id.data), delivery_dt=form.delivery_dt.data)
+            form.customer_id.data), shipping_dt=form.shipping_dt.data)
         # update order first
 
-        order.delivery_dt = orderForm.delivery_dt
+        order.shipping_dt = orderForm.shipping_dt
 
-        delivery = Delivery.query.filter(
-            Delivery.customer_order_id == order.id).first()
-        delivery.delivery_dt = orderForm.delivery_dt
+        shipping = Shipping.query.filter(
+            Shipping.customer_order_id == order.id).first()
+        shipping.shipping_dt = orderForm.shipping_dt
 
         db.session.commit()
 
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect('/orders/customers/0')
 
-    else:
-        form.customer_id.data = order.customer_id
-        form.delivery_dt.data = order.delivery_dt
-        form.status.data = order.status
-        form.title.data = order.title
+    form.customer_id.data = order.customer_id
+    form.shipping_dt.data = order.shipping_dt
+    form.status.data = order.status
+    form.title.data = order.title
 
     orderStatusList = _get_order_status()
     return render_template('/orders/update_time.html', customer=customer, order=order, title='Mise a jour du jour de la commande', form=form)
@@ -321,15 +281,15 @@ def display_delete_order(order_id):
 def delete_order(order_id):
     order = CustomerOrder.query.get_or_404(order_id)
 
-    delivery = Delivery.query.filter(
-        Delivery.customer_order_id == order_id).first()
-    if delivery != None:
-        db.session.delete(delivery)
+    shipping = Shipping.query.filter(
+        Shipping.customer_order_id == order_id).first()
+    if shipping != None:
+        db.session.delete(shipping)
 
-    vendorOrders = VendorOrder.query.filter(
-        VendorOrder.customer_order_id == order_id).all()
-    for vendorOrder in vendorOrders:
-        db.session.delete(vendorOrder)
+    sellerOrders = SellerOrder.query.filter(
+        SellerOrder.customer_order_id == order_id).all()
+    for sellerOrder in sellerOrders:
+        db.session.delete(sellerOrder)
 
     db.session.delete(order)
     db.session.commit()

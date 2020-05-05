@@ -1,12 +1,15 @@
 from lecopain.app import app, db
-from lecopain.dao.models import Customer, CustomerOrder
+from lecopain.dao.models import CustomerOrder, Seller, SellerOrder
 
 
-class CustomerManager():
+class SellerManager():
 
-    def get_last_order(self, customer):
+    def get_last_order(self, seller):
+
         newer_order = None
-        for order in customer.orders:
+        orders = CustomerOrder.query.filter(
+            SellerOrder.seller_id == seller.id).all()
+        for order in orders:
             if(newer_order == None):
                 print("newer from null")
                 newer_order = order

@@ -31,12 +31,12 @@
           <ul class="list-group list-group-flush">
           {% set total = {'value': 0.00} %}
           {% set nb_products = {'value': 0} %}
-          {% set vendor = {'value': ''} %}
+          {% set seller = {'value': ''} %}
           {% for product in order.selected_products %}
-            {% if vendor.value != product.vendor.name %}
+            {% if seller.value != product.seller.name %}
             <li class="list-group-item bg-light">
-                    <b>{{product.vendor.name}}</b>
-                    {% set vendor = {'value': product.vendor.name} %}
+                    <b>{{product.seller.name}}</b>
+                    {% set seller = {'value': product.seller.name} %}
             </li>
             {% endif%}
             <li class="list-group-item">
@@ -59,7 +59,7 @@
                 <b><span style="float: right">Nb articles : {{nb_products.value}} - Prix Total : {{ "%.2f"|format(total.value|float) }}€</span></b>
           </li>
           <li class="list-group-item">
-                <b><span style="float: right">Prix de la livraison : {{delivery_price}} €</span></b>
+                <b><span style="float: right">Prix de la livraison : {{shipping_price}} €</span></b>
                 <br>
                 <p><b>Règles de calcul :</b> {{rules}} </p>
           </li>
@@ -75,7 +75,7 @@
                   Livraison
           </div>
           <div class="card-body">
-            <h5 class="card-title">Date de livraison {{ order.delivery_dt.strftime('%A %d %B %Y a %Hh:%Mmn') }}</h5>
+            <h5 class="card-title">Date de livraison {{ order.shipping_dt.strftime('%A %d %B %Y a %Hh:%Mmn') }}</h5>
             <p class="card-text">Adresse  : {{ customer.address }} {{ customer.cp }} {{ customer.city }} </p>
   
           </div>
@@ -90,10 +90,10 @@
               <h5 class="card-title"></h5>
               <p class="card-text"></p>
                 <ul class="list-group list-group-flush">
-                {% for vendorOrder in order.vendorOrders %}
+                {% for sellerOrder in order.sellerOrders %}
                 <li class="list-group-item">
-                    <b>Commande n° {{vendorOrder.id}} </b>  <span class="badge badge-warning">{{vendorOrder.status}}</span>
-                    <b>Vendeur n° {{vendorOrder.vendor.id}} </b> - {{vendorOrder.vendor.name}}</p>
+                    <b>Commande n° {{sellerOrder.id}} </b>  <span class="badge badge-warning">{{sellerOrder.status}}</span>
+                    <b>Vendeur n° {{sellerOrder.seller.id}} </b> - {{sellerOrder.seller.name}}</p>
                 </li>    
                 {% endfor %}
                 </ul>

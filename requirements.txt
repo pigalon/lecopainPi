@@ -8,11 +8,12 @@ Flask-sqlalchemy
 flask-login
 flask_sslify
 Flask-Testing==0.4.2
+flasgger
 
 Requests
 Jinja2
 MarkupSafe
-Werkzeug
+Werkzeug==0.16.1
 docopt
 itsdangerous
 records
@@ -20,3 +21,6 @@ tablib
 pyopenssl
 aenum
 
+codecov
+coverage
+factory_boy
