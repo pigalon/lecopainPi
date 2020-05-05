@@ -1,5 +1,5 @@
 from base import BaseTestCase
-from lecopain import app, db
+from lecopain.app import app, db
 from lecopain.dao.models import User, Product, Seller
 import os
 import sys

@@ -1,5 +1,5 @@
 from lecopain.dao.models import User
-from lecopain import app, db
+from lecopain.app import app, db
 import unittest
 import sys
 import os

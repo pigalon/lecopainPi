@@ -1,7 +1,7 @@
 from factory.alchemy import SQLAlchemyModelFactory
 from lecopain.dao.models import User, Product, Seller
 from werkzeug.security import generate_password_hash
-import lecopain
+from lecopain.app import db
 import factory
 
 
@@ -17,7 +17,7 @@ class UserFactory(SQLAlchemyModelFactory):
 class AdminFactory(SQLAlchemyModelFactory):
     class Meta:
         model = User
-        sqlalchemy_session = lecopain.db.session
+        sqlalchemy_session = db.session
 
     username = 'admin'
     password = generate_password_hash('password')
@@ -27,7 +27,7 @@ class AdminFactory(SQLAlchemyModelFactory):
 class SellerFactory(SQLAlchemyModelFactory):
     class Meta:
         model = Seller
-        sqlalchemy_session = lecopain.db.session
+        sqlalchemy_session = db.session
     name = 'Boulangerie Langlade'
     email = 'seller@mail.com'
 
@@ -35,7 +35,7 @@ class SellerFactory(SQLAlchemyModelFactory):
 class ProductFactory(SQLAlchemyModelFactory):
     class Meta:
         model = Product
-        sqlalchemy_session = lecopain.db.session
+        sqlalchemy_session = db.session
     name = 'baguette'
     description = 'classique'
     price = 0.68

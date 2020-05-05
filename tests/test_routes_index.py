@@ -1,5 +1,5 @@
 from base import BaseTestCase
-from lecopain import app
+from lecopain.app import app
 import os
 import sys
 import unittest
