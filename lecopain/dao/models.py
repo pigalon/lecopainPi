@@ -253,58 +253,40 @@ class Subscription(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey(
         'customers.id'), nullable=False)
-    frequency = db.Column(db.String(1))
-    days_in = db.Column(db.String(20))
-    days_out = db.Column(db.String(20))
-    start = db.Column(db.DateTime)
-    end = db.Column(db.DateTime)
+    start_date = db.Column(db.DateTime)
+    end_date = db.Column(db.DateTime)
     status = db.Column(db.String(40))
     payement_status = db.Column(db.String(20), nullable=False)
     promotion = db.Column(db.String(200))
+    price = db.Column(db.Float)
+    shipping_price = db.Column(db.Float)
 
 
-class Subscription_product(db.Model):
-    __tablename__ = 'subscription_product'
+class Subscription_days(db.Model):
+    __tablename__ = 'subscription_days'
     __table_args__ = {'extend_existing': True}
 
+    id = db.Column(db.Integer, primary_key=True)
     subscription_id = db.Column(db.Integer, db.ForeignKey(
         'subscriptions.id'), primary_key=True)
-    product_id = db.Column(db.Integer, db.ForeignKey(
-        'products.id'), primary_key=True)
-    quantity = db.Column(db.Integer)
+    day_of_week = db.Column(db.Integer)
     price = db.Column(db.Float)
+    shipping_price = db.Column(db.Float)
 
     def to_dict(self):
         return {
             'subscription_id': self.subscription_id,
-            'product_id': self.product_id,
-            'quantity': self.quantity,
-            'price': self.price
+            'day_of_week': self.day_of_week
         }
 
 
-class Subscription(db.Model):
-
-    __tablename__ = 'subscriptions'
+class Subscription_lines(db.Model):
+    __tablename__ = 'subscription_lines'
     __table_args__ = {'extend_existing': True}
+
     id = db.Column(db.Integer, primary_key=True)
-    customer_id = db.Column(db.Integer, db.ForeignKey(
-        'customers.id'), nullable=False)
-    frequency = db.Column(db.String(1))
-    number_day = db.Column(db.Integer)
-    start = db.Column(db.DateTime)
-    end = db.Column(db.DateTime)
-    status = db.Column(db.String(40))
-    payement_status = db.Column(db.String(20), nullable=False)
-    promotion = db.Column(db.String(200))
-
-
-class Subscription_product(db.Model):
-    __tablename__ = 'subscription_product'
-    __table_args__ = {'extend_existing': True}
-
-    subscription_id = db.Column(db.Integer, db.ForeignKey(
-        'subscriptions.id'), primary_key=True)
+    subscription_day_id = db.Column(db.Integer, db.ForeignKey(
+        'subscription_days.id'), primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey(
         'products.id'), primary_key=True)
     quantity = db.Column(db.Integer)
@@ -312,7 +294,7 @@ class Subscription_product(db.Model):
 
     def to_dict(self):
         return {
-            'subscription_id': self.subscription_id,
+            'subscription_day_id': self.subscription_day_id,
             'product_id': self.product_id,
             'quantity': self.quantity,
             'price': self.price
