@@ -38,6 +38,7 @@ class SubscriptionFrequency_Enum(Enum):
 
 class Customer(db.Model):
     __tablename__ = 'customers'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     firstname = db.Column(db.String(50), nullable=False)
     lastname = db.Column(db.String(50), nullable=False)
@@ -70,6 +71,7 @@ class Customer(db.Model):
 
 class CustomerOrder(db.Model):
     __tablename__ = 'customer_orders'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False,
@@ -78,30 +80,20 @@ class CustomerOrder(db.Model):
         'customers.id'), nullable=False)
     status = db.Column(db.String(20), nullable=False)
 
+    sellerOrders = db.relationship(
+        'SellerOrder', backref='customerOrder', lazy=True)
+    shipping = db.relationship('Shipping', uselist=False)
+    shipping_dt = db.Column(db.DateTime)
+    payment_status = db.Column(db.String(20), nullable=False)
+    subscription_id = db.Column(db.Integer, nullable=True)
 
-<< << << < HEAD
-vendorOrders = db.relationship(
-    'VendorOrder', backref='customerOrder', lazy=True)
-shipping = db.relationship('Shipping', uselist=False)
-shipping_dt = db.Column(db.DateTime)
-payement_status = db.Column(db.String(20), nullable=False)
-subscription_id = db.Column(db.Integer, nullable=True)
-== == == =
-sellerOrders = db.relationship(
-    'SellerOrder', backref='customerOrder', lazy=True)
-shipping = db.relationship('Shipping', uselist=False)
-shipping_dt = db.Column(db.DateTime)
-payment_status = db.Column(db.String(20), nullable=False)
->>>>>> > master
-
-
-def to_dict(self):
-    return {
-        'id': self.id,
-        'title': self.title,
-        'shipping_dt': self.shipping_dt,
-        'status': self.status
-    }
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'shipping_dt': self.shipping_dt,
+            'status': self.status
+        }
 
 
 class OrderStatus(db.Model):
@@ -113,6 +105,7 @@ class OrderStatus(db.Model):
 
 class Product(db.Model):
     __tablename__ = 'products'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(250))
@@ -147,6 +140,7 @@ class ProductStatus(db.Model):
 
 class Line(db.Model):
     __tablename__ = 'lines'
+    __table_args__ = {'extend_existing': True}
 
     order_id = db.Column(db.Integer, db.ForeignKey(
         'customer_orders.id'), primary_key=True)
@@ -169,6 +163,7 @@ class Line(db.Model):
 
 class Seller(db.Model):
     __tablename__ = 'sellers'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(200), nullable=False)
@@ -181,6 +176,7 @@ class Seller(db.Model):
 
 class SellerOrder(db.Model):
     __tablename__ = 'seller_orders'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
     seller_id = db.Column(db.Integer, db.ForeignKey(
@@ -195,6 +191,7 @@ class SellerOrder(db.Model):
 
 class Shipping(db.Model):
     __tablename__ = 'shippings'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     reference = db.Column(db.String(50), nullable=False)
     shipping_dt = db.Column(db.DateTime)
@@ -217,6 +214,7 @@ class ShippingStatus(db.Model):
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), nullable=False)
@@ -251,6 +249,7 @@ def get_user(username):
 class Subscription(db.Model):
 
     __tablename__ = 'subscriptions'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey(
         'customers.id'), nullable=False)
@@ -266,6 +265,7 @@ class Subscription(db.Model):
 
 class Subscription_product(db.Model):
     __tablename__ = 'subscription_product'
+    __table_args__ = {'extend_existing': True}
 
     subscription_id = db.Column(db.Integer, db.ForeignKey(
         'subscriptions.id'), primary_key=True)
@@ -286,6 +286,7 @@ class Subscription_product(db.Model):
 class Subscription(db.Model):
 
     __tablename__ = 'subscriptions'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey(
         'customers.id'), nullable=False)
@@ -300,6 +301,7 @@ class Subscription(db.Model):
 
 class Subscription_product(db.Model):
     __tablename__ = 'subscription_product'
+    __table_args__ = {'extend_existing': True}
 
     subscription_id = db.Column(db.Integer, db.ForeignKey(
         'subscriptions.id'), primary_key=True)
