@@ -1,0 +1,29 @@
+This is Home page
+    Display the menu
+    ---
+    #tags:
+    #  - None
+    #parameters:
+      #- name: language
+      #  in: path
+      #  type: string
+      #  required: true
+      #  description: The language name
+    responses:
+      500:
+        description: Error from server!
+      200:
+        description: Home is successfully loaded
+        #schema:
+        #  id: awesome
+        #  properties:
+        #    language:
+            #   type: string
+            #   description: The language name
+            #   default: Lua
+            # features:
+            #   type: array
+            #   description: The awesomeness list
+            #   items:
+            #     type: string
+            #   default: ["perfect", "simple", "lovely"]

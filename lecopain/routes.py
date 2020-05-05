@@ -2,7 +2,7 @@ from flask import Flask, Blueprint, render_template, url_for,  flash, redirect, 
 from flask_login import login_required, current_user
 from datetime import datetime
 import locale
-from lecopain.app import app, db, api
+from lecopain.app import app, db
 from lecopain.form import PersonForm, OrderForm, ProductForm, LoginForm
 from lecopain.dao.models import Customer, CustomerOrder, Product, Seller, User
 
@@ -14,6 +14,9 @@ from lecopain.controllers.shipping_controller import shipping_page
 from lecopain.controllers.user_controller import user_page
 
 from werkzeug.security import generate_password_hash, check_password_hash
+
+from flasgger import Swagger
+from flasgger.utils import swag_from
 
 
 app.register_blueprint(customer_page)
@@ -36,14 +39,15 @@ shipping_page = Blueprint('shipping_page',  __name__,
 user_page = Blueprint('user_page',  __name__,
                       template_folder='./templates')
 
+Swagger(app)
 
-#app                                               = Flask(__name__,instance_relative_config = True)
 
 #locale.setlocale(locale.LC_TIME, "fr_FR")
 
 
 @app.route("/")
 @app.route("/home", methods=['GET', 'POST'])
+@swag_from('specs/home.yml')
 def home():
     if current_user.is_authenticated:
         customers_nb = Customer.query.count()
