@@ -13,7 +13,7 @@ class SellerManager():
             if(newer_order == None):
                 print("newer from null")
                 newer_order = order
-            elif (order.delivery_dt > newer_order.delivery_dt):
+            elif (order.shipping_dt > newer_order.shipping_dt):
                 newer_order = order
                 print("newer from other")
         return newer_order

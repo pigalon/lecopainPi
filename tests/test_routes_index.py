@@ -48,9 +48,9 @@ class FlaskTestCase(BaseTestCase, TestCase):
         self.assertEqual(response.status_code, 200)
         assert 'Toutes les commandes' in str(response.data)
 
-    def test_deliveries_index(self):
+    def test_shippings_index(self):
         with app.test_client() as client:
-            response = client.get('/deliveries', content_type='html/text')
+            response = client.get('/shippings', content_type='html/text')
         self.assertEqual(response.status_code, 200)
         assert 'Les livraisons' in str(response.data)
 

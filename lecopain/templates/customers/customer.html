@@ -11,7 +11,7 @@
     <div class="content-section">
         {% for order in customer.orders %}
             <p>{{order.title}}</p>
-            <p>{{order.delivery_dt}}</p>
+            <p>{{order.shipping_dt}}</p>
         {% endfor %}
     </div>
 {% endblock %}

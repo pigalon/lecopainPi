@@ -25,10 +25,10 @@
                     {% endfor %}
                 </select>
             </div>
-            <input type="hidden" name="delivery_dth" id="delivery_dth" value="{{form.delivery_dt.data}}"/>
+            <input type="hidden" name="shipping_dth" id="shipping_dth" value="{{form.shipping_dt.data}}"/>
             <div class="form-group">
                 <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                    <input type="text" name="delivery_dt" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
+                    <input type="text" name="shipping_dt" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
                     <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
@@ -96,7 +96,7 @@
             {
                 format : 'DD/MM/YYYY HH:mm:ss',
                 locale: 'fr',
-                defaultDate : document.getElementById("delivery_dth").value
+                defaultDate : document.getElementById("shipping_dth").value
             }
         );
     });

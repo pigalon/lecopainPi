@@ -10,7 +10,7 @@ from lecopain.controllers.customer_controller import customer_page
 from lecopain.controllers.order_controller import order_page
 from lecopain.controllers.product_controller import product_page
 from lecopain.controllers.seller_controller import seller_page
-from lecopain.controllers.delivery_controller import delivery_page
+from lecopain.controllers.shipping_controller import shipping_page
 from lecopain.controllers.user_controller import user_page
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -20,7 +20,7 @@ app.register_blueprint(customer_page)
 app.register_blueprint(order_page)
 app.register_blueprint(product_page)
 app.register_blueprint(seller_page)
-app.register_blueprint(delivery_page)
+app.register_blueprint(shipping_page)
 app.register_blueprint(user_page)
 
 customer_page = Blueprint('customer_page',  __name__,
@@ -31,7 +31,7 @@ product_page = Blueprint('product_page',  __name__,
                          template_folder='./templates')
 seller_page = Blueprint('seller_page',  __name__,
                         template_folder='./templates')
-delivery_page = Blueprint('delivery_page',  __name__,
+shipping_page = Blueprint('shipping_page',  __name__,
                           template_folder='./templates')
 user_page = Blueprint('user_page',  __name__,
                       template_folder='./templates')
@@ -71,6 +71,6 @@ def _get_customers():
 def settings():
     pass
 
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
-

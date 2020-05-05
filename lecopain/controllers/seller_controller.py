@@ -24,7 +24,7 @@ def sellers():
         new_orders.append(sellerManager.get_last_order(seller))
     for order in new_orders:
         if order != None:
-            print(str(order.delivery_dt))
+            print(str(order.shipping_dt))
     return render_template('/sellers/sellers.html', sellers=sellers, new_orders=new_orders, cpt=0)
 
 
@@ -59,7 +59,7 @@ def display_update_order(seller_id):
     if form.validate_on_submit():
         print('update form validate : ' + str(seller.id))
 
-        #delivery_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.delivery_dt.data)
+        #shipping_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.shipping_dt.data)
         seller.name = form.name.data
         seller.email = form.email.data
 

@@ -2,7 +2,7 @@ from datetime import datetime, date, timedelta
 
 from lecopain import app, db
 from lecopain.dto.BoughtProduct import BoughtProduct
-from lecopain.dao.models import Delivery, Line, Product, Seller, SellerOrder, Customer, CustomerOrder, OrderStatus_Enum
+from lecopain.dao.models import Shipping, Line, Product, Seller, SellerOrder, Customer, CustomerOrder, OrderStatus_Enum
 import json
 from sqlalchemy import extract
 
@@ -31,12 +31,12 @@ class OrderManager():
                 CustomerOrder.customer_id == customer_id)
 
         orders = CustomerOrder.query.filter(
-            extract('year', CustomerOrder.delivery_dt) == year).filter(
-                extract('month', CustomerOrder.delivery_dt) == month)
+            extract('year', CustomerOrder.shipping_dt) == year).filter(
+                extract('month', CustomerOrder.shipping_dt) == month)
 
         if day is not None:
             orders = orders.filter(
-                extract('day', CustomerOrder.delivery_dt) == day)
+                extract('day', CustomerOrder.shipping_dt) == day)
 
         return orders.all()
 
@@ -100,7 +100,7 @@ class OrderManager():
         order.created_at = datetime.now()
         order = self.create_product_purchases(
             order, tmp_products, tmp_quantities, tmp_prices)
-        self.create_default_delivery(order)
+        self.create_default_shipping(order)
 
     # @
     #
@@ -139,10 +139,10 @@ class OrderManager():
 
     ##########################################
     #
-    def create_default_delivery(self, order):
-        delivery = Delivery(reference=order.title, delivery_dt=order.delivery_dt,
+    def create_default_shipping(self, order):
+        shipping = Shipping(reference=order.title, shipping_dt=order.shipping_dt,
                             status='NON_LIVREE', customer_order_id=order.id, customer_id=order.customer_id)
-        db.session.add(delivery)
+        db.session.add(shipping)
         db.session.commit()
 
     #########################################
@@ -196,7 +196,7 @@ class OrderManager():
 
     # @
     #
-    def update_order_status(self, order_id, order_status, payment_status, delivery_status):
+    def update_order_status(self, order_id, order_status, payment_status, shipping_status):
         order = CustomerOrder.query.get_or_404(order_id)
 
         if order_status != None:
@@ -205,10 +205,10 @@ class OrderManager():
         if(payment_status != None):
             order.payment_status = payment_status
 
-        delivery = Delivery.query.filter(
-            Delivery.customer_order_id == order_id).first()
-        if delivery != None and delivery_status != None:
-            delivery.status = delivery_status
+        shipping = Shipping.query.filter(
+            Shipping.customer_order_id == order_id).first()
+        if shipping != None and shipping_status != None:
+            shipping.status = shipping_status
 
         sellerOrders = SellerOrder.query.filter(
             SellerOrder.customer_order_id == order_id).all()
@@ -221,13 +221,13 @@ class OrderManager():
     # @
     #
 
-    def calculate_delivery(self, order):
-        base_delivery_price_bases = ''' [{"nb":1, "price":0.6}, {"nb":2, "price":1.16},{"nb":3, "price":1.62}, {"nb":4, "price":2.05}, {"nb":5, "price":2.20}, {"nb":6, "price":2.70}] '''
-        prices = json.loads(base_delivery_price_bases)
+    def calculate_shipping(self, order):
+        base_shipping_price_bases = ''' [{"nb":1, "price":0.6}, {"nb":2, "price":1.16},{"nb":3, "price":1.62}, {"nb":4, "price":2.05}, {"nb":5, "price":2.20}, {"nb":6, "price":2.70}] '''
+        prices = json.loads(base_shipping_price_bases)
 
         customer = Customer.query.get_or_404(order.customer_id)
         nb_products = len(order.selected_products)
-        delivery_price = 0.00
+        shipping_price = 0.00
         rules_detail = ''
 
         if nb_products < 7:
@@ -235,23 +235,23 @@ class OrderManager():
             for base in prices:
                 print('base : ' + str(base['nb']))
                 if base['nb'] == nb_products:
-                    delivery_price = float(base['price'])
+                    shipping_price = float(base['price'])
             if customer.city.lower() != 'langlade':
                 rules_detail += 'en dehors de langlade 0,05 par articles en sup'
-                delivery_price += 0.05 * nb_products
+                shipping_price += 0.05 * nb_products
             else:
                 rules_detail += 'commune de langlade pas de supplement '
 
         else:
             rules_detail += 'superieur a 7 articles et '
-            delivery_price = 0, 60 + 0, 40 * (nb_products-1)
+            shipping_price = 0, 60 + 0, 40 * (nb_products-1)
             if customer.city.lower() != 'langlade':
                 rules_detail += 'en dehors de langlade 0,05 par articles en sup '
-                delivery_price += 0.05 * nb_products
+                shipping_price += 0.05 * nb_products
             else:
                 rules_detail += 'commune de langlade pas de supplement '
 
-        return delivery_price, rules_detail
+        return shipping_price, rules_detail
     # @
     #
 

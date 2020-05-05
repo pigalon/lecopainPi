@@ -13,7 +13,7 @@ class OrderStatus_Enum(Enum):
     TERMINEE = "TERMINEE"
 
 
-class DeliveryStatus_Enum(Enum):
+class ShippingStatus_Enum(Enum):
     ANNULEE = "ANNULEE"
     LIVREE = "LIVREE"
     DEFAUT = "DEFAUT"
@@ -68,15 +68,15 @@ class CustomerOrder(db.Model):
     status = db.Column(db.String(20), nullable=False)
     sellerOrders = db.relationship(
         'SellerOrder', backref='customerOrder', lazy=True)
-    delivery = db.relationship('Delivery', uselist=False)
-    delivery_dt = db.Column(db.DateTime)
+    shipping = db.relationship('Shipping', uselist=False)
+    shipping_dt = db.Column(db.DateTime)
     payment_status = db.Column(db.String(20), nullable=False)
 
     def to_dict(self):
         return {
             'id': self.id,
             'title': self.title,
-            'delivery_dt': self.delivery_dt,
+            'shipping_dt': self.shipping_dt,
             'status': self.status
         }
 
@@ -133,7 +133,7 @@ class Line(db.Model):
     price = db.Column(db.Float)
 
     def __repr__(self):
-        return "CustomerOrder('{self.title}', '{self.status}', {customer_id} '{self.delivery_dt}')"
+        return "CustomerOrder('{self.title}', '{self.status}', {customer_id} '{self.shipping_dt}')"
 
     def to_dict(self):
         return {
@@ -170,11 +170,11 @@ class SellerOrder(db.Model):
         return "SellerOrder('{self.title}', '{self.status}', {customer_order_id} '{self.seller_id}')"
 
 
-class Delivery(db.Model):
-    __tablename__ = 'deliveries'
+class Shipping(db.Model):
+    __tablename__ = 'shippings'
     id = db.Column(db.Integer, primary_key=True)
     reference = db.Column(db.String(50), nullable=False)
-    delivery_dt = db.Column(db.DateTime)
+    shipping_dt = db.Column(db.DateTime)
     status = db.Column(db.String(20), nullable=False)
     customer_order_id = db.Column(db.Integer, db.ForeignKey(
         'customer_orders.id'), nullable=False)
@@ -182,14 +182,14 @@ class Delivery(db.Model):
         'customers.id'), nullable=False)
 
     def __repr__(self):
-        return "Seller('{self.reference}', '{self.delivery_dt}', '{self.status}', '{self.customer_order_id}')"
+        return "Seller('{self.reference}', '{self.shipping_dt}', '{self.status}', '{self.customer_order_id}')"
 
 
-class DeliveryStatus(db.Model):
+class ShippingStatus(db.Model):
     name = db.Column(db.String(50), primary_key=True)
 
     def __repr__(self):
-        return "DeliveryStatus('{self.name}')"
+        return "ShippingStatus('{self.name}')"
 
 
 class User(db.Model, UserMixin):

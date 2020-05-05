@@ -21,11 +21,11 @@
             <div class="form-group">
                 Choix de l'état de la livraison :
                 <select class="form-control" name="status" width="300px">
-                    {% for deliveryStatus in deliveryStatusList %}
-                        {% if(deliveryStatus == "EN COURS") %}
-                            <option value="{{ deliveryStatus }}" SELECTED>{{ deliveryStatus }}</option>
+                    {% for shippingStatus in shippingStatusList %}
+                        {% if(shippingStatus == "EN COURS") %}
+                            <option value="{{ shippingStatus }}" SELECTED>{{ shippingStatus }}</option>
                         {% else %}
-                            <option value="{{ deliveryStatus }}" >{{ deliveryStatus }}</option>
+                            <option value="{{ shippingStatus }}" >{{ shippingStatus }}</option>
                         {% endif %}    
                     {% endfor %}
                 </select>
@@ -33,7 +33,7 @@
             <div class="form-group">
                 Saisie de la date de la livraison :
                 <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                    <input type="text" name="delivery_dt" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
+                    <input type="text" name="shipping_dt" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
                     <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
@@ -65,5 +65,5 @@
 </script>
 <script src="{{ url_for('static', filename='js/product-list.js') }}"></script>
 
-<script src="{{ url_for('static', filename='tag/deliveries/todo.tag') }}" type="riot/tag"></script>
+<script src="{{ url_for('static', filename='tag/shippings/todo.tag') }}" type="riot/tag"></script>
 {% endblock %}
