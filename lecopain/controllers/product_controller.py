@@ -1,4 +1,4 @@
-from lecopain.dao.models import Product, Vendor, ProductStatus
+from lecopain.dao.models import Product, Seller, ProductStatus
 from lecopain import app, db
 from lecopain.form import ProductForm
 from flask import session, Blueprint, render_template, redirect, url_for, Flask, jsonify
@@ -21,8 +21,8 @@ productManager = ProductManager()
 @login_required
 def product(product_id):
     product = Product.query.get_or_404(product_id)
-    vendor = Vendor.query.get_or_404(product.vendor_id)
-    return render_template('/products/product.html', product=product, vendor=vendor)
+    seller = Seller.query.get_or_404(product.seller_id)
+    return render_template('/products/product.html', product=product, seller=seller)
 #####################################################################
 #                                                                   #
 #####################################################################
@@ -38,7 +38,7 @@ def products():
 @login_required
 def product_create():
     form = ProductForm()
-    vendors = Vendor.query.all()
+    sellers = Seller.query.all()
     print("product form : " + str(form.validate_on_submit()))
     if form.validate_on_submit():
         product = Product(
@@ -48,7 +48,7 @@ def product_create():
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('product_page.products'))
     productStatusList = _get_product_status()
-    return render_template('/products/create_product.html', title='Product form', form=form, productStatusList=productStatusList, vendors=vendors)
+    return render_template('/products/create_product.html', title='Product form', form=form, productStatusList=productStatusList, sellers=sellers)
 
 #####################################################################
 #                                                                   #
@@ -59,7 +59,7 @@ def display_update_product(product_id):
     product = Product.query.get_or_404(product_id)
     form = ProductForm()
 
-    vendors = Vendor.query.all()
+    sellers = Seller.query.all()
 
     if form.validate_on_submit():
         print('update form validate : ' + str(product.id))
@@ -73,7 +73,7 @@ def display_update_product(product_id):
         productManager.convert_product_to_form(product=product, form=form)
 
     productStatusList = _get_product_status()
-    return render_template('/products/update_product.html', product=product, title='Mise a jour de produit', form=form, vendors=vendors,  productStatusList=productStatusList)
+    return render_template('/products/update_product.html', product=product, title='Mise a jour de produit', form=form, sellers=sellers,  productStatusList=productStatusList)
 
 #####################################################################
 #                                                                   #
@@ -107,11 +107,11 @@ def delete_order(product_id):
 #####################################################################
 #                                                                   #
 #####################################################################
-@product_page.route("/_getjs_products/<int:vendor_id>")
+@product_page.route("/_getjs_products/<int:seller_id>")
 @login_required
-def getjs_products(vendor_id):
+def getjs_products(seller_id):
     products = Product.query.filter(
-        Product.vendor_id == vendor_id).options(load_only("name")).all()
+        Product.seller_id == seller_id).options(load_only("name")).all()
     js_products = []
     data = {}
     data['id'] = " "

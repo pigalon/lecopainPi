@@ -30,9 +30,9 @@ class FlaskTestCase(BaseTestCase, TestCase):
         self.assertEqual(response.status_code, 200)
         assert 'les produits' in str(response.data)
 
-    def test_vendors_index(self):
+    def test_sellers_index(self):
         with app.test_client() as client:
-            response = client.get('/vendors', content_type='html/text')
+            response = client.get('/sellers', content_type='html/text')
         self.assertEqual(response.status_code, 200)
         assert 'Vendeurs' in str(response.data)
 

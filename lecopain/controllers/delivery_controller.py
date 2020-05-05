@@ -1,4 +1,4 @@
-from lecopain.dao.models import Customer, CustomerOrder, Product, DeliveryStatus, Delivery, Vendor
+from lecopain.dao.models import Customer, CustomerOrder, Product, DeliveryStatus, Delivery, Seller
 from lecopain import app, db
 from lecopain.form import DeliveryForm
 from lecopain.services.delivery_manager import DeliveryManager
@@ -154,7 +154,7 @@ def deliveries_of_day(year_number, month_number, day_number):
 def delivery_create():
     form = DeliveryForm()
 
-    vendors = Vendor.query.all()
+    sellers = Seller.query.all()
 
     #tmp_order = request.form.getlist('orders')
 
@@ -176,7 +176,7 @@ def delivery_create():
     #    flash(f'Failed!', 'danger')
     deliveryStatusList = _get_delivery_status()
 
-    return render_template('/deliveries/create_delivery.html', title='Creation de livraison', form=form, customers=customers, vendors=vendors, deliveryStatusList=deliveryStatusList)
+    return render_template('/deliveries/create_delivery.html', title='Creation de livraison', form=form, customers=customers, sellers=sellers, deliveryStatusList=deliveryStatusList)
 
 #####################################################################
 #                                                                   #

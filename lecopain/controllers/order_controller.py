@@ -1,4 +1,4 @@
-from lecopain.dao.models import Customer, CustomerOrder, Product, OrderStatus, Line, Delivery, VendorOrder
+from lecopain.dao.models import Customer, CustomerOrder, Product, OrderStatus, Line, Delivery, SellerOrder
 from lecopain import app, db
 from lecopain.form import OrderForm, OrderAnnulationForm
 from lecopain.services.order_manager import OrderManager
@@ -131,8 +131,8 @@ def order(order_id):
 
     customer = Customer.query.get_or_404(order.customer_id)
     products = order.selected_products
-    products.sort(key=lambda x: x.vendor_id, reverse=True)
-    sorted_products = sorted(products, key=lambda x: x.vendor_id, reverse=True)
+    products.sort(key=lambda x: x.seller_id, reverse=True)
+    sorted_products = sorted(products, key=lambda x: x.seller_id, reverse=True)
     bought_items = Line.query.filter(
         Line.order_id == order.id).all()
 
@@ -286,10 +286,10 @@ def delete_order(order_id):
     if delivery != None:
         db.session.delete(delivery)
 
-    vendorOrders = VendorOrder.query.filter(
-        VendorOrder.customer_order_id == order_id).all()
-    for vendorOrder in vendorOrders:
-        db.session.delete(vendorOrder)
+    sellerOrders = SellerOrder.query.filter(
+        SellerOrder.customer_order_id == order_id).all()
+    for sellerOrder in sellerOrders:
+        db.session.delete(sellerOrder)
 
     db.session.delete(order)
     db.session.commit()

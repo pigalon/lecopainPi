@@ -2,7 +2,7 @@ from datetime import datetime, date, timedelta
 
 from lecopain import app, db
 from lecopain.dto.BoughtProduct import BoughtProduct
-from lecopain.dao.models import Delivery, Line, Product, Vendor, VendorOrder, Customer, CustomerOrder, OrderStatus_Enum
+from lecopain.dao.models import Delivery, Line, Product, Seller, SellerOrder, Customer, CustomerOrder, OrderStatus_Enum
 import json
 from sqlalchemy import extract
 
@@ -124,9 +124,9 @@ class OrderManager():
         self.create_corresponding_purchases(
             order=order, tmp_products=tmp_products, tmp_quantities=tmp_quantities, tmp_prices=tmp_prices)
 
-        vendorOrders = self.generate_vendor_orders(order=order)
-        for vendorOrder in vendorOrders:
-            db.session.add(vendorOrder)
+        sellerOrders = self.generate_seller_orders(order=order)
+        for sellerOrder in sellerOrders:
+            db.session.add(sellerOrder)
         return order
     # @
     #
@@ -152,9 +152,9 @@ class OrderManager():
         # delete Line relation to recreate
         Line.query.filter(Line.order_id == order.id).delete()
 
-        # TODO : missing delete vendor order !!!!
-        VendorOrder.query.filter(
-            VendorOrder.customer_order_id == order.id).delete()
+        # TODO : missing delete seller order !!!!
+        SellerOrder.query.filter(
+            SellerOrder.customer_order_id == order.id).delete()
 
     # @
     #
@@ -177,22 +177,22 @@ class OrderManager():
 
     # @
     #
-    def generate_vendor_orders(self, order):
-        vendorOrders = []
-        vendorIds = self.get_vendors_from_products(order)
-        for vendorId in vendorIds:
-            vendorOrders.append(VendorOrder(
-                title=order.title, status='CREE', customer_order_id=order.id, vendor_id=vendorId))
+    def generate_seller_orders(self, order):
+        sellerOrders = []
+        sellerIds = self.get_sellers_from_products(order)
+        for sellerId in sellerIds:
+            sellerOrders.append(SellerOrder(
+                title=order.title, status='CREE', customer_order_id=order.id, seller_id=sellerId))
 
-        return vendorOrders
+        return sellerOrders
 
     # @
     #
-    def get_vendors_from_products(self, order):
-        vendorIds = set()
+    def get_sellers_from_products(self, order):
+        sellerIds = set()
         for product in order.selected_products:
-            vendorIds.add(product.vendor_id)
-        return vendorIds
+            sellerIds.add(product.seller_id)
+        return sellerIds
 
     # @
     #
@@ -210,11 +210,11 @@ class OrderManager():
         if delivery != None and delivery_status != None:
             delivery.status = delivery_status
 
-        vendorOrders = VendorOrder.query.filter(
-            VendorOrder.customer_order_id == order_id).all()
-        for vendorOrder in vendorOrders:
+        sellerOrders = SellerOrder.query.filter(
+            SellerOrder.customer_order_id == order_id).all()
+        for sellerOrder in sellerOrders:
             if order_status != None:
-                vendorOrder.status = order_status
+                sellerOrder.status = order_status
 
         db.session.commit()
 

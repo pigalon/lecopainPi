@@ -24,8 +24,8 @@
   <table>
   <tr>
   <td>
-  <select class="form-control" ref="vendor" width="300px" onchange={ load_products }>
-    <option each="{ vendor in vendors }" value={vendor.id}> {vendor.name} </option> 
+  <select class="form-control" ref="seller" width="300px" onchange={ load_products }>
+    <option each="{ seller in sellers }" value={seller.id}> {seller.name} </option> 
   </select>
   </td>
   <td>
@@ -62,32 +62,32 @@
     this.items = opts.items
     this.selected_products = opts.selected_products
 
-    this.vendors = []
+    this.sellers = []
     this.products = []
 
     /******************************************
      at page init : 
        mount riotjs module
-       load vendors list
+       load sellers list
     *******************************************/
     
     this.on('mount', function(){
-      self.load_vendors()
+      self.load_sellers()
     })
 
     /******************************************
-       load vendors list
+       load sellers list
     *******************************************/
 
-    load_vendors(){
-      var url = 'http://localhost:5000/_getjs_vendors/'; //random adress
+    load_sellers(){
+      var url = 'http://localhost:5000/_getjs_sellers/'; //random adress
       $.ajax({
             url: url,
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             success: function(data) {
-              self.vendors = data['vendors']
+              self.sellers = data['sellers']
               self.update()
             }
         });
@@ -97,8 +97,8 @@
        load products list
     *******************************************/
     load_products(){
-        vendor_id = this.refs.vendor.value
-        var url = 'http://localhost:5000/_getjs_products/'+vendor_id;
+        seller_id = this.refs.seller.value
+        var url = 'http://localhost:5000/_getjs_products/'+seller_id;
       $.ajax({
             url: url,
             type: "GET",
@@ -136,7 +136,7 @@
       return test
     }*/
 
-   /* await mount_vendors(){
+   /* await mount_sellers(){
 
     }*/
 

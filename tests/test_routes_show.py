@@ -1,6 +1,6 @@
 from base import BaseTestCase
 from lecopain import app, db
-from lecopain.dao.models import User, Product, Vendor
+from lecopain.dao.models import User, Product, Seller
 import os
 import sys
 import unittest
