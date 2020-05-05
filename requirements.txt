@@ -22,3 +22,4 @@ aenum
 
 codecov
 coverage
+factory_boy

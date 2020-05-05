@@ -3,7 +3,8 @@ from lecopain import app, db
 import unittest
 import sys
 import os
-from werkzeug.security import generate_password_hash
+from factories import AdminFactory
+
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 parent_dir_path = os.path.abspath(os.path.join(dir_path, os.pardir))
@@ -20,10 +21,7 @@ class BaseTestCase(unittest.TestCase):
     def setUp(self):
         self.app = self.create_app()
         db.create_all()
-        db.session.add(
-            User(username="admin", email="ad@min.com",
-                 password=generate_password_hash("password")))
-        db.session.commit()
+        AdminFactory.create()
 
     def login(self, username, password):
         return self.client.post('/login', data=dict(
