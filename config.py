@@ -19,6 +19,5 @@ class TestConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     TESTING = True
-    WTF_CSRF_ENABLED = False
     DEBUG = False
     LOGIN_DISABLED = True

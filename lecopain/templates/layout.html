@@ -1,126 +1,148 @@
 <!DOCTYPE html>
 <html>
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, shrink-to-fit=no"
+		/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<title>Page Title</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+			integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+			crossorigin="anonymous"
+		/>
+		<link
+			rel="stylesheet"
+			type="text/css"
+			href="{{ url_for('static', filename='main.css')}}"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+			integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+			crossorigin="anonymous"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css"
+		/>
+		<!--<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.1/fullcalendar.min.css" type="text/css" rel="stylesheet" /> -->
+		<!--<link rel="stylesheet" href="{{ url_for('static', filename='foundation/stylesheets/foundation.min.css') }}">-->
+		<!--<link rel="stylesheet" href="{{ url_for('static', filename='foundation/stylesheets/app.css') }}">-->
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Page Title</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous" />
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css')}}" />
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
-    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" />
-  <!--<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.1/fullcalendar.min.css" type="text/css" rel="stylesheet" /> -->
-  <!--<link rel="stylesheet" href="{{ url_for('static', filename='foundation/stylesheets/foundation.min.css') }}">-->
-  <!--<link rel="stylesheet" href="{{ url_for('static', filename='foundation/stylesheets/app.css') }}">-->
- 
-  <!--<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fullcalendar/core/main.css')}}" />  
+		<!--<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fullcalendar/core/main.css')}}" />  
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fullcalendar/daygrid/main.css')}}" />  
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fullcalendar/timegrid/main.css')}}" /> 
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fullcalendar/list/main.css')}}" />-->
-  {% if title %}
-    <title>Flask page - {{ title }}</title>
-  {% endif %}
+		{% if title %}
+		<title>Flask page - {{ title }}</title>
+		{% endif %}
+	</head>
 
-  
-</head>
+	<body>
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+			<a class="navbar-brand" href="/">L'éco pain</a>
+			<button
+				class="navbar-toggler"
+				type="button"
+				data-toggle="collapse"
+				data-target="#navbarText"
+				aria-controls="navbarText"
+				aria-expanded="false"
+				aria-label="Toggle navigation"
+			>
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarText">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="nav-link" href="/customers">Clients</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/orders/customers/0">Commandes</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/products">Produits</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/sellers">Vendeurs</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/shippings/customers/0">Livraisons</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/apidocs/">Specs</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/subscriptions/customers/0"
+							>Abonnements</a
+						>
+					</li>
+				</ul>
+				<!--
+      <a href="" class="notif"><span class="notification_count">2<span></a>-->
+				<mytag> </mytag>
+				<span class="navbar-text">
+					<a href="/logout"
+						><p style="color: white; font-size: 18px;">
+							<i class="fa fa-eject"></i></p
+					></a>
+				</span>
+			</div>
+		</nav>
 
-<body>
-  
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">    
-    <a class="navbar-brand" href="/">L'éco pain</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
-      aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarText">
-        
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="/customers">Clients</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/orders/customers/0">Commandes</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/products">Produits</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/sellers">Vendeurs</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/shippings/customers/0">Livraisons</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/apidocs/">Specs</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/subscriptions/customers/0">Abonnements</a>
-        </li>
-      </ul>
-      <a href="" class="notif"><span class="notification_count">2<span></a>
-      <mytag>
-      </mytag>
-      <span class="navbar-text">
-         <a href="/logout"><p style="color:white;font-size:18px;"><i class="fa fa-eject"></i></p></a>
-      </span>
-    </div>
-  </nav>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8">
+					{% with messages = get_flashed_messages(with_categories=true) %} {% if
+					messages %} {% for category, message in messages %}
+					<div class="alert alert-{{ category }}">
+						{{ message }}
+					</div>
+					{% endfor %} {% endif %} {% endwith %} {% if title %}
+					<h1>{{ title }}</h1>
+					{% endif %} {% block content %} {% endblock %}
+				</div>
+				<div class="col-md-4">
+					{% block right_menu %} {% endblock %}
+				</div>
+			</div>
+		</div>
 
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8">
+		<app></app>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        {% for category, message in messages %}
-        <div class="alert alert-{{ category }}">
-          {{ message }}
-        </div>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
-
-        {% if title %}
-        <h1>{{ title }}</h1>
-        {% endif %}
-
-        {% block content %} {% endblock %}
-      </div>
-      <div class="col-md-4">
-        {% block right_menu %} {% endblock %}
-      </div>
-    </div>
-  </div>
-
-  <app></app>
-
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
-    integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous">
-  </script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
-    integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous">
-  </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-  <script type="text/javascript"
-    src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js">
-  </script>
-  <script src="{{ url_for('static', filename='js/reqwest.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/riot+compiler.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/moment/fr.js') }}"></script>
-  <!--<script src="{{ url_for('static', filename='foundation/javascripts/modernizr.foundation.js') }}"></script>-->
-  <script src="{{ url_for('static', filename='tag/navbar/orders_count.tag') }}" type="riot/tag"></script>
+		<script
+			src="https://code.jquery.com/jquery-3.3.1.min.js"
+			crossorigin="anonymous"
+		></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+			integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+			crossorigin="anonymous"
+		></script>
+		<script
+			src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+			integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+			crossorigin="anonymous"
+		></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+		<script
+			type="text/javascript"
+			src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"
+		></script>
+		<script src="{{ url_for('static', filename='js/reqwest.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/riot+compiler.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/moment/fr.js') }}"></script>
+		<!--<script src="{{ url_for('static', filename='foundation/javascripts/modernizr.foundation.js') }}"></script>-->
+		<!--<script src="{{ url_for('static', filename='tag/navbar/orders_count.tag') }}" type="riot/tag"></script>
   <script>
     riot.mount("mytag");
- </script> 
- 
+ </script> -->
 
-  {% block scripts %}{% endblock %}
-
-</body>
-
+		{% block scripts %}{% endblock %}
+	</body>
 </html>
