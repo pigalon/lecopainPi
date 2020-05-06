@@ -24,3 +24,4 @@ aenum
 codecov
 coverage
 factory_boy
+wemake-python-styleguide
