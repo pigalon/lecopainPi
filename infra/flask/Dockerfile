@@ -3,6 +3,7 @@ FROM python:3.8.2-buster
 
 # Set the working directory to /app
 WORKDIR /app
+RUN mkdir /db
 
 # Copy the current directory contents into the container at /app
 ADD lecopain /app/lecopain

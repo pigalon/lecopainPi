@@ -11,6 +11,8 @@ services:
       - APP_NAME=Lecopain
     expose:
       - 8080
+    volumes:
+      - ../db:/db
 
   nginx:
     build: ./infra/nginx
