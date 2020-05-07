@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  flask:
+    build:
+      context: ./
+      dockerfile: ./infra/flask/Dockerfile
+    container_name: flask
+    restart: always
+    environment:
+      - APP_NAME=Lecopain
+    expose:
+      - 8080
+
+  nginx:
+    build: ./infra/nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"

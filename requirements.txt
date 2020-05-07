@@ -8,6 +8,7 @@ Flask-sqlalchemy
 flask-login
 Flask-Testing==0.4.2
 flasgger
+uwsgi
 
 Requests
 Jinja2
