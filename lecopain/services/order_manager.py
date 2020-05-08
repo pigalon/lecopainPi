@@ -3,6 +3,7 @@ from datetime import datetime, date, timedelta
 from lecopain.app import app, db
 from lecopain.dto.BoughtProduct import BoughtProduct
 from lecopain.dao.models import Shipping, Line, Product, Seller, SellerOrder, Customer, CustomerOrder, OrderStatus_Enum
+from lecopain.helpers.date_utils import get_start_and_end_date_from_calendar_week, get_start_and_end_date_from_calendar_month
 import json
 from sqlalchemy import extract
 
@@ -41,8 +42,95 @@ class OrderManager():
         return orders.all()
 
     ##############################################
+    # Orders by customer
+    ###############################################
+    def orders_by_customer(self, orders, customer_id):
+        orders.filter(
+            CustomerOrder.customer_id == customer_id)
+
+    ##############################################
+    # Orders by desc date
+    ###############################################
+    def orders_by_date_desc(self, orders):
+        orders.order_by(
+            CustomerOrder.shipping_dt.desc()).all()
+
+    ##############################################
+    # Orders list ordered by date for the current month
+    ###############################################
+    def orders_of_the_month(self, customer_id=0):
+
+        today = datetime.today()
+
+        start_date, end_date = get_start_and_end_date_from_calendar_month(
+            today.year, today.month)
+
+        orders = CustomerOrder.query.filter(
+            CustomerOrder.shipping_dt >= start_date).filter(
+            CustomerOrder.shipping_dt <= end_date)
+
+        if customer_id != 0:
+            orders_by_customer(orders, customer_id)
+
+        self.orders_by_date_desc(orders)
+
+        return orders.all()
+
+    ##############################################
+    # Orders list ordered by date for the current week
+    ###############################################
+    def orders_of_the_week(self, customer_id=0):
+
+        today = datetime.today()
+
+        start_date, end_date = get_start_and_end_date_from_calendar_week(
+            today.year, today.weekday())
+
+        orders = CustomerOrder.query.filter(
+            CustomerOrder.shipping_dt >= start_date).filter(
+            CustomerOrder.shipping_dt <= end_date)
+
+        if customer_id != 0:
+            orders_by_customer(orders, customer_id)
+
+        self.orders_by_date_desc(orders)
+
+        return orders.all()
+
+    ##############################################
+    # Orders list ordered by date for the current day
+    ###############################################
+    def orders_of_the_day(self, customer_id=0):
+
+        today = datetime.today()
+
+        orders = CustomerOrder.query.filter(
+            CustomerOrder.shipping_dt == today)
+
+        if customer_id != 0:
+            orders_by_customer(orders, customer_id)
+
+        self.orders_by_date_desc(orders)
+
+        return orders.all()
+
+    ##############################################
+    # All orders
+    ###############################################
+    def all_orders(self, customer_id=0):
+        orders = CustomerOrder.query
+
+        if customer_id != 0:
+            orders_by_customer(orders, customer_id)
+
+        self.orders_by_date_desc(orders)
+
+        return orders.all()
+
+    ##############################################
     # products list from order
     ###############################################
+
     def get_resume_products_list_from_orders(self, orders):
         products = []
         for order in orders:

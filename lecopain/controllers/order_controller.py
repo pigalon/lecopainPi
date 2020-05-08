@@ -17,38 +17,74 @@ order_page = Blueprint('order_page', __name__,
 orderServices = OrderManager()
 
 
+def common_display_orders_page(orders, period):
+    customers = Customer.query.all()
+    map = orderServices.get_maps_from_orders(orders)
+
+    return render_template('/orders/orders.html', customers=customers, orders=orders, map=map, title=f"Commandes - {period}")
+
+
 #####################################################################
 #                                                                   #
 #####################################################################
 @order_page.route("/orders", methods=['GET', 'POST'])
 @login_required
 def orders():
-    return orders_customer(0)
+    orders = orderServices.all_orders()
+    return common_display_orders_page(orders, 'toutes')
 
 
+#####################################################################
+#                                                                   #
+#####################################################################
+@order_page.route("/orders/month", methods=['GET', 'POST'])
+@login_required
+def orders_of_current_month():
+    orders = orderServices.orders_of_the_month()
+    return common_display_orders_page(orders, 'mois')
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@order_page.route("/orders/week", methods=['GET', 'POST'])
+@login_required
+def orders_of_current_week():
+    orders = orderServices.orders_of_the_week()
+    return common_display_orders_page(orders, 'semaine')
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@order_page.route("/orders/day", methods=['GET', 'POST'])
+@login_required
+def orders_of_current_day():
+    orders = orderServices.orders_of_the_day()
+    return common_display_orders_page(orders, 'jour')
+
+#####################################################################
+#                                                                   #
+#####################################################################
 @order_page.route("/orders/customers/<int:customer_id>", methods=['GET', 'POST'])
 @login_required
 def orders_customer(customer_id):
 
-    if customer_id == 0 or customer_id == None:
+    orders = orderServices.all_orders(customer_id)
+    return common_display_orders_page(orders, 'toutes')
 
-        orders = CustomerOrder.query.order_by(
-            CustomerOrder.shipping_dt.desc()).all()
-    else:
-        orders = CustomerOrder.query.filter(CustomerOrder.customer_id == customer_id).order_by(
-            CustomerOrder.shipping_dt.desc()).all()
-
-    customers = Customer.query.all()
-    map = orderServices.get_maps_from_orders(orders)
-
-    return render_template('/orders/orders.html', orders=orders, customers=customers, title="Toutes les commandes", map=map)
+#####################################################################
+#                                                                   #
+#####################################################################
+@order_page.route("/orders/year/<int:year_number>/month/<int:month_number>", methods=['GET', 'POST'])
+@login_required
+def orders_of_month(year_number, month_number):
+    return orders_of_month_by_customer(0, year_number, month_number)
 
 #####################################################################
 #                                                                   #
 #####################################################################
 @order_page.route("/orders/customers/<int:customer_id>/year/<int:year_number>/month/<int:month_number>", methods=['GET', 'POST'])
 @login_required
-def orders_of_month(customer_id, year_number, month_number):
+def orders_of_month_by_customer(customer_id, year_number, month_number):
 
     date_tab = [year_number, month_number, None]
     orders = orderServices.build_orders_list(customer_id, date_tab)
@@ -61,9 +97,18 @@ def orders_of_month(customer_id, year_number, month_number):
 #####################################################################
 #                                                                   #
 #####################################################################
+@order_page.route("/orders/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
+@login_required
+def orders_of_day(year_number, month_number, day_number):
+
+    return orders_of_day_by_customer(0, year_number, month_number, day_number)
+
+#####################################################################
+#                                                                   #
+#####################################################################
 @order_page.route("/orders/customers/<int:customer_id>/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
 @login_required
-def orders_of_day(customer_id, year_number, month_number, day_number):
+def orders_of_day_by_customer(customer_id, year_number, month_number, day_number):
 
     date_tab = [year_number, month_number, day_number]
     orders = orderServices.build_orders_list(customer_id, date_tab)
@@ -73,16 +118,15 @@ def orders_of_day(customer_id, year_number, month_number, day_number):
 
     return render_template('/orders/orders.html', customers=customers, orders=orders, map=map, title="Commandes du jour")
 
-
 #####################################################################
 #                                                                   #
 #####################################################################
-@order_page.route("/orders/resume/customers/<int:customer_id>/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
+@order_page.route("/orders/resume/year/<int:year_number>/month/<int:month_number>/day/<int:day_number>", methods=['GET', 'POST'])
 @login_required
-def order_products_of_day(customer_id, year_number, month_number, day_number):
+def order_products_of_day(year_number, month_number, day_number):
 
     date_tab = [year_number, month_number, day_number]
-    orders = orderServices.build_orders_list(customer_id, date_tab)
+    orders = orderServices.build_orders_list(0, date_tab)
 
     orders = CustomerOrder.query.filter(extract('year', CustomerOrder.shipping_dt) == year_number).filter(extract(
         'month', CustomerOrder.shipping_dt) == month_number).filter(extract('day', CustomerOrder.shipping_dt) == day_number).all()
@@ -92,7 +136,6 @@ def order_products_of_day(customer_id, year_number, month_number, day_number):
     map = orderServices.get_maps_from_orders(orders)
 
     return render_template('/orders/orders_by_day.html', orders=orders, map=map, bought_products=products_of_day_list, title="Commandes du jour")
-
 
 #####################################################################
 #                                                                   #
