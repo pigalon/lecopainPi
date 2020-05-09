@@ -330,7 +330,6 @@ class OrderManager():
         if nb_products < 7:
             rules_detail += 'inferieur a 7 articles et '
             for base in prices:
-                print('base : ' + str(base['nb']))
                 if base['nb'] == nb_products:
                     shipping_price = float(base['price'])
             if customer.city.lower() != 'langlade':
