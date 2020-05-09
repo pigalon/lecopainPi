@@ -26,6 +26,21 @@ class FlaskTestCase(BaseTestCase, TestCase):
         self.assertEqual(response.status_code, 200)
         assert product.name in str(response.data)
 
+    def test_products_edit(self):
+
+        product = db.session.query(Product).first()
+        product.name = 'new_product'
+
+        with app.test_client() as client:
+            response = client.post(f'/products/update/{product.id}', data=dict(
+                name=product.name,
+                description=product.description,
+                price=product.price,
+                seller_id=product.seller_id,
+                status=product.status), follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        assert product.name in str(response.data)
+
 
 if __name__ == '__main__':
     unittest.main()
