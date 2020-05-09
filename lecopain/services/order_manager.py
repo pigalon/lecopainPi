@@ -165,8 +165,7 @@ class OrderManager():
             customer = Customer.query.get_or_404(order.customer_id)
             customerMap[order.id] = str(
                 customer.firstname + " " + customer.lastname)
-
-            bought_items = Line.query.filter(Line.order_id == order.id).all()
+            bought_items = order.lines
             total = 0
             quantity = 0
             for bought_item in bought_items:
@@ -186,19 +185,29 @@ class OrderManager():
     #
     def create_order(self, order, tmp_products, tmp_quantities, tmp_prices):
         order.created_at = datetime.now()
-        order = self.create_product_purchases(
-            order, tmp_products, tmp_quantities, tmp_prices)
+
+        lines = []
+        for i in range(len(tmp_products)):
+            product = Product.query.get_or_404(tmp_products[i])
+            quantity = tmp_quantities[i]
+            price = tmp_prices[i]
+            lines.append((product, quantity, price))
+        order.add_products(lines)
+
+        # order = self.create_product_purchases(
+        #     order, tmp_products, tmp_quantities, tmp_prices)
         self.create_default_shipping(order)
 
     # @
     #
     def update_order(self, order, products, quantities, prices):
-
-        order.created_at = datetime.now()
+        # TODO update date instead
+        #order.created_at = datetime.now()
         self.delete_every_order_dependencies(order)
-        order = self.create_product_purchases(
-            order, products, quantities, prices)
-        db.session.commit()
+        self.create_order(order, products, quantities, prices)
+        # order = self.create_product_purchases(
+        #    order, products, quantities, prices)
+        # db.session.commit()
 
     # @
     #
@@ -212,9 +221,9 @@ class OrderManager():
         self.create_corresponding_purchases(
             order=order, tmp_products=tmp_products, tmp_quantities=tmp_quantities, tmp_prices=tmp_prices)
 
-        sellerOrders = self.generate_seller_orders(order=order)
-        for sellerOrder in sellerOrders:
-            db.session.add(sellerOrder)
+        # sellerOrders = self.generate_seller_orders(order=order)
+        # for sellerOrder in sellerOrders:
+        #     db.session.add(sellerOrder)
         return order
     # @
     #
@@ -314,7 +323,7 @@ class OrderManager():
         prices = json.loads(base_shipping_price_bases)
 
         customer = Customer.query.get_or_404(order.customer_id)
-        nb_products = len(order.selected_products)
+        nb_products = len(order.lines)
         shipping_price = 0.00
         rules_detail = ''
 

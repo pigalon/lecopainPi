@@ -173,15 +173,10 @@ def order(order_id):
     price, rules = orderServices.calculate_shipping(order)
 
     customer = Customer.query.get_or_404(order.customer_id)
-    products = order.selected_products
+    products = order.products
     products.sort(key=lambda x: x.seller_id, reverse=True)
     sorted_products = sorted(products, key=lambda x: x.seller_id, reverse=True)
-    bought_items = Line.query.filter(
-        Line.order_id == order.id).all()
-
-    line = Line.query.filter(
-        Line.order_id == order.id).first()
-    print(" !!!!!! " + str(vars(line)))
+    bought_items = order.lines
 
     return render_template('/orders/order.html', order=order, bought_items=bought_items, products=sorted_products, customer=customer, shipping_price=price, rules=rules)
 
@@ -198,8 +193,7 @@ def display_update_order(order_id):
     customer = Customer.query.get_or_404(order.customer_id)
     products = Product.query.all()
 
-    line_selection = Line.query.filter(
-        Line.order_id == order.id).all()
+    line_selection = order.lines
 
     if form.validate_on_submit():
         orderForm = Order(title=form.title.data, status=form.status.data, customer_id=int(
@@ -226,7 +220,7 @@ def display_update_order(order_id):
     form.title.data = order.title
 
     orderStatusList = _get_order_status()
-    return render_template('/orders/update_order.html', order=order, title='Mise a jour de commande', form=form, customer=customer, products=products, selected_products=order.selected_products,  orderStatusList=orderStatusList, line_selection=line_selection)
+    return render_template('/orders/update_order.html', order=order, title='Mise a jour de commande', form=form, customer=customer, products=products, selected_products=order.products,  orderStatusList=orderStatusList, line_selection=line_selection)
 
 
 #####################################################################

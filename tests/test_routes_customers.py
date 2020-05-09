@@ -1,6 +1,6 @@
 from base import BaseTestCase
 from lecopain.app import app, db
-from lecopain.dao.models import User, Order, Seller
+from lecopain.dao.models import User, Customer, Seller
 import os
 import sys
 import unittest
@@ -16,7 +16,7 @@ sys.path.insert(0, parent_dir_path)
 class FlaskTestCase(BaseTestCase, TestCase):
 
     # Ensure that Flask was set up correctly
-    def test_orders_index(self):
+    def test_customers_show(self):
 
         customer = db.session.query(Customer).first()
 
@@ -25,7 +25,7 @@ class FlaskTestCase(BaseTestCase, TestCase):
                                   content_type='html/text')
         self.assertEqual(response.status_code, 200)
         assert 'client' in str(response.data)
-        assert customer.id in str(response.data)
+        assert str(customer.id) in str(response.data)
 
 
 if __name__ == '__main__':

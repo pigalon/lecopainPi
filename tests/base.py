@@ -32,16 +32,6 @@ class BaseTestCase(unittest.TestCase):
         order.add_products([(product, 6, 2)])
         db.session.commit()
 
-        print("!!!!!order :" + str(order.id))
-
-        for product in order.products:
-            print("!!!!!product :" + str(vars(product)))
-
-        for line in order.lines:
-            print("!!!!!line :" + str(vars(line)))
-
-        # self.create_order_2products()
-
     def login(self, username, password):
         return self.client.post('/login', data=dict(
             username=username,
@@ -67,6 +57,3 @@ class BaseTestCase(unittest.TestCase):
 
     def create_orders(self):
         OrderFactory.create()
-
-    # def create_order_2products(self):
-    #     OrderWith2ProductsFactory.create()

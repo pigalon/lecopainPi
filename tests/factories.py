@@ -5,6 +5,7 @@ from lecopain.app import db
 import factory
 import unicodedata
 from factory.faker import faker
+from datetime import datetime, timedelta
 
 
 class UserFactory(SQLAlchemyModelFactory):
@@ -68,15 +69,7 @@ class CustomerFactory(SQLAlchemyModelFactory):
     city = factory.Faker('city')
     email = factory.Faker('ascii_email')
 
-    # def email(self):
-    #     # Convert to plain ascii text
-    #     clean_name = (unicodedata.normalize('NFKD', self.firstname)
-    #                   .encode('ascii', 'ignore')
-    #                   .decode('utf8'))
-    #     return u'%s@example.com' % clean_name
     created_at = factory.Faker('date_time')
-
-    #seller = factory.SubFactory(SellerFactory)
 
 
 class OrderFactory(SQLAlchemyModelFactory):
@@ -87,23 +80,7 @@ class OrderFactory(SQLAlchemyModelFactory):
     status = "ANNULEE"
     created_at = factory.Faker('date_time')
     payment_status = "TEST"
+    shipping_dt = factory.Faker(
+        'date_time_between', start_date='-6d', end_date='+6d', tzinfo=None)
 
     customer = factory.SubFactory(CustomerFactory)
-
-
-# class LineFactory(SQLAlchemyModelFactory):
-
-#     class Meta:
-#         model = Line
-#         sqlalchemy_session = db.session
-
-#     order = factory.SubFactory(OrderFactory)
-#     product = factory.SubFactory(ProductFactory)
-#     rank = 1
-
-
-# class OrderWith2ProductsFactory(OrderFactory):
-#     line1 = factory.RelatedFactory(
-#         LineFactory, 'order', product__name='Product1')
-#     line2 = factory.RelatedFactory(
-#         LineFactory, 'order', product__name='Product2')

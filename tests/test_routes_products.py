@@ -16,7 +16,7 @@ sys.path.insert(0, parent_dir_path)
 class FlaskTestCase(BaseTestCase, TestCase):
 
     # Ensure that Flask was set up correctly
-    def test_products_index(self):
+    def test_products_show(self):
 
         product = db.session.query(Product).first()
 

@@ -105,7 +105,7 @@ class Order(db.Model):
     def add_products(self, items):
         for product, qty, price in items:
             self.lines.append(Line(
-                order=self, product=product, quantity=qty))
+                order=self, product=product, quantity=qty, price=price))
 
     # db.relationship('Product', secondary='lines')
 
@@ -114,7 +114,7 @@ class Order(db.Model):
     #     self.products = []
 
     def __repr__(self):
-        return '<Order {}>'.format(self.name)
+        return '<Order {}>'.format(self.id)
 
     def to_dict(self):
         return {
