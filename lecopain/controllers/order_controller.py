@@ -1,4 +1,4 @@
-from lecopain.dao.models import Customer, CustomerOrder, Product, OrderStatus, Line, Shipping, SellerOrder
+from lecopain.dao.models import Customer, Order, Product, OrderStatus, Line, Shipping, SellerOrder
 from lecopain.app import app, db
 from lecopain.form import OrderForm, OrderAnnulationForm
 from lecopain.services.order_manager import OrderManager
@@ -128,8 +128,8 @@ def order_products_of_day(year_number, month_number, day_number):
     date_tab = [year_number, month_number, day_number]
     orders = orderServices.build_orders_list(0, date_tab)
 
-    orders = CustomerOrder.query.filter(extract('year', CustomerOrder.shipping_dt) == year_number).filter(extract(
-        'month', CustomerOrder.shipping_dt) == month_number).filter(extract('day', CustomerOrder.shipping_dt) == day_number).all()
+    orders = Order.query.filter(extract('year', Order.shipping_dt) == year_number).filter(extract(
+        'month', Order.shipping_dt) == month_number).filter(extract('day', Order.shipping_dt) == day_number).all()
     products_of_day_list = orderServices.get_resume_products_list_from_orders(
         orders)
     customers = Customer.query.all()
@@ -149,9 +149,9 @@ def order_create():
     tmp_prices = request.form.getlist('prices')
 
     if form.validate_on_submit():
-        order = CustomerOrder(title=form.title.data, status=form.status.data, customer_id=int(
+        order = Order(title=form.title.data, status=form.status.data, customer_id=int(
             form.customer_id.data), shipping_dt=form.shipping_dt.data)
-        orderServices.create_customer_order(
+        orderServices.create_order(
             order=order, tmp_products=tmp_products, tmp_quantities=tmp_quantities, tmp_prices=tmp_prices)
         #flash(f'People created for {form.firstname.data}!', 'success')
         redirect('/orders/customers/0')
@@ -168,7 +168,7 @@ def order_create():
 @order_page.route("/orders/<int:order_id>", methods=['GET', 'POST'])
 @login_required
 def order(order_id):
-    order = CustomerOrder.query.get_or_404(order_id)
+    order = Order.query.get_or_404(order_id)
 
     price, rules = orderServices.calculate_shipping(order)
 
@@ -179,6 +179,10 @@ def order(order_id):
     bought_items = Line.query.filter(
         Line.order_id == order.id).all()
 
+    line = Line.query.filter(
+        Line.order_id == order.id).first()
+    print(" !!!!!! " + str(vars(line)))
+
     return render_template('/orders/order.html', order=order, bought_items=bought_items, products=sorted_products, customer=customer, shipping_price=price, rules=rules)
 
 #####################################################################
@@ -188,7 +192,7 @@ def order(order_id):
 @login_required
 def display_update_order(order_id):
 
-    order = CustomerOrder.query.get_or_404(order_id)
+    order = Order.query.get_or_404(order_id)
     form = OrderForm()
 
     customer = Customer.query.get_or_404(order.customer_id)
@@ -198,7 +202,7 @@ def display_update_order(order_id):
         Line.order_id == order.id).all()
 
     if form.validate_on_submit():
-        orderForm = CustomerOrder(title=form.title.data, status=form.status.data, customer_id=int(
+        orderForm = Order(title=form.title.data, status=form.status.data, customer_id=int(
             form.customer_id.data), shipping_dt=form.shipping_dt.data)
         # update order first
         order.status = orderForm.status
@@ -210,7 +214,7 @@ def display_update_order(order_id):
         tmp_quantities = request.form.getlist('quantities')
         tmp_prices = request.form.getlist('prices')
 
-        orderServices.update_customer_order(
+        orderServices.update_order(
             order=order, products=tmp_products, quantities=tmp_quantities, prices=tmp_prices)
 
         #flash(f'People created for {form.firstname.data}!', 'success')
@@ -232,19 +236,19 @@ def display_update_order(order_id):
 @login_required
 def display_update_order_time(order_id):
 
-    order = CustomerOrder.query.get_or_404(order_id)
+    order = Order.query.get_or_404(order_id)
     customer = Customer.query.get_or_404(order.customer_id)
     form = OrderForm()
 
     if form.validate_on_submit():
-        orderForm = CustomerOrder(title=form.title.data, status=form.status.data, customer_id=int(
+        orderForm = Order(title=form.title.data, status=form.status.data, customer_id=int(
             form.customer_id.data), shipping_dt=form.shipping_dt.data)
         # update order first
 
         order.shipping_dt = orderForm.shipping_dt
 
         shipping = Shipping.query.filter(
-            Shipping.customer_order_id == order.id).first()
+            Shipping.order_id == order.id).first()
         shipping.shipping_dt = orderForm.shipping_dt
 
         db.session.commit()
@@ -313,7 +317,7 @@ def display_update_order_delivered(order_id):
 @order_page.route("/orders/delete/<int:order_id>")
 @login_required
 def display_delete_order(order_id):
-    order = CustomerOrder.query.get_or_404(order_id)
+    order = Order.query.get_or_404(order_id)
     return render_template('/orders/delete_order.html', order=order, title='Suppression de commande')
 
 #####################################################################
@@ -322,15 +326,15 @@ def display_delete_order(order_id):
 @order_page.route("/orders/<int:order_id>", methods=['DELETE'])
 @login_required
 def delete_order(order_id):
-    order = CustomerOrder.query.get_or_404(order_id)
+    order = Order.query.get_or_404(order_id)
 
     shipping = Shipping.query.filter(
-        Shipping.customer_order_id == order_id).first()
+        Shipping.order_id == order_id).first()
     if shipping != None:
         db.session.delete(shipping)
 
     sellerOrders = SellerOrder.query.filter(
-        SellerOrder.customer_order_id == order_id).all()
+        SellerOrder.order_id == order_id).all()
     for sellerOrder in sellerOrders:
         db.session.delete(sellerOrder)
 
@@ -362,7 +366,7 @@ def _getjs_order_status():
 @order_page.route('/_getjs_order_count/')
 @login_required
 def _getjs_order_count():
-    total_orders_count = CustomerOrder.query.count()
+    total_orders_count = Order.query.count()
     in_progress_orders_count = orderServices.get_in_progess_orders_counter()
     latest_orders_count = orderServices.get_latest_orders_counter()
     return jsonify({'total_orders_count': total_orders_count, 'in_progress_orders_count': in_progress_orders_count})

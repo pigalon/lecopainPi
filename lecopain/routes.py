@@ -4,7 +4,7 @@ from datetime import datetime
 import locale
 from lecopain.app import app, db
 from lecopain.form import PersonForm, OrderForm, ProductForm, LoginForm
-from lecopain.dao.models import Customer, CustomerOrder, Product, Seller, User
+from lecopain.dao.models import Customer, Order, Product, Seller, User
 
 from lecopain.controllers.customer_controller import customer_page
 from lecopain.controllers.order_controller import order_page
@@ -56,7 +56,7 @@ Swagger(app)
 def home():
     if current_user.is_authenticated:
         customers_nb = Customer.query.count()
-        orders_nb = CustomerOrder.query.count()
+        orders_nb = Order.query.count()
         products_nb = Product.query.count()
         sellers_nb = Seller.query.count()
         return render_template('base.html', customers_nb=customers_nb, orders_nb=orders_nb, products_nb=products_nb, sellers_nb=sellers_nb)

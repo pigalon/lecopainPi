@@ -1,1 +1,1 @@
-app/env/bin/python run.py
+env/bin/python run.py

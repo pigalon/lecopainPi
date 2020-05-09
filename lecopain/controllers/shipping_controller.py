@@ -1,4 +1,4 @@
-from lecopain.dao.models import Customer, CustomerOrder, Product, ShippingStatus, Shipping, Seller
+from lecopain.dao.models import Customer, Order, Product, ShippingStatus, Shipping, Seller
 from lecopain.app import app, db
 from lecopain.form import ShippingForm
 from lecopain.services.shipping_manager import ShippingManager
@@ -72,7 +72,7 @@ def shippings_customer(customer_id):
     map_shippings = {}
     for shipping in shippings:
         map_shippings[shipping.shipping_dt.day *
-                      shipping.shipping_dt.month] = shipping.customer_order_id
+                      shipping.shipping_dt.month] = shipping.order_id
 
     map = shipping_services.get_maps_from_shippings(shippings)
 
@@ -112,7 +112,7 @@ def shippings_of_month(customer_id, year_number, month_number):
     map_shippings = {}
     for shipping in shippings:
         map_shippings[shipping.shipping_dt.day *
-                      shipping.shipping_dt.month] = shipping.customer_order_id
+                      shipping.shipping_dt.month] = shipping.order_id
 
     map = shipping_services.get_maps_from_shippings(shippings)
 
@@ -210,7 +210,7 @@ def display_update_shipping(shipping_id):
         db.session.commit()
         return redirect(url_for('shipping_page.shippings'))
     else:
-        form.customer_order_id.data = shipping.customer_order_id
+        form.order_id.data = shipping.order_id
         form.shipping_dt.data = shipping.shipping_dt
         form.status.data = shipping.status
         form.reference.data = shipping.reference
@@ -263,7 +263,7 @@ def _getjs_shipping_event(customer_id):
     # if(day_number == 0) :
     day_number = datetime.now().month
 
-    orders = CustomerOrder.query.filter(CustomerOrder.customer_id == customer_id).filter(
+    orders = Order.query.filter(Order.customer_id == customer_id).filter(
         extract('month', Shipping.shipping_dt) == month_number).all()
 
     #shippings = Shipping.query.filter(extract('year', Shipping.shipping_dt) == year_number).filter(extract('month', Shipping.shipping_dt) == month_number).filter(extract('day', Shipping.shipping_dt) == day_number).all()

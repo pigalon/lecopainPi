@@ -88,10 +88,10 @@
                 <tr>
                     {% for date in week %}
                         {% set index = (date.day | int) * (date.month | int) %}
-                        {% set customer_order_id = map_shippings[index] %}
+                        {% set order_id = map_shippings[index] %}
                         
                         {% if date.month == current_month %}
-                            {% if customer_order_id != null %}
+                            {% if order_id != null %}
                             <td class="filled-day">
                             {% else %}
                             <td class="current-month">  
@@ -102,10 +102,10 @@
                         
                         {{ date.day }}
 
-                        {% if customer_order_id != null and customer.id == 0 %}
+                        {% if order_id != null and customer.id == 0 %}
                             <p align="center"><a href="/orders/resume/year/{{ date.year }}/month/{{ date.month }}/day/{{ date.day }}" class="btn btn-danger" >D</a></p>
-                        {% elif customer_order_id != null and customer.id > 0 %}
-                            <p align="center"><a href="/orders/{{ customer_order_id }}" class="btn btn-danger" >L</a></p>
+                        {% elif order_id != null and customer.id > 0 %}
+                            <p align="center"><a href="/orders/{{ order_id }}" class="btn btn-danger" >L</a></p>
                         {% else %}
                             <center>-</center>
                         {% endif %}    

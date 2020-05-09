@@ -4,6 +4,7 @@ from flask_login import UserMixin
 from lecopain.app import login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from aenum import Enum
+from sqlalchemy.ext.associationproxy import association_proxy
 
 
 class OrderStatus_Enum(Enum):
@@ -48,7 +49,7 @@ class Customer(db.Model):
     email = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False,
                            default=datetime.utcnow)
-    orders = db.relationship('CustomerOrder', backref='owner', lazy=True)
+    orders = db.relationship('Order', backref='owner', lazy=True)
 
     def __repr__(self):
         return "Customer('{self.firstname}','{self.lastname}','{self.email}')"
@@ -68,9 +69,18 @@ class Customer(db.Model):
             'orders': orders_dict
         }
 
+    # Line = db.Table('lines',
+    #                 db.Column('id', db.Integer, primary_key=True),
+    #                 db.Column('order_id', db.Integer, db.ForeignKey(
+    #                     'Order.id')),
+    #                 db.Column('product_id', db.Integer, db.ForeignKey(
+    #                     'Product.id')),
+    #                 db.Column('quantity', db.Integer),
+    #                 db.Column('price', db.Float))
 
-class CustomerOrder(db.Model):
-    __tablename__ = 'customer_orders'
+
+class Order(db.Model):
+    __tablename__ = 'orders'
     __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
@@ -78,21 +88,41 @@ class CustomerOrder(db.Model):
                            default=datetime.utcnow)
     customer_id = db.Column(db.Integer, db.ForeignKey(
         'customers.id'), nullable=False)
+    customer = db.relationship('Customer')
     status = db.Column(db.String(20), nullable=False)
 
     sellerOrders = db.relationship(
-        'SellerOrder', backref='customerOrder', lazy=True)
+        'SellerOrder', backref='order', lazy=True)
+
     shipping = db.relationship('Shipping', uselist=False)
     shipping_dt = db.Column(db.DateTime)
     payment_status = db.Column(db.String(20), nullable=False)
     subscription_id = db.Column(db.Integer, nullable=True)
+
+    products = db.relationship(
+        "Product", secondary='lines', viewonly=True)
+
+    def add_products(self, items):
+        for product, qty, price in items:
+            self.lines.append(Line(
+                order=self, product=product, quantity=qty))
+
+    # db.relationship('Product', secondary='lines')
+
+    # def __init__(self, name):
+    #     self.name = name
+    #     self.products = []
+
+    def __repr__(self):
+        return '<Order {}>'.format(self.name)
 
     def to_dict(self):
         return {
             'id': self.id,
             'title': self.title,
             'shipping_dt': self.shipping_dt,
-            'status': self.status
+            'status': self.status,
+            'customer_id': self.customer_id
         }
 
 
@@ -111,11 +141,15 @@ class Product(db.Model):
     description = db.Column(db.String(250))
     price = db.Column(db.Float)
     status = db.Column(db.String(20))
-    selections = db.relationship(
-        'CustomerOrder', secondary='lines', backref=db.backref('selected_products'))
-    #selections_for_seller    = db.relationship('SellerOrder', secondary = 'seller_product', backref = db.backref('selected_products'))
+    orders = db.relationship("Order", secondary='lines', viewonly=True)
     seller_id = db.Column(db.Integer, db.ForeignKey(
         'sellers.id'), nullable=False)
+
+    # def __init__(self, name, description, price):
+    #     self.name = name
+    #     self.description = description
+    #     self.price = price
+    #     self.orders = []
 
     def __repr__(self):
         return "Product('{self.name}',{self.price}, '{self.description}')"
@@ -143,14 +177,25 @@ class Line(db.Model):
     __table_args__ = {'extend_existing': True}
 
     order_id = db.Column(db.Integer, db.ForeignKey(
-        'customer_orders.id'), primary_key=True)
+        'orders.id'), primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey(
         'products.id'), primary_key=True)
     quantity = db.Column(db.Integer)
     price = db.Column(db.Float)
 
+    order = db.relationship(Order, backref=db.backref(
+        "lines", cascade="all, delete-orphan"))
+    product = db.relationship(Product, backref=db.backref(
+        "lines", cascade="all, delete-orphan"))
+
     def __repr__(self):
-        return "CustomerOrder('{self.title}', '{self.status}', {customer_id} '{self.shipping_dt}')"
+        return '<Line {}>'.format(str(self.order.id)+" "+self.product.name)
+
+    def __init__(self, order=None, product=None, quantity=None, price=None):
+        self.order = order
+        self.product = product
+        self.quantity = quantity
+        self.price = price
 
     def to_dict(self):
         return {
@@ -181,12 +226,12 @@ class SellerOrder(db.Model):
     title = db.Column(db.String(50), nullable=False)
     seller_id = db.Column(db.Integer, db.ForeignKey(
         'sellers.id'), nullable=False)
-    customer_order_id = db.Column(db.Integer, db.ForeignKey(
-        'customer_orders.id'), nullable=False)
+    order_id = db.Column(db.Integer, db.ForeignKey(
+        'orders.id'), nullable=False)
     status = db.Column(db.String(20), nullable=False)
 
     def __repr__(self):
-        return "SellerOrder('{self.title}', '{self.status}', {customer_order_id} '{self.seller_id}')"
+        return "SellerOrder('{self.title}', '{self.status}', {order_id} '{self.seller_id}')"
 
 
 class Shipping(db.Model):
@@ -196,13 +241,13 @@ class Shipping(db.Model):
     reference = db.Column(db.String(50), nullable=False)
     shipping_dt = db.Column(db.DateTime)
     status = db.Column(db.String(20), nullable=False)
-    customer_order_id = db.Column(db.Integer, db.ForeignKey(
-        'customer_orders.id'), nullable=False)
+    order_id = db.Column(db.Integer, db.ForeignKey(
+        'orders.id'), nullable=False)
     customer_id = db.Column(db.Integer, db.ForeignKey(
         'customers.id'), nullable=False)
 
     def __repr__(self):
-        return "Seller('{self.reference}', '{self.shipping_dt}', '{self.status}', '{self.customer_order_id}')"
+        return "Seller('{self.reference}', '{self.shipping_dt}', '{self.status}', '{self.order_id}')"
 
 
 class ShippingStatus(db.Model):

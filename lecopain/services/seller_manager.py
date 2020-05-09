@@ -1,5 +1,5 @@
 from lecopain.app import app, db
-from lecopain.dao.models import CustomerOrder, Seller, SellerOrder
+from lecopain.dao.models import Order, Seller, SellerOrder
 
 
 class SellerManager():
@@ -7,7 +7,7 @@ class SellerManager():
     def get_last_order(self, seller):
 
         newer_order = None
-        orders = CustomerOrder.query.filter(
+        orders = Order.query.filter(
             SellerOrder.seller_id == seller.id).all()
         for order in orders:
             if(newer_order == None):

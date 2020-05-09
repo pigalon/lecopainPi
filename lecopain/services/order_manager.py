@@ -2,7 +2,7 @@ from datetime import datetime, date, timedelta
 
 from lecopain.app import app, db
 from lecopain.dto.BoughtProduct import BoughtProduct
-from lecopain.dao.models import Shipping, Line, Product, Seller, SellerOrder, Customer, CustomerOrder, OrderStatus_Enum
+from lecopain.dao.models import Shipping, Line, Product, Seller, SellerOrder, Customer, Order, OrderStatus_Enum
 from lecopain.helpers.date_utils import get_start_and_end_date_from_calendar_week, get_start_and_end_date_from_calendar_month
 import json
 from sqlalchemy import extract
@@ -28,16 +28,16 @@ class OrderManager():
         orders = None
 
         if customer_id != 0 and customer_id is not None:
-            orders = CustomerOrder.query.filter(
-                CustomerOrder.customer_id == customer_id)
+            orders = Order.query.filter(
+                Order.customer_id == customer_id)
 
-        orders = CustomerOrder.query.filter(
-            extract('year', CustomerOrder.shipping_dt) == year).filter(
-                extract('month', CustomerOrder.shipping_dt) == month)
+        orders = Order.query.filter(
+            extract('year', Order.shipping_dt) == year).filter(
+                extract('month', Order.shipping_dt) == month)
 
         if day is not None:
             orders = orders.filter(
-                extract('day', CustomerOrder.shipping_dt) == day)
+                extract('day', Order.shipping_dt) == day)
 
         return orders.all()
 
@@ -46,14 +46,14 @@ class OrderManager():
     ###############################################
     def orders_by_customer(self, orders, customer_id):
         orders.filter(
-            CustomerOrder.customer_id == customer_id)
+            Order.customer_id == customer_id)
 
     ##############################################
     # Orders by desc date
     ###############################################
     def orders_by_date_desc(self, orders):
         orders.order_by(
-            CustomerOrder.shipping_dt.desc()).all()
+            Order.shipping_dt.desc()).all()
 
     ##############################################
     # Orders list ordered by date for the current month
@@ -65,9 +65,9 @@ class OrderManager():
         start_date, end_date = get_start_and_end_date_from_calendar_month(
             today.year, today.month)
 
-        orders = CustomerOrder.query.filter(
-            CustomerOrder.shipping_dt >= start_date).filter(
-            CustomerOrder.shipping_dt <= end_date)
+        orders = Order.query.filter(
+            Order.shipping_dt >= start_date).filter(
+            Order.shipping_dt <= end_date)
 
         if customer_id != 0:
             orders_by_customer(orders, customer_id)
@@ -86,9 +86,9 @@ class OrderManager():
         start_date, end_date = get_start_and_end_date_from_calendar_week(
             today.year, today.weekday())
 
-        orders = CustomerOrder.query.filter(
-            CustomerOrder.shipping_dt >= start_date).filter(
-            CustomerOrder.shipping_dt <= end_date)
+        orders = Order.query.filter(
+            Order.shipping_dt >= start_date).filter(
+            Order.shipping_dt <= end_date)
 
         if customer_id != 0:
             orders_by_customer(orders, customer_id)
@@ -104,8 +104,8 @@ class OrderManager():
 
         today = datetime.today()
 
-        orders = CustomerOrder.query.filter(
-            CustomerOrder.shipping_dt == today)
+        orders = Order.query.filter(
+            Order.shipping_dt == today)
 
         if customer_id != 0:
             orders_by_customer(orders, customer_id)
@@ -118,7 +118,7 @@ class OrderManager():
     # All orders
     ###############################################
     def all_orders(self, customer_id=0):
-        orders = CustomerOrder.query
+        orders = Order.query
 
         if customer_id != 0:
             orders_by_customer(orders, customer_id)
@@ -184,7 +184,7 @@ class OrderManager():
 
     # @
     #
-    def create_customer_order(self, order, tmp_products, tmp_quantities, tmp_prices):
+    def create_order(self, order, tmp_products, tmp_quantities, tmp_prices):
         order.created_at = datetime.now()
         order = self.create_product_purchases(
             order, tmp_products, tmp_quantities, tmp_prices)
@@ -192,7 +192,7 @@ class OrderManager():
 
     # @
     #
-    def update_customer_order(self, order, products, quantities, prices):
+    def update_order(self, order, products, quantities, prices):
 
         order.created_at = datetime.now()
         self.delete_every_order_dependencies(order)
@@ -229,7 +229,7 @@ class OrderManager():
     #
     def create_default_shipping(self, order):
         shipping = Shipping(reference=order.title, shipping_dt=order.shipping_dt,
-                            status='NON_LIVREE', customer_order_id=order.id, customer_id=order.customer_id)
+                            status='NON_LIVREE', order_id=order.id, customer_id=order.customer_id)
         db.session.add(shipping)
         db.session.commit()
 
@@ -242,7 +242,7 @@ class OrderManager():
 
         # TODO : missing delete seller order !!!!
         SellerOrder.query.filter(
-            SellerOrder.customer_order_id == order.id).delete()
+            SellerOrder.order_id == order.id).delete()
 
     # @
     #
@@ -270,7 +270,7 @@ class OrderManager():
         sellerIds = self.get_sellers_from_products(order)
         for sellerId in sellerIds:
             sellerOrders.append(SellerOrder(
-                title=order.title, status='CREE', customer_order_id=order.id, seller_id=sellerId))
+                title=order.title, status='CREE', order_id=order.id, seller_id=sellerId))
 
         return sellerOrders
 
@@ -285,7 +285,7 @@ class OrderManager():
     # @
     #
     def update_order_status(self, order_id, order_status, payment_status, shipping_status):
-        order = CustomerOrder.query.get_or_404(order_id)
+        order = Order.query.get_or_404(order_id)
 
         if order_status != None:
             order.status = order_status
@@ -294,12 +294,12 @@ class OrderManager():
             order.payment_status = payment_status
 
         shipping = Shipping.query.filter(
-            Shipping.customer_order_id == order_id).first()
+            Shipping.order_id == order_id).first()
         if shipping != None and shipping_status != None:
             shipping.status = shipping_status
 
         sellerOrders = SellerOrder.query.filter(
-            SellerOrder.customer_order_id == order_id).all()
+            SellerOrder.order_id == order_id).all()
         for sellerOrder in sellerOrders:
             if order_status != None:
                 sellerOrder.status = order_status
@@ -344,11 +344,11 @@ class OrderManager():
     #
 
     def get_in_progess_orders_counter(self):
-        return CustomerOrder.query.filter(CustomerOrder.status == OrderStatus_Enum.CREE.value).count()
+        return Order.query.filter(Order.status == OrderStatus_Enum.CREE.value).count()
 
     # @
     #
 
     def get_latest_orders_counter(self):
         date_since_2_days = date.today() - timedelta(days=2)
-        return CustomerOrder.query.filter(CustomerOrder.created_at > date_since_2_days).count()
+        return Order.query.filter(Order.created_at > date_since_2_days).count()

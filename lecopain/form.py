@@ -46,10 +46,10 @@ class ProductForm(FlaskForm):
 
 class ShippingForm(FlaskForm):
     reference = StringField('Reference', validators=[DataRequired()])
-    customer_order_id = IntegerField(
+    order_id = IntegerField(
         'Customer Order Id:', validators=[DataRequired()])
     shipping_dt = DateTimeField('Order Date')
-    customer_order_id = IntegerField(
+    order_id = IntegerField(
         'Customer Order Id:', validators=[DataRequired()])
     status = StringField('Status')
     submit = SubmitField('Valider')

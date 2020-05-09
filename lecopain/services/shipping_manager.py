@@ -1,5 +1,5 @@
 from lecopain.app import app, db
-from lecopain.dao.models import Customer, CustomerOrder, Line
+from lecopain.dao.models import Customer, Order, Line
 
 
 class ShippingManager():
@@ -15,11 +15,11 @@ class ShippingManager():
         map = {}
         print(" shippings 3")
         for shipping in shippings:
-            print(" shippings 3 - after" + str(shipping.customer_order_id))
-            customerOrder = CustomerOrder.query.get_or_404(
-                shipping.customer_order_id)
-            print(" shippings 4" + str(customerOrder))
-            customer = Customer.query.get_or_404(customerOrder.customer_id)
+            print(" shippings 3 - after" + str(shipping.order_id))
+            order = Order.query.get_or_404(
+                shipping.order_id)
+            print(" shippings 4" + str(order))
+            customer = Customer.query.get_or_404(order.customer_id)
             print(" shippings 5" + str(customer))
             customerMap[customer.id] = str(
                 customer.firstname + " " + customer.lastname)
