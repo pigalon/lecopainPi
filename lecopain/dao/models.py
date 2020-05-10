@@ -91,9 +91,6 @@ class Order(db.Model):
     customer = db.relationship('Customer')
     status = db.Column(db.String(20), nullable=False)
 
-    sellerOrders = db.relationship(
-        'SellerOrder', backref='order', lazy=True)
-
     shipping = db.relationship('Shipping', uselist=False)
     shipping_dt = db.Column(db.DateTime)
     payment_status = db.Column(db.String(20), nullable=False)
@@ -213,25 +210,9 @@ class Seller(db.Model):
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(200), nullable=False)
     products = db.relationship('Product', backref='seller', lazy=True)
-    sellerOrders = db.relationship('SellerOrder', backref='seller', lazy=True)
 
     def __repr__(self):
         return "Seller('{self.name}')"
-
-
-class SellerOrder(db.Model):
-    __tablename__ = 'seller_orders'
-    __table_args__ = {'extend_existing': True}
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(50), nullable=False)
-    seller_id = db.Column(db.Integer, db.ForeignKey(
-        'sellers.id'), nullable=False)
-    order_id = db.Column(db.Integer, db.ForeignKey(
-        'orders.id'), nullable=False)
-    status = db.Column(db.String(20), nullable=False)
-
-    def __repr__(self):
-        return "SellerOrder('{self.title}', '{self.status}', {order_id} '{self.seller_id}')"
 
 
 class Shipping(db.Model):

@@ -20,11 +20,10 @@ def sellers():
     new_orders = []
     sellerManager = SellerManager()
     sellers = Seller.query.all()
-    for seller in sellers:
-        new_orders.append(sellerManager.get_last_order(seller))
-    for order in new_orders:
-        if order != None:
-            print(str(order.shipping_dt))
+    # TODO new ref to order !!!!
+    # for seller in sellers:
+    #    new_orders.append(sellerManager.get_last_order(seller))
+
     return render_template('/sellers/sellers.html', sellers=sellers, new_orders=new_orders, cpt=0)
 
 

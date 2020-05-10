@@ -2,7 +2,7 @@ from datetime import datetime, date, timedelta
 
 from lecopain.app import app, db
 from lecopain.dto.BoughtProduct import BoughtProduct
-from lecopain.dao.models import Shipping, Line, Product, Seller, SellerOrder, Customer, Order, OrderStatus_Enum
+from lecopain.dao.models import Shipping, Line, Product, Seller, Customer, Order, OrderStatus_Enum
 from lecopain.helpers.date_utils import get_start_and_end_date_from_calendar_week, get_start_and_end_date_from_calendar_month
 import json
 from sqlalchemy import extract
@@ -221,9 +221,6 @@ class OrderManager():
         self.create_corresponding_purchases(
             order=order, tmp_products=tmp_products, tmp_quantities=tmp_quantities, tmp_prices=tmp_prices)
 
-        # sellerOrders = self.generate_seller_orders(order=order)
-        # for sellerOrder in sellerOrders:
-        #     db.session.add(sellerOrder)
         return order
     # @
     #
@@ -250,8 +247,6 @@ class OrderManager():
         Line.query.filter(Line.order_id == order.id).delete()
 
         # TODO : missing delete seller order !!!!
-        SellerOrder.query.filter(
-            SellerOrder.order_id == order.id).delete()
 
     # @
     #
@@ -271,17 +266,6 @@ class OrderManager():
                 Line.product_id == tmp_products[i]).first()
             bought_item.quantity = tmp_quantities[i]
             bought_item.price = tmp_prices[i]
-
-    # @
-    #
-    def generate_seller_orders(self, order):
-        sellerOrders = []
-        sellerIds = self.get_sellers_from_products(order)
-        for sellerId in sellerIds:
-            sellerOrders.append(SellerOrder(
-                title=order.title, status='CREE', order_id=order.id, seller_id=sellerId))
-
-        return sellerOrders
 
     # @
     #
@@ -306,12 +290,6 @@ class OrderManager():
             Shipping.order_id == order_id).first()
         if shipping != None and shipping_status != None:
             shipping.status = shipping_status
-
-        sellerOrders = SellerOrder.query.filter(
-            SellerOrder.order_id == order_id).all()
-        for sellerOrder in sellerOrders:
-            if order_status != None:
-                sellerOrder.status = order_status
 
         db.session.commit()
 
