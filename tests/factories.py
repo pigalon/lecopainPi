@@ -84,3 +84,4 @@ class OrderFactory(SQLAlchemyModelFactory):
         'date_time_between', start_date='-6d', end_date='+6d', tzinfo=None)
 
     customer = factory.SubFactory(CustomerFactory)
+    seller = factory.SubFactory(SellerFactory)

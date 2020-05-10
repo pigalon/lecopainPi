@@ -92,6 +92,7 @@ class Order(db.Model):
     status = db.Column(db.String(20), nullable=False)
     seller_id = db.Column(db.Integer, db.ForeignKey(
         'sellers.id'), nullable=False)
+    seller = db.relationship('Seller')
 
     shipping = db.relationship('Shipping', uselist=False)
     shipping_dt = db.Column(db.DateTime)
@@ -212,6 +213,7 @@ class Seller(db.Model):
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(200), nullable=False)
     products = db.relationship('Product', backref='seller', lazy=True)
+    orders = db.relationship('Order', backref='recipient', lazy=True)
 
     def __repr__(self):
         return "Seller('{self.name}')"
