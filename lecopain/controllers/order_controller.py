@@ -1,4 +1,4 @@
-from lecopain.dao.models import Customer, Order, Product, OrderStatus, Line, Shipping
+from lecopain.dao.models import Customer, Order, Product, OrderStatus, Shipping, Seller
 from lecopain.app import app, db
 from lecopain.form import OrderForm, OrderAnnulationForm
 from lecopain.services.order_manager import OrderManager
@@ -154,13 +154,12 @@ def order_create():
         orderServices.create_order(
             order=order, tmp_products=tmp_products, tmp_quantities=tmp_quantities, tmp_prices=tmp_prices)
         #flash(f'People created for {form.firstname.data}!', 'success')
-        redirect('/orders/customers/0')
+        return redirect('/orders')
 
-    products = Product.query.all()
     orderStatusList = _get_order_status()
     customers = Customer.query.all()
 
-    return render_template('/orders/create_order.html', title='Creation de commande', form=form, customers=customers, products=products, orderStatusList=orderStatusList)
+    return render_template('/orders/create_order.html', title='Creation de commande', form=form, customers=customers, orderStatusList=orderStatusList)
 
 #####################################################################
 #                                                                   #

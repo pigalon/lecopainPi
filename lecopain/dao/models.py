@@ -90,6 +90,8 @@ class Order(db.Model):
         'customers.id'), nullable=False)
     customer = db.relationship('Customer')
     status = db.Column(db.String(20), nullable=False)
+    seller_id = db.Column(db.Integer, db.ForeignKey(
+        'sellers.id'), nullable=False)
 
     shipping = db.relationship('Shipping', uselist=False)
     shipping_dt = db.Column(db.DateTime)

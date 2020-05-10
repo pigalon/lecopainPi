@@ -138,11 +138,17 @@
 		<script src="{{ url_for('static', filename='js/riot+compiler.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/moment/fr.js') }}"></script>
 		<!--<script src="{{ url_for('static', filename='foundation/javascripts/modernizr.foundation.js') }}"></script>-->
-		<!--<script src="{{ url_for('static', filename='tag/navbar/orders_count.tag') }}" type="riot/tag"></script>
-  <script>
-    riot.mount("mytag");
- </script> -->
-
+		<!--<script
+			src="{{ url_for('static', filename='tag/navbar/orders_count.tag') }}"
+			type="riot/tag"
+		></script>-->
+		<script
+			src="{{ url_for('static', filename='tag/seller_selection.tag') }}"
+			type="riot/tag"
+		></script>
+		<script>
+			riot.mount("*");
+		</script>
 		{% block scripts %}{% endblock %}
 	</body>
 </html>

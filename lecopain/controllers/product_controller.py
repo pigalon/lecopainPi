@@ -122,6 +122,7 @@ def getjs_products(seller_id):
         data = {}
         data['id'] = str(product.id)
         data['name'] = product.name
+        data['price'] = product.price
 
         js_products.append(data)
 
