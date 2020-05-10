@@ -144,12 +144,7 @@ class Product(db.Model):
     orders = db.relationship("Order", secondary='lines', viewonly=True)
     seller_id = db.Column(db.Integer, db.ForeignKey(
         'sellers.id'), nullable=False)
-
-    # def __init__(self, name, description, price):
-    #     self.name = name
-    #     self.description = description
-    #     self.price = price
-    #     self.orders = []
+    seller = db.relationship('Seller')
 
     def __repr__(self):
         return "Product('{self.name}',{self.price}, '{self.description}')"
@@ -212,7 +207,7 @@ class Seller(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(200), nullable=False)
-    products = db.relationship('Product', backref='seller', lazy=True)
+    products = db.relationship('Product', backref='owner', lazy=True)
     orders = db.relationship('Order', backref='recipient', lazy=True)
 
     def __repr__(self):
@@ -286,7 +281,7 @@ class Subscription(db.Model):
     start_date = db.Column(db.DateTime)
     end_date = db.Column(db.DateTime)
     status = db.Column(db.String(40))
-    payement_status = db.Column(db.String(20), nullable=False)
+    payment_status = db.Column(db.String(20), nullable=False)
     promotion = db.Column(db.String(200))
     price = db.Column(db.Float)
     shipping_price = db.Column(db.Float)

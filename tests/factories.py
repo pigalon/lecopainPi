@@ -85,3 +85,13 @@ class OrderFactory(SQLAlchemyModelFactory):
 
     customer = factory.SubFactory(CustomerFactory)
     seller = factory.SubFactory(SellerFactory)
+    
+    
+class SellerFactory(SQLAlchemyModelFactory):
+
+    class Meta:
+        model = Seller
+        sqlalchemy_session = db.session
+    name = factory.Faker('company')
+    email = factory.Faker('ascii_email')
+        

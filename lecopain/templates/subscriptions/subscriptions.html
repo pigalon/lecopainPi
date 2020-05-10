@@ -22,10 +22,10 @@
                 <i class="fas fa-cart-arrow-down "></i>
             </span>
             
-            {% if subscription.payement_status == 'PAYEE' %}
+            {% if subscription.payment_status == 'PAYEE' %}
             <span class="btn btn-success" style="font-size: 1,9em;">
             {% endif %}
-            {% if subscription.payement_status == 'NON_PAYEE' %}
+            {% if subscription.payment_status == 'NON_PAYEE' %}
             <span class="btn btn-warning" style="font-size: 1,9em;">
             {% endif %}
                 <i class="fas fa-piggy-bank "></i>

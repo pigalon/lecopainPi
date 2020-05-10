@@ -29,7 +29,7 @@ class FlaskTestCase(BaseTestCase, TestCase):
     def test_products_edit(self):
 
         product = db.session.query(Product).first()
-        product.name = 'new_product'
+        product.name = 'updated_product'
 
         with app.test_client() as client:
             response = client.post(f'/products/update/{product.id}', data=dict(
@@ -40,6 +40,21 @@ class FlaskTestCase(BaseTestCase, TestCase):
                 status=product.status), follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         assert product.name in str(response.data)
+        
+    def test_products_create(self):
+        name = 'new_product'
+        seller = db.session.query(Seller).first()
+
+        with app.test_client() as client:
+            response = client.post(f'/products/new', data=dict(
+                name=name,
+                description='description',
+                price=0.65,
+                seller_id = seller.id,
+                status="CREE"), follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        print('data : ' + str(response.data))
+        assert name in str(response.data)
 
 
 if __name__ == '__main__':

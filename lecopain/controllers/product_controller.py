@@ -42,7 +42,7 @@ def product_create():
     print("product form : " + str(form.validate_on_submit()))
     if form.validate_on_submit():
         product = Product(
-            name=form.name.data,  price=form.price.data, description=form.description.data)
+            name=form.name.data,  price=form.price.data, description=form.description.data, status=form.status.data, seller_id=form.seller_id.data)
         db.session.add(product)
         db.session.commit()
         #flash(f'People created for {form.firstname.data}!', 'success')
@@ -59,7 +59,7 @@ def display_update_product(product_id):
     product = Product.query.get_or_404(product_id)
     form = ProductForm()
 
-    sellers = Seller.query.all()
+    
 
     if form.validate_on_submit():
         print('update form validate : ' + str(product.id))
@@ -68,9 +68,10 @@ def display_update_product(product_id):
 
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('product_page.products'))
-    else:
 
-        productManager.convert_product_to_form(product=product, form=form)
+
+    productManager.convert_product_to_form(product=product, form=form)
+    sellers = Seller.query.all()
 
     productStatusList = _get_product_status()
     return render_template('/products/update_product.html', product=product, title='Mise a jour de produit', form=form, sellers=sellers,  productStatusList=productStatusList)
