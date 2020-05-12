@@ -1,4 +1,4 @@
-from lecopain.dao.models import Customer, Order, Product, OrderStatus, Shipping, Seller
+from lecopain.dao.models import Customer, Order, Product, OrderStatus, Seller
 from lecopain.app import app, db
 from lecopain.form import OrderForm, OrderAnnulationForm
 from lecopain.services.order_manager import OrderManager
@@ -320,11 +320,6 @@ def display_delete_order(order_id):
 @login_required
 def delete_order(order_id):
     order = Order.query.get_or_404(order_id)
-
-    shipping = Shipping.query.filter(
-        Shipping.order_id == order_id).first()
-    if shipping != None:
-        db.session.delete(shipping)
 
     db.session.delete(order)
     db.session.commit()

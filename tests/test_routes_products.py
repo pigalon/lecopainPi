@@ -53,7 +53,6 @@ class FlaskTestCase(BaseTestCase, TestCase):
                 seller_id = seller.id,
                 status="CREE"), follow_redirects=True)
         self.assertEqual(response.status_code, 200)
-        print('data : ' + str(response.data))
         assert name in str(response.data)
 
 

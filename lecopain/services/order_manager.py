@@ -2,7 +2,7 @@ from datetime import datetime, date, timedelta
 
 from lecopain.app import app, db
 from lecopain.dto.BoughtProduct import BoughtProduct
-from lecopain.dao.models import Shipping, Line, Product, Seller, Customer, Order, OrderStatus_Enum
+from lecopain.dao.models import Line, Product, Seller, Customer, Order, OrderStatus_Enum
 from lecopain.helpers.date_utils import get_start_and_end_date_from_calendar_week, get_start_and_end_date_from_calendar_month
 import json
 from sqlalchemy import extract
@@ -231,14 +231,6 @@ class OrderManager():
             order.selected_products.append(product)
         return order
 
-    ##########################################
-    #
-    def create_default_shipping(self, order):
-        shipping = Shipping(reference=order.title, shipping_dt=order.shipping_dt,
-                            status='NON_LIVREE', order_id=order.id, customer_id=order.customer_id)
-        db.session.add(shipping)
-        db.session.commit()
-
     #########################################
     #
 
@@ -286,10 +278,7 @@ class OrderManager():
         if(payment_status != None):
             order.payment_status = payment_status
 
-        shipping = Shipping.query.filter(
-            Shipping.order_id == order_id).first()
-        if shipping != None and shipping_status != None:
-            shipping.status = shipping_status
+        order.shipping_status = shipping_status
 
         db.session.commit()
 

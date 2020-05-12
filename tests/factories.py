@@ -1,5 +1,6 @@
 from factory.alchemy import SQLAlchemyModelFactory
 from lecopain.dao.models import User, Product, Seller, Customer, Order
+from lecopain.dao.models import OrderStatus_Enum, PaymentStatus_Enum
 from werkzeug.security import generate_password_hash
 from lecopain.app import db
 import factory
@@ -77,9 +78,9 @@ class OrderFactory(SQLAlchemyModelFactory):
         model = Order
         sqlalchemy_session = db.session
     title = 'test'
-    status = "ANNULEE"
+    status = OrderStatus_Enum.CREE.value
     created_at = factory.Faker('date_time')
-    payment_status = "TEST"
+    payment_status = PaymentStatus_Enum.NON_PAYEE.value
     shipping_dt = factory.Faker(
         'date_time_between', start_date='-6d', end_date='+6d', tzinfo=None)
 
