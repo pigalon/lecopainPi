@@ -84,7 +84,7 @@ class Order(db.Model):
         'sellers.id'), nullable=False)
     seller = db.relationship('Seller')
     price = db.Column(db.Float)
-    shipping_price = price = db.Column(db.Float)
+    shipping_price = db.Column(db.Float)
     shipping_status = db.Column(
         db.String(20), nullable=False, default=ShippingStatus_Enum.CREE.value)
     shipping_dt = db.Column(db.DateTime)

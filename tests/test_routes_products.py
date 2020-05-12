@@ -40,7 +40,7 @@ class FlaskTestCase(BaseTestCase, TestCase):
                 status=product.status), follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         assert product.name in str(response.data)
-        
+
     def test_products_create(self):
         name = 'new_product'
         seller = db.session.query(Seller).first()
@@ -54,6 +54,25 @@ class FlaskTestCase(BaseTestCase, TestCase):
                 status="CREE"), follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         assert name in str(response.data)
+
+    def test_products_ask_delete(self):
+        sentence = 'supprimer ce produit '
+        product = db.session.query(Product).first()
+
+        with app.test_client() as client:
+            response = client.get(f'/products/delete/{product.id}', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        assert sentence in str(response.data)
+
+    def test_products_confirm_delete(self):
+        product = db.session.query(Product).first()
+        products_count = db.session.query(Product).count()
+
+        with app.test_client() as client:
+            response = client.delete(
+                f'/products/{product.id}', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        assert products_count == (db.session.query(Product).count() + 1)
 
 
 if __name__ == '__main__':
