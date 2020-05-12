@@ -13,19 +13,19 @@ parent_dir_path = os.path.abspath(os.path.join(dir_path, os.pardir))
 sys.path.insert(0, parent_dir_path)
 
 
-class FlaskTestCase(BaseTestCase, TestCase):
+class OrderTestCase(BaseTestCase, TestCase):
 
     # Ensure that Flask was set up correctly
-    def test_orders_index(self):
+    def test_orders_show(self):
 
         order = db.session.query(Order).first()
 
-        # with app.test_client() as client:
-        #     response = client.get(f'/orders/{order.id}',
-        #                           content_type='html/text')
-        # self.assertEqual(response.status_code, 200)
-        # assert 'Commande client' in str(response.data)
-        # assert order.id in str(response.data)
+        with app.test_client() as client:
+            response = client.get(f'/orders/{order.id}',
+                                  content_type='html/text')
+        self.assertEqual(response.status_code, 200)
+        assert 'Commande client' in str(response.data)
+        assert str(order.id) in str(response.data)
 
 
 if __name__ == '__main__':

@@ -13,7 +13,7 @@ parent_dir_path = os.path.abspath(os.path.join(dir_path, os.pardir))
 sys.path.insert(0, parent_dir_path)
 
 
-class FlaskTestCase(BaseTestCase, TestCase):
+class CustomerTestCase(BaseTestCase, TestCase):
 
     # Ensure that Flask was set up correctly
     def test_customers_show(self):

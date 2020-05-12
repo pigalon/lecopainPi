@@ -13,7 +13,7 @@ parent_dir_path = os.path.abspath(os.path.join(dir_path, os.pardir))
 sys.path.insert(0, parent_dir_path)
 
 
-class FlaskTestCase(BaseTestCase, TestCase):
+class ProductTestCase(BaseTestCase, TestCase):
 
     # Ensure that Flask was set up correctly
     def test_products_show(self):
@@ -73,6 +73,17 @@ class FlaskTestCase(BaseTestCase, TestCase):
                 f'/products/{product.id}', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         assert products_count == (db.session.query(Product).count() + 1)
+
+    def test_json_products_by_seller(self):
+        product = db.session.query(Product).first()
+        seller = db.session.query(Seller).first()
+
+        with app.test_client() as client:
+            response = client.get(
+                f'/_getjs_products/{seller.id}', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        assert product.name in str(response.data)
+
 
 
 if __name__ == '__main__':
