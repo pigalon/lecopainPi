@@ -1,7 +1,7 @@
 from lecopain.dao.models import Customer, Order, Product, OrderStatus, Seller
 from lecopain.app import app, db
 from lecopain.form import OrderForm, OrderAnnulationForm
-from lecopain.services.order_manager import OrderManager
+from lecopain.services.order_manager import OrderManager, Period_Enum
 
 from sqlalchemy import extract
 from datetime import datetime
@@ -40,7 +40,7 @@ def orders():
 @order_page.route("/orders/month", methods=['GET', 'POST'])
 @login_required
 def orders_of_current_month():
-    orders = orderServices.orders_of_the_month()
+    orders = orderServices.all_orders(period=Period_Enum.MONTH.value)
     return common_display_orders_page(orders, 'mois')
 
 #####################################################################
@@ -49,7 +49,7 @@ def orders_of_current_month():
 @order_page.route("/orders/week", methods=['GET', 'POST'])
 @login_required
 def orders_of_current_week():
-    orders = orderServices.orders_of_the_week()
+    orders = orderServices.all_orders(period=Period_Enum.WEEK.value)
     return common_display_orders_page(orders, 'semaine')
 
 #####################################################################
@@ -58,7 +58,7 @@ def orders_of_current_week():
 @order_page.route("/orders/day", methods=['GET', 'POST'])
 @login_required
 def orders_of_current_day():
-    orders = orderServices.orders_of_the_day()
+    orders = orderServices.all_orders(period=Period_Enum.DAY.value)
     return common_display_orders_page(orders, 'jour')
 
 #####################################################################
@@ -151,8 +151,9 @@ def order_create():
     if form.validate_on_submit():
         order = Order(title=form.title.data, status=form.status.data, customer_id=int(
             form.customer_id.data), shipping_dt=form.shipping_dt.data)
-        orderServices.create_order(
+        order = orderServices.create_order(
             order=order, tmp_products=tmp_products, tmp_quantities=tmp_quantities, tmp_prices=tmp_prices)
+        db.session.commit()
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect('/orders')
 

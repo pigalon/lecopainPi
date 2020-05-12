@@ -3,10 +3,17 @@ from datetime import datetime, date, timedelta
 from lecopain.app import app, db
 from lecopain.dto.BoughtProduct import BoughtProduct
 from lecopain.dao.models import Line, Product, Seller, Customer, Order, OrderStatus_Enum
-from lecopain.helpers.date_utils import get_start_and_end_date_from_calendar_week, get_start_and_end_date_from_calendar_month
+from lecopain.helpers.date_utils import get_day_range, get_month_range, get_week_range
 import json
-from sqlalchemy import extract
+from sqlalchemy import extract, Date, cast
+from aenum import Enum
 
+
+class Period_Enum(Enum):
+    ALL = 'ALL'
+    DAY = 'DAY'
+    WEEK = 'WEEK'
+    MONTH = 'MONTH'
 
 class OrderManager():
 
@@ -45,85 +52,43 @@ class OrderManager():
     # Orders by customer
     ###############################################
     def orders_by_customer(self, orders, customer_id):
-        orders.filter(
+        return orders.filter(
             Order.customer_id == customer_id)
 
     ##############################################
     # Orders by desc date
     ###############################################
     def orders_by_date_desc(self, orders):
-        orders.order_by(
-            Order.shipping_dt.desc()).all()
-
-    ##############################################
-    # Orders list ordered by date for the current month
-    ###############################################
-    def orders_of_the_month(self, customer_id=0):
-
-        today = datetime.today()
-
-        start_date, end_date = get_start_and_end_date_from_calendar_month(
-            today.year, today.month)
-
-        orders = Order.query.filter(
-            Order.shipping_dt >= start_date).filter(
-            Order.shipping_dt <= end_date)
-
-        if customer_id != 0:
-            orders_by_customer(orders, customer_id)
-
-        self.orders_by_date_desc(orders)
-
-        return orders.all()
-
-    ##############################################
-    # Orders list ordered by date for the current week
-    ###############################################
-    def orders_of_the_week(self, customer_id=0):
-
-        today = datetime.today()
-
-        start_date, end_date = get_start_and_end_date_from_calendar_week(
-            today.year, today.weekday())
-
-        orders = Order.query.filter(
-            Order.shipping_dt >= start_date).filter(
-            Order.shipping_dt <= end_date)
-
-        if customer_id != 0:
-            orders_by_customer(orders, customer_id)
-
-        self.orders_by_date_desc(orders)
-
-        return orders.all()
-
-    ##############################################
-    # Orders list ordered by date for the current day
-    ###############################################
-    def orders_of_the_day(self, customer_id=0):
-
-        today = datetime.today()
-
-        orders = Order.query.filter(
-            Order.shipping_dt == today)
-
-        if customer_id != 0:
-            orders_by_customer(orders, customer_id)
-
-        self.orders_by_date_desc(orders)
-
-        return orders.all()
+        return orders.order_by(
+            Order.shipping_dt.desc())
 
     ##############################################
     # All orders
     ###############################################
-    def all_orders(self, customer_id=0):
+    def all_orders(self, customer_id=0, period=Period_Enum.ALL.value):
         orders = Order.query
+        today = datetime.today()
+        start=0
+        end=0
+
+        if period == Period_Enum.DAY.value:
+            start, end = get_day_range()
+        elif period == Period_Enum.WEEK.value:
+            start, end = get_week_range(
+                today.year, today.isocalendar()[1])
+        elif period == Period_Enum.MONTH.value:
+            start, end = get_month_range(
+                today.year, today.month)
+
+        if period != Period_Enum.ALL.value:
+            orders = Order.query.filter(
+                Order.shipping_dt >= start).filter(
+                Order.shipping_dt <= end)
 
         if customer_id != 0:
-            orders_by_customer(orders, customer_id)
+            orders = orders = self.orders_by_customer(orders, customer_id)
 
-        self.orders_by_date_desc(orders)
+        orders = self.orders_by_date_desc(orders)
 
         return orders.all()
 
@@ -192,11 +157,7 @@ class OrderManager():
             quantity = tmp_quantities[i]
             price = tmp_prices[i]
             lines.append((product, quantity, price))
-        order.add_products(lines)
-
-        # order = self.create_product_purchases(
-        #     order, tmp_products, tmp_quantities, tmp_prices)
-        self.create_default_shipping(order)
+        return order.add_products(lines)
 
     # @
     #
