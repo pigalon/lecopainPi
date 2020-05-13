@@ -4,7 +4,8 @@ from flask_login import UserMixin
 from lecopain.app import login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from aenum import Enum
-from marshmallow_sqlalchemy import ModelSchema
+from marshmallow_sqlalchemy import (ModelSchema, SQLAlchemySchema, SQLAlchemyAutoSchema, auto_field)
+
 
 
 class OrderStatus_Enum(Enum):
@@ -49,32 +50,27 @@ class Customer(db.Model):
     email = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False,
                            default=datetime.utcnow)
-    orders = db.relationship('Order', backref='owner', lazy=True)
+    #orders = db.relationship('Order', backref='owner', lazy=True)
 
     def __repr__(self):
         return "Customer('{self.firstname}','{self.lastname}','{self.email}')"
 
-    def to_dict(self):
-        orders_dict = []
-        for order in self.orders:
-            orders_dict.append(order.to_dict())
-        return {
-            'id': self.id,
-            'firstname': self.firstname,
-            'lastname': self.lastname,
-            'address': self.address,
-            'cp': self.cp,
-            'city': self.city,
-            'email': self.email,
-            'orders': orders_dict
-        }
+    # def to_dict(self):
+    #     orders_dict = []
+    #     for order in self.orders:
+    #         orders_dict.append(order.to_dict())
+    #     return {
+    #         'id': self.id,
+    #         'firstname': self.firstname,
+    #         'lastname': self.lastname,
+    #         'address': self.address,
+    #         'cp': self.cp,
+    #         'city': self.city,
+    #         'email': self.email,
+    #         'orders': orders_dict
+    #     }
 
-class CustomerSchema(ma.Schema):
 
-    class Meta:
-        # Fields to expose
-        fields = ('id', 'firstname', 'lastname',
-                  'email', 'address', 'cp', 'city')
 
 class Order(db.Model):
     __tablename__ = 'orders'
@@ -117,7 +113,6 @@ class Order(db.Model):
             'status': self.status,
             'customer_id': self.customer_id
         }
-
 
 class OrderStatus(db.Model):
     name = db.Column(db.String(50), primary_key=True)
@@ -293,3 +288,48 @@ class Subscription_lines(db.Model):
             'quantity': self.quantity,
             'price': self.price
         }
+
+
+class CustomerSchema(SQLAlchemyAutoSchema):
+
+    class Meta:
+        # Fields to expose
+        model = Customer
+        load_instance = True
+
+class OptimizedCustomerSchema(SQLAlchemySchema):
+
+    class Meta:
+        # Fields to expose
+        model = Customer
+        load_instance = True
+    id = auto_field()
+    firstname = auto_field()
+    lastname = auto_field()
+
+
+class OrderSchema(SQLAlchemySchema):
+
+    class Meta:
+        # Fields to expose
+        model = Order
+        load_instance = True
+        include_relationships = True
+
+class OptimizedProductSchema(SQLAlchemySchema):
+
+    class Meta:
+        # Fields to expose
+        model = Product
+        load_instance = True
+    id = auto_field()
+    name = auto_field()
+    seller_id = auto_field()
+
+class ProductSchema(SQLAlchemyAutoSchema):
+
+    class Meta:
+        # Fields to expose
+        model = Product
+        load_instance = True
+        include_relationships = True

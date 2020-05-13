@@ -1,8 +1,9 @@
-from lecopain.dao.models import Customer, Order, Product, OrderStatus, Seller
+from lecopain.dao.models import Order, OrderStatus, Seller
 from lecopain.app import app, db
 from lecopain.form import OrderForm, OrderAnnulationForm
 from lecopain.services.order_manager import OrderManager, Period_Enum
 from lecopain.services.customer_manager import CustomerManager
+from lecopain.services.product_manager import ProductManager
 
 from sqlalchemy import extract
 from datetime import datetime
@@ -17,11 +18,11 @@ order_page = Blueprint('order_page', __name__,
 
 orderServices = OrderManager()
 customerService = CustomerManager()
+productService = ProductManager()
 
 
 def common_display_orders_page(orders, period):
-    customers = customerService.get_all()
-    print('customers : ' + str(customers))
+    customers = customerService.optim_get_all()
     map = orderServices.get_maps_from_orders(orders)
 
     return render_template('/orders/orders.html', customers=customers, orders=orders, map=map, title=f"Commandes - {period}")
@@ -70,7 +71,6 @@ def orders_of_current_day():
 @order_page.route("/orders/customers/<int:customer_id>", methods=['GET', 'POST'])
 @login_required
 def orders_customer(customer_id):
-
     orders = orderServices.all_orders(customer_id)
     return common_display_orders_page(orders, 'toutes')
 
@@ -92,7 +92,7 @@ def orders_of_month_by_customer(customer_id, year_number, month_number):
     date_tab = [year_number, month_number, None]
     orders = orderServices.build_orders_list(customer_id, date_tab)
 
-    customers = Customer.query.all()
+    customers = customerService.optim_get_all()
     map = orderServices.get_maps_from_orders(orders)
 
     return render_template('/orders/orders.html', customers=customers, orders=orders, map=map, title="Commandes du mois")
@@ -116,7 +116,7 @@ def orders_of_day_by_customer(customer_id, year_number, month_number, day_number
     date_tab = [year_number, month_number, day_number]
     orders = orderServices.build_orders_list(customer_id, date_tab)
 
-    customers = customerService.get_all()
+    customers = customerService.optim_get_all()
     map = orderServices.get_maps_from_orders(orders)
 
     return render_template('/orders/orders.html', customers=customers, orders=orders, map=map, title="Commandes du jour")
@@ -135,7 +135,7 @@ def order_products_of_day(year_number, month_number, day_number):
         'month', Order.shipping_dt) == month_number).filter(extract('day', Order.shipping_dt) == day_number).all()
     products_of_day_list = orderServices.get_resume_products_list_from_orders(
         orders)
-    customers = customerService.get_all()
+    customers = customerService.optim_get_all()
     map = orderServices.get_maps_from_orders(orders)
 
     return render_template('/orders/orders_by_day.html', orders=orders, map=map, bought_products=products_of_day_list, title="Commandes du jour")
@@ -161,7 +161,7 @@ def order_create():
         return redirect('/orders')
 
     orderStatusList = _get_order_status()
-    customers = Customer.query.all()
+    customers = customerService.optim_get_all()
 
     return render_template('/orders/create_order.html', title='Creation de commande', form=form, customers=customers, orderStatusList=orderStatusList)
 
@@ -175,7 +175,7 @@ def order(order_id):
 
     price, rules = orderServices.calculate_shipping(order)
 
-    customer = Customer.query.get_or_404(order.customer_id)
+    customer = customerService.get_one(order.customer_id)
     products = order.products
     products.sort(key=lambda x: x.seller_id, reverse=True)
     sorted_products = sorted(products, key=lambda x: x.seller_id, reverse=True)
@@ -193,8 +193,8 @@ def display_update_order(order_id):
     order = Order.query.get_or_404(order_id)
     form = OrderForm()
 
-    customer = Customer.query.get_or_404(order.customer_id)
-    products = Product.query.all()
+    customer = customerService.get_one(order.customer_id)
+    products = productService.optim_get_all()
 
     line_selection = order.lines
 
@@ -234,7 +234,7 @@ def display_update_order(order_id):
 def display_update_order_time(order_id):
 
     order = Order.query.get_or_404(order_id)
-    customer = Customer.query.get_or_404(order.customer_id)
+    customer = customerService.get_one(order.customer_id)
     form = OrderForm()
 
     if form.validate_on_submit():
@@ -243,10 +243,6 @@ def display_update_order_time(order_id):
         # update order first
 
         order.shipping_dt = orderForm.shipping_dt
-
-        shipping = Shipping.query.filter(
-            Shipping.order_id == order.id).first()
-        shipping.shipping_dt = orderForm.shipping_dt
 
         db.session.commit()
 

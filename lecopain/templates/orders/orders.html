@@ -2,19 +2,28 @@
 {% block content %}
 
     <div class="form-group">
-        Choix du client :<br>
-        <select class="form-control" name="customer_id" id="customer_id" style="width: 38rem; display:inline-block" >
+        Client :<br>
+        <select class="form-control" name="customer_id" id="customer_id" style="width: 12rem; display:inline-block" >
             <option value="O" SELECTED>Tous</option>
             {% for o in customers %}
                 <option value="{{ o.id }}">{{ o.firstname }}</option>
             {% endfor %}
-        </select><button type="button" id="more_fields" onclick="search_order_by_customer();" class="btn btn-primary display:inline-block" ><i class="fa fa-search"></i></button>
+        </select><select class="form-control" name="period" id="period" style="width: 12rem; display:inline-block">
+            <option value="day">Jour</option>
+            <option value="week">Semaine</option>
+            <option value="month">Mois</option>
+            <option value="all">Toutes</option>
+        </select>
+        <button type="button" id="more_fields" onclick="search_order_by_customer();" class="btn btn-primary display:inline-block" ><i class="fa fa-search"></i></button>
+        <div class="right">
+            Ajouter <a role="button" href="/orders/new" class="btn btn-primary display:inline-block"><i class="fa fa-plus"></i></a>
+        </div>
     </div>
     {% for order in orders %}
     <div class="card border-dark mb-3" style="width: 40rem;">
         <div class="card-header">
             {% if order.status == 'ANNULEE' %}
-                <span class="btn btn-secondary" style="font-size: 1,8em;">             
+                <span class="btn btn-secondary" style="font-size: 1,8em;">
             {% endif %}
             {% if order.status == 'CREE' %}
             <span class="btn btn-warning" style="font-size: 1,8em;">
@@ -24,7 +33,7 @@
             {% endif %}
                 <i class="fas fa-cart-arrow-down "></i>
             </span>
-            
+
             {% if order.payment_status == 'PAYEE' %}
             <span class="btn btn-success" style="font-size: 1,9em;">
             {% endif %}
@@ -38,15 +47,15 @@
             </span>
             Référence : <span style="color:red">{{order.id}}</span>
             <span style="float: right"><b>{{ order.shipping_dt.strftime('%A %d %B %Y') }}</b></span>
-        </div>        
+        </div>
         <div class="card-body">
             <h5 class="card-title"></h5>
             <h6 class="card-subtitle mb-2 text-muted">Client : n° {{ order.customer_id }} - {{map['CUSTOMER'][order.id]}}</h6>
-            
+
         </div>
         <div class="card-footer">
             <small class="text-muted">
-                <a href="/orders/{{order.id}}" class="card-link">Détails</a>    
+                <a href="/orders/{{order.id}}" class="card-link">Détails</a>
                 <a href="/orders/update/{{order.id}}" class="card-link">Modifier</a>
                 <a href="/orders/delete/{{order.id}}" class="card-link">Supprimer</a>
             </small>
@@ -56,32 +65,33 @@
     {% endfor %}
 {% endblock %}
 {% block right_menu %}
-<div class="content-section">
-    <h3>Menu des commandes</h3>
-    <p class='text-muted'>
-        <ul class="list-group">
-        <li class="list-group-item list-group-item-light">
-            <a class="nav-link" href="/orders/new">Création</a></li>
-        <li class="list-group-item list-group-item-light">
-            <a class="nav-link" href="/orders/month">Mois</a></li>
-        <li class="list-group-item list-group-item-light">
-            <a class="nav-link" href="/orders/week">Semaine</a></li>
-        <li class="list-group-item list-group-item-light">
-            <a class="nav-link" href="/orders/day">Jour</a></li>
-        <li class="list-group-item list-group-item-light">
-            <a class="nav-link" href="/orders">Toutes</a></li>
-        </ul>
-    </p>
-</div>
 {% endblock %}
-{% block scripts %} 
+{% block scripts %}
 
     <script>
         function search_order_by_customer() {
 
             var customer_id = document.getElementById('customer_id');
+            var period = document.getElementById('period');
 
-            window.location = '/orders/customers/' + customer_id.value;
+            switch (period.value) {
+                case 'day':
+                    url = '/orders/day';
+                    break;
+                case 'week':
+                    url = '/orders/week';
+                    break;
+                case 'month':
+                    url = '/orders/month';
+                    break;
+                default:
+                    url = '/orders';
+
+            }
+            if(customer_id != '0' ){
+                url += '/customers/'+ customer_id.value;
+            }
+            window.location = url;
 
         };
     </script>

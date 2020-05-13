@@ -18,3 +18,9 @@ class CustomerManager():
 
     def get_all(self):
         return CustomerDao.read_all()
+
+    def optim_get_all(self):
+        return CustomerDao.optim_read_all()
+
+    def get_one(self, id):
+        return CustomerDao.read_one(id)
