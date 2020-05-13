@@ -46,7 +46,7 @@ class FlaskTestCase(BaseTestCase, TestCase):
         with app.test_client() as client:
             response = client.get('/orders', content_type='html/text')
         self.assertEqual(response.status_code, 200)
-        assert 'commandes' in str(response.data)
+        assert 'Commandes' in str(response.data)
     def test_customers_index(self):
         with app.test_client() as client:
             response = client.get('/customers', content_type='html/text')
