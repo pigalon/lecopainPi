@@ -5,10 +5,12 @@ Flask-bootstrap
 Flask-Nav
 Flask-script
 Flask-sqlalchemy
+Flask-marshmallow
 flask-login
 Flask-Testing==0.4.2
 flasgger
 uwsgi
+marshmallow-sqlalchemy
 
 Requests
 Jinja2

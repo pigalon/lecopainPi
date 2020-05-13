@@ -1,5 +1,6 @@
 from lecopain.app import app, db
 from lecopain.dao.models import Customer, Order
+from lecopain.dao.customer_dao import CustomerDao
 
 
 class CustomerManager():
@@ -14,3 +15,6 @@ class CustomerManager():
                 newer_order = order
                 print("newer from other")
         return newer_order
+
+    def get_all(self):
+        return CustomerDao.read_all()

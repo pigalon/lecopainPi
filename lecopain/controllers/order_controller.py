@@ -2,6 +2,7 @@ from lecopain.dao.models import Customer, Order, Product, OrderStatus, Seller
 from lecopain.app import app, db
 from lecopain.form import OrderForm, OrderAnnulationForm
 from lecopain.services.order_manager import OrderManager, Period_Enum
+from lecopain.services.customer_manager import CustomerManager
 
 from sqlalchemy import extract
 from datetime import datetime
@@ -15,10 +16,12 @@ order_page = Blueprint('order_page', __name__,
                        template_folder='../templates')
 
 orderServices = OrderManager()
+customerService = CustomerManager()
 
 
 def common_display_orders_page(orders, period):
-    customers = Customer.query.all()
+    customers = customerService.get_all()
+    print('customers : ' + str(customers))
     map = orderServices.get_maps_from_orders(orders)
 
     return render_template('/orders/orders.html', customers=customers, orders=orders, map=map, title=f"Commandes - {period}")
@@ -113,7 +116,7 @@ def orders_of_day_by_customer(customer_id, year_number, month_number, day_number
     date_tab = [year_number, month_number, day_number]
     orders = orderServices.build_orders_list(customer_id, date_tab)
 
-    customers = Customer.query.all()
+    customers = customerService.get_all()
     map = orderServices.get_maps_from_orders(orders)
 
     return render_template('/orders/orders.html', customers=customers, orders=orders, map=map, title="Commandes du jour")
@@ -132,7 +135,7 @@ def order_products_of_day(year_number, month_number, day_number):
         'month', Order.shipping_dt) == month_number).filter(extract('day', Order.shipping_dt) == day_number).all()
     products_of_day_list = orderServices.get_resume_products_list_from_orders(
         orders)
-    customers = Customer.query.all()
+    customers = customerService.get_all()
     map = orderServices.get_maps_from_orders(orders)
 
     return render_template('/orders/orders_by_day.html', orders=orders, map=map, bought_products=products_of_day_list, title="Commandes du jour")

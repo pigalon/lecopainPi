@@ -1,10 +1,10 @@
-from lecopain.app import db
+from lecopain.app import db, ma
 from datetime import datetime
 from flask_login import UserMixin
 from lecopain.app import login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from aenum import Enum
-from sqlalchemy.ext.associationproxy import association_proxy
+from marshmallow_sqlalchemy import ModelSchema
 
 
 class OrderStatus_Enum(Enum):
@@ -68,6 +68,13 @@ class Customer(db.Model):
             'email': self.email,
             'orders': orders_dict
         }
+
+class CustomerSchema(ma.Schema):
+
+    class Meta:
+        # Fields to expose
+        fields = ('id', 'firstname', 'lastname',
+                  'email', 'address', 'cp', 'city')
 
 class Order(db.Model):
     __tablename__ = 'orders'
