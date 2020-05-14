@@ -28,3 +28,24 @@ class OrderDao:
         # Serialize the data for the response
         order_schema = OrderSchema(many=False)
         return order_schema.dump(order)
+    
+    @staticmethod
+    def read_some(customer_id, start, end):
+        
+        all_orders = Order.query
+        
+        if(start != 0 ):
+            all_orders = all_orders.filter(
+                Order.shipping_dt >= start).filter(
+                Order.shipping_dt <= end)
+        
+        if customer_id != 0:
+            all_orders = all_orders.filter(
+                Order.customer_id == customer_id)
+
+        all_orders = all_orders.order_by(Order.shipping_dt.desc()) \
+        .all()
+
+        # Serialize the data for the response
+        order_schema = OrderSchema(many=True)
+        return order_schema.dump(all_orders)

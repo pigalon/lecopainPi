@@ -11,6 +11,8 @@ from collections import namedtuple
 
 app = Flask(__name__, instance_relative_config=True)
 
+customerServices = CustomerManager()
+
 
 customer_page = Blueprint('customer_page', __name__,
                           template_folder='../templates')
@@ -151,3 +153,9 @@ def delete_customer(customer_id):
     db.session.delete(customer)
     db.session.commit()
     return jsonify({})
+
+
+@customer_page.route('/api/customers/')
+@login_required
+def api_customers():
+    return jsonify({'customers': customerServices.optim_get_all()})

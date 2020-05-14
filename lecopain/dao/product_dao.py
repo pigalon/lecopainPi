@@ -13,7 +13,7 @@ class ProductDao:
         # Create the list of people from our data
 
         all_products = Product.query \
-        .order_by(Product.lastname) \
+        .order_by(Product.name) \
         .all()
 
         # Serialize the data for the response
@@ -26,7 +26,7 @@ class ProductDao:
         # Create the list of people from our data
 
         all_products = Product.query \
-            .order_by(Product.lastname) \
+            .order_by(Product.name) \
             .all()
 
         # Serialize the data for the response

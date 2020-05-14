@@ -1,6 +1,13 @@
 import calendar
 from datetime import datetime
 from datetime import timedelta
+from aenum import Enum
+
+class Period_Enum(Enum):
+    ALL = 'all'
+    DAY = 'day'
+    WEEK = 'week'
+    MONTH = 'month'
 
 
 def get_day_range():
@@ -20,3 +27,19 @@ def get_month_range(year, calendar_month):
     tmp, day_end = calendar.monthrange(year, calendar_month)
     end = datetime.today().replace(day=day_end)
     return start, end
+
+def dates_range(period):
+    today = datetime.today()
+    start = 0
+    end = 0
+
+    if period == Period_Enum.DAY.value:
+        start, end = get_day_range()
+    elif period == Period_Enum.WEEK.value:
+        start, end = get_week_range(
+            today.year, today.isocalendar()[1])
+    elif period == Period_Enum.MONTH.value:
+        start, end = get_month_range(
+            today.year, today.month)
+    return start,end
+

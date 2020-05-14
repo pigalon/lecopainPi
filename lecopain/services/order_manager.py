@@ -3,18 +3,12 @@ from datetime import datetime, date, timedelta
 from lecopain.app import app, db
 from lecopain.dto.BoughtProduct import BoughtProduct
 from lecopain.dao.models import Line, Product, Seller, Customer, Order, OrderStatus_Enum
-from lecopain.helpers.date_utils import get_day_range, get_month_range, get_week_range
+from lecopain.helpers.date_utils import dates_range, Period_Enum
 from lecopain.dao.order_dao import OrderDao
 import json
 from sqlalchemy import extract, Date, cast
-from aenum import Enum
 
 
-class Period_Enum(Enum):
-    ALL = 'ALL'
-    DAY = 'DAY'
-    WEEK = 'WEEK'
-    MONTH = 'MONTH'
 
 class OrderManager():
 
@@ -72,24 +66,24 @@ class OrderManager():
         start=0
         end=0
 
-        if period == Period_Enum.DAY.value:
-            start, end = get_day_range()
-        elif period == Period_Enum.WEEK.value:
-            start, end = get_week_range(
-                today.year, today.isocalendar()[1])
-        elif period == Period_Enum.MONTH.value:
-            start, end = get_month_range(
-                today.year, today.month)
+        # if period == Period_Enum.DAY.value:
+        #     start, end = get_day_range()
+        # elif period == Period_Enum.WEEK.value:
+        #     start, end = get_week_range(
+        #         today.year, today.isocalendar()[1])
+        # elif period == Period_Enum.MONTH.value:
+        #     start, end = get_month_range(
+        #         today.year, today.month)
 
-        if period != Period_Enum.ALL.value:
-            orders = Order.query.filter(
-                Order.shipping_dt >= start).filter(
-                Order.shipping_dt <= end)
+        # if period != Period_Enum.ALL.value:
+        #     orders = Order.query.filter(
+        #         Order.shipping_dt >= start).filter(
+        #         Order.shipping_dt <= end)
 
-        if customer_id != 0:
-            orders = orders = self.orders_by_customer(orders, customer_id)
+        # if customer_id != 0:
+        #     orders = orders = self.orders_by_customer(orders, customer_id)
 
-        orders = self.orders_by_date_desc(orders)
+        # orders = self.orders_by_date_desc(orders)
 
         return orders.all()
 
@@ -289,6 +283,10 @@ class OrderManager():
     def get_latest_orders_counter(self):
         date_since_2_days = date.today() - timedelta(days=2)
         return Order.query.filter(Order.created_at > date_since_2_days).count()
-    
+
     def get_all(self):
         return OrderDao.read_all()
+
+    def get_some(self,  customer_id=0, period=Period_Enum.ALL.value):
+        start,end = dates_range(period)
+        return OrderDao.read_some(customer_id=customer_id, start=start, end=end)

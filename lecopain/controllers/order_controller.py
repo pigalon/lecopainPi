@@ -355,7 +355,13 @@ def _getjs_order_count():
     return jsonify({'total_orders_count': total_orders_count, 'in_progress_orders_count': in_progress_orders_count})
 
 
-@order_page.route('/_getjs_orders/')
+@order_page.route('/api/orders/')
 @login_required
-def _getjs_orders():
+def api_orders():
     return jsonify({'orders': orderServices.get_all()})
+
+
+@order_page.route('/api/orders/period/<string:period>/customers/<int:customer_id>')
+@login_required
+def api_day_orders(period, customer_id):
+    return jsonify({'orders': orderServices.get_some(period=period, customer_id=customer_id)})
