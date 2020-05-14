@@ -353,3 +353,9 @@ def _getjs_order_count():
     in_progress_orders_count = orderServices.get_in_progess_orders_counter()
     latest_orders_count = orderServices.get_latest_orders_counter()
     return jsonify({'total_orders_count': total_orders_count, 'in_progress_orders_count': in_progress_orders_count})
+
+
+@order_page.route('/_getjs_orders/')
+@login_required
+def _getjs_orders():
+    return jsonify({'orders': orderServices.get_all()})

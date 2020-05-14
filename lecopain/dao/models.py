@@ -4,6 +4,7 @@ from flask_login import UserMixin
 from lecopain.app import login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from aenum import Enum
+from marshmallow import fields
 from marshmallow_sqlalchemy import (ModelSchema, SQLAlchemySchema, SQLAlchemyAutoSchema, auto_field)
 
 
@@ -308,13 +309,35 @@ class OptimizedCustomerSchema(SQLAlchemySchema):
     lastname = auto_field()
 
 
-class OrderSchema(SQLAlchemySchema):
+class OrderSchema(SQLAlchemyAutoSchema):
+    customer_name = fields.Method("format_customer_name", dump_only=True)
+    seller_name = fields.Method("format_seller_name", dump_only=True)
 
     class Meta:
         # Fields to expose
         model = Order
         load_instance = True
         include_relationships = True
+
+    def format_customer_name(self, order):
+        return "{}, {}".format(order.customer.firstname, order.customer.lastname)
+
+    def format_seller_name(self, order):
+        return "{}".format(order.seller.name)
+
+    # id = auto_field()
+    # title = auto_field()
+    # created_at = auto_field()
+    # customer_id=auto_field()
+    # customer = auto_field()
+    # status=auto_field()
+    # seller_id=auto_field()
+    # price = auto_field()
+    # shipping_price = auto_field()
+    # shipping_status = auto_field()
+    # shipping_dt = auto_field()
+    # payment_status = auto_field()
+    # subscription_id = auto_field()
 
 class OptimizedProductSchema(SQLAlchemySchema):
 

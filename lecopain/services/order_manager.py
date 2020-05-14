@@ -4,6 +4,7 @@ from lecopain.app import app, db
 from lecopain.dto.BoughtProduct import BoughtProduct
 from lecopain.dao.models import Line, Product, Seller, Customer, Order, OrderStatus_Enum
 from lecopain.helpers.date_utils import get_day_range, get_month_range, get_week_range
+from lecopain.dao.order_dao import OrderDao
 import json
 from sqlalchemy import extract, Date, cast
 from aenum import Enum
@@ -288,3 +289,6 @@ class OrderManager():
     def get_latest_orders_counter(self):
         date_since_2_days = date.today() - timedelta(days=2)
         return Order.query.filter(Order.created_at > date_since_2_days).count()
+    
+    def get_all(self):
+        return OrderDao.read_all()
