@@ -162,3 +162,6 @@ class OrderManager():
     def get_some(self,  customer_id=0, period=Period_Enum.ALL.value):
         start,end = dates_range(period)
         return OrderDao.read_some(customer_id=customer_id, start=start, end=end)
+
+    def get_one(self,  order_id):
+        return OrderDao.read_one(order_id)

@@ -1,1 +1,1 @@
-env/bin/python -m unittest discover -v -s tests -p 'test_*.py' 
+env/bin/python -m unittest discover -v -s lecopain/tests -p 'test_*.py' 

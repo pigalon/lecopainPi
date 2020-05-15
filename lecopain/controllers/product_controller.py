@@ -59,8 +59,6 @@ def display_update_product(product_id):
     product = Product.query.get_or_404(product_id)
     form = ProductForm()
 
-    
-
     if form.validate_on_submit():
         print('update form validate : ' + str(product.id))
 

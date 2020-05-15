@@ -19,7 +19,7 @@ class CustomerDao:
         # Serialize the data for the response
         customer_schema = OptimizedCustomerSchema(many=True)
         return customer_schema.dump(all_customers)
-    
+
     @staticmethod
     def read_all():
 
@@ -32,7 +32,7 @@ class CustomerDao:
         # Serialize the data for the response
         customer_schema = CustomerSchema(many=True)
         return customer_schema.dump(all_customers)
-    
+
     @staticmethod
     def read_one(id):
 

@@ -25,43 +25,44 @@
         </div>
         <div class="card-body">
           <h5 class="card-title"> N° {{order.id}} - {{order.title}}</h5>
-          <p class="card-text">Commande créée le : <b style="color:rgb(199, 94, 94);">{{ order.created_at.strftime('%A %d %B %Y a %Hh:%Mmn' ) }}</b> par <b style="color:rgb(199, 94, 94);">{{customer.firstname}} {{customer.lastname}}</b></p>
+          <p class="card-text">Commande créée le : <b style="color:rgb(199, 94, 94);">{{ order.created_at }}</b> par <b style="color:rgb(199, 94, 94);">{{order.customer_name}}</b></p>
           <br>
-          <p><b>Liste des articles triés par vendeur :</b></p>
+          <p><b>Liste des articles :</b></p>
           <ul class="list-group list-group-flush">
           {% set total = {'value': 0.00} %}
-          {% set nb_products = {'value': 0} %}
-          {% set seller = {'value': ''} %}
-          {% for product in order.selected_products %}
-            {% if seller.value != product.seller.name %}
-            <li class="list-group-item bg-light">
-                    <b>{{product.seller.name}}</b>
-                    {% set seller = {'value': product.seller.name} %}
-            </li>
-            {% endif%}
-            <li class="list-group-item">
-                
-              <span class="badge badge-primary">{{product.price}} €</span> 
-              {{product.name}}  
-                {% for product_order in bought_items %}
-                    {% if product_order.product_id == product.id %}
-                    <span class="badge badge-warning">x {{product_order.quantity}}</span> 
-                    {% if total.update({"value": (product_order.quantity * product.price)|float + total.value|float }) %} 
-                    {% endif %}
-                    {% if nb_products.update({"value": (product_order.quantity + nb_products.value) }) %} 
-                    {% endif %}
-                    <span style="float: right"> {{ (product_order.quantity * product.price) }}€</span>
-                    {% endif%}
-                {% endfor %}
-            </li>
+
+          <li class="list-group-item bg-light">
+            <b>{{order.seller_name}}</b>
+          </li>
+           <li class="list-group-item">
+
+            <table align="center" class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Produit</th>
+                <th scope="col">Quantité</th>
+                <th scope="col">Prix</th>
+              </tr>
+            </thead>
+            <tbody>
+          {% for line in order.lines %}
+              <tr>
+                <td valign="center">{{line.product_name}}</td>
+                <td valign="center">x {{line.quantity}}</td>
+                <td valign="center">{{line.price}} €</td>
+              </tr>
           {% endfor %}
+          </tbody>
+          </table>
+          </li>
+
           <li class="list-group-item">
-                <b><span style="float: right">Nb articles : {{nb_products.value}} - Prix Total : {{ "%.2f"|format(total.value|float) }}€</span></b>
+                <b><span style="float: right">Nb articles : {{order.nb_products}} - Prix Total : {{ "%.2f"|format(order.price|float) }}€</span></b>
           </li>
           <li class="list-group-item">
-                <b><span style="float: right">Prix de la livraison : {{shipping_price}} €</span></b>
+                <b><span style="float: right">Prix de la livraison : {{order.shipping_price}} €</span></b>
                 <br>
-                <p><b>Règles de calcul :</b> {{rules}} </p>
+                <p><b>Règles de calcul :</b> </p>
           </li>
         </ul>
 
@@ -75,14 +76,13 @@
                   Livraison
           </div>
           <div class="card-body">
-            <h5 class="card-title">Date de livraison {{ order.shipping_dt.strftime('%A %d %B %Y a %Hh:%Mmn') }}</h5>
-            <p class="card-text">Adresse  : {{ customer.address }} {{ customer.cp }} {{ customer.city }} </p>
-  
+            <h5 class="card-title">Date de livraison {{ order.shipping_dt }}</h5>
+            <p class="card-text">Adresse  :  </p>
           </div>
-  
+
         </div>
         <br>
-    
+
 {% endblock %}
 {% block right_menu %}
 {% endblock %}

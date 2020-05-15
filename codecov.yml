@@ -20,4 +20,4 @@ comment:
   require_changes: no
 
   ignore:
-  - "tests/"  # ignore folders and all its contents
+  - "lecopain/tests/"  # ignore folders and all its contents

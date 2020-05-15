@@ -3,7 +3,7 @@ from lecopain.app import app, db
 import unittest
 import sys
 import os
-from factories import AdminFactory, ProductFactory, CustomerFactory, OrderFactory, SellerFactory
+from lecopain.tests.factories import AdminFactory, ProductFactory, CustomerFactory, OrderFactory, SellerFactory
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))

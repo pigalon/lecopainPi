@@ -298,6 +298,27 @@ class CustomerSchema(SQLAlchemyAutoSchema):
         model = Customer
         load_instance = True
 
+
+class ProductSchema(SQLAlchemyAutoSchema):
+
+    class Meta:
+        # Fields to expose
+        model = Product
+        load_instance = True
+
+class LineSchema(SQLAlchemyAutoSchema):
+    product_name = fields.Method("format_product_name", dump_only=True)
+
+    class Meta:
+        # Fields to expose
+        model = Line
+        load_instance = True
+        
+    def format_product_name(self, line):
+        return "{}".format(line.product.name)
+
+
+
 class OptimizedCustomerSchema(SQLAlchemySchema):
 
     class Meta:
@@ -324,6 +345,37 @@ class OrderSchema(SQLAlchemyAutoSchema):
 
     def format_seller_name(self, order):
         return "{}".format(order.seller.name)
+
+class CompleteOrderSchema(SQLAlchemyAutoSchema):
+    customer_name = fields.Method("format_customer_name", dump_only=True)
+    seller_name = fields.Method("format_seller_name", dump_only=True)
+    nb_products = fields.Method("format_nb_products", dump_only=True)
+    lines = fields.Method("format_lines", dump_only=True)
+
+    class Meta:
+        # Fields to expose
+        model = Order
+        load_instance = True
+        include_relationships = True
+
+    def format_customer_name(self, order):
+        return "{}, {}".format(order.customer.firstname, order.customer.lastname)
+
+    def format_seller_name(self, order):
+        return "{}".format(order.seller.name)
+
+    def format_nb_products(self, order):
+        nb_products = 0
+        for line in order.lines:
+            nb_products = nb_products + line.quantity
+        return nb_products
+
+    def format_lines(self, order):
+        lines = []
+        line_schema = LineSchema(many=False)
+        for line in order.lines:
+            lines.append(line_schema.dump(line))
+        return lines
 
     # id = auto_field()
     # title = auto_field()

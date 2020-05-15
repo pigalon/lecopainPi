@@ -61,17 +61,8 @@ def order_create():
 @order_page.route("/orders/<int:order_id>", methods=['GET', 'POST'])
 @login_required
 def order(order_id):
-    order = Order.query.get_or_404(order_id)
-
-    price, rules = orderServices.calculate_shipping(order)
-
-    customer = customerService.get_one(order.customer_id)
-    products = order.products
-    products.sort(key=lambda x: x.seller_id, reverse=True)
-    sorted_products = sorted(products, key=lambda x: x.seller_id, reverse=True)
-    bought_items = order.lines
-
-    return render_template('/orders/order.html', order=order, bought_items=bought_items, products=sorted_products, customer=customer, shipping_price=price, rules=rules)
+    order = orderServices.get_one(order_id)
+    return render_template('/orders/order.html', order=order)
 
 #####################################################################
 #                                                                   #

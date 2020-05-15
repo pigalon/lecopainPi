@@ -1,4 +1,4 @@
-from base import BaseTestCase
+from lecopain.tests.base import BaseTestCase
 from lecopain.app import app
 import os
 import sys

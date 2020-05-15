@@ -34,7 +34,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
       - name: Test with unittest
         run: |
-          coverage run -m unittest discover -v -s tests -p 'test_*.py'
+          coverage run -m unittest discover -v -s lecopain/tests -p 'test_*.py'
           coverage xml
       - name: Code coverage
         uses: codecov/codecov-action@v1
