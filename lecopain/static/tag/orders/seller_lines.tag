@@ -18,7 +18,7 @@
                                 </select>
                             </td>
                             <td>
-                                <button type="button" id="more_fields" onclick="add_fields();" class="btn btn-primary" ><i class="fa fa-plus"></i></button>
+                                <button type="button" id="more_fields" onclick="{add_line}" class="btn btn-primary" ><i class="fa fa-plus"></i></button>
                             </td>
                         </tr>
                     </table>
@@ -30,6 +30,13 @@
                             <th width="30%">prix</th>
                             <th width="10%"></th>
                         </tr>
+						<tr each="{ line in lines }">
+                            <td width="20%"><input type="hidden" , name="lines[][id]" value="{line.id}"/>{line.id}</td>
+                            <td width="35%">{line.name}</td>
+                            <td width="30%"><input type="number" style="width: 5em" name="lines[][quantities]" value="{line.quantity}"/></td>
+                            <td width="30%">{line.price}</td>
+                            <td width="10%"><button type="button" id="remove" onclick="{remove_line}" class="btn btn-warning" ><i class="fa fa-minus"></i></button></td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -37,6 +44,11 @@
 
 	<script>
 		this.val = 'start';
+
+		lines = []
+		cpt=0
+		price=0
+		product_name=''
 
 		var self = this
 
@@ -48,10 +60,25 @@
 		{
 			this.val = "up"
 		}
+		add_line(e)
+		{
+			index = this.refs.product.selectedIndex
+			text = this.refs.product[index].innerText;
+			n = text.lastIndexOf(" - ");
+			product_name = text.substr(0,n);
+    		price = text.substr(n+3);
+			cpt = cpt + 1;
+			line =  {id : cpt, name : product_name, quantity : 1, price : price + " €"};
+			lines.push(line)
+		}
+		remove_line(e) {
+			lines = lines.filter(function(line) {
+				lines.splice(line.id, 1)
+			})
+		}
 
 		this.on('mount', function() {
 			this.load_sellers()
-			console.log(this.refs.items); // [div#alpha, div#beta]
 		});
 
 		/******************************************
@@ -70,14 +97,13 @@
 						self.update()
 					}
 				});
-			 
 		}
 		/******************************************
 		load sellers list
 		*******************************************/
 
 		load_sellers(){
-		var url = 'http://localhost:5000/_getjs_sellers/'; 
+		var url = 'http://localhost:5000/_getjs_sellers/';
 		$.ajax({
 				url: url,
 				type: "GET",

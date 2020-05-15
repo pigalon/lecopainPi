@@ -104,7 +104,7 @@ def display_update_order(order_id):
     form.title.data = order.title
 
     orderStatusList = orderServices.get_order_status()
-    return render_template('/orders/update_order.html', order=order, title='Mise a jour de commande', form=form, customer=customer, products=products, selected_products=order.products,  orderStatusList=orderStatusList, line_selection=line_selection)
+    return render_template('/orders/update_order.html', order=order, title='Mise à jour de commande', form=form, customer=customer, products=products, selected_products=order.products,  orderStatusList=orderStatusList, line_selection=line_selection)
 
 
 #####################################################################
