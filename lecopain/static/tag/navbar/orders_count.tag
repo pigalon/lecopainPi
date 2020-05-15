@@ -7,7 +7,7 @@
 		this.total_orders_count_val = 0;
 		this.in_progress_orders_count_val = 0;
 
-		var url = 'http://localhost:5000/_getjs_order_count/'; //random adress
+		var url = 'http://localhost:5000/api/orders/count/'; //random adress
       	$.ajax({
             url: url,
             type: "GET",

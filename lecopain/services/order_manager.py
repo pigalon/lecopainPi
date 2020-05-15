@@ -165,3 +165,6 @@ class OrderManager():
 
     def get_one(self,  order_id):
         return OrderDao.read_one(order_id)
+
+    def get_order_status(self):
+        return list(map(lambda c: c.value, OrderStatus_Enum))

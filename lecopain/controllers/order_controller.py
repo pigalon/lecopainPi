@@ -50,7 +50,7 @@ def order_create():
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect('/orders')
 
-    orderStatusList = _get_order_status()
+    orderStatusList = orderServices.get_order_status()
     customers = customerService.optim_get_all()
 
     return render_template('/orders/create_order.html', title='Creation de commande', form=form, customers=customers, orderStatusList=orderStatusList)
@@ -103,7 +103,7 @@ def display_update_order(order_id):
     form.status.data = order.status
     form.title.data = order.title
 
-    orderStatusList = _get_order_status()
+    orderStatusList = orderServices.get_order_status()
     return render_template('/orders/update_order.html', order=order, title='Mise a jour de commande', form=form, customer=customer, products=products, selected_products=order.products,  orderStatusList=orderStatusList, line_selection=line_selection)
 
 
@@ -135,7 +135,7 @@ def display_update_order_time(order_id):
     form.status.data = order.status
     form.title.data = order.title
 
-    orderStatusList = _get_order_status()
+    orderStatusList = orderServices.get_order_status()
     return render_template('/orders/update_time.html', customer=customer, order=order, title='Mise a jour du jour de la commande', form=form)
 
 #####################################################################
@@ -206,35 +206,25 @@ def delete_order(order_id):
     db.session.commit()
     return jsonify({})
 
-#####################################################################
-#                                                                   #
-#####################################################################
-@order_page.route('/_get_order_status/')
-@login_required
-def _get_order_status():
-    ordersStatusList = [(row.name) for row in OrderStatus.query.all()]
-    return ordersStatusList
 
 #####################################################################
 #                                                                   #
 #####################################################################
-@order_page.route('/_getjs_order_status/')
+@order_page.route('/api/order/status/')
 @login_required
-def _getjs_order_status():
-    ordersStatusList = [(row.name) for row in OrderStatus.query.all()]
-    return jsonify({'orders_status': ordersStatusList})
+def api_order_status():
+    return jsonify({'orders_status': orderServices.get_order_status})
 
 #####################################################################
 #                                                                   #
 #####################################################################
-@order_page.route('/_getjs_order_count/')
+@order_page.route('/api/orders/count/')
 @login_required
-def _getjs_order_count():
+def api_order_count():
     total_orders_count = Order.query.count()
     in_progress_orders_count = orderServices.get_in_progess_orders_counter()
     latest_orders_count = orderServices.get_latest_orders_counter()
     return jsonify({'total_orders_count': total_orders_count, 'in_progress_orders_count': in_progress_orders_count})
-
 
 @order_page.route('/api/orders/')
 @login_required
