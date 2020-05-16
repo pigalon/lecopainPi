@@ -17,15 +17,13 @@ class OrderStatus_Enum(Enum):
 
 
 class ShippingStatus_Enum(Enum):
-    ANNULEE = "ANNULEE"
-    LIVREE = "LIVREE"
-    DEFAUT = "DEFAUT"
-    CREE = "CREE"
+    NON = "NON"
+    OUI = "OUI"
 
 
 class PaymentStatus_Enum(Enum):
-    NON_PAYEE = "NON_PAYEE"
-    PAYEE = "PAYEE"
+    NON = "NON"
+    OUI = "OUI"
 
 
 class SubscriptionStatus_Enum(Enum):
@@ -90,18 +88,19 @@ class Order(db.Model):
     price = db.Column(db.Float)
     shipping_price = db.Column(db.Float)
     shipping_status = db.Column(
-        db.String(20), nullable=False, default=ShippingStatus_Enum.CREE.value)
+        db.String(20), nullable=False, default=ShippingStatus_Enum.NON.value)
     shipping_dt = db.Column(db.DateTime)
-    payment_status = db.Column(db.String(20), nullable=False)
+    payment_status = db.Column(
+        db.String(20), nullable=False, default=PaymentStatus_Enum.NON.value)
     subscription_id = db.Column(db.Integer, nullable=True)
 
     products = db.relationship(
         "Product", secondary='lines', viewonly=True)
 
     def add_products(self, items):
-        for product, qty, price in items:
+        for product_id, qty, price in items:
             self.lines.append(Line(
-                order=self, product=product, quantity=qty, price=price))
+                order=self, product_id=product_id, quantity=qty, price=price))
 
     def __repr__(self):
         return '<Order {}>'.format(self.id)
@@ -175,9 +174,9 @@ class Line(db.Model):
     def __repr__(self):
         return '<Line {}>'.format(str(self.order.id)+" "+self.product.name)
 
-    def __init__(self, order=None, product=None, quantity=None, price=None):
+    def __init__(self, order=None, product_id=None, quantity=None, price=None):
         self.order = order
-        self.product = product
+        self.product_id = product_id
         self.quantity = quantity
         self.price = price
 

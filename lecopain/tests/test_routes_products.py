@@ -50,8 +50,8 @@ class ProductTestCase(BaseTestCase, TestCase):
                 name=name,
                 description='description',
                 price=0.65,
-                seller_id = seller.id,
-                status="CREE"), follow_redirects=True)
+                seller_id = seller.id), 
+                follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         assert name in str(response.data)
 

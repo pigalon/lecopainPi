@@ -72,15 +72,10 @@
             if (period == undefined){
                 period = 'all'
             }
-         
-            //if(period != 'all'){
-                order_url = order_url.concat('period/',period,'/')
-            //}
 
-            //if(customer_id != '0'){
-                order_url = order_url.concat('customers/',customer_id);
-            //}
+            order_url = order_url.concat('period/',period,'/');
 
+            order_url = order_url.concat('customers/',customer_id);
 
 			$.ajax({
 					url: order_url,

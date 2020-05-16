@@ -11,20 +11,21 @@ from sqlalchemy import extract, Date, cast
 
 
 class OrderManager():
-
+ 
+    def parse_lines(self, lines):
+        headers = ('product_id', 'quantity', 'price' )
+        items = [{} for i in range(len(lines[0]))]
+        for x, i in enumerate(lines):
+            for _x, _i in enumerate(i):
+                items[_x][headers[x]] = _i
+        return items
 
     # @
     #
-    def create_order(self, order, tmp_products, tmp_quantities, tmp_prices):
-        order.created_at = datetime.now()
-
-        lines = []
-        for i in range(len(tmp_products)):
-            product = Product.query.get_or_404(tmp_products[i])
-            quantity = tmp_quantities[i]
-            price = tmp_prices[i]
-            lines.append((product, quantity, price))
-        return order.add_products(lines)
+    def create_order(self, order, lines):
+        parsed_lines = self.parse_lines(lines)
+        created_order = OrderDao.add(order)
+        OrderDao.add_lines(created_order, parsed_lines)
 
     # @
     #
@@ -33,9 +34,7 @@ class OrderManager():
         #order.created_at = datetime.now()
         self.delete_every_order_dependencies(order)
         self.create_order(order, products, quantities, prices)
-        # order = self.create_product_purchases(
-        #    order, products, quantities, prices)
-        # db.session.commit()
+
 
     # @
     #

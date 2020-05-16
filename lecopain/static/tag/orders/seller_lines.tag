@@ -31,10 +31,10 @@
                             <th width="10%"></th>
                         </tr>
 						<tr each="{ line in lines }">
-                            <td width="20%"><input type="hidden" , name="lines[][id]" value="{line.id}"/>{line.id}</td>
-                            <td width="35%">{line.name}</td>
-                            <td width="30%"><input type="number" style="width: 5em" name="lines[][quantities]" value="{line.quantity}"/></td>
-                            <td width="30%">{line.price}</td>
+                            <td width="20%"><input type="hidden" name="product_id[]" value="{line.product_id}"/>{line.id}</td>
+                            <td width="35%">{line.product_name}</td>
+                            <td width="30%"><input type="number" style="width: 5em" name="quantity[]" value="{line.quantity}"/></td>
+                            <td width="30%"><input type="hidden" name="price[]" value="{line.price}"/>{line.price} €</td>
                             <td width="10%"><button type="button" id="remove" onclick="{remove_line}" class="btn btn-warning" ><i class="fa fa-minus"></i></button></td>
                         </tr>
                     </table>
@@ -62,13 +62,15 @@
 		}
 		add_line(e)
 		{
-			index = this.refs.product.selectedIndex
+			index = this.refs.product.selectedIndex;
 			text = this.refs.product[index].innerText;
+			product_id = this.refs.product.value;
+
 			n = text.lastIndexOf(" - ");
 			product_name = text.substr(0,n);
     		price = text.substr(n+3);
 			cpt = cpt + 1;
-			line =  {id : cpt, name : product_name, quantity : 1, price : price + " €"};
+			line =  {id : cpt, product_id:product_id, product_name:product_name, quantity : 1, price : price};
 			lines.push(line)
 		}
 		remove_line(e) {

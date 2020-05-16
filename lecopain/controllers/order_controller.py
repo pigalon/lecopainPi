@@ -37,16 +37,24 @@ def orders():
 @login_required
 def order_create():
     form = OrderForm()
-    tmp_products = request.form.getlist('products')
-    tmp_quantities = request.form.getlist('quantities')
-    tmp_prices = request.form.getlist('prices')
-
+    #TODO add lines !!
+    
+    lines = (
+        request.form.getlist('product_id[]'),
+        request.form.getlist('quantity[]'),
+        request.form.getlist('price[]'),
+    )
+    
+    order = {'title': form.title.data,
+             'status': form.status.data,
+             'customer_id': form.customer_id.data,
+             'seller_id': form.seller_id.data,
+             'shipping_dt': form.shipping_dt.data,
+    }
+    
     if form.validate_on_submit():
-        order = Order(title=form.title.data, status=form.status.data, customer_id=int(
-            form.customer_id.data), shipping_dt=form.shipping_dt.data)
-        order = orderServices.create_order(
-            order=order, tmp_products=tmp_products, tmp_quantities=tmp_quantities, tmp_prices=tmp_prices)
-        db.session.commit()
+        orderServices.create_order(
+            order=order, lines=lines)
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect('/orders')
 
