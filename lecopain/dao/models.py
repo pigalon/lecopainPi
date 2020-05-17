@@ -35,6 +35,13 @@ class SubscriptionFrequency_Enum(Enum):
     JOUR = "JOUR"
     SEMAINE = "SEMAINE"
     MOIS = "MOIS"
+    
+
+class ProductCategory_Enum(Enum):
+    ARTICLE = "ARTICLE"
+    COURSETTE = "COURSETTE"
+    DRIVE = "DRIVE"
+
 
 
 class Customer(db.Model):
@@ -93,6 +100,7 @@ class Order(db.Model):
     payment_status = db.Column(
         db.String(20), nullable=False, default=PaymentStatus_Enum.NON.value)
     subscription_id = db.Column(db.Integer, nullable=True)
+    shipping_rules = db.Column(db.String(20), nullable=True)
 
     products = db.relationship(
         "Product", secondary='lines', viewonly=True)
@@ -101,6 +109,9 @@ class Order(db.Model):
         for product_id, qty, price in items:
             self.lines.append(Line(
                 order=self, product_id=product_id, quantity=qty, price=price))
+
+    def add_line(self, line):
+        self.lines.append(line)
 
     def __repr__(self):
         return '<Order {}>'.format(self.id)
@@ -120,7 +131,6 @@ class OrderStatus(db.Model):
     def __repr__(self):
         return "OrderStatus('{self.name}')"
 
-
 class Product(db.Model):
     __tablename__ = 'products'
     __table_args__ = {'extend_existing': True}
@@ -133,9 +143,10 @@ class Product(db.Model):
     seller_id = db.Column(db.Integer, db.ForeignKey(
         'sellers.id'), nullable=False)
     seller = db.relationship('Seller')
+    category = db.Column(db.String(20), default=ProductCategory_Enum.ARTICLE.value)
 
     def __repr__(self):
-        return "Product('{self.name}',{self.price}, '{self.description}')"
+        return "Product('{self.name}',{self.price})"
 
     def to_dict(self):
         return {
@@ -350,15 +361,21 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
     seller_name = fields.Method("format_seller_name", dump_only=True)
     nb_products = fields.Method("format_nb_products", dump_only=True)
     lines = fields.Method("format_lines", dump_only=True)
+    shipping_dt = fields.DateTime(format='%A %d %B %Y')
+    shipping_address = fields.Method("format_customer_address", dump_only=True)
 
     class Meta:
         # Fields to expose
         model = Order
         load_instance = True
         include_relationships = True
+        dateformat = '%A %d %B %Y'
 
     def format_customer_name(self, order):
         return "{}, {}".format(order.customer.firstname, order.customer.lastname)
+    
+    def format_customer_address(self, order):
+        return "{} {} {}".format(order.customer.address, order.customer.cp, order.customer.city)
 
     def format_seller_name(self, order):
         return "{}".format(order.seller.name)

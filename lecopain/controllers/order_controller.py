@@ -38,22 +38,22 @@ def orders():
 def order_create():
     form = OrderForm()
     #TODO add lines !!
-    
+
     lines = (
         request.form.getlist('product_id[]'),
         request.form.getlist('quantity[]'),
         request.form.getlist('price[]'),
     )
-    
+
     order = {'title': form.title.data,
              'status': form.status.data,
              'customer_id': form.customer_id.data,
              'seller_id': form.seller_id.data,
              'shipping_dt': form.shipping_dt.data,
     }
-    
+
     if form.validate_on_submit():
-        orderServices.create_order(
+        orderServices.create_order_and_parse_line(
             order=order, lines=lines)
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect('/orders')

@@ -1,4 +1,4 @@
-from lecopain.dao.models import User, Customer, Order, Product
+from lecopain.dao.models import User, Customer, Order, Product, Line
 from lecopain.app import app, db
 import unittest
 import sys
@@ -30,7 +30,10 @@ class BaseTestCase(unittest.TestCase):
 
         order = Order.query.first()
         product = Product.query.first()
-        order.add_products([(product, 6, 2)])
+        #order.add_products([(product, 6, 2)])
+        line = Line(order=order,product_id=product.id,quantity=2,price=1.00)
+        order.add_line(line)
+
         db.session.commit()
 
     def login(self, username, password):

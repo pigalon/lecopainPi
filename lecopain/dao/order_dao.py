@@ -63,8 +63,18 @@ class OrderDao:
     @staticmethod
     def add_lines(order, lines):
         for line in lines :
+            db.session.add(line)
             product_id, qty, price = list(line.values())
             print("price : " + price)
             order.lines.append(Line(
                 order=order, product_id=product_id, quantity=qty, price=float(price)))
-        db.session.commit()
+
+    @staticmethod
+    def update(order):
+        created_order = Order(title=order.get('title'),
+                              status=order.get('status'),
+                              customer_id=order.get('customer_id'),
+                              seller_id=order.get('seller_id'),
+                              shipping_dt=order.get('shipping_dt'))
+        db.session.add(created_order)
+        return created_order

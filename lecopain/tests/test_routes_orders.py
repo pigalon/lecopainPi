@@ -24,7 +24,7 @@ class OrderTestCase(BaseTestCase, TestCase):
             response = client.get(f'/orders/{order.id}',
                                   content_type='html/text')
         self.assertEqual(response.status_code, 200)
-        assert 'Commande client' in str(response.data)
+        assert 'Commande' in str(response.data)
         assert str(order.id) in str(response.data)
 
 
