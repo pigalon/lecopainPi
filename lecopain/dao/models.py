@@ -366,14 +366,14 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
     seller_name = fields.Method("format_seller_name", dump_only=True)
     nb_products = fields.Method("format_nb_products", dump_only=True)
     lines = fields.Method("format_lines", dump_only=True)
-    shipping_dt = fields.DateTime(format='%A %d %B %Y')
+    shipping_formatted_dt = fields.Method("format_shipping_dt", dump_only=True)
+    
 
     class Meta:
         # Fields to expose
         model = Order
         load_instance = True
         include_relationships = True
-        dateformat = '%A %d %B %Y'
 
     def format_customer_name(self, order):
         return "{}, {}".format(order.customer.firstname, order.customer.lastname)
@@ -393,6 +393,9 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
         for line in order.lines:
             lines.append(line_schema.dump(line))
         return lines
+    
+    def format_shipping_dt(self, order):
+        return order.shipping_dt.strftime('%A %d %B %Y')
 
     # id = auto_field()
     # title = auto_field()

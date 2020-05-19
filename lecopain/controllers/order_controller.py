@@ -1,6 +1,6 @@
 from lecopain.dao.models import Order, OrderStatus, Seller
 from lecopain.app import app, db
-from lecopain.form import OrderForm, OrderAnnulationForm
+from lecopain.form import OrderForm, OrderShippingDtForm, OrderAnnulationForm
 from lecopain.services.order_manager import OrderManager, Period_Enum
 from lecopain.services.customer_manager import CustomerManager
 from lecopain.services.product_manager import ProductManager
@@ -28,7 +28,7 @@ productService = ProductManager()
 @order_page.route("/orders", methods=['GET', 'POST'])
 @login_required
 def orders():
-    return render_template('/orders/orders.html', title="Commandes - ")
+    return render_template('/orders/orders.html', title="Commandes")
 
 #####################################################################
 #                                                                   #
@@ -104,7 +104,7 @@ def display_update_order(order_id):
             order=order, products=tmp_products, quantities=tmp_quantities, prices=tmp_prices)
 
         #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect('/orders/customers/0')
+        return redirect('/orders')
 
     form.customer_id.data = order.customer_id
     form.shipping_dt.data = order.shipping_dt
@@ -118,33 +118,19 @@ def display_update_order(order_id):
 #####################################################################
 #                                                                   #
 #####################################################################
-@order_page.route("/orders/update/<int:order_id>/time", methods=['GET', 'POST'])
+@order_page.route("/orders/<int:order_id>/shipping_dt", methods=['GET', 'POST'])
 @login_required
 def display_update_order_time(order_id):
 
-    order = Order.query.get_or_404(order_id)
-    customer = customerService.get_one(order.customer_id)
-    form = OrderForm()
+    order = orderServices.get_one(order_id)
+    form = OrderShippingDtForm()
 
     if form.validate_on_submit():
-        orderForm = Order(title=form.title.data, status=form.status.data, customer_id=int(
-            form.customer_id.data), shipping_dt=form.shipping_dt.data)
-        # update order first
+        orderServices.update_shipping_dt(
+            order, shipping_dt=form.shipping_dt.data)
+        return redirect('/orders')
 
-        order.shipping_dt = orderForm.shipping_dt
-
-        db.session.commit()
-
-        #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect('/orders/customers/0')
-
-    form.customer_id.data = order.customer_id
-    form.shipping_dt.data = order.shipping_dt
-    form.status.data = order.status
-    form.title.data = order.title
-
-    orderStatusList = orderServices.get_order_status()
-    return render_template('/orders/update_time.html', customer=customer, order=order, title='Mise a jour du jour de la commande', form=form)
+    return render_template('/orders/update_shipping_dt.html', order=order, title='Mise a jour du jour de la commande', form=form)
 
 #####################################################################
 #                                                                   #
@@ -155,7 +141,7 @@ def display_update_order_annulation(order_id):
 
     orderServices.update_order_status(order_id, 'ANNULEE', None, 'ANNULEE')
 
-    return redirect('/orders/customers/0')
+    return redirect('/orders')
 
 
 #####################################################################
@@ -168,7 +154,7 @@ def display_update_order_created(order_id):
     orderServices.update_order_status(
         order_id, 'CREE', 'NON_PAYEE', 'NON_LIVREE')
 
-    return redirect('/orders/customers/0')
+    return redirect('/orders')
 
 #####################################################################
 #                                                                   #
@@ -179,7 +165,7 @@ def display_update_order_paid(order_id):
 
     orderServices.update_order_status(order_id, None, 'PAYEE', 'NON_LIVREE')
 
-    return redirect('/orders/customers/0')
+    return redirect('/orders')
 
 #####################################################################
 #                                                                   #
@@ -190,7 +176,7 @@ def display_update_order_delivered(order_id):
 
     orderServices.update_order_status(order_id, 'LIVREE', None, 'LIVREE')
 
-    return redirect('/orders/customers/0')
+    return redirect('/orders')
 
 
 #####################################################################

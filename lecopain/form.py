@@ -34,6 +34,12 @@ class OrderForm(FlaskForm):
     shipping_dt = DateTimeField('Shipping Date', format='%d/%m/%Y %H:%M:%S')
     status = StringField('Status')
     submit = SubmitField('Valider')
+    
+
+class OrderShippingDtForm(FlaskForm):
+    title = StringField('Title')
+    shipping_dt = DateTimeField('Shipping Date', format='%d/%m/%Y %H:%M:%S')
+    submit = SubmitField('Valider')
 
 
 class ProductForm(FlaskForm):

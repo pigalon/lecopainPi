@@ -91,3 +91,10 @@ class OrderDao:
                               shipping_dt=order.get('shipping_dt'))
         db.session.add(created_order)
         return created_order
+    
+    @staticmethod
+    def update_shipping_dt(id, shipping_dt):
+        order = order = Order.query.get_or_404(id)
+        order.shipping_dt = shipping_dt
+        db.session.commit()
+

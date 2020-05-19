@@ -149,3 +149,7 @@ class OrderManager():
 
     def get_order_status(self):
         return list(map(lambda c: c.value, OrderStatus_Enum))
+
+    def update_shipping_dt(self, order, shipping_dt):
+        OrderDao.update_shipping_dt(order['id'], shipping_dt)
+

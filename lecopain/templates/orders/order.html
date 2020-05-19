@@ -12,7 +12,7 @@
         <a href="/orders/update/{{ order.id }}/created" class="btn btn-outline-dark" >Créée </a>
         <a href="/orders/update/{{ order.id }}/paid" class="btn btn-outline-dark">Payée</a>
         <a href="/orders/update/{{ order.id }}/delivered" class="btn btn-outline-dark">Livrée</a>
-        <a href="/orders/update/{{ order.id }}/time" class="btn btn-outline-dark">Date livraison</a>
+        <a href="/orders/{{ order.id }}/shipping_dt" class="btn btn-outline-dark">Date livraison</a>
       </td>
     </tr>
   </table>
@@ -21,7 +21,7 @@
 <br>
     <div class="card  " >
         <div class="card-header text-white bg-info">
-                Commande N° {{order.id}} - {{order.customer_name}} <span class="right">{{ order.shipping_dt }}</span>
+                Commande N° {{order.id}} - {{order.customer_name}} <span class="right">{{ order.shipping_formatted_dt }}</span>
         </div>
         <div class="card-body">
           <ul class="list-group list-group-flush">
@@ -72,7 +72,7 @@
                   Livraison
           </div>
           <div class="card-body">
-            <h5 class="card-title">Date de livraison {{ order.shipping_dt }}</h5>
+            <h5 class="card-title">Date de livraison {{ order.shipping_formatted_dt }}</h5>
             <p class="card-text">Adresse  :  {{ order.shipping_address }} {{ order.shipping_cp }} {{ order.shipping_city }}</p>
           </div>
 
