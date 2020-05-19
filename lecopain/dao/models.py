@@ -37,7 +37,7 @@ class SubscriptionFrequency_Enum(Enum):
     MOIS = "MOIS"
     
 
-class ProductCategory_Enum(Enum):
+class Category_Enum(Enum):
     ARTICLE = "ARTICLE"
     COURSETTE = "COURSETTE"
     DRIVE = "DRIVE"
@@ -93,15 +93,20 @@ class Order(db.Model):
         'sellers.id'), nullable=False)
     seller = db.relationship('Seller')
     price = db.Column(db.Float)
+    nb_products = db.Column(db.Integer)
     shipping_price = db.Column(db.Float)
     shipping_status = db.Column(
         db.String(20), nullable=False, default=ShippingStatus_Enum.NON.value)
     shipping_dt = db.Column(db.DateTime)
+    shipping_address = db.Column(db.String(200))
+    shipping_cp = db.Column(db.String(20))
+    shipping_city = db.Column(db.String(50))
+
     payment_status = db.Column(
         db.String(20), nullable=False, default=PaymentStatus_Enum.NON.value)
     subscription_id = db.Column(db.Integer, nullable=True)
     shipping_rules = db.Column(db.String(20), nullable=True)
-
+    category = db.Column(db.String(20), nullable=True, default=Category_Enum.ARTICLE.value)
     products = db.relationship(
         "Product", secondary='lines', viewonly=True)
 
@@ -143,7 +148,7 @@ class Product(db.Model):
     seller_id = db.Column(db.Integer, db.ForeignKey(
         'sellers.id'), nullable=False)
     seller = db.relationship('Seller')
-    category = db.Column(db.String(20), default=ProductCategory_Enum.ARTICLE.value)
+    category = db.Column(db.String(20), default=Category_Enum.ARTICLE.value)
 
     def __repr__(self):
         return "Product('{self.name}',{self.price})"
@@ -323,7 +328,7 @@ class LineSchema(SQLAlchemyAutoSchema):
         # Fields to expose
         model = Line
         load_instance = True
-        
+
     def format_product_name(self, line):
         return "{}".format(line.product.name)
 
@@ -362,7 +367,6 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
     nb_products = fields.Method("format_nb_products", dump_only=True)
     lines = fields.Method("format_lines", dump_only=True)
     shipping_dt = fields.DateTime(format='%A %d %B %Y')
-    shipping_address = fields.Method("format_customer_address", dump_only=True)
 
     class Meta:
         # Fields to expose
@@ -373,9 +377,6 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
 
     def format_customer_name(self, order):
         return "{}, {}".format(order.customer.firstname, order.customer.lastname)
-    
-    def format_customer_address(self, order):
-        return "{} {} {}".format(order.customer.address, order.customer.cp, order.customer.city)
 
     def format_seller_name(self, order):
         return "{}".format(order.seller.name)

@@ -58,7 +58,7 @@
           <li class="list-group-item">
                 <b><span style="float: right">Prix de la livraison : {{order.shipping_price}} €</span></b>
                 <br>
-                <p><b>Règles de calcul :</b> </p>
+                <p><b>Règles de calcul : {{order.shipping_rules}}</b> </p>
           </li>
         </ul>
 
@@ -73,7 +73,7 @@
           </div>
           <div class="card-body">
             <h5 class="card-title">Date de livraison {{ order.shipping_dt }}</h5>
-            <p class="card-text">Adresse  :  {{ order.shipping_address }} </p>
+            <p class="card-text">Adresse  :  {{ order.shipping_address }} {{ order.shipping_cp }} {{ order.shipping_city }}</p>
           </div>
 
         </div>

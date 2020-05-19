@@ -42,3 +42,12 @@ class ProductDao:
         # Serialize the data for the response
         product_schema = ProductSchema(many=False)
         return product_schema.dump(product)
+    
+    @staticmethod
+    def get_category_from_lines(lines):
+
+        id = lines[0].get('product_id')
+        # Create the list of people from our data
+        product = Product.query.get_or_404(id)
+
+        return product.category

@@ -1,7 +1,7 @@
 from lecopain.app import db
 
 from lecopain.dao.models import (
-    Order, Line, OrderSchema, CompleteOrderSchema
+    Order, Line, Customer, OrderSchema, CompleteOrderSchema
 )
 
 class OrderDao:
@@ -52,22 +52,35 @@ class OrderDao:
 
     @staticmethod
     def add(order):
+        customer = Customer.query.get_or_404(int(order.get('customer_id')))
+        # TODO
+        ## get Customer address =| set order address
+        
         created_order = Order(title=order.get('title'),
             status=order.get('status'),
             customer_id=order.get('customer_id'),
             seller_id=order.get('seller_id'),
-            shipping_dt=order.get('shipping_dt'))
+            shipping_dt=order.get('shipping_dt'),
+            category=order.get('category'),
+            shipping_address = customer.address,
+            shipping_cp=customer.cp,
+            shipping_city=customer.city)
         db.session.add(created_order)
         return created_order
 
     @staticmethod
     def add_lines(order, lines):
+        nb_products = 0
+        total_price = 0.0
         for line in lines :
-            db.session.add(line)
             product_id, qty, price = list(line.values())
-            print("price : " + price)
+            nb_products = nb_products + int(qty)
+            total_price = total_price + int(qty) * float(price)
             order.lines.append(Line(
                 order=order, product_id=product_id, quantity=qty, price=float(price)))
+        order.price = format(total_price, '.2f')
+        order.nb_products = nb_products
+
 
     @staticmethod
     def update(order):

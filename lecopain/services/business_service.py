@@ -1,4 +1,4 @@
-from lecopain.dao.models import ProductCategory_Enum
+from lecopain.dao.models import Category_Enum
 class BusinessService:
     
     local_shipping_price = {1:0.6, 2:1.16, 3:1.62, 4:2.05, 5:2.20, 6:2.70, 'n':0.40, 'c':5, 'd':8}
@@ -9,14 +9,17 @@ class BusinessService:
         return city.lower() == 'langlade'
 
     def is_article(self, category):
-        return category == ProductCategory_Enum.ARTICLE.value
+        return category == Category_Enum.ARTICLE.value
 
     def is_coursette(self, category):
-        return category == ProductCategory_Enum.COURSETTE.value
+        return category == Category_Enum.COURSETTE.value
 
     def is_drive(self, category):
-        return category == ProductCategory_Enum.DRIVE.value
-
+        return category == Category_Enum.DRIVE.value
+    
+    def apply_rules(self, order):
+        return self.get_price_and_associated_rules(order.category, order.shipping_city, order.nb_products)
+    
     def get_price_and_associated_rules(self, category, city, nb_products=0):
         if self.is_article(category) and self.is_from_local_area(city) and nb_products < 7:
             ret, rules = self.local_shipping_price.get(int(nb_products)), "article_local_"+str(nb_products)

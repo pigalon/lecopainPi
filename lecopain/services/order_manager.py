@@ -5,6 +5,7 @@ from lecopain.services.business_service import BusinessService
 from lecopain.dao.models import Line, Product, Seller, Customer, Order, OrderStatus_Enum
 from lecopain.helpers.date_utils import dates_range, Period_Enum
 from lecopain.dao.order_dao import OrderDao
+from lecopain.dao.product_dao import ProductDao
 import json
 from sqlalchemy import extract, Date, cast
 
@@ -31,12 +32,19 @@ class OrderManager():
     # @
     #
     def create_order(self, order, lines):
+        order = self.set_order_category(order, lines)
         created_order = OrderDao.add(order)
         db.session.flush()
         OrderDao.add_lines(created_order, lines)
-        created_order.shipping_price, created_order.shipping_rules = businessService.calculate_shipping(
+        created_order.shipping_price, created_order.shipping_rules = self.businessService.apply_rules(
             created_order)
         db.session.commit()
+        
+    def set_order_category(self, order, lines):
+        if 'category' not in order.keys():
+            category = ProductDao.get_category_from_lines(lines)
+            order['category'] = category
+        return order
 
     # @
     #
