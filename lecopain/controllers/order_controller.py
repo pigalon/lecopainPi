@@ -1,4 +1,4 @@
-from lecopain.dao.models import Order, OrderStatus, Seller
+from lecopain.dao.models import Order, OrderStatus_Enum,  OrderStatus, ShippingStatus_Enum, PaymentStatus_Enum
 from lecopain.app import app, db
 from lecopain.form import OrderForm, OrderShippingDtForm, OrderAnnulationForm
 from lecopain.services.order_manager import OrderManager, Period_Enum
@@ -75,44 +75,44 @@ def order(order_id):
 #####################################################################
 #                                                                   #
 #####################################################################
-@order_page.route("/orders/update/<int:order_id>", methods=['GET', 'POST'])
-@login_required
-def display_update_order(order_id):
+# @order_page.route("/orders/update/<int:order_id>", methods=['GET', 'POST'])
+# @login_required
+# def display_update_order(order_id):
 
-    order = Order.query.get_or_404(order_id)
-    form = OrderForm()
+#     order = Order.query.get_or_404(order_id)
+#     form = OrderForm()
 
-    customer = customerService.get_one(order.customer_id)
-    products = productService.optim_get_all()
+#     customer = customerService.get_one(order.customer_id)
+#     products = productService.optim_get_all()
 
-    line_selection = order.lines
+#     line_selection = order.lines
 
-    if form.validate_on_submit():
-        orderForm = Order(title=form.title.data, status=form.status.data, customer_id=int(
-            form.customer_id.data), shipping_dt=form.shipping_dt.data)
-        # update order first
-        order.status = orderForm.status
-        order.shipping_dt = orderForm.shipping_dt
-        products = {}
+#     if form.validate_on_submit():
+#         orderForm = Order(title=form.title.data, status=form.status.data, customer_id=int(
+#             form.customer_id.data), shipping_dt=form.shipping_dt.data)
+#         # update order first
+#         order.status = orderForm.status
+#         order.shipping_dt = orderForm.shipping_dt
+#         products = {}
 
-        # get the new list of products and quantities
-        tmp_products = request.form.getlist('products')
-        tmp_quantities = request.form.getlist('quantities')
-        tmp_prices = request.form.getlist('prices')
+#         # get the new list of products and quantities
+#         tmp_products = request.form.getlist('products')
+#         tmp_quantities = request.form.getlist('quantities')
+#         tmp_prices = request.form.getlist('prices')
 
-        orderServices.update_order(
-            order=order, products=tmp_products, quantities=tmp_quantities, prices=tmp_prices)
+#         orderServices.update_order(
+#             order=order, products=tmp_products, quantities=tmp_quantities, prices=tmp_prices)
 
-        #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect('/orders')
+#         #flash(f'People created for {form.firstname.data}!', 'success')
+#         return redirect('/orders')
 
-    form.customer_id.data = order.customer_id
-    form.shipping_dt.data = order.shipping_dt
-    form.status.data = order.status
-    form.title.data = order.title
+#     form.customer_id.data = order.customer_id
+#     form.shipping_dt.data = order.shipping_dt
+#     form.status.data = order.status
+#     form.title.data = order.title
 
-    orderStatusList = orderServices.get_order_status()
-    return render_template('/orders/update_order.html', order=order, title='Mise à jour de commande', form=form, customer=customer, products=products, selected_products=order.products,  orderStatusList=orderStatusList, line_selection=line_selection)
+#     orderStatusList = orderServices.get_order_status()
+#     return render_template('/orders/update_order.html', order=order, title='Mise à jour de commande', form=form, customer=customer, products=products, selected_products=order.products,  orderStatusList=orderStatusList, line_selection=line_selection)
 
 
 #####################################################################
@@ -135,47 +135,49 @@ def display_update_order_time(order_id):
 #####################################################################
 #                                                                   #
 #####################################################################
-@order_page.route("/orders/update/<int:order_id>/annulation", methods=['GET', 'POST'])
+@order_page.route("/orders/<int:order_id>/cancel", methods=['GET', 'POST'])
 @login_required
 def display_update_order_annulation(order_id):
-
-    orderServices.update_order_status(order_id, 'ANNULEE', None, 'ANNULEE')
-
+    orderServices.update_order_status(order_id, OrderStatus_Enum.ANNULEE.value)
     return redirect('/orders')
-
 
 #####################################################################
 #                                                                   #
 #####################################################################
-@order_page.route("/orders/update/<int:order_id>/created", methods=['GET', 'POST'])
+
+@order_page.route("/orders/<int:order_id>/created", methods=['GET', 'POST'])
 @login_required
 def display_update_order_created(order_id):
-
-    orderServices.update_order_status(
-        order_id, 'CREE', 'NON_PAYEE', 'NON_LIVREE')
-
+    orderServices.update_order_status(order_id, OrderStatus_Enum.CREE.value)
     return redirect('/orders')
 
 #####################################################################
 #                                                                   #
 #####################################################################
-@order_page.route("/orders/update/<int:order_id>/paid", methods=['GET', 'POST'])
+
+@order_page.route("/orders/<int:order_id>/shipped/<string:status>", methods=['GET', 'POST'])
 @login_required
-def display_update_order_paid(order_id):
-
-    orderServices.update_order_status(order_id, None, 'PAYEE', 'NON_LIVREE')
-
+def update_order_shipped(order_id, status):
+    if status == 'NON':
+        orderServices.update_order_shipping_status(order_id, ShippingStatus_Enum.NON.value)
+    else:
+        orderServices.update_order_shipping_status(order_id, ShippingStatus_Enum.OUI.value)
     return redirect('/orders')
 
 #####################################################################
 #                                                                   #
 #####################################################################
-@order_page.route("/orders/update/<int:order_id>/delivered", methods=['GET', 'POST'])
+
+
+@order_page.route("/orders/<int:order_id>/paid/<string:status>", methods=['GET', 'POST'])
 @login_required
-def display_update_order_delivered(order_id):
-
-    orderServices.update_order_status(order_id, 'LIVREE', None, 'LIVREE')
-
+def update_order_paid(order_id, status):
+    if status == 'NON':
+        orderServices.update_order_payment_status(
+            order_id, PaymentStatus_Enum.NON.value)
+    else:
+        orderServices.update_order_payment_status(
+            order_id, PaymentStatus_Enum.OUI.value)
     return redirect('/orders')
 
 
@@ -185,7 +187,7 @@ def display_update_order_delivered(order_id):
 @order_page.route("/orders/delete/<int:order_id>")
 @login_required
 def display_delete_order(order_id):
-    order = Order.query.get_or_404(order_id)
+    order = orderServices.get_one(order_id)
     return render_template('/orders/delete_order.html', order=order, title='Suppression de commande')
 
 #####################################################################
@@ -194,11 +196,7 @@ def display_delete_order(order_id):
 @order_page.route("/orders/<int:order_id>", methods=['DELETE'])
 @login_required
 def delete_order(order_id):
-    order = Order.query.get_or_404(order_id)
-
-    db.session.delete(order)
-    db.session.commit()
-    return jsonify({})
+    order = orderServices.delete_order(order_id)
 
 
 #####################################################################

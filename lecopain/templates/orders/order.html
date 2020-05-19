@@ -2,26 +2,38 @@
 {% extends "layout.html" %}
 {% block content %}
 
-  <table align="center">
+<br>
+  <table width="100%" align="center">
     <tr>
-      <td valign="center">Actions sur la commande</td>
-    </tr>
-    <tr>
-      <td>
-        <a href="/orders/update/{{ order.id }}/annulation" class="btn btn-outline-dark" >Annuler Commande </a>
-        <a href="/orders/update/{{ order.id }}/created" class="btn btn-outline-dark" >Créée </a>
-        <a href="/orders/update/{{ order.id }}/paid" class="btn btn-outline-dark">Payée</a>
-        <a href="/orders/update/{{ order.id }}/delivered" class="btn btn-outline-dark">Livrée</a>
-        <a href="/orders/{{ order.id }}/shipping_dt" class="btn btn-outline-dark">Date livraison</a>
+      <td width="60%" style="text-align:right"><span class="float-left"><a href="/orders" class="btn btn-outline-dark">Retour List</a></span>Changer le statut : </td>
+      <td width="40%"  style="text-align:right"> 
+        {% if order.status != 'ANNULEE' %}
+          <a href="/orders/{{ order.id }}/cancel" class="btn btn-outline-dark" >Annuler </a>
+        {% endif %}
+        {% if order.status == 'ANNULEE' %}
+        <a href="/orders/{{ order.id }}/created" class="btn btn-outline-dark"> Rétablir </a>
+        {% endif %}
+        {% if order.payment_status != 'OUI' %}
+          <a href="/orders/{{ order.id }}/paid/OUI" class="btn btn-outline-dark">Payée </a>
+        {% endif %}
+        {% if order.payment_status == 'OUI' %}
+        <a href="/orders/{{ order.id }}/paid/NON" class="btn btn-outline-dark">Non Payée </a>
+        {% endif %}
+        {% if order.shipping_status != 'OUI' %}
+        <a href="/orders/{{ order.id }}/shipped/OUI" class="btn btn-outline-dark">Livrée </a>
+        {% endif %}
+        {% if order.shipping_status == 'OUI' %}
+        <a href="/orders/{{ order.id }}/shipped/NON" class="btn btn-outline-dark">Non Livrée </a>
+        {% endif %}
       </td>
     </tr>
   </table>
 
-<br>
+
 <br>
     <div class="card  " >
         <div class="card-header text-white bg-info">
-                Commande N° {{order.id}} - {{order.customer_name}} <span class="right">{{ order.shipping_formatted_dt }}</span>
+          Commande N° {{order.id}} - {{order.customer_name}} <span class="right">{{ order.shipping_formatted_dt }}</span>
         </div>
         <div class="card-body">
           <ul class="list-group list-group-flush">
@@ -58,26 +70,29 @@
           <li class="list-group-item">
                 <b><span style="float: right">Prix de la livraison : {{order.shipping_price}} €</span></b>
                 <br>
-                <p><b>Règles de calcul : {{order.shipping_rules}}</b> </p>
+                <br>
+                <p><b>Règles de calcul : </b> {{order.shipping_rules}}</p>
           </li>
         </ul>
-
         </div>
-
       </div>
-
       <br>
       <div class="card">
           <div class="card-header text-white bg-info">
-                  Livraison
+                  Livraison <span class="float-right"><a href="/orders/{{ order.id }}/shipping_dt" class="btn btn-light">Changer Date</a></span>
           </div>
           <div class="card-body">
             <h5 class="card-title">Date de livraison {{ order.shipping_formatted_dt }}</h5>
             <p class="card-text">Adresse  :  {{ order.shipping_address }} {{ order.shipping_cp }} {{ order.shipping_city }}</p>
           </div>
-
         </div>
         <br>
+        <div class="card">
+          <div class="card-header text-white bg-info">
+            Suppression <span class="float-right"><a href="/orders/delete/{{ order.id }}" class="btn btn-light text-danger" alt="Supprimer"><i class="fas fa-trash-alt"></i></a></span>
+          </div>
+        </div>
+
 
 {% endblock %}
 {% block right_menu %}

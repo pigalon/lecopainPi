@@ -97,4 +97,27 @@ class OrderDao:
         order = order = Order.query.get_or_404(id)
         order.shipping_dt = shipping_dt
         db.session.commit()
+        
+    @staticmethod
+    def update_status(id, status):
+        order = order = Order.query.get_or_404(id)
+        order.status = status
+        db.session.commit()
 
+    @staticmethod
+    def update_shipping_status(id, status):
+        order = order = Order.query.get_or_404(id)
+        order.shipping_status = status
+        db.session.commit()
+    
+    @staticmethod
+    def update_payment_status(id, status):
+        order = order = Order.query.get_or_404(id)
+        order.payment_status = status
+        db.session.commit()
+        
+    @staticmethod
+    def delete(id):
+        order = order = Order.query.get_or_404(id)
+        db.session.delete(order)
+        db.session.commit()

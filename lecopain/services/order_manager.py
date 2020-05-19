@@ -45,6 +45,9 @@ class OrderManager():
             category = ProductDao.get_category_from_lines(lines)
             order['category'] = category
         return order
+    
+    def delete_order(self, order_id):
+        OrderDao.delete(order_id)
 
     # @
     #
@@ -113,18 +116,18 @@ class OrderManager():
 
     # @
     #
-    def update_order_status(self, order_id, order_status, payment_status, shipping_status):
-        order = Order.query.get_or_404(order_id)
+    def update_order_status(self, order_id, order_status):
+        OrderDao.update_status(order_id, order_status)
 
-        if order_status != None:
-            order.status = order_status
+    # @
+    #
+    def update_order_shipping_status(self, order_id, order_status):
+        OrderDao.update_shipping_status(order_id, order_status)
 
-        if(payment_status != None):
-            order.payment_status = payment_status
-
-        order.shipping_status = shipping_status
-
-        db.session.commit()
+    # @
+    #
+    def update_order_payment_status(self, order_id, order_status):
+        OrderDao.update_payment_status(order_id, order_status)
 
     # @
     #
@@ -152,4 +155,5 @@ class OrderManager():
 
     def update_shipping_dt(self, order, shipping_dt):
         OrderDao.update_shipping_dt(order['id'], shipping_dt)
+
 
