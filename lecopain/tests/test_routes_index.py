@@ -1,4 +1,4 @@
-from base import BaseTestCase
+from lecopain.tests.base import BaseTestCase
 from lecopain.app import app
 import os
 import sys
@@ -46,14 +46,7 @@ class FlaskTestCase(BaseTestCase, TestCase):
         with app.test_client() as client:
             response = client.get('/orders', content_type='html/text')
         self.assertEqual(response.status_code, 200)
-        assert 'Toutes les commandes' in str(response.data)
-
-    def test_shippings_index(self):
-        with app.test_client() as client:
-            response = client.get('/shippings', content_type='html/text')
-        self.assertEqual(response.status_code, 200)
-        assert 'Les livraisons' in str(response.data)
-
+        assert 'Commandes' in str(response.data)
     def test_customers_index(self):
         with app.test_client() as client:
             response = client.get('/customers', content_type='html/text')

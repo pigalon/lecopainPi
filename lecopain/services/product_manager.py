@@ -1,6 +1,7 @@
 from lecopain.form import ProductForm
 from lecopain.dao.models import Product
 from lecopain.app import app, db
+from lecopain.dao.product_dao import ProductDao
 
 
 class ProductManager():
@@ -22,3 +23,12 @@ class ProductManager():
         form.status.data = product.status
         form.name.data = product.name
         form.price.data = product.price
+        
+    def get_all(self):
+        return ProductDao.read_all()
+
+    def optim_get_all(self):
+        return ProductDao.optim_read_all()
+
+    def get_one(self, id):
+        return ProductDao.read_one(id)

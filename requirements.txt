@@ -5,10 +5,12 @@ Flask-bootstrap
 Flask-Nav
 Flask-script
 Flask-sqlalchemy
+Flask-marshmallow
 flask-login
-flask_sslify
 Flask-Testing==0.4.2
 flasgger
+uwsgi
+marshmallow-sqlalchemy
 
 Requests
 Jinja2
@@ -18,9 +20,9 @@ docopt
 itsdangerous
 records
 tablib
-pyopenssl
 aenum
 
 codecov
 coverage
 factory_boy
+wemake-python-styleguide

@@ -11,10 +11,9 @@
                Titre : {{ order.title }}
             </div>
             <div class="form-group">
-                    client n° {{ customer.id }} : {{ customer.firstname }} {{ customer.lastname }}
-                    <input type="hidden" name="customer_id" value="{{ customer.id }} ">
+                    client n° {{ order.customer }} : {{ order.customer_name }} 
             </div>
-            <input type="hidden" name="shipping_dth" id="shipping_dth" value="{{form.shipping_dt.data}}"/>
+            <input type="hidden" name="shipping_dth" id="shipping_dth" value="{{ order.shipping_dt }}"/>
             <div class="form-group">
                 <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
                     <input type="text" name="shipping_dt" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
@@ -23,7 +22,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>

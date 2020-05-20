@@ -18,3 +18,6 @@ comment:
   layout: "reach,diff,flags,tree"
   behavior: default
   require_changes: no
+
+  ignore:
+  - "lecopain/tests/"  # ignore folders and all its contents

@@ -40,3 +40,8 @@ font-size: 11px;
   top: 6px;
   color: #fff;
 }
+
+.right {
+    text-align: right;
+    float: right;
+}

@@ -4,13 +4,12 @@ from datetime import datetime
 import locale
 from lecopain.app import app, db
 from lecopain.form import PersonForm, OrderForm, ProductForm, LoginForm
-from lecopain.dao.models import Customer, CustomerOrder, Product, Seller, User
+from lecopain.dao.models import Customer, Order, Product, Seller, User
 
 from lecopain.controllers.customer_controller import customer_page
 from lecopain.controllers.order_controller import order_page
 from lecopain.controllers.product_controller import product_page
 from lecopain.controllers.seller_controller import seller_page
-from lecopain.controllers.shipping_controller import shipping_page
 from lecopain.controllers.user_controller import user_page
 from lecopain.controllers.subscription_controller import subscription_page
 
@@ -25,7 +24,6 @@ app.register_blueprint(customer_page)
 app.register_blueprint(order_page)
 app.register_blueprint(product_page)
 app.register_blueprint(seller_page)
-app.register_blueprint(shipping_page)
 app.register_blueprint(user_page)
 app.register_blueprint(subscription_page)
 
@@ -37,8 +35,6 @@ product_page = Blueprint('product_page',  __name__,
                          template_folder='./templates')
 seller_page = Blueprint('seller_page',  __name__,
                         template_folder='./templates')
-shipping_page = Blueprint('shipping_page',  __name__,
-                          template_folder='./templates')
 user_page = Blueprint('user_page',  __name__,
                       template_folder='./templates')
 subscription_page = Blueprint('subscription_page',  __name__,
@@ -56,7 +52,7 @@ Swagger(app)
 def home():
     if current_user.is_authenticated:
         customers_nb = Customer.query.count()
-        orders_nb = CustomerOrder.query.count()
+        orders_nb = Order.query.count()
         products_nb = Product.query.count()
         sellers_nb = Seller.query.count()
         return render_template('base.html', customers_nb=customers_nb, orders_nb=orders_nb, products_nb=products_nb, sellers_nb=sellers_nb)

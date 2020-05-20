@@ -1,51 +1,48 @@
 
 {% extends "layout.html" %}
 {% block content %}
-    <h1>Formulaire de suppression de Commande</h1>
     <div class="content-section">
         <p>Référence : {{order.id}}</p>
-        <p>Date {{order.shipping_dt}}</p>
+        <p>Pour le client :  {{order.customer_name}}</p>
+        <p>Date de livraison : {{order.shipping_formatted_dt}}</p>
     </div>
     <div>
-        <h3>Liste des produits</h3>
+        <h4>Liste des produits</h4>
     </div>
     <div class="content-section">
-        {% for product in order.selected_products %}
-            <p>{{product.name}}</p>
-            <p>{{product.price}}</p>
+        <table align="center" class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Produit</th>
+                    <th scope="col">Quantité</th>
+                    <th scope="col">Prix</th>
+                </tr>
+            </thead>
+            <tbody>
+        {% for line in order.lines %}
+            <tr>
+                <td valign="center">{{line.product_name}}</td>
+                <td valign="center">x {{line.quantity}}</td>
+                <td valign="center">{{line.price}} €</td>
+            </tr>
         {% endfor %}
+            </tbody>
+        </table>
     </div>
     <div class="content-section">
-            Etes-vous sûr de vouloir supprimer cette commande ?
-        </div>
-    <div class="content-section">
-        <table><tr>
-        <td>
+        Etes-vous sûr de vouloir supprimer cette commande ?
+        <br>
+        <p align="center">
             <button type="button" onclick="delete_order({{order.id}})" class="btn btn-danger">Supprimer</button>
-        </td>
-        <td><button class="btn btn-secondary" type="cancel" onclick="javascript:window.location='/orders';">Annuler</button></td>
-        </tr></table>  
+            <button class="btn btn-secondary" type="cancel" onclick="javascript:window.location='/orders';">Annuler</button>
+        </p>
     </div>
-    
-
+   
 {% endblock %}
 {% block right_menu %}
-<div class="content-section">
-    <h3>Our Sidebar</h3>
-    <p class='text-muted'>You can put any information here you'd like.
-        <ul class="list-group">
-        <li class="list-group-item list-group-item-light">
-                <a class="nav-link" href="/customers/new">Création de client</a></li>
-        <li class="list-group-item list-group-item-light">
-                <a class="nav-link" href="/customers/city/Langlade">Clients de Langlade</a></li>
-        <li class="list-group-item list-group-item-light">Calendars</li>
-        <li class="list-group-item list-group-item-light">etc</li>
-        </ul>
-    </p>
-</div>
 {% endblock %}
 
-{% block scripts %} 
+{% block scripts %}
 
     <script>
         function delete_order(order_id) {
@@ -60,8 +57,7 @@
         };
     </script>
 {% endblock %}
-        
-        
+
 
 
 

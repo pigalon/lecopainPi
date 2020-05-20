@@ -30,8 +30,15 @@ class SellerForm(FlaskForm):
 class OrderForm(FlaskForm):
     title = StringField('Title')
     customer_id = IntegerField('Customer Id:', validators=[DataRequired()])
+    seller_id = IntegerField('Seller Id:')
     shipping_dt = DateTimeField('Shipping Date', format='%d/%m/%Y %H:%M:%S')
     status = StringField('Status')
+    submit = SubmitField('Valider')
+    
+
+class OrderShippingDtForm(FlaskForm):
+    title = StringField('Title')
+    shipping_dt = DateTimeField('Shipping Date', format='%d/%m/%Y %H:%M:%S')
     submit = SubmitField('Valider')
 
 
@@ -46,10 +53,10 @@ class ProductForm(FlaskForm):
 
 class ShippingForm(FlaskForm):
     reference = StringField('Reference', validators=[DataRequired()])
-    customer_order_id = IntegerField(
+    order_id = IntegerField(
         'Customer Order Id:', validators=[DataRequired()])
     shipping_dt = DateTimeField('Order Date')
-    customer_order_id = IntegerField(
+    order_id = IntegerField(
         'Customer Order Id:', validators=[DataRequired()])
     status = StringField('Status')
     submit = SubmitField('Valider')

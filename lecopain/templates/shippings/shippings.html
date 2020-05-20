@@ -38,7 +38,7 @@
             {% set months_tab = ['', 'Janvier', 'Février', 'Mars', 'Avril',
             'Mai', 'Juin', 'Juillet', 'Août',
             'Septembre', 'Octobre', 'Novembre', 'Décembre'] %}
-            {% for month_item in range (1,13)  %}               
+            {% for month_item in range (1,13)  %}
                 {% if month_item == (current_month | int) %}
                     <option value="{{ month_item }}" SELECTED>{{ months_tab[month_item] }} </option>
                 {% else %}
@@ -47,7 +47,7 @@
             {% endfor %}
         </select>
         <select class="form-control" id="year_num" name="year_num" style="width: 7rem; display:inline-block" >
-                
+
                 {% for year_item in range (2019,2022)  %}               
                     {% if year_item == (year| int) %}
                         <option value="{{ year_item }}" SELECTED>{{ year_item }} </option>
@@ -88,10 +88,10 @@
                 <tr>
                     {% for date in week %}
                         {% set index = (date.day | int) * (date.month | int) %}
-                        {% set customer_order_id = map_shippings[index] %}
+                        {% set order_id = map_shippings[index] %}
                         
                         {% if date.month == current_month %}
-                            {% if customer_order_id != null %}
+                            {% if order_id != null %}
                             <td class="filled-day">
                             {% else %}
                             <td class="current-month">  
@@ -102,10 +102,10 @@
                         
                         {{ date.day }}
 
-                        {% if customer_order_id != null and customer.id == 0 %}
-                            <p align="center"><a href="/orders/resume/customers/0/year/{{ date.year }}/month/{{ date.month }}/day/{{ date.day }}" class="btn btn-danger" >D</a></p>
-                        {% elif customer_order_id != null and customer.id > 0 %}
-                            <p align="center"><a href="/orders/{{ customer_order_id }}" class="btn btn-danger" >L</a></p>
+                        {% if order_id != null and customer.id == 0 %}
+                            <p align="center"><a href="/orders/resume/year/{{ date.year }}/month/{{ date.month }}/day/{{ date.day }}" class="btn btn-danger" >D</a></p>
+                        {% elif order_id != null and customer.id > 0 %}
+                            <p align="center"><a href="/orders/{{ order_id }}" class="btn btn-danger" >L</a></p>
                         {% else %}
                             <center>-</center>
                         {% endif %}    
@@ -145,14 +145,18 @@
 {% block right_menu %}
 <div class="content-section">
     <h3>Menu </h3>
-    <p class='text-muted'>
+    <p class='text-muted'>Une commande client génère des commandes vendeur
         <ul class="list-group">
             <li class="list-group-item list-group-item-light">
-                <a class="nav-link" href="/orders/customers/0/year/0/month/0">Commandes du mois</a></li>
+                <a class="nav-link" href="/orders/new">Création</a></li>
             <li class="list-group-item list-group-item-light">
-                <a class="nav-link" href="/orders/customers/0/year/0/month/0/day/0">Commandes du jour</a></li>
+                <a class="nav-link" href="/orders/month">Mois</a></li>
             <li class="list-group-item list-group-item-light">
-                <a class="nav-link" href="/orders/customers/0">Commandes des clients</a></li>
+                <a class="nav-link" href="/orders/week">Semaine</a></li>
+            <li class="list-group-item list-group-item-light">
+                <a class="nav-link" href="/orders/day">Jour</a></li>
+            <li class="list-group-item list-group-item-light">
+                <a class="nav-link" href="/orders">Toutes</a></li>
         </ul>
     </p>
 </div>
