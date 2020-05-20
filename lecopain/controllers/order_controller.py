@@ -1,5 +1,5 @@
-from lecopain.dao.models import Order, OrderStatus_Enum,  OrderStatus, ShippingStatus_Enum, PaymentStatus_Enum
-from lecopain.app import app, db
+from lecopain.dao.models import OrderStatus_Enum,  OrderStatus, ShippingStatus_Enum, PaymentStatus_Enum
+from lecopain.app import app
 from lecopain.form import OrderForm, OrderShippingDtForm, OrderAnnulationForm
 from lecopain.services.order_manager import OrderManager, Period_Enum
 from lecopain.services.customer_manager import CustomerManager
@@ -37,7 +37,6 @@ def orders():
 @login_required
 def order_create():
     form = OrderForm()
-    #TODO add lines !!
 
     lines = (
         request.form.getlist('product_id[]'),
@@ -71,49 +70,6 @@ def order_create():
 def order(order_id):
     order = orderServices.get_one(order_id)
     return render_template('/orders/order.html', order=order)
-
-#####################################################################
-#                                                                   #
-#####################################################################
-# @order_page.route("/orders/update/<int:order_id>", methods=['GET', 'POST'])
-# @login_required
-# def display_update_order(order_id):
-
-#     order = Order.query.get_or_404(order_id)
-#     form = OrderForm()
-
-#     customer = customerService.get_one(order.customer_id)
-#     products = productService.optim_get_all()
-
-#     line_selection = order.lines
-
-#     if form.validate_on_submit():
-#         orderForm = Order(title=form.title.data, status=form.status.data, customer_id=int(
-#             form.customer_id.data), shipping_dt=form.shipping_dt.data)
-#         # update order first
-#         order.status = orderForm.status
-#         order.shipping_dt = orderForm.shipping_dt
-#         products = {}
-
-#         # get the new list of products and quantities
-#         tmp_products = request.form.getlist('products')
-#         tmp_quantities = request.form.getlist('quantities')
-#         tmp_prices = request.form.getlist('prices')
-
-#         orderServices.update_order(
-#             order=order, products=tmp_products, quantities=tmp_quantities, prices=tmp_prices)
-
-#         #flash(f'People created for {form.firstname.data}!', 'success')
-#         return redirect('/orders')
-
-#     form.customer_id.data = order.customer_id
-#     form.shipping_dt.data = order.shipping_dt
-#     form.status.data = order.status
-#     form.title.data = order.title
-
-#     orderStatusList = orderServices.get_order_status()
-#     return render_template('/orders/update_order.html', order=order, title='Mise à jour de commande', form=form, customer=customer, products=products, selected_products=order.products,  orderStatusList=orderStatusList, line_selection=line_selection)
-
 
 #####################################################################
 #                                                                   #
@@ -210,20 +166,14 @@ def api_order_status():
 #####################################################################
 #                                                                   #
 #####################################################################
-@order_page.route('/api/orders/count/')
-@login_required
-def api_order_count():
-    total_orders_count = Order.query.count()
-    in_progress_orders_count = orderServices.get_in_progess_orders_counter()
-    latest_orders_count = orderServices.get_latest_orders_counter()
-    return jsonify({'total_orders_count': total_orders_count, 'in_progress_orders_count': in_progress_orders_count})
-
 @order_page.route('/api/orders/')
 @login_required
 def api_orders():
     return jsonify({'orders': orderServices.get_all()})
 
-
+#####################################################################
+#                                                                   #
+#####################################################################
 @order_page.route('/api/orders/period/<string:period>/customers/<int:customer_id>')
 @login_required
 def api_day_orders(period, customer_id):

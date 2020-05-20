@@ -12,7 +12,7 @@ from sqlalchemy import extract, Date, cast
 
 
 class OrderManager():
-    
+
     businessService = BusinessService()
 
     def parse_lines(self, lines):
@@ -39,13 +39,13 @@ class OrderManager():
         created_order.shipping_price, created_order.shipping_rules = self.businessService.apply_rules(
             created_order)
         db.session.commit()
-        
+
     def set_order_category(self, order, lines):
         if 'category' not in order.keys():
             category = ProductDao.get_category_from_lines(lines)
             order['category'] = category
         return order
-    
+
     def delete_order(self, order_id):
         OrderDao.delete(order_id)
 
