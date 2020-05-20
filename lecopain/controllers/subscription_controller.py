@@ -2,6 +2,8 @@ from lecopain.dao.models import Subscription, Product, Customer
 from lecopain.app import app, db
 from lecopain.form import SubscriptionForm
 from lecopain.services.subscription_manager import SubscriptionManager
+from lecopain.services.customer_manager import CustomerManager
+
 
 from sqlalchemy import extract
 from datetime import datetime
@@ -15,50 +17,62 @@ subscription_page = Blueprint('subscription_page', __name__,
                               template_folder='../templates')
 
 subscriptionServices = SubscriptionManager()
+customerServices = CustomerManager()
+
 
 #####################################################################
 #                                                                   #
 #####################################################################
-@subscription_page.route("/subscriptions/customers/<int:customer_id>", methods=['GET', 'POST'])
+@subscription_page.route("/subscriptions", methods=['GET', 'POST'])
 @login_required
-def subscriptions(customer_id):
-
-    if customer_id == 0 or customer_id == None:
-        subscriptions = Subscription.query.order_by(
-            Subscription.start_date.desc()).all()
-    else:
-        subscriptions = Subscription.query.filter(
-            Subscription.customer_id == customer_id).order_by(Subscription.start_date.desc()).all()
-
-    customers = Customer.query.all()
-    map = subscriptionServices.get_maps_from_subscriptions(subscriptions)
-
-    return render_template('/subscriptions/subscriptions.html', subscriptions=subscriptions, customers=customers, title="Toutes les abonnements", map=map)
-
+def subscriptions():
+    return render_template('/subscriptions/subscriptions.html', title="Abonnements")
 
 #####################################################################
 #                                                                   #
 #####################################################################
-# """ @subscription_page.route("/subscriptions/new", methods=['GET', 'POST'])
-# @login_required
-# def subscription_create():
-#     form = SubscriptionForm()
-#     tmp_products = request.form.getlist('products')
-#     tmp_quantities = request.form.getlist('quantities')
-#     tmp_prices = request.form.getlist('prices')
+@subscription_page.route("/subscriptions/<int:subscription_id>", methods=['GET', 'POST'])
+@login_required
+def subscription(subscription_id):
+    subscription = subscriptions.get_one(subscription_id)
+    return render_template('/subscriptions/subscription.html', subscription=subscription)
 
-#     if form.validate_on_submit():
-#         subcription = Subscription(title=form.title.data, status=form.status.data, customer_id=int(
-#             form.customer_id.data), shipping_dt=form.shipping_dt.data)
-#         subscriptionServices.create_subscription(
-#             subcription=subcription, tmp_products=tmp_products, tmp_quantities=tmp_quantities, tmp_prices=tmp_prices)
-#         #flash(f'People created for {form.firstname.data}!', 'success')
-#         redirect('/subscriptions/customers/0')
-#     else:
-#         customers = Customer.query.all()
-#         products = Product.query.all()
-#     # else:
-#     #    flash(f'Failed!', 'danger')
-#     subscriptionStatusList = _get_subscription_frequency()
+#####################################################################
+#                                                                   #
+#####################################################################
+@subscription_page.route('/api/subscriptions/')
+@login_required
+def api_subscriptions():
+    return jsonify({'subscriptions': subscriptionServices.get_all()})
 
-#     return r """ender_template('/subscriptions/create_subscription.html', title='Creation d\'abonnement', form=form, customers=customers, products=products, subscriptionStatusList=subscriptionStatusList)
+#####################################################################
+#                                                                   #
+#####################################################################
+@subscription_page.route('/api/subscriptions/period/<string:period>/customers/<int:customer_id>')
+@login_required
+def api_day_subscriptions(period, customer_id):
+    return jsonify({'subscriptions': subscriptionServices.get_some(period=period, customer_id=customer_id)})
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@subscription_page.route("/subscriptions/new", methods=['GET', 'POST'])
+@login_required
+def subscription_create():
+    form = SubscriptionForm()
+
+    subscription = {
+            'customer_id': form.customer_id.data,
+            'start_dt': form.start_dt.data,
+            'end_dt': form.end_dt.data,
+            }
+
+    if form.validate_on_submit():
+        subscriptionServices.create_subscription(
+            subscription=subscription)
+        #flash(f'People created for {form.firstname.data}!', 'success')
+        return redirect('/subscriptions')
+
+    customers = customerServices.optim_get_all()
+
+    return render_template('/subscriptions/create_subscription.html', title='Creation de commande', form=form, customers=customers)

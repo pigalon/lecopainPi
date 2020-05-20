@@ -258,8 +258,8 @@ class Subscription(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey(
         'customers.id'), nullable=False)
-    start_date = db.Column(db.DateTime)
-    end_date = db.Column(db.DateTime)
+    start_dt = db.Column(db.DateTime)
+    end_dt = db.Column(db.DateTime)
     status = db.Column(db.String(40))
     payment_status = db.Column(db.String(20), nullable=False)
     promotion = db.Column(db.String(200))
@@ -428,3 +428,16 @@ class ProductSchema(SQLAlchemyAutoSchema):
         model = Product
         load_instance = True
         include_relationships = True
+        
+
+class SubscriptionSchema(SQLAlchemyAutoSchema):
+    customer_name = fields.Method("format_customer_name", dump_only=True)
+
+    class Meta:
+        # Fields to expose
+        model = Subscription
+        load_instance = True
+        include_relationships = True
+
+    def format_customer_name(self, subscription):
+        return "{}, {}".format(subscription.customer.firstname, subscription.customer.lastname)

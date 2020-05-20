@@ -20,9 +20,8 @@
             <table width="100%">
                 <tr>
                     <th width="6%">id</th>
-                    <th width="50%">Période</th>
+                    <th width="64%">Période</th>
                     <th width="30%">client</th>
-                    <th width="20%">Status</th>
                 </tr>
             </table>
             </td>
@@ -35,12 +34,8 @@
                     <td if={subscription.status == 'ANNULE'} width="6%" class="table-dark">{subscription.id}</td>
                     <td if={subscription.status == 'TERMINE'} width="6%" class="table-success">{subscription.id}</td>
                     <td if={subscription.status == 'DEFAUT'} width="6%" class="table-danger">{subscription.id}</td>
-                    <td width="50%">{moment(subscription.shipping_dt).format('Do MMMM YYYY' )}</td>
+                    <td width="64%">du {moment(subscription.start_dt).format('Do MMMM YYYY' )} aua {moment(subscription.end_dt).format('Do MMMM YYYY' )}</td>
                     <td width="30%">{subscription.customer_name}</td>
-                    <td width="20%"><span if={subscription.shipping_status == 'OUI'} style="color:green" ><i class="fas fa-cart-arrow-down "></i></span>
-                    <span if={subscription.shipping_status == 'NON'} style="color:grey" ><i class="fas fa-cart-arrow-down "></i></span>
-                    <span if={subscription.payment_status == 'OUI'} style="color:green" ><i class="fas fa-credit-card"></i></i></span>
-                    <span if={subscription.payment_status == 'NON'} style="color:grey" ><i class="fas fa-credit-card"></i></i></span>
                     </td>
                 </tr>
             </table>
