@@ -1,4 +1,6 @@
 from lecopain.app import db
+from sqlalchemy import or_, and_
+from datetime import datetime
 
 from lecopain.dao.models import (
     Subscription, Customer, SubscriptionSchema
@@ -27,4 +29,28 @@ class SubscriptionDao:
                             end_dt=subscription.get('end_dt'))
         db.session.add(created_subscription)
         return created_subscription
+
+    @staticmethod
+    def read_some(customer_id, start, end):
+
+        all_subscriptions = Subscription.query
+
+        if(start !=0):
+            startDate = start.date()
+            endDate = end.date()
+
+            all_subscriptions = all_subscriptions.filter(
+                ((Subscription.start_dt >= startDate) & (Subscription.start_dt <= endDate))
+                | ((Subscription.end_dt >= start) & (Subscription.end_dt <= end)))
+
+        if customer_id != 0:
+            all_subscriptions = all_subscriptions.filter(
+                Subscription.customer_id == customer_id)
+
+        all_subscriptions = all_subscriptions.order_by(Subscription.start_dt.desc()) \
+            .all()
+
+        # Serialize the data for the response
+        subscription_schema = SubscriptionSchema(many=True)
+        return subscription_schema.dump(all_subscriptions)
 

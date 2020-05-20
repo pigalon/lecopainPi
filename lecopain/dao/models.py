@@ -27,7 +27,7 @@ class PaymentStatus_Enum(Enum):
 
 
 class SubscriptionStatus_Enum(Enum):
-    EN_COURS = "EN COURS"
+    CREE = "CREE"
     TERMINE = "TERMINE"
 
 
@@ -88,7 +88,8 @@ class Order(db.Model):
     customer_id = db.Column(db.Integer, db.ForeignKey(
         'customers.id'), nullable=False)
     customer = db.relationship('Customer')
-    status = db.Column(db.String(20), nullable=False)
+    status = db.Column(db.String(20), nullable=False,
+                       default=OrderStatus_Enum.CREE.value)
     seller_id = db.Column(db.Integer, db.ForeignKey(
         'sellers.id'), nullable=False)
     seller = db.relationship('Seller')
@@ -258,9 +259,10 @@ class Subscription(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey(
         'customers.id'), nullable=False)
-    start_dt = db.Column(db.DateTime)
-    end_dt = db.Column(db.DateTime)
-    status = db.Column(db.String(40))
+    customer = db.relationship('Customer')
+    start_dt = db.Column(db.Date)
+    end_dt = db.Column(db.Date)
+    status = db.Column(db.String(40), default=SubscriptionStatus_Enum.CREE.value)
     payment_status = db.Column(db.String(20), nullable=False)
     promotion = db.Column(db.String(200))
     price = db.Column(db.Float)

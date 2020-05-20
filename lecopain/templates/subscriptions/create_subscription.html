@@ -14,24 +14,17 @@
                     {% endfor %}
                 </select>
             </div>
+
             <div class="form-group">
                 Saisie de la date de début :
-                <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                    <input type="text" name="start_dt" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
-                    <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
-                </div>
+                <input type="text" name="start_dt" id="datepicker_start" data-language='fr' class="form-control datepicker-input" />
             </div>
+
             <div class="form-group">
                 Saisie de la date de fin :
-                <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
-                    <input type="text" name="end_dt" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
-                    <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
-                </div>
+                <input type="text" name="end_dt" id="datepicker_end" data-language='fr'  class="form-control datepicker-input"/>
             </div>
+
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>
@@ -50,19 +43,8 @@
 {% block scripts %}
 <script type="text/javascript">
     $(function () {
-        $('#datetimepicker1').datetimepicker(
-            {
-                format : 'DD/MM/YYYY HH:mm:ss',
-                locale: 'fr'
-            }
-        );
-        $('#datetimepicker2').datetimepicker(
-            {
-                format : 'DD/MM/YYYY HH:mm:ss',
-                locale: 'fr'
-            }
-
-        );
+        $("#datepicker_start").datepicker();
+        $("#datepicker_end").datepicker();
     });
 </script>
 {% endblock %}

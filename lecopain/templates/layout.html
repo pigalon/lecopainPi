@@ -30,14 +30,10 @@
 			rel="stylesheet"
 			href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css"
 		/>
-		<!--<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.1/fullcalendar.min.css" type="text/css" rel="stylesheet" /> -->
-		<!--<link rel="stylesheet" href="{{ url_for('static', filename='foundation/stylesheets/foundation.min.css') }}">-->
-		<!--<link rel="stylesheet" href="{{ url_for('static', filename='foundation/stylesheets/app.css') }}">-->
 
-		<!--<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fullcalendar/core/main.css')}}" />  
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fullcalendar/daygrid/main.css')}}" />  
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fullcalendar/timegrid/main.css')}}" /> 
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fullcalendar/list/main.css')}}" />-->
+		<link href="{{ url_for('static', filename='css/datepicker.min.css')}}"
+		rel="stylesheet" type="text/css">
+
 		{% if title %}
 		<title>Flask page - {{ title }}</title>
 		{% endif %}
@@ -134,6 +130,10 @@
 		<script src="{{ url_for('static', filename='js/reqwest.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/riot+compiler.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/moment/fr.js') }}"></script>
+
+		<script src="{{ url_for('static', filename='js/datepicker/datepicker.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/datepicker/i18n/datepicker.fr.js') }}"></script>
+
 		<!--<script src="{{ url_for('static', filename='foundation/javascripts/modernizr.foundation.js') }}"></script>-->
 		<!--<script
 			src="{{ url_for('static', filename='tag/navbar/orders_count.tag') }}"

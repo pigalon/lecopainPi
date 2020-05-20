@@ -5,10 +5,8 @@
             <option value="0" SELECTED>Tous</option>
             <option each="{ customer in customers }" value={customer.id}>{customer.firstname} {customer.lastname}</option>
         </select><select onchange={ load_subscriptions } class="form-control" name="period" id="period" ref="period" style="width: 12rem; display:inline-block">
-            <option value="day">Jour</option>
-            <option value="week">Semaine</option>
             <option value="month">Mois</option>
-            <option value="all">Toutes</option>
+            <option value="all">Tous</option>
         </select>
         <div class="right">
             <a role="button" href="/subscriptions/new" class="btn btn-primary display:inline-block">Ajouter</i></a>
@@ -34,7 +32,7 @@
                     <td if={subscription.status == 'ANNULE'} width="6%" class="table-dark">{subscription.id}</td>
                     <td if={subscription.status == 'TERMINE'} width="6%" class="table-success">{subscription.id}</td>
                     <td if={subscription.status == 'DEFAUT'} width="6%" class="table-danger">{subscription.id}</td>
-                    <td width="64%">du {moment(subscription.start_dt).format('Do MMMM YYYY' )} aua {moment(subscription.end_dt).format('Do MMMM YYYY' )}</td>
+                    <td width="64%">du <b>{moment(subscription.start_dt).format('Do MMMM YYYY' )}</b> au <b>{moment(subscription.end_dt).format('Do MMMM YYYY' )}</b></td>
                     <td width="30%">{subscription.customer_name}</td>
                     </td>
                 </tr>
