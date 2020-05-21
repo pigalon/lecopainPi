@@ -1,0 +1,101 @@
+
+{% extends "layout.html" %}
+{% block content %}
+
+<br>
+  <table width="100%" align="center">
+    <tr>
+      <td width="60%" style="text-align:right"><span class="float-left"><a href="/subscriptions" class="btn btn-outline-dark">Retour List</a></span>Changer le statut : </td>
+      <td width="40%"  style="text-align:right"> 
+        {% if subscription.status != 'ANNULEE' %}
+          <a href="/subscriptions/{{ subscription.id }}/cancel" class="btn btn-outline-dark" >Annuler </a>
+        {% endif %}
+        {% if subscription.status == 'ANNULEE' %}
+        <a href="/subscriptions/{{ subscription.id }}/created" class="btn btn-outline-dark"> Rétablir </a>
+        {% endif %}
+        {% if subscription.payment_status != 'OUI' %}
+          <a href="/subscriptions/{{ subscription.id }}/paid/OUI" class="btn btn-outline-dark">Payée </a>
+        {% endif %}
+        {% if subscription.payment_status == 'OUI' %}
+        <a href="/subscriptions/{{ subscription.id }}/paid/NON" class="btn btn-outline-dark">Non Payée </a>
+        {% endif %}
+        {% if subscription.shipping_status != 'OUI' %}
+        <a href="/subscriptions/{{ subscription.id }}/shipped/OUI" class="btn btn-outline-dark">Livrée </a>
+        {% endif %}
+        {% if subscription.shipping_status == 'OUI' %}
+        <a href="/subscriptions/{{ subscription.id }}/shipped/NON" class="btn btn-outline-dark">Non Livrée </a>
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+
+
+<br>
+    <div class="card  " >
+        <div class="card-header text-white bg-info">
+          Abonnement N° {{subscription.id}} - {{subscription.customer_name}} <span class="right">{{ subscription.shipping_formatted_dt }}</span>
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+          {% set total = {'value': 0.00} %}
+
+          <li class="list-group-item bg-light">
+            Vendeur : <b>{{subscription.seller_name}}</b>
+          </li>
+          <li class="list-group-item">
+            Jour de la semaine:
+            <table align="center" class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col"><a href="/subscriptions/days/1" class="btn btn-outline-dark">Lundi</a></th>
+                <th scope="col"><a href="/subscriptions/days/2" class="btn btn-outline-dark">Mardi</a></th>
+                <th scope="col"><a href="/subscriptions/days/3" class="btn btn-outline-dark">Mercredi</a></th>
+                <th scope="col"><a href="/subscriptions/days/4" class="btn btn-outline-dark">Jeudi</a></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td valign="center">Resume day 1 <br> nb articles <br> prix livraison</td>
+                <td valign="center">Resume day 2 <br> nb articles <br> prix livraison</td>
+                <td valign="center">Resume day 3 <br> nb articles <br> prix livraison</td>
+                <td valign="center">Resume day 4 <br> nb articles <br> prix livraison</td>
+              </tr>
+              <tr>
+                <td scope="col"><a href="/subscriptions/days/5" class="btn btn-outline-dark">Vendredi</a></td>
+                <td scope="col"><a href="/subscriptions/days/6" class="btn btn-outline-dark">Samedi</a></td>
+                <td scope="col"><a href="/subscriptions/days/7" class="btn btn-outline-dark">Dimanche</a></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td valign="center">Resume day 5 <br> nb articles <br> prix livraison</td>
+                <td valign="center">Resume day 6 <br> nb articles <br> prix livraison</td>
+                <td valign="center">Resume day 7 <br> nb articles <br> prix livraison</td>
+                <td></td>
+              </tr>
+          </tbody>
+          </table>
+          </li>
+
+          <li class="list-group-item">
+                <b><span >Nb articles de l'abonnement: {{subscription.nb_products}} - Prix Total : {{ "%.2f"|format(subscription.price|float) }}€</span></b>
+          </li>
+          <li class="list-group-item">
+                <b><span >Prix de la livraison pour l'abonnement : {{subscription.shipping_price}} €</span></b>
+                <br>
+                <br>
+                <p><b>Nombres total de commandes : </b> {{subscription.nb_orders}}</p>
+          </li>
+        </ul>
+        </div>
+      </div>
+      <br>
+        <div class="card">
+          <div class="card-header text-white bg-info">
+            Suppression <span class="float-right"><a href="/subscriptions/delete/{{ subscription.id }}" class="btn btn-light text-danger" alt="Supprimer"><i class="fas fa-trash-alt"></i></a></span>
+          </div>
+        </div>
+
+
+{% endblock %}
+{% block right_menu %}
+{% endblock %}

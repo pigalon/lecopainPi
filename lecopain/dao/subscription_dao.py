@@ -25,6 +25,8 @@ class SubscriptionDao:
     def add(subscription):
         customer = Customer.query.get_or_404(int(subscription.get('customer_id')))
         created_subscription = Subscription(customer_id=subscription.get('customer_id'),
+                                            seller_id=subscription.get(
+                                                'seller_id'),
                             start_dt=subscription.get('start_dt'),
                             end_dt=subscription.get('end_dt'))
         db.session.add(created_subscription)
@@ -32,7 +34,6 @@ class SubscriptionDao:
 
     @staticmethod
     def read_some(customer_id, start, end):
-
         all_subscriptions = Subscription.query
 
         if(start !=0):
@@ -53,4 +54,21 @@ class SubscriptionDao:
         # Serialize the data for the response
         subscription_schema = SubscriptionSchema(many=True)
         return subscription_schema.dump(all_subscriptions)
+    
+    @staticmethod
+    def read_one(id):
+
+        # Create the list of people from our data
+        subscription = Subscription.query.get_or_404(id)
+
+        # Serialize the data for the response
+        subscription_schema = SubscriptionSchema(many=False)
+        return subscription_schema.dump(subscription)
+    
+    @staticmethod
+    def delete(id):
+        subscription = Subscription.query.get_or_404(id)
+        db.session.delete(subscription)
+        db.session.commit()
+
 

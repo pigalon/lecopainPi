@@ -88,7 +88,7 @@
     	*******************************************/
 		load_products(){
 			seller_id =  this.refs.seller.value
-			var url = 'http://localhost:5000/_getjs_products/'+seller_id;
+			var url = 'http://localhost:5000/api/products/'+seller_id;
 			$.ajax({
 					url: url,
 					type: "GET",
@@ -105,7 +105,7 @@
 		*******************************************/
 
 		load_sellers(){
-		var url = 'http://localhost:5000/_getjs_sellers/';
+		var url = 'http://localhost:5000/api/sellers/';
 		$.ajax({
 				url: url,
 				type: "GET",

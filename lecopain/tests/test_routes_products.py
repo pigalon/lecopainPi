@@ -80,7 +80,7 @@ class ProductTestCase(BaseTestCase, TestCase):
 
         with app.test_client() as client:
             response = client.get(
-                f'/_getjs_products/{seller.id}', follow_redirects=True)
+                f'/apiproducts/{seller.id}', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         assert product.name in str(response.data)
 

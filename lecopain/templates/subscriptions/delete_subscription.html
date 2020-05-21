@@ -1,0 +1,42 @@
+
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+        <p>Référence : {{subscription.id}}</p>
+        <p>Pour le client :  {{subscription.customer_name}}</p>
+        <p>Dates de l'abonnement : du {{subscription.start_formatted_dt}} au {{subscription.end_formatted_dt}}</p>
+    </div>
+    <div class="content-section">
+        Etes-vous sûr de vouloir supprimer cet abonnement ?
+        <br>
+        <p align="center">
+            <button type="button" onclick="delete_subscription({{subscription.id}})" class="btn btn-danger">Supprimer</button>
+            <button class="btn btn-secondary" type="cancel" onclick="javascript:window.location='/subscriptions';">Annuler</button>
+        </p>
+    </div>
+   
+{% endblock %}
+{% block right_menu %}
+{% endblock %}
+
+{% block scripts %}
+
+    <script>
+        function delete_subscription(subscription_id) {
+
+            $.ajax({
+                type: "DELETE",
+                url: '/subscriptions/' + subscription_id,
+                success: function(msg){
+                    location.href = "/subscriptions";
+                }
+            });
+        };
+    </script>
+{% endblock %}
+
+
+
+
+
+

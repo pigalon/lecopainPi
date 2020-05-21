@@ -106,7 +106,7 @@ def delete_order(product_id):
 #####################################################################
 #                                                                   #
 #####################################################################
-@product_page.route("/_getjs_products/<int:seller_id>")
+@product_page.route("/apiproducts/<int:seller_id>")
 @login_required
 def getjs_products(seller_id):
     products = Product.query.filter(

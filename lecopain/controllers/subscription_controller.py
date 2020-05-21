@@ -3,6 +3,7 @@ from lecopain.app import app, db
 from lecopain.form import SubscriptionForm
 from lecopain.services.subscription_manager import SubscriptionManager
 from lecopain.services.customer_manager import CustomerManager
+from lecopain.services.seller_manager import SellerManager
 
 
 from sqlalchemy import extract
@@ -18,6 +19,7 @@ subscription_page = Blueprint('subscription_page', __name__,
 
 subscriptionServices = SubscriptionManager()
 customerServices = CustomerManager()
+sellerServices = SellerManager()
 
 
 #####################################################################
@@ -34,7 +36,7 @@ def subscriptions():
 @subscription_page.route("/subscriptions/<int:subscription_id>", methods=['GET', 'POST'])
 @login_required
 def subscription(subscription_id):
-    subscription = subscriptions.get_one(subscription_id)
+    subscription = subscriptionServices.get_one(subscription_id)
     return render_template('/subscriptions/subscription.html', subscription=subscription)
 
 #####################################################################
@@ -63,6 +65,7 @@ def subscription_create():
 
     subscription = {
             'customer_id': form.customer_id.data,
+            'seller_id': form.seller_id.data,
             'start_dt': form.start_dt.data,
             'end_dt': form.end_dt.data,
             }
@@ -70,9 +73,26 @@ def subscription_create():
     if form.validate_on_submit():
         subscriptionServices.create_subscription(
             subscription=subscription)
-        #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect('/subscriptions')
 
+    sellers = sellerServices.optim_get_all()
     customers = customerServices.optim_get_all()
 
-    return render_template('/subscriptions/create_subscription.html', title='Creation de commande', form=form, customers=customers)
+    return render_template('/subscriptions/create_subscription.html', title='Creation de commande', form=form, customers=customers, sellers=sellers)
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@subscription_page.route("/subscriptions/delete/<int:subscription_id>")
+@login_required
+def display_delete_subscription(subscription_id):
+    subscription = subscriptionServices.get_one(subscription_id)
+    return render_template('/subscriptions/delete_subscription.html', subscription=subscription, title='Suppression de commande')
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@subscription_page.route("/subscriptions/<int:subscription_id>", methods=['DELETE'])
+@login_required
+def delete_subscription(subscription_id):
+    subscriptionServices.delete_subscription(subscription_id)

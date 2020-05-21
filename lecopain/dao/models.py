@@ -260,25 +260,34 @@ class Subscription(db.Model):
     customer_id = db.Column(db.Integer, db.ForeignKey(
         'customers.id'), nullable=False)
     customer = db.relationship('Customer')
+    seller_id = db.Column(db.Integer, db.ForeignKey(
+        'sellers.id'), nullable=False)
+    seller = db.relationship('Seller')
     start_dt = db.Column(db.Date)
     end_dt = db.Column(db.Date)
     status = db.Column(db.String(40), default=SubscriptionStatus_Enum.CREE.value)
     payment_status = db.Column(db.String(20), nullable=False)
     promotion = db.Column(db.String(200))
-    price = db.Column(db.Float)
+    price = db.Column(db.Float, default=0.0)
     shipping_price = db.Column(db.Float)
+    nb_products = db.Column(db.Integer, default=0)
+    nb_orders = db.Column(db.Integer, default=0)
+
+    days = db.relationship('SubscriptionDay', backref='week',
+                           lazy=True, cascade="all, delete-orphan")
 
 
-class Subscription_days(db.Model):
+class SubscriptionDay(db.Model):
     __tablename__ = 'subscription_days'
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     subscription_id = db.Column(db.Integer, db.ForeignKey(
         'subscriptions.id'), primary_key=True)
+    subscription = db.relationship('Subscription')
     day_of_week = db.Column(db.Integer)
-    price = db.Column(db.Float)
-    shipping_price = db.Column(db.Float)
+    price = db.Column(db.Float, default=0)
+    shipping_price = db.Column(db.Float, default=0.0)
 
     def to_dict(self):
         return {
@@ -287,7 +296,7 @@ class Subscription_days(db.Model):
         }
 
 
-class Subscription_lines(db.Model):
+class SubscriptionLine(db.Model):
     __tablename__ = 'subscription_lines'
     __table_args__ = {'extend_existing': True}
 
@@ -313,6 +322,14 @@ class CustomerSchema(SQLAlchemyAutoSchema):
     class Meta:
         # Fields to expose
         model = Customer
+        load_instance = True
+        
+
+class SellerSchema(SQLAlchemyAutoSchema):
+
+    class Meta:
+        # Fields to expose
+        model = Seller
         load_instance = True
 
 
@@ -345,8 +362,7 @@ class OptimizedCustomerSchema(SQLAlchemySchema):
     id = auto_field()
     firstname = auto_field()
     lastname = auto_field()
-
-
+    
 class OrderSchema(SQLAlchemyAutoSchema):
     customer_name = fields.Method("format_customer_name", dump_only=True)
     seller_name = fields.Method("format_seller_name", dump_only=True)
@@ -369,7 +385,6 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
     nb_products = fields.Method("format_nb_products", dump_only=True)
     lines = fields.Method("format_lines", dump_only=True)
     shipping_formatted_dt = fields.Method("format_shipping_dt", dump_only=True)
-    
 
     class Meta:
         # Fields to expose
@@ -395,23 +410,9 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
         for line in order.lines:
             lines.append(line_schema.dump(line))
         return lines
-    
+
     def format_shipping_dt(self, order):
         return order.shipping_dt.strftime('%A %d %B %Y')
-
-    # id = auto_field()
-    # title = auto_field()
-    # created_at = auto_field()
-    # customer_id=auto_field()
-    # customer = auto_field()
-    # status=auto_field()
-    # seller_id=auto_field()
-    # price = auto_field()
-    # shipping_price = auto_field()
-    # shipping_status = auto_field()
-    # shipping_dt = auto_field()
-    # payment_status = auto_field()
-    # subscription_id = auto_field()
 
 class OptimizedProductSchema(SQLAlchemySchema):
 
@@ -430,10 +431,12 @@ class ProductSchema(SQLAlchemyAutoSchema):
         model = Product
         load_instance = True
         include_relationships = True
-        
 
 class SubscriptionSchema(SQLAlchemyAutoSchema):
     customer_name = fields.Method("format_customer_name", dump_only=True)
+    seller_name = fields.Method("format_seller_name", dump_only=True)
+    start_formatted_dt = fields.Method("format_start_dt", dump_only=True)
+    end_formatted_dt = fields.Method("format_end_dt", dump_only=True)
 
     class Meta:
         # Fields to expose
@@ -443,3 +446,21 @@ class SubscriptionSchema(SQLAlchemyAutoSchema):
 
     def format_customer_name(self, subscription):
         return "{}, {}".format(subscription.customer.firstname, subscription.customer.lastname)
+
+    def format_seller_name(self, subscription):
+        return "{}".format(subscription.seller.name)
+
+    def format_start_dt(self, subscription):
+        return subscription.start_dt.strftime('%A %d %B %Y')
+
+    def format_end_dt(self, subscription):
+        return subscription.end_dt.strftime('%A %d %B %Y')
+
+
+class SubscriptionDaySchema(SQLAlchemyAutoSchema):
+
+    class Meta:
+        # Fields to expose
+        model = SubscriptionDay
+        load_instance = True
+        include_relationships = True

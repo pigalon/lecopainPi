@@ -34,7 +34,6 @@ class OrderForm(FlaskForm):
     shipping_dt = DateTimeField('Shipping Date', format='%d/%m/%Y %H:%M:%S')
     status = StringField('Status')
     submit = SubmitField('Valider')
-    
 
 class OrderShippingDtForm(FlaskForm):
     title = StringField('Title')
@@ -74,6 +73,7 @@ class LoginForm(FlaskForm):
 
 class SubscriptionForm(FlaskForm):
     customer_id = IntegerField('Customer Id:', validators=[DataRequired()])
+    seller_id = IntegerField('Seller Id:', validators=[DataRequired()])
     start_dt = DateTimeField('Date de debut', format='%d/%m/%Y')
     end_dt = DateTimeField('Date de fin', format='%d/%m/%Y')
     submit = SubmitField('Valider')

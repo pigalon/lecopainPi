@@ -152,7 +152,7 @@ def display_delete_order(order_id):
 @order_page.route("/orders/<int:order_id>", methods=['DELETE'])
 @login_required
 def delete_order(order_id):
-    order = orderServices.delete_order(order_id)
+    orderServices.delete_order(order_id)
 
 
 #####################################################################

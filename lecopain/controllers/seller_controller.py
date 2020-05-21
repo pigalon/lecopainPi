@@ -96,7 +96,7 @@ def delete_seller(seller_id):
 #####################################################################
 #                                                                   #
 #####################################################################
-@seller_page.route("/_getjs_sellers/")
+@seller_page.route("/api/sellers/")
 @login_required
 def getjs_sellers():
     sellers = Seller.query.options(load_only("name")).all()

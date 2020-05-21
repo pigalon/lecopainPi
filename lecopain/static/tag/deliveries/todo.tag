@@ -80,7 +80,7 @@
     *******************************************/
 
     load_sellers(){
-      var url = 'http://localhost:5000/_getjs_sellers/'; //random adress
+      var url = 'http://localhost:5000/apisellers/'; //random adress
       $.ajax({
             url: url,
             type: "GET",
@@ -98,7 +98,7 @@
     *******************************************/
     load_products(){
         seller_id = this.refs.seller.value
-        var url = 'http://localhost:5000/_getjs_products/'+seller_id;
+        var url = 'http://localhost:5000/apiproducts/'+seller_id;
       $.ajax({
             url: url,
             type: "GET",
