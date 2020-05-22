@@ -11,8 +11,9 @@ class Period_Enum(Enum):
 
 
 def get_day_range():
-    start = datetime.today().replace(hour=0).replace(minute=00)
-    end = datetime.today().replace(hour=23).replace(minute=59)
+    start = (datetime.now() - timedelta(days=1)
+             ).replace(hour=23).replace(minute=59).replace(second=59)
+    end = datetime.today().replace(hour=23).replace(minute=59).replace(second=59)
     return start, end
 
 

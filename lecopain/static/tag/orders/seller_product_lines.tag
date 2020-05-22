@@ -1,4 +1,4 @@
-<my-select>
+<seller-product-line>
 
 			<div class="form-group">
 				Choix du vendeur :
@@ -88,7 +88,7 @@
     	*******************************************/
 		load_products(){
 			seller_id =  this.refs.seller.value
-			var url = 'http://localhost:5000/api/products/'+seller_id;
+			var url = '/api/products/'+seller_id;
 			$.ajax({
 					url: url,
 					type: "GET",
@@ -105,7 +105,7 @@
 		*******************************************/
 
 		load_sellers(){
-		var url = 'http://localhost:5000/api/sellers/';
+		var url = '/api/sellers/';
 		$.ajax({
 				url: url,
 				type: "GET",
@@ -118,4 +118,4 @@
 			});
 		}
 	</script>
-</my-select>;
+</seller-product-line>;

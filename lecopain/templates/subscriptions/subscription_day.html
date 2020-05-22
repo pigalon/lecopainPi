@@ -1,0 +1,35 @@
+
+{% extends "layout.html" %}
+{% block content %}
+
+<br>
+  <table width="100%" align="center">
+    <tr>
+      <td width="60%" style="text-align:right"><span class="float-left"><a href="/subscriptions" class="btn btn-outline-dark">Retour List</a></span>Changer le statut : </td>
+      <td width="40%"  style="text-align:right"> 
+          <a href="/subscription_days/{{ subscription_day.id }}/cancel" class="btn btn-outline-dark" > Remettre à zéro </a>
+      </td>
+    </tr>
+  </table>
+
+
+<br>
+    <div class="card  " >
+        <div class="card-header text-white bg-info">
+          Abonnement N° {{subscription.id}} - {{subscription.customer_name}} <span class="right">{{ subscription.shipping_formatted_dt }}</span>
+        </div>
+        <div class="card-body">
+          <product-line></product-line>
+        </div>
+      </div>
+      <br>
+        <div class="card">
+          <div class="card-header text-white bg-info">
+            Suppression <span class="float-right"><a href="/subscriptions/delete/{{ subscription.id }}" class="btn btn-light text-danger" alt="Supprimer"><i class="fas fa-trash-alt"></i></a></span>
+          </div>
+        </div>
+
+
+{% endblock %}
+{% block right_menu %}
+{% endblock %}

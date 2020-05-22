@@ -31,7 +31,7 @@ class OrderForm(FlaskForm):
     title = StringField('Title')
     customer_id = IntegerField('Customer Id:', validators=[DataRequired()])
     seller_id = IntegerField('Seller Id:')
-    shipping_dt = DateTimeField('Shipping Date', format='%d/%m/%Y %H:%M:%S')
+    shipping_dt = DateTimeField('Shipping Date', format='%d/%m/%Y')
     status = StringField('Status')
     submit = SubmitField('Valider')
 

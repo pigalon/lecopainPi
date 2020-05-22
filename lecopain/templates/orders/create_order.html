@@ -31,15 +31,10 @@
                 </select>
             </div>
             <div class="form-group">
-                Saisie de la date de la commande :
-                <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                    <input type="text" name="shipping_dt" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
-                    <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
-                </div>
+                Saisie de la date de livraison :
+                <input type="text" name="shipping_dt" id="datepicker_shipping" data-language='fr' class="form-control datepicker-input" />
             </div>
-            <my-select></my-select>
+            <seller-product-line></seller-product-line>
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>
@@ -59,23 +54,7 @@
 {% block scripts %} 
 <script type="text/javascript">
     $(function () {
-        $('#datetimepicker1').datetimepicker(
-            {
-                format : 'DD/MM/YYYY HH:mm:ss',
-                locale: 'fr'
-            }
-
-        );
+        $("#datepicker_shipping").datepicker();
     });
 </script>
-<script src="{{ url_for('static', filename='js/product-list.js') }}"></script>
-
-
 {% endblock %}
-
-
-
-
-
-
- 
