@@ -283,7 +283,7 @@ class SubscriptionDay(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     subscription_id = db.Column(db.Integer, db.ForeignKey(
-        'subscriptions.id'), primary_key=True)
+        'subscriptions.id'))
     subscription = db.relationship('Subscription')
     day_of_week = db.Column(db.Integer)
     price = db.Column(db.Float, default=0)
@@ -302,9 +302,9 @@ class SubscriptionLine(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     subscription_day_id = db.Column(db.Integer, db.ForeignKey(
-        'subscription_days.id'), primary_key=True)
+        'subscription_days.id'))
     product_id = db.Column(db.Integer, db.ForeignKey(
-        'products.id'), primary_key=True)
+        'products.id'))
     quantity = db.Column(db.Integer)
     price = db.Column(db.Float)
 
@@ -455,6 +455,43 @@ class SubscriptionSchema(SQLAlchemyAutoSchema):
 
     def format_end_dt(self, subscription):
         return subscription.end_dt.strftime('%A %d %B %Y')
+    
+
+class CompleteSubscriptionSchema(SQLAlchemyAutoSchema):
+    customer_name = fields.Method("format_customer_name", dump_only=True)
+    seller_name = fields.Method("format_seller_name", dump_only=True)
+    seller_id = fields.Method("format_seller_id", dump_only=True)
+    start_formatted_dt = fields.Method("format_start_dt", dump_only=True)
+    end_formatted_dt = fields.Method("format_end_dt", dump_only=True)
+    days = fields.Method("format_days", dump_only=True)
+
+    class Meta:
+        # Fields to expose
+        model = Subscription
+        load_instance = True
+        include_relationships = True
+
+    def format_customer_name(self, subscription):
+        return "{}, {}".format(subscription.customer.firstname, subscription.customer.lastname)
+
+    def format_seller_name(self, subscription):
+        return "{}".format(subscription.seller.name)
+    
+    def format_seller_id(self, subscription):
+        return "{}".format(subscription.seller.id)
+
+    def format_start_dt(self, subscription):
+        return subscription.start_dt.strftime('%A %d %B %Y')
+
+    def format_end_dt(self, subscription):
+        return subscription.end_dt.strftime('%A %d %B %Y')
+    
+    def format_days(self, subscription):
+        days = []
+        day_schema = SubscriptionDaySchema(many=False)
+        for day in subscription.days:
+            days.append(day_schema.dump(day))
+        return days
 
 
 class SubscriptionDaySchema(SQLAlchemyAutoSchema):
@@ -464,3 +501,34 @@ class SubscriptionDaySchema(SQLAlchemyAutoSchema):
         model = SubscriptionDay
         load_instance = True
         include_relationships = True
+        
+
+class CompleteSubscriptionDaySchema(SQLAlchemyAutoSchema):
+    
+    customer_name = fields.Method("format_customer_name", dump_only=True)
+    seller_name = fields.Method("format_seller_name", dump_only=True)
+    seller_id = fields.Method("format_seller_id", dump_only=True)
+    #lines = fields.Method("format_lines", dump_only=True)
+
+
+    class Meta:
+        # Fields to expose
+        model = SubscriptionDay
+        load_instance = True
+        include_relationships = True
+
+    def format_customer_name(self, subscription_day):
+        return "{}, {}".format(subscription_day.subscription.customer.firstname, subscription_day.subscription.customer.lastname)
+
+    def format_seller_name(self, subscription_day):
+        return "{}".format(subscription_day.subscription.seller.name)
+    
+    def format_seller_id(self, subscription_day):
+        return "{}".format(subscription_day.subscription.seller.id)
+
+    # def format_lines(self, subscription_day):
+    #     lines = []
+    #     line_schema = LineSchema(many=False)
+    #     for line in subscription_day.lines:
+    #         lines.append(line_schema.dump(line))
+    #     return lines

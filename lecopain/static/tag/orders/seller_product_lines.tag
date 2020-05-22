@@ -88,7 +88,7 @@
     	*******************************************/
 		load_products(){
 			seller_id =  this.refs.seller.value
-			var url = '/api/products/'+seller_id;
+			var url = '/api/products/sellers/'+seller_id;
 			$.ajax({
 					url: url,
 					type: "GET",

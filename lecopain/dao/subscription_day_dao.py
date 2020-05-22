@@ -3,7 +3,7 @@ from sqlalchemy import or_, and_
 from datetime import datetime
 
 from lecopain.dao.models import (
-    SubscriptionDay, Customer, SubscriptionDaySchema
+    SubscriptionDay, Customer, SubscriptionDaySchema, CompleteSubscriptionDaySchema
 )
 
 
@@ -17,8 +17,12 @@ class SubscriptionDayDao:
         db.session.add(created_subscription_day)
         return created_subscription_day
 
-    
-    
+    @staticmethod
+    def read_one(id):
+        subscription_day = SubscriptionDay.query.get_or_404(id)
+        subscription_schema = CompleteSubscriptionDaySchema(many=False)
+        return subscription_schema.dump(subscription_day)
+
     @staticmethod
     def delete(id):
         subscription_day = SubscriptionDay.query.get_or_404(id)

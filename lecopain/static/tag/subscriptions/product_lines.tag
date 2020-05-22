@@ -1,9 +1,5 @@
 <product-line>
 
-			<div class="form-group">
-				Vendeur :{seller.name} 
-				<input type="hidden" ref="seller_id" name="seller_id" id="row_nb" value={{seller.id}} />
-			</div>
             <div class="form-group">
                 Choix du produit à ajouter à la commande
                 <div data-toggle="fieldset" id="product-fieldset">
@@ -49,6 +45,8 @@
 		product_name=''
 
 		var self = this
+		seller_id =  opts.seller_id
+		console.log('after : '+ opts.seller_id)
 
 		change(e) 
 		{
@@ -78,15 +76,16 @@
 		}
 
 		this.on('mount', function() {
-			this.load_products()
+			console.log(opts.seller_id)
+			this.load_products(opts.seller_id)
 		});
 
 		/******************************************
        	load products list
     	*******************************************/
-		load_products(){
-			seller_id =  this.refs.seller_id.value
-			var url = '/api/products/'+seller_id;
+		load_products(seller_id){
+
+			var url = '/api/products/sellers/'+seller_id;
 			$.ajax({
 					url: url,
 					type: "GET",

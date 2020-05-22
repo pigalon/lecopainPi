@@ -30,6 +30,10 @@ class SubscriptionManager():
 
     def get_one(self,  subscription_id):
         return SubscriptionDao.read_one(subscription_id)
+    
+    def get_one_day(self,  subscription_day_id):
+        return SubscriptionDayDao.read_one(subscription_day_id)
+
 
     def delete_subscription(self, subscription_id):
         SubscriptionDao.delete(subscription_id)

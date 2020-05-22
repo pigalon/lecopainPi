@@ -3,7 +3,7 @@ from sqlalchemy import or_, and_
 from datetime import datetime
 
 from lecopain.dao.models import (
-    Subscription, Customer, SubscriptionSchema
+    Subscription, Customer, SubscriptionSchema, CompleteSubscriptionSchema
 )
 
 class SubscriptionDao:
@@ -62,7 +62,7 @@ class SubscriptionDao:
         subscription = Subscription.query.get_or_404(id)
 
         # Serialize the data for the response
-        subscription_schema = SubscriptionSchema(many=False)
+        subscription_schema = CompleteSubscriptionSchema(many=False)
         return subscription_schema.dump(subscription)
     
     @staticmethod

@@ -97,3 +97,12 @@ def display_delete_subscription(subscription_id):
 def delete_subscription(subscription_id):
     subscriptionServices.delete_subscription(subscription_id)
     return jsonify({})
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@subscription_page.route("/subscriptions/days/<int:subscription_day_id>", methods=['GET', 'POST'])
+@login_required
+def subscription_day(subscription_day_id):
+    subscription_day = subscriptionServices.get_one_day(subscription_day_id)
+    return render_template('/subscriptions/subscription_day.html', subscription_day=subscription_day)
