@@ -96,3 +96,4 @@ def display_delete_subscription(subscription_id):
 @login_required
 def delete_subscription(subscription_id):
     subscriptionServices.delete_subscription(subscription_id)
+    return jsonify({})
