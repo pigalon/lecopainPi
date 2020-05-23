@@ -37,5 +37,30 @@ class SubscriptionManager():
 
     def delete_subscription(self, subscription_id):
         SubscriptionDao.delete(subscription_id)
+        
+    def parse_lines(self, lines):
+        headers = ('product_id', 'quantity', 'price' )
+        items = [{} for i in range(len(lines[0]))]
+        for x, i in enumerate(lines):
+            for _x, _i in enumerate(i):
+                items[_x][headers[x]] = _i
+        return items
+
+    # @
+    #
+    def create_day_and_parse_line(self, subscription_day, lines):
+        parsed_lines = self.parse_lines(lines)
+        self.create_day(subscription_day, parsed_lines)
+
+    # @
+    #
+    def create_day(self, subscription_day, lines):
+        subscription_day_db = SubscriptionDayDao.get_one(
+            subscription_day.get('id'))
+        #db.session.flush()
+        SubscriptionDayDao.add_lines(subscription_day_db, lines)
+        #subscription_day_db.shipping_price, created_order.shipping_rules = self.businessService.apply_rules(
+        #    created_order)
+        db.session.commit()
 
 

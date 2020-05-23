@@ -3,12 +3,11 @@ from sqlalchemy import or_, and_
 from datetime import datetime
 
 from lecopain.dao.models import (
-    SubscriptionDay, Customer, SubscriptionDaySchema, CompleteSubscriptionDaySchema
+    SubscriptionDay, SubscriptionLine, Customer, SubscriptionDaySchema, CompleteSubscriptionDaySchema
 )
 
 
 class SubscriptionDayDao:
-
 
     @staticmethod
     def add(subscription_id, number):
@@ -16,6 +15,11 @@ class SubscriptionDayDao:
                                             day_of_week =number)
         db.session.add(created_subscription_day)
         return created_subscription_day
+
+    @staticmethod
+    def get_one(id):
+        return SubscriptionDay.query.get_or_404(id)
+
 
     @staticmethod
     def read_one(id):
@@ -28,5 +32,18 @@ class SubscriptionDayDao:
         subscription_day = SubscriptionDay.query.get_or_404(id)
         db.session.delete(subscription_day)
         db.session.commit()
+
+    @staticmethod
+    def add_lines(subscription_day, lines):
+        nb_products = 0
+        total_price = 0.0
+        for line in lines:
+            product_id, qty, price = list(line.values())
+            nb_products = nb_products + int(qty)
+            total_price = total_price + int(qty) * float(price)
+            subscription_day.lines.append(SubscriptionLine(
+                subscription_day=subscription_day, product_id=product_id, quantity=qty, price=float(price)))
+        subscription_day.price = format(total_price, '.2f')
+        subscription_day.nb_products = nb_products
 
 

@@ -77,3 +77,7 @@ class SubscriptionForm(FlaskForm):
     start_dt = DateTimeField('Date de debut', format='%d/%m/%Y')
     end_dt = DateTimeField('Date de fin', format='%d/%m/%Y')
     submit = SubmitField('Valider')
+    
+
+class SubscriptionDayForm(FlaskForm):
+    submit = SubmitField('Valider')

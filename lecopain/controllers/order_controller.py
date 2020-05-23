@@ -179,3 +179,4 @@ def api_orders():
 @login_required
 def api_day_orders(period, customer_id):
     return jsonify({'orders': orderServices.get_some(period=period, customer_id=customer_id)})
+

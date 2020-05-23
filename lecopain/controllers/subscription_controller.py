@@ -1,6 +1,6 @@
 from lecopain.dao.models import Subscription, Product, Customer
 from lecopain.app import app, db
-from lecopain.form import SubscriptionForm
+from lecopain.form import SubscriptionForm, SubscriptionDayForm
 from lecopain.services.subscription_manager import SubscriptionManager
 from lecopain.services.customer_manager import CustomerManager
 from lecopain.services.seller_manager import SellerManager
@@ -105,4 +105,19 @@ def delete_subscription(subscription_id):
 @login_required
 def subscription_day(subscription_day_id):
     subscription_day = subscriptionServices.get_one_day(subscription_day_id)
-    return render_template('/subscriptions/subscription_day.html', subscription_day=subscription_day)
+    form = SubscriptionDayForm()
+    
+    lines = (
+        request.form.getlist('product_id[]'),
+        request.form.getlist('quantity[]'),
+        request.form.getlist('price[]'),
+    )
+    
+    if form.validate_on_submit():
+        print('add !!!')
+        subscriptionServices.create_day_and_parse_line(
+            subscription_day=subscription_day, lines=lines)
+        return redirect('/subscriptions/'+str(subscription_day.get('subscription')))
+
+    return render_template('/subscriptions/subscription_day.html', form=form, subscription_day=subscription_day)
+

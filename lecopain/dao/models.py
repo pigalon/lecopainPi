@@ -111,14 +111,6 @@ class Order(db.Model):
     products = db.relationship(
         "Product", secondary='lines', viewonly=True)
 
-    def add_products(self, items):
-        for product_id, qty, price in items:
-            self.lines.append(Line(
-                order=self, product_id=product_id, quantity=qty, price=price))
-
-    def add_line(self, line):
-        self.lines.append(line)
-
     def __repr__(self):
         return '<Order {}>'.format(self.id)
 
@@ -288,6 +280,16 @@ class SubscriptionDay(db.Model):
     day_of_week = db.Column(db.Integer)
     price = db.Column(db.Float, default=0)
     shipping_price = db.Column(db.Float, default=0.0)
+    products = db.relationship(
+        "Product", secondary='subscription_lines', viewonly=True)
+
+    def add_products(self, items):
+        for product_id, qty, price in items:
+            self.lines.append(Line(
+                order=self, product_id=product_id, quantity=qty, price=price))
+
+    def add_line(self, line):
+        self.lines.append(line)
 
     def to_dict(self):
         return {
@@ -305,6 +307,10 @@ class SubscriptionLine(db.Model):
         'subscription_days.id'))
     product_id = db.Column(db.Integer, db.ForeignKey(
         'products.id'))
+    subscription_day = db.relationship(SubscriptionDay, backref=db.backref(
+        "lines", cascade="all, delete-orphan"))
+    product = db.relationship(Product, backref=db.backref(
+        "subscription_lines"))
     quantity = db.Column(db.Integer)
     price = db.Column(db.Float)
 
@@ -315,6 +321,7 @@ class SubscriptionLine(db.Model):
             'quantity': self.quantity,
             'price': self.price
         }
+
 
 
 class CustomerSchema(SQLAlchemyAutoSchema):
@@ -493,6 +500,18 @@ class CompleteSubscriptionSchema(SQLAlchemyAutoSchema):
             days.append(day_schema.dump(day))
         return days
 
+class SubscriptionLineSchema(SQLAlchemyAutoSchema):
+    product_name = fields.Method("format_product_name", dump_only=True)
+
+    class Meta:
+        # Fields to expose
+        model = SubscriptionLine
+        load_instance = True
+
+    def format_product_name(self, line):
+        return "{}".format(line.product.name)
+    
+
 
 class SubscriptionDaySchema(SQLAlchemyAutoSchema):
 
@@ -508,9 +527,7 @@ class CompleteSubscriptionDaySchema(SQLAlchemyAutoSchema):
     customer_name = fields.Method("format_customer_name", dump_only=True)
     seller_name = fields.Method("format_seller_name", dump_only=True)
     seller_id = fields.Method("format_seller_id", dump_only=True)
-    #lines = fields.Method("format_lines", dump_only=True)
-
-
+    lines = fields.Method("format_lines", dump_only=True)
     class Meta:
         # Fields to expose
         model = SubscriptionDay
@@ -526,9 +543,10 @@ class CompleteSubscriptionDaySchema(SQLAlchemyAutoSchema):
     def format_seller_id(self, subscription_day):
         return "{}".format(subscription_day.subscription.seller.id)
 
-    # def format_lines(self, subscription_day):
-    #     lines = []
-    #     line_schema = LineSchema(many=False)
-    #     for line in subscription_day.lines:
-    #         lines.append(line_schema.dump(line))
-    #     return lines
+    def format_lines(self, subscription_day):
+        lines = []
+        line_schema = SubscriptionLineSchema(many=False)
+        for line in subscription_day.lines:
+            lines.append(line_schema.dump(line))
+        return lines
+
