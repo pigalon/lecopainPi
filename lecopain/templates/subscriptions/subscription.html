@@ -55,10 +55,13 @@
             </thead>
             <tbody>
               <tr>
-                <td valign="center">Resume day 1 <br> nb articles <br> prix livraison</td>
-                <td valign="center">Resume day 2 <br> nb articles <br> prix livraison</td>
-                <td valign="center">Resume day 3 <br> nb articles <br> prix livraison</td>
-                <td valign="center">Resume day 4 <br> nb articles <br> prix livraison</td>
+                <td valign="center">nb articles : {{subscription.days[0].nb_products}} <br> livraison : {{subscription.days[0].shipping_price}} <br> prix : {{subscription.days[0].price}} </td>
+                <td valign="center">nb articles : {{subscription.days[1].nb_products}} <br> livraison : {{subscription.days[1].shipping_price}} <br> prix :
+                {{subscription.days[1].price}}</td>
+                <td valign="center">nb articles : {{subscription.days[2].nb_products}} <br> livraison : {{subscription.days[2].shipping_price}} <br> prix :
+                {{subscription.days[2].price}}</td>
+                <td valign="center">nb articles : {{subscription.days[3].nb_products}} <br> livraison : {{subscription.days[3].shipping_price}} <br> prix :
+                {{subscription.days[3].price}}</td>
               </tr>
               <tr>
                 <td scope="col"><a href="/subscriptions/{{subscription.id}}/weekdays/5" class="btn btn-outline-dark">Vendredi</a></td>
@@ -67,9 +70,12 @@
                 <td></td>
               </tr>
               <tr>
-                <td valign="center">Resume day 5 <br> nb articles <br> prix livraison</td>
-                <td valign="center">Resume day 6 <br> nb articles <br> prix livraison</td>
-                <td valign="center">Resume day 7 <br> nb articles <br> prix livraison</td>
+                <td valign="center">nb articles : {{subscription.days[4].nb_products}} <br> livraison : {{subscription.days[4].shipping_price}} <br> prix :
+                {{subscription.days[4].price}}</td>
+                <td valign="center">nb articles : {{subscription.days[5].nb_products}} <br> livraison : {{subscription.days[5].shipping_price}} <br> prix :
+                {{subscription.days[5].price}}</td>
+                <td valign="center">nb articles : {{subscription.days[6].nb_products}} <br> livraison : {{subscription.days[6].shipping_price}} <br> prix :
+                {{subscription.days[6].price}}</td>
                 <td></td>
               </tr>
           </tbody>

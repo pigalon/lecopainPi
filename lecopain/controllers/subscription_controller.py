@@ -106,13 +106,13 @@ def delete_subscription(subscription_id):
 def subscription_day(subscription_day_id):
     subscription_day = subscriptionServices.get_one_day(subscription_day_id)
     form = SubscriptionDayForm()
-    
+
     lines = (
         request.form.getlist('product_id[]'),
         request.form.getlist('quantity[]'),
         request.form.getlist('price[]'),
     )
-    
+
     if form.validate_on_submit():
         subscriptionServices.create_day_and_parse_line(
             subscription_day=subscription_day, lines=lines)
@@ -128,13 +128,13 @@ def subscription_day(subscription_day_id):
 def subscription_week_day(subscription_id, week_day):
     subscription_day = subscriptionServices.get_week_day(subscription_id, week_day)
     form = SubscriptionDayForm()
-    
+
     lines = (
         request.form.getlist('product_id[]'),
         request.form.getlist('quantity[]'),
         request.form.getlist('price[]'),
     )
-    
+
     if form.validate_on_submit():
         subscriptionServices.create_day_and_parse_line(
             subscription_day=subscription_day, lines=lines)
@@ -150,8 +150,8 @@ def subscription_week_day(subscription_id, week_day):
 @subscription_page.route("/subscriptions/days/<int:subscription_day_id>/cancel", methods=['GET', 'POST'])
 @login_required
 def cancel_subscription_day(subscription_day_id):
-    
+
     subscription_day = subscriptionServices.cancel_day(
         subscription_day_id=subscription_day_id)
 
-    return render_template(f'/subscriptions/{subscription_day.subscription_id}', subscription_day=subscription_day)
+    return redirect('/subscriptions/'+str(subscription_day.subscription_id))

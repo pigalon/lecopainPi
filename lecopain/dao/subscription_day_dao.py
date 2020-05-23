@@ -3,7 +3,8 @@ from sqlalchemy import or_, and_
 from datetime import datetime
 
 from lecopain.dao.models import (
-    SubscriptionDay, SubscriptionLine, Customer, SubscriptionDaySchema, CompleteSubscriptionDaySchema
+    SubscriptionDay, SubscriptionLine, Customer, SubscriptionDaySchema, CompleteSubscriptionDaySchema,
+    Category_Enum
 )
 
 
@@ -28,8 +29,6 @@ class SubscriptionDayDao:
         subscription_schema = CompleteSubscriptionDaySchema(many=False)
         return subscription_schema.dump(subscription_day)
 
-
-
     @staticmethod
     def read_one(id):
         subscription_day = SubscriptionDay.query.get_or_404(id)
@@ -41,6 +40,7 @@ class SubscriptionDayDao:
         subscription_day = SubscriptionDay.query.get_or_404(id)
         db.session.delete(subscription_day)
         db.session.commit()
+        
 
     @staticmethod
     def add_lines(subscription_day, lines):
@@ -54,5 +54,14 @@ class SubscriptionDayDao:
                 subscription_day=subscription_day, product_id=product_id, quantity=qty, price=float(price)))
         subscription_day.price = format(total_price, '.2f')
         subscription_day.nb_products = nb_products
+        db.session.commit()
+
+    @staticmethod
+    def get_category(subscription_day):
+        category = Category_Enum.ARTICLE
+        lines = subscription_day.get('lines')
+        if(len(lines) > 0):
+            category = lines[0].get('product_category')
+        return category
 
 

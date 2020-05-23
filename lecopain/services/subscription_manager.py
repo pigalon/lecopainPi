@@ -5,9 +5,12 @@ from lecopain.dao.models import Customer, Subscription
 from lecopain.dao.subscription_dao import SubscriptionDao
 from lecopain.dao.subscription_day_dao import SubscriptionDayDao
 from lecopain.helpers.date_utils import dates_range, Period_Enum
+from lecopain.services.business_service import BusinessService
 
 
 class SubscriptionManager():
+    
+    businessService = BusinessService()
 
     def create_subscription(self, subscription):
         created_subscription = SubscriptionDao.add(subscription)
@@ -17,7 +20,7 @@ class SubscriptionManager():
 
     def create_subscription_days(self, subscription_id):
         nb_days = 7
-        for number in range(1,nb_days):
+        for number in range(1, nb_days+1):
             SubscriptionDayDao.add(subscription_id, number)
 
 
@@ -58,12 +61,18 @@ class SubscriptionManager():
     # @
     #
     def create_day(self, subscription_day, lines):
-        subscription_day_db = SubscriptionDayDao.get_one(
-            subscription_day.get('id'))
-        #db.session.flush()
+        id = subscription_day.get('id')
+        
+        subscription_day_db = SubscriptionDayDao.get_one(id)
         SubscriptionDayDao.add_lines(subscription_day_db, lines)
-        #subscription_day_db.shipping_price, created_order.shipping_rules = self.businessService.apply_rules(
-        #    created_order)
+        
+        subscription_day_complete = SubscriptionDayDao.read_one(id)
+        category = SubscriptionDayDao.get_category(subscription_day_complete)
+        city = subscription_day_complete.get('customer_city')
+        nb_products = subscription_day_complete.get('nb_products')
+
+        subscription_day_db.shipping_price, subscription_day_db.shipping_rules = self.businessService.get_price_and_associated_rules(
+            category=category, city=city, nb_products=nb_products)
         db.session.commit()
 
         # @
