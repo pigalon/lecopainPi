@@ -47,10 +47,10 @@
             <table align="center" class="table table-striped">
             <thead>
               <tr>
-                <th scope="col"><a href="/subscriptions/days/{{subscription.days[1].id}}" class="btn btn-outline-dark">Lundi</a></th>
-                <th scope="col"><a href="/subscriptions/days/2" class="btn btn-outline-dark">Mardi</a></th>
-                <th scope="col"><a href="/subscriptions/days/3" class="btn btn-outline-dark">Mercredi</a></th>
-                <th scope="col"><a href="/subscriptions/days/4" class="btn btn-outline-dark">Jeudi</a></th>
+                <th scope="col"><a href="/subscriptions/{{subscription.id}}/weekdays/1" class="btn btn-outline-dark">Lundi</a></th>
+                <th scope="col"><a href="/subscriptions/{{subscription.id}}/weekdays/2" class="btn btn-outline-dark">Mardi</a></th>
+                <th scope="col"><a href="/subscriptions/{{subscription.id}}/weekdays/3" class="btn btn-outline-dark">Mercredi</a></th>
+                <th scope="col"><a href="/subscriptions/{{subscription.id}}/weekdays/4" class="btn btn-outline-dark">Jeudi</a></th>
               </tr>
             </thead>
             <tbody>
@@ -61,9 +61,9 @@
                 <td valign="center">Resume day 4 <br> nb articles <br> prix livraison</td>
               </tr>
               <tr>
-                <td scope="col"><a href="/subscriptions/days/5" class="btn btn-outline-dark">Vendredi</a></td>
-                <td scope="col"><a href="/subscriptions/days/6" class="btn btn-outline-dark">Samedi</a></td>
-                <td scope="col"><a href="/subscriptions/days/7" class="btn btn-outline-dark">Dimanche</a></td>
+                <td scope="col"><a href="/subscriptions/{{subscription.id}}/weekdays/5" class="btn btn-outline-dark">Vendredi</a></td>
+                <td scope="col"><a href="/subscriptions/{{subscription.id}}/weekdays/6" class="btn btn-outline-dark">Samedi</a></td>
+                <td scope="col"><a href="/subscriptions/{{subscription.id}}/weekdays/7" class="btn btn-outline-dark">Dimanche</a></td>
                 <td></td>
               </tr>
               <tr>

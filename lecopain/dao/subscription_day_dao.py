@@ -20,6 +20,15 @@ class SubscriptionDayDao:
     def get_one(id):
         return SubscriptionDay.query.get_or_404(id)
 
+    @staticmethod
+    def get_one_by_week_day(subscription_id, week_day):
+        subscription_day =  SubscriptionDay.query.filter(
+            SubscriptionDay.subscription_id == subscription_id).filter(
+              SubscriptionDay.day_of_week == int(week_day)).first()
+        subscription_schema = CompleteSubscriptionDaySchema(many=False)
+        return subscription_schema.dump(subscription_day)
+
+
 
     @staticmethod
     def read_one(id):

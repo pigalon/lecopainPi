@@ -34,6 +34,9 @@ class SubscriptionManager():
     def get_one_day(self,  subscription_day_id):
         return SubscriptionDayDao.read_one(subscription_day_id)
 
+    def get_week_day(self, subscription_id, week_day):
+        return SubscriptionDayDao.get_one_by_week_day(subscription_id, week_day)
+
 
     def delete_subscription(self, subscription_id):
         SubscriptionDao.delete(subscription_id)
@@ -62,5 +65,17 @@ class SubscriptionManager():
         #subscription_day_db.shipping_price, created_order.shipping_rules = self.businessService.apply_rules(
         #    created_order)
         db.session.commit()
+
+        # @
+    #
+    def cancel_day(self, subscription_day_id):
+        subscription_day_tmp = SubscriptionDayDao.get_one(subscription_day_id)
+        subscription_id = subscription_day_tmp.subscription_id
+        number = subscription_day_tmp.day_of_week
+        SubscriptionDayDao.delete(subscription_day_id)
+        subscription_day = SubscriptionDayDao.add(subscription_id, number)
+        db.session.commit()
+        return subscription_day
+
 
 

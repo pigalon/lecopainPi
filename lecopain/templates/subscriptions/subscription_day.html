@@ -5,9 +5,9 @@
 <br>
   <table width="100%" align="center">
     <tr>
-      <td width="60%" style="text-align:right"><span class="float-left"><a href="/subscriptions_days" class="btn btn-outline-dark">Retour List</a></span>Changer le statut : </td>
+      <td width="60%" style="text-align:right"><span class="float-left"><a href="/subscriptions/{{ subscription_day.subscription }}" class="btn btn-outline-dark">Retour List</a></span>Changer le statut : </td>
       <td width="40%"  style="text-align:right">
-          <a href="/subscription_days/{{ subscription_day.id }}/cancel" class="btn btn-outline-dark" > Remettre à zéro </a>
+          <a href="/subscriptions/days/{{ subscription_day.id }}/cancel" class="btn btn-outline-dark" > Remettre à zéro </a>
       </td>
     </tr>
   </table>
@@ -66,7 +66,6 @@
       </div>
     </div>
   </form>
-
 
 
 
