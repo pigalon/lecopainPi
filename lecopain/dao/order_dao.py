@@ -121,3 +121,4 @@ class OrderDao:
         order = order = Order.query.get_or_404(id)
         db.session.delete(order)
         db.session.commit()
+

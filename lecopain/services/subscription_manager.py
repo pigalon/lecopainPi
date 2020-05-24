@@ -1,11 +1,12 @@
 from datetime import datetime
 
 from lecopain.app import app, db
-from lecopain.dao.models import Customer, Subscription
+from lecopain.dao.models import Customer, Subscription, Order
 from lecopain.dao.subscription_dao import SubscriptionDao
 from lecopain.dao.subscription_day_dao import SubscriptionDayDao
 from lecopain.helpers.date_utils import dates_range, Period_Enum
 from lecopain.services.business_service import BusinessService
+from datetime import timedelta
 
 
 class SubscriptionManager():
@@ -70,9 +71,9 @@ class SubscriptionManager():
         category = SubscriptionDayDao.get_category(subscription_day_complete)
         city = subscription_day_complete.get('customer_city')
         nb_products = subscription_day_complete.get('nb_products')
-
         subscription_day_db.shipping_price, subscription_day_db.shipping_rules = self.businessService.get_price_and_associated_rules(
             category=category, city=city, nb_products=nb_products)
+        subscription_day_db.subscription.category = category
         db.session.commit()
 
         # @
@@ -85,6 +86,31 @@ class SubscriptionManager():
         subscription_day = SubscriptionDayDao.add(subscription_id, number)
         db.session.commit()
         return subscription_day
+    
+    def generate_orders(self, subscription):
+        # get a list from all days fo the periode : dict
+        # date_of_day : datetime 8:00
+        # get the id of the subscription_day
+        
+        # for all days from the list :
+        # get the subscription_day
+        # create the order (convertion from subscription_day) for the day and for the customer / seller / nb_pducts / prices etc...
+        # get all the subscription_lines and (convertion to line)
+        days = []
+        current_dt = subscription.start_dt
+        day = {}
+        #customer = subscription.customer
+        #subscription.category
+        
+        while current_dt <= subscription.end_dt:
+            day['dt'] = current_dt
+            day['day_number'] = current_dt.weekday()+1
+            day['customer_id'] = subscription.customer_id
+            day['category'] = subscription.category
+            day['lines'] = []
+                       
+            # increment day
+            current_dt = current_dt + timedelta(days=1)
 
 
 

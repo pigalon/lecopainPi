@@ -110,6 +110,9 @@ class Order(db.Model):
     category = db.Column(db.String(20), nullable=True, default=Category_Enum.ARTICLE.value)
     products = db.relationship(
         "Product", secondary='lines', viewonly=True)
+    subscription_id = db.Column(db.Integer, db.ForeignKey(
+        'subscriptions.id'), nullable=True)
+    subscription = db.relationship('Subscription')
 
     def __repr__(self):
         return '<Order {}>'.format(self.id)
@@ -261,12 +264,16 @@ class Subscription(db.Model):
     payment_status = db.Column(db.String(20), nullable=False)
     promotion = db.Column(db.String(200))
     price = db.Column(db.Float, default=0.0)
-    shipping_price = db.Column(db.Float)
+    shipping_price = db.Column(db.Float, default=0.0)
     nb_products = db.Column(db.Integer, default=0)
     nb_orders = db.Column(db.Integer, default=0)
+    category = db.Column(
+        db.String(20), default=Category_Enum.ARTICLE.value)
 
     days = db.relationship('SubscriptionDay', backref='week',
                            lazy=True, cascade="all, delete-orphan")
+    orders = db.relationship('Order', backref='subref', lazy=True,
+                             cascade="all, delete-orphan")
 
 
 class SubscriptionDay(db.Model):
@@ -278,8 +285,8 @@ class SubscriptionDay(db.Model):
         'subscriptions.id'))
     subscription = db.relationship('Subscription')
     day_of_week = db.Column(db.Integer)
-    nb_products = db.Column(db.Integer)
-    price = db.Column(db.Float, default=0)
+    nb_products = db.Column(db.Integer, default=0)
+    price = db.Column(db.Float, default=0.0)
     shipping_price = db.Column(db.Float, default=0.0)
     products = db.relationship(
         "Product", secondary='subscription_lines', viewonly=True)
@@ -312,8 +319,8 @@ class SubscriptionLine(db.Model):
         "lines", cascade="all, delete-orphan"))
     product = db.relationship(Product, backref=db.backref(
         "subscription_lines"))
-    quantity = db.Column(db.Integer)
-    price = db.Column(db.Float)
+    quantity = db.Column(db.Integer, default=0)
+    price = db.Column(db.Float, default=0.0)
 
     def to_dict(self):
         return {
