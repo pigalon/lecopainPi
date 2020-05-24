@@ -23,40 +23,23 @@ class OrderManager():
                 items[_x][headers[x]] = _i
         return items
 
-    # @
-    #
     def create_order_and_parse_line(self, order, lines):
         parsed_lines = self.parse_lines(lines)
-        self.create_order(order, parsed_lines)
-
-    # @
-    #
-    def create_order(self, order, lines):
-        order = self.set_order_category(order, lines)
-        created_order = OrderDao.add(order)
-        db.session.flush()
-        OrderDao.add_lines(created_order, lines)
+        created_order = OrderDao.create_order(order, parsed_lines)
         created_order.shipping_price, created_order.shipping_rules = self.businessService.apply_rules(
-            created_order)
-        db.session.commit()
+            created_order)    
+        created_order.category = created_order.products[0].category
+        OrderDao.update_db(created_order)
 
-    def set_order_category(self, order, lines):
-        if 'category' not in order.keys():
-            category = ProductDao.get_category_from_lines(lines)
-            order['category'] = category
-        return order
+
+    # def set_order_category(self, order, lines):
+    #     if 'category' not in order.keys():
+    #         category = ProductDao.get_category_from_lines(lines)
+    #         order['category'] = category
+    #     return order
 
     def delete_order(self, order_id):
         OrderDao.delete(order_id)
-
-    # @
-    #
-    def update_order(self, order, products, quantities, prices):
-        # TODO update date instead
-        #order.created_at = datetime.now()
-        self.delete_every_order_dependencies(order)
-        self.create_order(order, products, quantities, prices)
-
 
     # @
     #

@@ -96,21 +96,36 @@ class SubscriptionManager():
         # get the subscription_day
         # create the order (convertion from subscription_day) for the day and for the customer / seller / nb_pducts / prices etc...
         # get all the subscription_lines and (convertion to line)
-        days = []
+        week_day  = 0
         current_dt = subscription.start_dt
-        day = {}
+        order = {}
+
         #customer = subscription.customer
         #subscription.category
+        order['customer_id'] = subscription.customer_id
+        order['shipping_address'] = subscription.customer.shipping_address
+        order['shipping_cp'] = subscription.customer.shipping_cp
+        order['shipping_city'] = subscription.customer.shipping_city
+        order['category'] = subscription.category
+        order['subscription_id'] = subscription.id
         
         while current_dt <= subscription.end_dt:
-            day['dt'] = current_dt
-            day['day_number'] = current_dt.weekday()+1
-            day['customer_id'] = subscription.customer_id
-            day['category'] = subscription.category
-            day['lines'] = []
+            order['shipping_dt'] = current_dt
+            
+            week_day = current_dt.weekday()+1
+
+            subscription_day = self.get_week_day(subscription_id=subscription.id, week_day=week_day)
+            order['nb_products'] = subscription_day
+            if len(subscription_day.lines) > 0:
+                lines = [] 
+                for line in subscription_day.lines :
+                    lines.append({line.product_id, line.quantity, line.price})
+                
                        
             # increment day
             current_dt = current_dt + timedelta(days=1)
+
+            
 
 
 

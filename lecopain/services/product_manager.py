@@ -32,3 +32,8 @@ class ProductManager():
 
     def get_one(self, id):
         return ProductDao.read_one(id)
+
+    def get_category_from_lines(self, lines):
+        id = lines[0].get('product_id')
+        product = ProductDao.get_one(id)
+        return product.category

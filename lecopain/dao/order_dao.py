@@ -122,3 +122,31 @@ class OrderDao:
         db.session.delete(order)
         db.session.commit()
 
+    # @
+    #
+    @staticmethod
+    def create_order(order, lines):
+        # order = OrderDao.set_order_category(order, lines)
+        created_order = OrderDao.add(order)
+        db.session.flush()
+        OrderDao.add_lines(created_order, lines)
+        db.session.commit()
+        return created_order
+
+    @staticmethod
+    def update_db(order):
+        db.session.commit()
+    
+    # @
+    #
+    @staticmethod
+    def generate_order(order_dict, lines):
+        Order
+        order = OrderDao.set_order_category(order, lines)
+        created_order = OrderDao.add(order)
+        db.session.flush()
+        OrderDao.add_lines(created_order, lines)
+        created_order.shipping_price, created_order.shipping_rules = self.businessService.apply_rules(
+            created_order)
+        db.session.commit()
+
