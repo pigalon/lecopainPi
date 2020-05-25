@@ -2,6 +2,7 @@ from datetime import datetime
 
 from lecopain.app import app, db
 from lecopain.dao.models import Customer, Subscription, Order
+from lecopain.dao.order_dao import OrderDao
 from lecopain.dao.subscription_dao import SubscriptionDao
 from lecopain.dao.subscription_day_dao import SubscriptionDayDao
 from lecopain.helpers.date_utils import dates_range, Period_Enum
@@ -34,6 +35,9 @@ class SubscriptionManager():
 
     def get_one(self,  subscription_id):
         return SubscriptionDao.read_one(subscription_id)
+    
+    def get_one_db(self,  subscription_id):
+        return SubscriptionDao.get_one(subscription_id)
     
     def get_one_day(self,  subscription_day_id):
         return SubscriptionDayDao.read_one(subscription_day_id)
@@ -86,46 +90,66 @@ class SubscriptionManager():
         subscription_day = SubscriptionDayDao.add(subscription_id, number)
         db.session.commit()
         return subscription_day
-    
+
     def generate_orders(self, subscription):
         # get a list from all days fo the periode : dict
         # date_of_day : datetime 8:00
         # get the id of the subscription_day
-        
         # for all days from the list :
         # get the subscription_day
         # create the order (convertion from subscription_day) for the day and for the customer / seller / nb_pducts / prices etc...
         # get all the subscription_lines and (convertion to line)
         week_day  = 0
         current_dt = subscription.start_dt
+        delta = subscription.end_dt - subscription.start_dt
+        nb_days = 1
         order = {}
+        total_nb_products = 0
+        items=[]
+        nb_products=0
 
         #customer = subscription.customer
         #subscription.category
         order['customer_id'] = subscription.customer_id
-        order['shipping_address'] = subscription.customer.shipping_address
-        order['shipping_cp'] = subscription.customer.shipping_cp
-        order['shipping_city'] = subscription.customer.shipping_city
+        order['seller_id'] = subscription.seller_id
+        #order['shipping_address'] = subscription.customer.shipping_address
+        #order['shipping_cp'] = subscription.customer.shipping_cp
+        #order['shipping_city'] = subscription.customer.shipping_city
         order['category'] = subscription.category
         order['subscription_id'] = subscription.id
-        
+
         while current_dt <= subscription.end_dt:
             order['shipping_dt'] = current_dt
-            
-            week_day = current_dt.weekday()+1
+            order['title'] = f'abo {subscription.id} - {nb_days}/{delta.days}'
 
-            subscription_day = self.get_week_day(subscription_id=subscription.id, week_day=week_day)
-            order['nb_products'] = subscription_day
-            if len(subscription_day.lines) > 0:
-                lines = [] 
-                for line in subscription_day.lines :
-                    lines.append({line.product_id, line.quantity, line.price})
-                
-                       
+            week_day = current_dt.weekday()+1
+            subscription_day = self.get_week_day(
+                subscription_id=subscription.id, week_day=week_day)
+
+            nb_products = subscription_day.get('nb_products')
+
+            order['nb_products'] = nb_products
+            total_nb_products = total_nb_products + nb_products
+            lines = []
+            if nb_products > 0:
+                for line in subscription_day.get('lines') :
+                    lines.append({'product_id': line.get('product_id'), 'quantity': line.get(
+                        'quantity'), 'price': line.get('price')})
+
+                created_order = OrderDao.create_order(order, lines)
+                created_order.shipping_price, created_order.shipping_rules = self.businessService.apply_rules(
+                created_order)
+                created_order.category = created_order.products[0].category
+                OrderDao.update_db(created_order)
             # increment day
             current_dt = current_dt + timedelta(days=1)
+            nb_days = nb_days + 1
 
-            
+        items.append({'name' : 'nb_products', 'value' : total_nb_products})
+        SubscriptionDao.update_db(subscription, items)
+
+
+
 
 
 

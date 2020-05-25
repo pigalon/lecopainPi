@@ -45,7 +45,6 @@ def order_create():
     )
 
     order = {'title': form.title.data,
-             'status': form.status.data,
              'customer_id': form.customer_id.data,
              'seller_id': form.seller_id.data,
              'shipping_dt': form.shipping_dt.data,
@@ -57,10 +56,9 @@ def order_create():
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect('/orders')
 
-    orderStatusList = orderServices.get_order_status()
     customers = customerService.optim_get_all()
 
-    return render_template('/orders/create_order.html', title='Creation de commande', form=form, customers=customers, orderStatusList=orderStatusList)
+    return render_template('/orders/create_order.html', title='Creation de commande', form=form, customers=customers)
 
 #####################################################################
 #                                                                   #
@@ -154,15 +152,6 @@ def display_delete_order(order_id):
 def delete_order(order_id):
     orderServices.delete_order(order_id)
     return jsonify({})
-
-
-#####################################################################
-#                                                                   #
-#####################################################################
-@order_page.route('/api/order/status/')
-@login_required
-def api_order_status():
-    return jsonify({'orders_status': orderServices.get_order_status})
 
 #####################################################################
 #                                                                   #

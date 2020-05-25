@@ -55,7 +55,7 @@ class OrderDao:
         customer = Customer.query.get_or_404(int(order.get('customer_id')))
         # TODO
         ## get Customer address =| set order address
-        
+
         created_order = Order(title=order.get('title'),
             status=order.get('status'),
             customer_id=order.get('customer_id'),
@@ -85,19 +85,18 @@ class OrderDao:
     @staticmethod
     def update(order):
         created_order = Order(title=order.get('title'),
-                              status=order.get('status'),
                               customer_id=order.get('customer_id'),
                               seller_id=order.get('seller_id'),
                               shipping_dt=order.get('shipping_dt'))
         db.session.add(created_order)
         return created_order
-    
+
     @staticmethod
     def update_shipping_dt(id, shipping_dt):
         order = order = Order.query.get_or_404(id)
         order.shipping_dt = shipping_dt
         db.session.commit()
-        
+
     @staticmethod
     def update_status(id, status):
         order = order = Order.query.get_or_404(id)
@@ -109,13 +108,13 @@ class OrderDao:
         order = order = Order.query.get_or_404(id)
         order.shipping_status = status
         db.session.commit()
-    
+
     @staticmethod
     def update_payment_status(id, status):
         order = order = Order.query.get_or_404(id)
         order.payment_status = status
         db.session.commit()
-        
+
     @staticmethod
     def delete(id):
         order = order = Order.query.get_or_404(id)
@@ -126,7 +125,6 @@ class OrderDao:
     #
     @staticmethod
     def create_order(order, lines):
-        # order = OrderDao.set_order_category(order, lines)
         created_order = OrderDao.add(order)
         db.session.flush()
         OrderDao.add_lines(created_order, lines)
@@ -136,17 +134,13 @@ class OrderDao:
     @staticmethod
     def update_db(order):
         db.session.commit()
-    
+
     # @
     #
     @staticmethod
     def generate_order(order_dict, lines):
-        Order
-        order = OrderDao.set_order_category(order, lines)
         created_order = OrderDao.add(order)
         db.session.flush()
         OrderDao.add_lines(created_order, lines)
-        created_order.shipping_price, created_order.shipping_rules = self.businessService.apply_rules(
-            created_order)
         db.session.commit()
 

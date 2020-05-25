@@ -20,10 +20,10 @@
         <a href="/subscriptions/{{ subscription.id }}/paid/NON" class="btn btn-outline-dark">Non Payée </a>
         {% endif %}
         {% if subscription.shipping_status != 'OUI' %}
-        <a href="/subscriptions/{{ subscription.id }}/shipped/OUI" class="btn btn-outline-dark">Livrée </a>
+        <a href="/subscriptions/{{ subscription.id }}/finished" class="btn btn-outline-dark">Terminée </a>
         {% endif %}
         {% if subscription.shipping_status == 'OUI' %}
-        <a href="/subscriptions/{{ subscription.id }}/shipped/NON" class="btn btn-outline-dark">Non Livrée </a>
+        <a href="/subscriptions/{{ subscription.id }}/finished" class="btn btn-outline-dark">Non Terminée </a>
         {% endif %}
       </td>
     </tr>
@@ -33,7 +33,10 @@
 <br>
     <div class="card  " >
         <div class="card-header text-white bg-info">
-          Abonnement N° {{subscription.id}} - {{subscription.customer_name}} <span class="right">{{ subscription.shipping_formatted_dt }}</span>
+          Abonnement N° {{subscription.id}} - {{subscription.customer_name}} 
+          {% if subscription.nb_products == 0 %}
+            <span class="right"><a href="/subscriptions/generate/{{ subscription.id }}" class="btn btn-outline-dark">Générer commandes</a></span>
+          {% endif %}
         </div>
         <div class="card-body">
           <ul class="list-group list-group-flush">

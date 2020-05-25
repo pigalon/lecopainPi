@@ -510,6 +510,7 @@ class CompleteSubscriptionSchema(SQLAlchemyAutoSchema):
 
 class SubscriptionLineSchema(SQLAlchemyAutoSchema):
     product_name = fields.Method("format_product_name", dump_only=True)
+    product_id = fields.Method("format_product_id", dump_only=True)
     product_category = fields.Method("format_product_category", dump_only=True)
 
     class Meta:
@@ -519,6 +520,10 @@ class SubscriptionLineSchema(SQLAlchemyAutoSchema):
 
     def format_product_name(self, subscription_line):
         return "{}".format(subscription_line.product.name)
+
+    def format_product_id(self, subscription_line):
+        return "{}".format(subscription_line.product.id)
+
 
     def format_product_category(self, subscription_line):
         return "{}".format(subscription_line.product.category)

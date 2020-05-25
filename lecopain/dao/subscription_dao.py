@@ -54,21 +54,29 @@ class SubscriptionDao:
         # Serialize the data for the response
         subscription_schema = SubscriptionSchema(many=True)
         return subscription_schema.dump(all_subscriptions)
-    
+
     @staticmethod
     def read_one(id):
-
         # Create the list of people from our data
         subscription = Subscription.query.get_or_404(id)
-
         # Serialize the data for the response
         subscription_schema = CompleteSubscriptionSchema(many=False)
         return subscription_schema.dump(subscription)
-    
+
+    @staticmethod
+    def get_one(id):
+        return Subscription.query.get_or_404(id)
+
     @staticmethod
     def delete(id):
         subscription = Subscription.query.get_or_404(id)
         db.session.delete(subscription)
+        db.session.commit()
+
+    @staticmethod
+    def update_db(subscription, items):
+        for item in items:
+            setattr(subscription, item['name'], item['value'])
         db.session.commit()
 
 
