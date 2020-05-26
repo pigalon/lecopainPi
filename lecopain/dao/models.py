@@ -115,6 +115,9 @@ class Order(db.Model):
     subscription = db.relationship('Subscription', backref=db.backref(
         "subscriptions", cascade="all, delete-orphan"))
 
+    def add_line(self, line):
+        self.lines.append(line)
+
     def __repr__(self):
         return '<Order {}>'.format(self.id)
 

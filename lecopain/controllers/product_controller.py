@@ -126,3 +126,4 @@ def api_products_by_seller_id(seller_id):
         js_products.append(data)
 
     return jsonify({'products': js_products})
+
