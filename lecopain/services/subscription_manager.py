@@ -116,7 +116,6 @@ class SubscriptionManager():
         #order['shipping_cp'] = subscription.customer.shipping_cp
         #order['shipping_city'] = subscription.customer.shipping_city
         order['category'] = subscription.category
-        order['subscription_id'] = subscription.id
 
         while current_dt <= subscription.end_dt:
             order['shipping_dt'] = current_dt
@@ -140,6 +139,7 @@ class SubscriptionManager():
                 created_order.shipping_price, created_order.shipping_rules = self.businessService.apply_rules(
                 created_order)
                 created_order.category = created_order.products[0].category
+                created_order.subscription_id = subscription.id
                 OrderDao.update_db(created_order)
             # increment day
             current_dt = current_dt + timedelta(days=1)

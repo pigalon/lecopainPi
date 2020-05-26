@@ -112,7 +112,9 @@ class Order(db.Model):
         "Product", secondary='lines', viewonly=True)
     subscription_id = db.Column(db.Integer, db.ForeignKey(
         'subscriptions.id'), nullable=True)
-    subscription = db.relationship('Subscription')
+    #subscription = db.relationship('Subscription')
+    subscription = db.relationship('Subscription', backref=db.backref(
+        "subscriptions", cascade="all, delete-orphan"))
 
     def __repr__(self):
         return '<Order {}>'.format(self.id)
@@ -272,8 +274,7 @@ class Subscription(db.Model):
 
     days = db.relationship('SubscriptionDay', backref='week',
                            lazy=True, cascade="all, delete-orphan")
-    orders = db.relationship('Order', backref='subref', lazy=True,
-                             cascade="all, delete-orphan")
+
 
 
 class SubscriptionDay(db.Model):
@@ -381,6 +382,8 @@ class OptimizedCustomerSchema(SQLAlchemySchema):
 class OrderSchema(SQLAlchemyAutoSchema):
     customer_name = fields.Method("format_customer_name", dump_only=True)
     seller_name = fields.Method("format_seller_name", dump_only=True)
+    subscription_id = fields.Method(
+        "format_subscription_id", dump_only=True)
 
     class Meta:
         # Fields to expose
@@ -393,6 +396,10 @@ class OrderSchema(SQLAlchemyAutoSchema):
 
     def format_seller_name(self, order):
         return "{}".format(order.seller.name)
+
+    def format_subscription_id(self, order):
+        if order.subscription != None:
+            return "{}".format(order.subscription.id)
 
 class CompleteOrderSchema(SQLAlchemyAutoSchema):
     customer_name = fields.Method("format_customer_name", dump_only=True)
