@@ -106,7 +106,10 @@ class SubscriptionManager():
         order = {}
         total_nb_products = 0
         items=[]
-        nb_products=0
+        nb_products = 0
+        nb_orders = 0
+        total_shipping_price = 0.0
+        total_price = 0.0
 
         #customer = subscription.customer
         #subscription.category
@@ -141,11 +144,18 @@ class SubscriptionManager():
                 created_order.category = created_order.products[0].category
                 created_order.subscription_id = subscription.id
                 OrderDao.update_db(created_order)
+                nb_orders = nb_orders + 1
+                total_shipping_price = total_shipping_price + created_order.shipping_price
+                total_price = total_price + created_order.price
             # increment day
             current_dt = current_dt + timedelta(days=1)
             nb_days = nb_days + 1
 
         items.append({'name' : 'nb_products', 'value' : total_nb_products})
+        items.append({'name': 'nb_orders', 'value': nb_orders})
+        items.append({'name': 'shipping_price', 'value': total_shipping_price})
+        items.append({'name': 'price', 'value': total_price})
+        
         SubscriptionDao.update_db(subscription, items)
 
 

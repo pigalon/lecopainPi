@@ -117,6 +117,9 @@ class OrderManager():
     def get_all(self):
         return OrderDao.read_all()
 
+    def get_all_by_subscription(self, subscription_id):
+        return OrderDao.read_by_subscription(subscription_id)
+
     def get_some(self,  customer_id=0, period=Period_Enum.ALL.value):
         start,end = dates_range(period)
         return OrderDao.read_some(customer_id=customer_id, start=start, end=end)

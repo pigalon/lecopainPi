@@ -112,7 +112,6 @@ class Order(db.Model):
         "Product", secondary='lines', viewonly=True)
     subscription_id = db.Column(db.Integer, db.ForeignKey(
         'subscriptions.id'), nullable=True)
-    #subscription = db.relationship('Subscription')
     subscription = db.relationship('Subscription', backref=db.backref(
         "subscriptions", cascade="all, delete-orphan"))
 
@@ -274,6 +273,7 @@ class Subscription(db.Model):
 
     days = db.relationship('SubscriptionDay', backref='week',
                            lazy=True, cascade="all, delete-orphan")
+    orders = db.relationship('Order', backref='subref', lazy=True)
 
 
 
@@ -339,7 +339,6 @@ class CustomerSchema(SQLAlchemyAutoSchema):
         # Fields to expose
         model = Customer
         load_instance = True
-        
 
 class SellerSchema(SQLAlchemyAutoSchema):
 
@@ -378,7 +377,7 @@ class OptimizedCustomerSchema(SQLAlchemySchema):
     id = auto_field()
     firstname = auto_field()
     lastname = auto_field()
-    
+
 class OrderSchema(SQLAlchemyAutoSchema):
     customer_name = fields.Method("format_customer_name", dump_only=True)
     seller_name = fields.Method("format_seller_name", dump_only=True)
@@ -486,6 +485,7 @@ class CompleteSubscriptionSchema(SQLAlchemyAutoSchema):
     start_formatted_dt = fields.Method("format_start_dt", dump_only=True)
     end_formatted_dt = fields.Method("format_end_dt", dump_only=True)
     days = fields.Method("format_days", dump_only=True)
+    
 
     class Meta:
         # Fields to expose

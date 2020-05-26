@@ -164,6 +164,15 @@ def api_orders():
 #####################################################################
 #                                                                   #
 #####################################################################
+@order_page.route('/api/orders/subscriptions/<int:subscription_id>')
+@login_required
+def api_orders_by_subscription(subscription_id):
+    return jsonify({'orders': orderServices.get_all_by_subscription(subscription_id)})
+
+
+#####################################################################
+#                                                                   #
+#####################################################################
 @order_page.route('/api/orders/period/<string:period>/customers/<int:customer_id>')
 @login_required
 def api_day_orders(period, customer_id):

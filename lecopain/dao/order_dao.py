@@ -18,6 +18,17 @@ class OrderDao:
         # Serialize the data for the response
         order_schema = OrderSchema(many=True)
         return order_schema.dump(all_orders)
+    
+    @staticmethod
+    def read_by_subscription(subscription_id):
+        all_orders = Order.query \
+            .filter(Order.subscription_id == subscription_id) \
+            .order_by(Order.shipping_dt.desc()) \
+            .all()
+
+        # Serialize the data for the response
+        order_schema = OrderSchema(many=True)
+        return order_schema.dump(all_orders)
 
     @staticmethod
     def read_one(id):
