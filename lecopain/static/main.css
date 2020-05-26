@@ -4,17 +4,14 @@ body {
     margin-top: 0rem;
 }
 .container {
-  min-height: 600px;
+  min-height: 500px;
 }
 footer {
     position:relative;
     bottom:0;
     width:100%;
-    height:100px;   /* Height of the footer */
-    color: #ffffff;
-    padding:10px;
-    a.nav-footer:link, a.nav-footer:visited {                      color: white !important; }
-
+    height:400px;   /* Height of the footer */
+    background: #333333;
 }
 h1, h2, h3, h4, h5, h6 {
     color:#444444;

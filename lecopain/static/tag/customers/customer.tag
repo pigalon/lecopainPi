@@ -2,7 +2,7 @@
     <div class="form-group">
         Ville :<br>
         <select onchange={ load_customers } class="form-control" name="city" id="city" ref="city" style="width: 12rem; display:inline-block" >
-            <option value="0" SELECTED>Tous</option>
+            <option value="all" SELECTED>Toutes</option>
             <option each="{ city in cities }" value={city}>{city} </option>
         </select>
         <div class="right">
@@ -43,6 +43,7 @@
 
 		this.on('mount', function() {
             this.load_customers()
+            this.load_cities()
             const location  = $('window.location')
 		});
 
@@ -57,7 +58,7 @@
                 city = 'all'
             }
 
-            customer_url = customer_url.concat('city/',city);
+            customer_url = customer_url.concat('cities/',city);
 
 			$.ajax({
 					url: customer_url,
@@ -66,6 +67,19 @@
 					contentType: "application/json; charset=utf-8",
 					success: function(data) {
 						self.customers = data['customers']
+                        self.update()
+					}
+				});
+		}
+        load_cities(){
+			var url = '/api/customers/cities';
+			$.ajax({
+					url: url,
+					type: "GET",
+					dataType: "json",
+					contentType: "application/json; charset=utf-8",
+					success: function(data) {
+						self.cities = data['cities']
                         self.update()
 					}
 				});

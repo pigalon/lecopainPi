@@ -76,8 +76,6 @@ class Customer(db.Model):
     #         'orders': orders_dict
     #     }
 
-
-
 class Order(db.Model):
     __tablename__ = 'orders'
     __table_args__ = {'extend_existing': True}
@@ -105,7 +103,6 @@ class Order(db.Model):
 
     payment_status = db.Column(
         db.String(20), nullable=False, default=PaymentStatus_Enum.NON.value)
-    subscription_id = db.Column(db.Integer, nullable=True)
     shipping_rules = db.Column(db.String(20), nullable=True)
     category = db.Column(db.String(20), nullable=True, default=Category_Enum.ARTICLE.value)
     products = db.relationship(

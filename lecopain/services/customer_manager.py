@@ -24,3 +24,9 @@ class CustomerManager():
 
     def get_one(self, id):
         return CustomerDao.read_one(id)
+
+    def get_all_cities(self):
+        return CustomerDao.get_all_cities()
+
+    def get_all_by_city(self, city):
+        return CustomerDao.read_all_by_cities(city)
