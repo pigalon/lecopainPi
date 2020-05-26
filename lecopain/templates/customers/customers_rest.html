@@ -1,6 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
 <h1>Clients</h1>
+
+<search-customer></search-customer>
     {% set count = O %}
    
     <table class="table table-striped">
@@ -33,17 +35,8 @@
             </tbody>
         </table>
 {% endblock %}
-{% block right_menu %}
-<div class="content-section">
-    <h3>Menu des clients</h3>
-    <p class='text-muted'>
-        <ul class="list-group">
-        <li class="list-group-item list-group-item-light">
-            <a class="nav-link" href="/customers/new">Création de client</a></li>
-        <li class="list-group-item list-group-item-light">
-            <a class="nav-link" href="/customers/city/Langlade">Clients de Langlade</a></li>
-        
-        </ul>
-    </p>
-</div>
+{% block scripts %}
+<script>
+    riot.mount("search-customer");
+</script>
 {% endblock %}
