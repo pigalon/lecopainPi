@@ -1,36 +1,51 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1>Page Client</h1>
-    <div class="content-section">
-        <p>{{customer.firstname}}</p>
-        <p>{{customer.lastname}}</p>
-    </div>
-    <div>
-        <h3>Liste des commandes</h3>
-    </div>
-    <div class="content-section">
-        {% for order in customer.orders %}
-            <p>{{order.title}}</p>
-            <p>{{order.shipping_formatted_dt}}</p>
-        {% endfor %}
-    </div>
-{% endblock %}
-{% block right_menu %}
-<div class="content-section">
-    <h3>Our Sidebar</h3>
-    <p class='text-muted'>You can put any information here you'd like.
-        <ul class="list-group">
-        <li class="list-group-item list-group-item-light">
-                <a class="nav-link" href="/customers/new">Création de client</a></li>
-        <li class="list-group-item list-group-item-light">
-                <a class="nav-link" href="/customers/city/Langlade">Clients de Langlade</a></li>
-        <li class="list-group-item list-group-item-light">Calendars</li>
-        <li class="list-group-item list-group-item-light">etc</li>
-        </ul>
-    </p>
-</div>
-{% endblock %}
 
+
+    <div class="card  ">
+        <div class="card-header text-white bg-info">
+            Client N° {{customer.id}} <span class="right"><a href="/customers/update/{{ customer.id }}" class="btn btn-outline-dark">Modifier
+                    </a></span>
+        </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                {% set total = {'value': 0.00} %}
+                <li class="list-group-item">
+                    <b>Prénom Nom : </b>{{customer.firstname}} {{customer.lastname}}
+                </li>
+                <li class="list-group-item">
+                    <b>Adresse : </b> {{customer.address}} {{customer.cp}} {{customer.city}}
+                </li>
+                <li class="list-group-item">
+                    <b>Email : </b> {{customer.email}} 
+                </li>
+            </ul>
+        </div>
+    </div>
+    {%if customer.nb_orders | int > 0 %}
+        <order-list customer_id='{{customer.id}}'></order-list>
+    {%endif%}
+    <br>
+    {%if customer.nb_subscriptions | int > 0 %}
+        <subscription-list customer_id='{{customer.id}}'></subscription-list>
+    {%endif%}
+
+    <div class="card">
+        <div class="card-header text-white bg-info">
+            Suppression <span class="float-right"><a href="/customers/delete/{{ customer.id }}"
+                    class="btn btn-light text-danger" alt="Supprimer"><i class="fas fa-trash-alt"></i></a></span>
+        </div>
+    </div>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='tag/customers/order_list.tag') }}" type="riot/tag"></script>
+<script src="{{ url_for('static', filename='tag/customers/subscription_list.tag') }}" type="riot/tag"></script>
+<script>
+    riot.mount("order-list");
+    riot.mount("subscription-list");
+</script>
+{% endblock %}
 
 
 

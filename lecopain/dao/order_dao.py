@@ -1,7 +1,7 @@
 from lecopain.app import db
 
 from lecopain.dao.models import (
-    Order, Line, Customer, OrderSchema, CompleteOrderSchema
+    Order, Line, Seller, Customer, OrderSchema, CompleteOrderSchema
 )
 
 class OrderDao:
@@ -18,7 +18,7 @@ class OrderDao:
         # Serialize the data for the response
         order_schema = OrderSchema(many=True)
         return order_schema.dump(all_orders)
-    
+
     @staticmethod
     def read_by_subscription(subscription_id):
         all_orders = Order.query \
@@ -29,6 +29,29 @@ class OrderDao:
         # Serialize the data for the response
         order_schema = OrderSchema(many=True)
         return order_schema.dump(all_orders)
+
+    @staticmethod
+    def read_by_customer(customer_id):
+        all_orders = Order.query \
+            .filter(Order.customer_id == customer_id) \
+            .order_by(Order.shipping_dt.desc()) \
+            .all()
+
+        # Serialize the data for the response
+        order_schema = OrderSchema(many=True)
+        return order_schema.dump(all_orders)
+
+    @staticmethod
+    def read_by_seller(seller_id):
+        all_orders = Order.query \
+            .filter(Order.seller_id == seller_id) \
+            .order_by(Order.shipping_dt.desc()) \
+            .all()
+
+        # Serialize the data for the response
+        order_schema = OrderSchema(many=True)
+        return order_schema.dump(all_orders)
+
 
     @staticmethod
     def read_one(id):
@@ -64,6 +87,7 @@ class OrderDao:
     @staticmethod
     def add(order):
         customer = Customer.query.get_or_404(int(order.get('customer_id')))
+        seller = Seller.query.get_or_404(int(order.get('seller_id')))
         # TODO
         ## get Customer address =| set order address
 
@@ -77,6 +101,8 @@ class OrderDao:
             shipping_cp=customer.cp,
             shipping_city=customer.city)
         db.session.add(created_order)
+        customer.nb_orders = customer.nb_orders + 1
+        seller.nb_orders = seller.nb_orders + 1
         return created_order
 
     @staticmethod
@@ -129,7 +155,9 @@ class OrderDao:
     @staticmethod
     def delete(id):
         order = order = Order.query.get_or_404(id)
+        customer = Customer.query.get_or_404(int(order.get('customer_id')))
         db.session.delete(order)
+        customer.nb_subscriptions = customer.nb_subscriptions + 1
         db.session.commit()
 
     # @
@@ -146,12 +174,4 @@ class OrderDao:
     def update_db(order):
         db.session.commit()
 
-    # @
-    #
-    @staticmethod
-    def generate_order(order_dict, lines):
-        created_order = OrderDao.add(order)
-        db.session.flush()
-        OrderDao.add_lines(created_order, lines)
-        db.session.commit()
 

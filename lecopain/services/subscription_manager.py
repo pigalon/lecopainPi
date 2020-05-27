@@ -29,6 +29,13 @@ class SubscriptionManager():
     def get_all(self):
         return SubscriptionDao.read_all()
 
+    def get_all_by_customer(self, customer_id):
+        return SubscriptionDao.read_all_by_customer(customer_id)
+
+    def get_all_by_seller(self, seller_id):
+        return SubscriptionDao.read_all_by_seller(seller_id)
+
+
     def get_some(self,  customer_id=0, period=Period_Enum.ALL.value):
         start, end = dates_range(period)
         return SubscriptionDao.read_some(customer_id=customer_id, start=start, end=end)

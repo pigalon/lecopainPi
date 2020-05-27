@@ -1,17 +1,9 @@
-<search-subscription>
-    <div class="form-group">
-        Client :<br>
-        <select onchange={ load_subscriptions } class="form-control" name="customer_id" id="customer_id" ref="customer_id" style="width: 12rem; display:inline-block" >
-            <option value="0" SELECTED>Tous</option>
-            <option each="{ customer in customers }" value={customer.id}>{customer.firstname} {customer.lastname}</option>
-        </select><select onchange={ load_subscriptions } class="form-control" name="period" id="period" ref="period" style="width: 12rem; display:inline-block">
-            <option value="month">Mois</option>
-            <option value="all">Tous</option>
-        </select>
-        <div class="right">
-            <a role="button" href="/subscriptions/new" class="btn btn-primary display:inline-block">Ajouter</i></a>
-        </div>
+<subscription-list>
+    <br>
+    <div class="card-header text-white bg-info">
+        Liste des abonnements
     </div>
+
     <table id="subscriptions_list" width="100%">
         <tr>
             <td>
@@ -44,29 +36,21 @@
 
 		var self = this
 
+        customer_id =  opts.customer_id
+        
+
         moment.locale('fr');
 
 		this.on('mount', function() {
-			this.load_subscriptions()
-            this.load_customers()
+			this.load_subscriptions(customer_id)
             const location  = $('window.location')
 		});
 
 		/******************************************/
-       	// load subscription list
+       	// load subscriptions list
     	/*******************************************/
-		load_subscriptions(){
-            var subscription_url = '/api/subscriptions/';
-            var customer_id = self.refs.customer_id.value;
-            var period = self.refs.period.value;
-
-            if (period == undefined){
-                period = 'all'
-            }
-
-            subscription_url = subscription_url.concat('period/',period,'/');
-
-            subscription_url = subscription_url.concat('customers/',customer_id);
+		load_subscriptions(customer_id){
+            var subscription_url = '/api/subscriptions/customers/'+customer_id;
 
 			$.ajax({
 					url: subscription_url,
@@ -79,25 +63,11 @@
 					}
 				});
 		}
-        load_customers(){
-			var url = '/api/customers/';
-			$.ajax({
-					url: url,
-					type: "GET",
-					dataType: "json",
-					contentType: "application/json; charset=utf-8",
-					success: function(data) {
-						self.customers = data['customers']
-                        self.update()
-					}
-				});
-		}
         show_subscription(subscription_id){
             return function(e) {
-                console.log('show' + subscription_id)
                 location = "/subscriptions/"+subscription_id;
             }
 		}
 
 	</script>
-</search-subscription>
+</subscription-list>

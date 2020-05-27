@@ -91,6 +91,7 @@
         </div>
 {% endblock %}
 {% block scripts %}
+<script src="{{ url_for('static', filename='tag/subscriptions/order_list.tag') }}" type="riot/tag"></script>
 <script>
   riot.mount("order-list");
 </script>

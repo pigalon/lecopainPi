@@ -4,7 +4,7 @@ from datetime import datetime
 import locale
 from lecopain.app import app, db
 from lecopain.form import PersonForm, OrderForm, ProductForm, LoginForm
-from lecopain.dao.models import Customer, Order, Product, Seller, User
+from lecopain.dao.models import Customer, Order, Product, Seller, User, Subscription
 
 from lecopain.controllers.customer_controller import customer_page
 from lecopain.controllers.order_controller import order_page
@@ -55,6 +55,7 @@ def home():
         orders_nb = Order.query.count()
         products_nb = Product.query.count()
         sellers_nb = Seller.query.count()
+        subscriptions_nb = Subscription.query.count()
         return render_template('base.html', customers_nb=customers_nb, orders_nb=orders_nb, products_nb=products_nb, sellers_nb=sellers_nb)
     else:
         return redirect(url_for('user_page.login'))

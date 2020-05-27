@@ -50,6 +50,22 @@ def api_subscriptions():
 #####################################################################
 #                                                                   #
 #####################################################################
+@subscription_page.route('/api/subscriptions/customers/<int:customer_id>')
+@login_required
+def api_subscriptions_by_customer(customer_id):
+    return jsonify({'subscriptions': subscriptionServices.get_all_by_customer(customer_id)})
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@subscription_page.route('/api/subscriptions/sellers/<int:seller_id>')
+@login_required
+def api_subscriptions_by_seller(seller_id):
+    return jsonify({'subscriptions': subscriptionServices.get_all_by_seller(seller_id)})
+
+#####################################################################
+#                                                                   #
+#####################################################################
 @subscription_page.route('/api/subscriptions/period/<string:period>/customers/<int:customer_id>')
 @login_required
 def api_day_subscriptions(period, customer_id):

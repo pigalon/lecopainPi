@@ -53,10 +53,13 @@ class Customer(db.Model):
     address = db.Column(db.String(200))
     cp = db.Column(db.String(20))
     city = db.Column(db.String(50))
+    nb_orders = db.Column(db.Integer, default=0)
+    nb_subscriptions = db.Column(db.Integer, default=0)
     email = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False,
                            default=datetime.utcnow)
-    #orders = db.relationship('Order', backref='owner', lazy=True)
+    orders = db.relationship('Order', backref='owner', lazy=True)
+    subscriptions = db.relationship('Subscription', backref='owner', lazy=True)
 
     def __repr__(self):
         return "Customer('{self.firstname}','{self.lastname}','{self.email}')"
@@ -208,6 +211,8 @@ class Seller(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(200), nullable=False)
+    nb_orders = db.Column(db.Integer, default=0)
+    nb_subscriptions = db.Column(db.Integer, default=0)
     products = db.relationship('Product', backref='owner', lazy=True)
     orders = db.relationship('Order', backref='recipient', lazy=True)
 

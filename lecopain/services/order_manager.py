@@ -120,6 +120,12 @@ class OrderManager():
     def get_all_by_subscription(self, subscription_id):
         return OrderDao.read_by_subscription(subscription_id)
 
+    def get_all_by_customer(self, customer_id):
+        return OrderDao.read_by_customer(customer_id)
+
+    def get_all_by_seller(self, seller_id):
+        return OrderDao.read_by_seller(seller_id)
+
     def get_some(self,  customer_id=0, period=Period_Enum.ALL.value):
         start,end = dates_range(period)
         return OrderDao.read_some(customer_id=customer_id, start=start, end=end)

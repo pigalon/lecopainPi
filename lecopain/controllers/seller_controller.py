@@ -13,12 +13,14 @@ app = Flask(__name__, instance_relative_config=True)
 seller_page = Blueprint('seller_page', __name__,
                         template_folder='../templates')
 
+sellerServices = SellerManager()
+
 
 @seller_page.route("/sellers", methods=['GET', 'POST'])
 @login_required
 def sellers():
     new_orders = []
-    sellerManager = SellerManager()
+
     sellers = Seller.query.all()
     # TODO new ref to order !!!!
     # for seller in sellers:
@@ -43,8 +45,9 @@ def create_seller():
 @seller_page.route("/sellers/<int:seller_id>")
 @login_required
 def seller(seller_id):
-    seller = Seller.query.get_or_404(seller_id)
-    return render_template('/sellers/seller.html', seller=seller)
+    seller = sellerServices.get_one(seller_id)
+    return render_template('/sellers/seller.html', seller=seller, title='Vendeur')
+
 
 #####################################################################
 #                                                                   #
@@ -93,25 +96,8 @@ def delete_seller(seller_id):
     db.session.commit()
     return jsonify({})
 
-#####################################################################
-#                                                                   #
-#####################################################################
-@seller_page.route("/api/sellers/")
+@seller_page.route('/api/sellers/')
 @login_required
-def getjs_sellers():
-    sellers = Seller.query.options(load_only("name")).all()
-    js_sellers = []
-    data = {}
-    data['id'] = " "
-    data['name'] = " "
-    js_sellers.append(data)
+def api_sellers():
+    return jsonify({'sellers': sellerServices.optim_get_all()})
 
-    for seller in sellers:
-
-        data = {}
-        data['id'] = str(seller.id)
-        data['name'] = seller.name
-        print('seller.name : ' + seller.name)
-        js_sellers.append(data)
-
-    return jsonify({'sellers': js_sellers})

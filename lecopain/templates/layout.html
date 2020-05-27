@@ -86,21 +86,14 @@
 		</nav>
 
 		<div class="container">
-			<div class="row">
-				<div class="col-md-8">
-					{% with messages = get_flashed_messages(with_categories=true) %} {% if
-					messages %} {% for category, message in messages %}
-					<div class="alert alert-{{ category }}">
-						{{ message }}
-					</div>
-					{% endfor %} {% endif %} {% endwith %} {% if title %}
-					<h1>{{ title }}</h1>
-					{% endif %} {% block content %} {% endblock %}
-				</div>
-				<div class="col-md-4">
-					{% block right_menu %} {% endblock %}
-				</div>
+			{% with messages = get_flashed_messages(with_categories=true) %} {% if
+			messages %} {% for category, message in messages %}
+			<div class="alert alert-{{ category }}">
+				{{ message }}
 			</div>
+			{% endfor %} {% endif %} {% endwith %} {% if title %}
+			<h1>{{ title }}</h1>
+			{% endif %} {% block content %} {% endblock %}
 		</div>
 		<!-- Footer -->
 		<footer>
@@ -172,8 +165,7 @@
 		></script>
 		<script src="{{ url_for('static', filename='tag/orders/seller_product_lines.tag') }}" type="riot/tag"></script>
 		<script src="{{ url_for('static', filename='tag/orders/list.tag') }}" type="riot/tag"></script>
-		<script src="{{ url_for('static', filename='tag/subscriptions/list.tag') }}" type="riot/tag"></script>
-		<script src="{{ url_for('static', filename='tag/subscriptions/order_list.tag') }}" type="riot/tag"></script>
+		
 		<script src="{{ url_for('static', filename='tag/customers/customer.tag') }}" type="riot/tag"></script>
 		
 		{% block scripts %}{% endblock %}

@@ -7,3 +7,6 @@ class SellerManager():
 
     def optim_get_all(self):
         return SellerDao.optim_read_all()
+
+    def get_one(self,  seller_id):
+        return SellerDao.read_one(seller_id)

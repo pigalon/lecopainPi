@@ -48,11 +48,11 @@ def create_customer():
 #####################################################################
 #                                                                   #
 #####################################################################
-@customer_page.route("/customers/<int:customer_id>")
+@customer_page.route("/customers/<int:customer_id>", methods=['GET', 'POST'])
 @login_required
 def customer(customer_id):
-    customer = Customer.query.get_or_404(customer_id)
-    return render_template('/customers/customer.html', customer=customer)
+    customer = customerServices.get_one(customer_id)
+    return render_template('/customers/customer.html', customer=customer, title='Client')
 
 #####################################################################
 #                                                                   #

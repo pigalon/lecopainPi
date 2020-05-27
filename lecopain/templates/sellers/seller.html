@@ -1,33 +1,45 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1>Page Vendeur</h1>
-    <div class="content-section">
-        <p>{{seller.name}}</p>
+
+<div class="card  ">
+    <div class="card-header text-white bg-info">
+        Vendeur N° {{seller.id}} <span class="right"><a href="/sellers/update/{{ seller.id }}"
+                class="btn btn-outline-dark">Modifier
+            </a></span>
     </div>
-    <div>
-        <h3>Liste des commandes</h3>
-    </div>
-    <div class="content-section">
-        {% for order in seller.orders %}
-            <p>{{order.title}}</p>
-            <p>{{order.shipping_dt}}</p>
-        {% endfor %}
-    </div>
-{% endblock %}
-{% block right_menu %}
-<div class="content-section">
-    <h3>Our Sidebar</h3>
-    <p class='text-muted'>You can put any information here you'd like.
-        <ul class="list-group">
-        <li class="list-group-item list-group-item-light">
-                <a class="nav-link" href="/sellers/new">Création de vendeur</a></li>
-        <li class="list-group-item list-group-item-light">Calendars</li>
-        <li class="list-group-item list-group-item-light">etc</li>
+    <div class="card-body">
+        <ul class="list-group list-group-flush">
+            {% set total = {'value': 0.00} %}
+            <li class="list-group-item">
+                <b>Nom : </b>{{seller.name}}
+            </li>
+            <li class="list-group-item">
+                <b>Email : </b> {{seller.email}}
+            </li>
         </ul>
-    </p>
+    </div>
 </div>
+{%if seller.nb_orders | int > 0 %}
+    <order-list seller_id='{{seller.id}}'></order-list>
+{%endif%}
+<br>
+{%if seller.nb_subscriptions | int > 0 %}
+    <subscription-list seller_id='{{seller.id}}'></subscription-list>
+{%endif%}
+
+<div class="card">
+    <div class="card-header text-white bg-info">
+        Suppression <span class="float-right"><a href="/sellers/delete/{{ seller.id }}"
+                class="btn btn-light text-danger" alt="Supprimer"><i class="fas fa-trash-alt"></i></a></span>
+    </div>
+</div>
+
 {% endblock %}
-
-
-
-
+{% block scripts %}
+<script src="{{ url_for('static', filename='tag/sellers/order_list.tag') }}" type="riot/tag"></script>
+<script src="{{ url_for('static', filename='tag/sellers/subscription_list.tag') }}" type="riot/tag"></script>
+<script>
+    riot.mount("order-list");
+    riot.mount("subscription-list");
+</script>
+{% endblock %}
