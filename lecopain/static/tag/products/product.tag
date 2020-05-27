@@ -1,35 +1,37 @@
-<search-customer>
+<search-product>
     <div class="form-group">
         Vendeur :<br>
-        <select onchange={ load_sellers } class="form-control" name="city" id="city" ref="city" style="width: 12rem; display:inline-block" >
+        <select onchange={ load_products } class="form-control" name="seller_id" id="seller_id" ref="seller_id" style="width: 12rem; display:inline-block" >
             <option value="0" SELECTED>Tous</option>
-            <option each="{ city in cities }" value={city}>{city} </option>
+            <option each="{ seller in sellers }" value={seller.id}>{seller.name} </option>
         </select>
         <div class="right">
-            <a role="button" href="/cutomers/new" class="btn btn-primary display:inline-block">Ajouter</i></a>
+            <a role="button" href="/produts/new" class="btn btn-primary display:inline-block">Ajouter</i></a>
         </div>
     </div>
-    <table id="customers_list" width="100%">
+    <table id="produts_list" width="100%">
         <tr>
             <td>
             <table width="100%">
                 <tr>
                     <th width="6%">id</th>
-                    <th width="44%">Nom - Prénom</th>
-                    <th width="20%">Code Postal</th>
-                    <th width="30%">Ville</th>
+                    <th width="24%">Nom</th>
+                    <th width="20%">Prix</th>
+                    <th width="20%">Catégorie</th>
+                    <th width="30%">Description</th>
                 </tr>
             </table>
             </td>
         </tr>
-        <tr each="{ customer in customers }">
+        <tr each="{ product in products }">
             <td>
-            <table width="100%" class="table table-striped" onclick={ show_customer(customer.id) }>
+            <table width="100%" class="table table-striped" onclick={ show_product(product.id) }>
                 <tr>
-                    <td width="6%" class="table-primary">{customer.id}</td>
-                    <td width="44%">{customer.firstname} {customer.lastname}</td>
-                    <td width="20%">{customer.cp}</td>
-                    <td width="30%">{customer.city}</td>
+                    <td width="6%" class="table-primary">{product.id}</td>
+                    <td width="24%">{product.name}</td>
+                    <td width="20%">{product.price}€</td>
+                    <td width="20%">{product.category}</td>
+                    <td width="30%">{product.description}</td>
                 </tr>
             </table>
             </td>
@@ -42,40 +44,49 @@
         moment.locale('fr');
 
 		this.on('mount', function() {
-            this.load_customers()
+            this.load_sellers()
+            this.load_products()
             const location  = $('window.location')
 		});
 
 		/******************************************/
        	// load products list
         /*******************************************/
-		load_customers(){
-            var customer_url = '/api/customers/';
-            var city = self.refs.city.value;
+		load_products(){
+            var product_url = '/api/products/';
+            var seller_id = self.refs.seller_id.value;
 
-            if (city == undefined){
-                city = 'all'
-            }
-
-            customer_url = customer_url.concat('city/',city);
+            product_url = product_url.concat('sellers/',seller_id);
 
 			$.ajax({
-					url: customer_url,
+					url: product_url,
 					type: "GET",
 					dataType: "json",
 					contentType: "application/json; charset=utf-8",
 					success: function(data) {
-						self.customers = data['customers']
+						self.products = data['products']
                         self.update()
 					}
 				});
 		}
-        show_customer(customer_id){
+        show_product(product_id){
             return function(e) {
-                console.log('show' + customer_id)
-                location = "/customers/"+customer_id;
+                location = "/products/"+product_id;
             }
+		}
+        load_sellers(){
+			var url = '/api/sellers/';
+			$.ajax({
+					url: url,
+					type: "GET",
+					dataType: "json",
+					contentType: "application/json; charset=utf-8",
+					success: function(data) {
+						self.sellers = data['sellers']
+                        self.update()
+					}
+				});
 		}
 
 	</script>
-</search-customer>
+</search-product>

@@ -6,7 +6,9 @@
 
 {% endblock %}
 {% block scripts %}
-<script>
-    riot.mount("search-customer");
-</script>
+    <script src="{{ url_for('static', filename='tag/customers/customer.tag') }}" type="riot/tag"></script>
+
+    <script>
+        riot.mount("search-customer");
+    </script>
 {% endblock %}

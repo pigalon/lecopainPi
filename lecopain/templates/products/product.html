@@ -1,27 +1,33 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1>Page Produit</h1>
-    <div class="content-section">
-        <p>{{product.name}}</p>
-        <p>{{product.price}}</p>
+
+    <div class="card  ">
+        <div class="card-header text-white bg-info">
+            Produit N° {{product.id}} du Vendeur {{seller.name}} <span class="right"><a href="/products/update/{{ product.id }}"
+                    class="btn btn-outline-dark">Modifier
+                </a></span>
+        </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                {% set total = {'value': 0.00} %}
+                <li class="list-group-item">
+                    <b>Nom : </b>{{product.name}}
+                </li>
+                <li class="list-group-item">
+                    <b>Prix : </b> {{product.price}}
+                </li>
+                <li class="list-group-item">
+                    <b>Description : </b> {{product.description}}
+                </li>
+            </ul>
+        </div>
     </div>
-    <div>
-        <h3>Vendeur</h3>
-    </div>
-    <div class="content-section">
-        <p>{{seller.name}}</p>
+
+    <div class="card">
+        <div class="card-header text-white bg-info">
+            Suppression <span class="float-right"><a href="/products/delete/{{ product.id }}"
+                    class="btn btn-light text-danger" alt="Supprimer"><i class="fas fa-trash-alt"></i></a></span>
+        </div>
     </div>
 {% endblock %}
-{% block right_menu %}
-<div class="content-section">
-    <h3>Our Sidebar</h3>
-    <p class='text-muted'>Choix
-        <ul class="list-group">
-        <li class="list-group-item list-group-item-light">
-                <a class="nav-link" href="/products/new">Création de produit</a></li>
-        <li class="list-group-item list-group-item-light">Calendars</li>
-        <li class="list-group-item list-group-item-light">etc</li>
-        </ul>
-    </p>
-</div>
-{% endblock %}
+

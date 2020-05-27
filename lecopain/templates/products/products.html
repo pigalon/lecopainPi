@@ -1,33 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
 
-    {% set count = O %}
-   
-    <table class="table table-striped">
-            <thead>
-                <tr>
-                <th scope="col">id</th>
-                <th scope="col">Nom</th>
-                <th scope="col">Vendeur</th>
-                <th scope="col">Prix</th>
-                <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for product in products %}
-                <tr>
-                <th scope="row">{{ product.id }}</th>
-                <td>{{ product.name }}</td>
-                <td>{{ product.seller.name }}</td>
-                <td>{{ product.price }}</td>
-                <td><a href="/products/{{product.id}}" class="text-dark" alt="Détails"><i class="fas fa-eye"></i></a></span>
-                    <a href="/products/update/{{product.id}}" class="text-secondary" alt="Editer"><i class="fas fa-edit"></i></a>
-                    <a href="/products/delete/{{product.id}}" class="text-danger" alt="Supprimer"><i class="fas fa-trash-alt"></i></a>
-                </td>
-                </tr>
-            {%endfor%}
-            </tbody>
-        </table>
-
+    <search-product></search-product>
 
 {% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='tag/products/product.tag') }}" type="riot/tag"></script>
+
+<script>
+    riot.mount("search-product");
+</script>
+{% endblock %}
+

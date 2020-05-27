@@ -12,7 +12,7 @@ app = Flask(__name__, instance_relative_config=True)
 product_page = Blueprint('product_page', __name__,
                          template_folder='../templates')
 
-productManager = ProductManager()
+productServices = ProductManager()
 
 #####################################################################
 #                                                                   #
@@ -62,13 +62,12 @@ def display_update_product(product_id):
     if form.validate_on_submit():
         print('update form validate : ' + str(product.id))
 
-        productManager.update_product(form, product)
+        productServices.update_product(form, product)
 
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('product_page.products'))
 
-
-    productManager.convert_product_to_form(product=product, form=form)
+    productServices.convert_product_to_form(product=product, form=form)
     sellers = Seller.query.all()
 
     productStatusList = _get_product_status()
@@ -106,24 +105,7 @@ def delete_order(product_id):
 #####################################################################
 #                                                                   #
 #####################################################################
-@product_page.route("/api/products/sellers/<int:seller_id>")
+@product_page.route('/api/products/sellers/<int:seller_id>')
 @login_required
-def api_products_by_seller_id(seller_id):
-    products = Product.query.filter(
-        Product.seller_id == seller_id).options(load_only("name")).all()
-    js_products = []
-    data = {}
-    data['id'] = " "
-    data['name'] = " "
-    js_products.append(data)
-    for product in products:
-
-        data = {}
-        data['id'] = str(product.id)
-        data['name'] = product.name
-        data['price'] = product.price
-
-        js_products.append(data)
-
-    return jsonify({'products': js_products})
-
+def api_products_by_seller(seller_id):
+    return jsonify({'products': productServices.get_all_by_seller(seller_id)})

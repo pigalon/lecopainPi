@@ -23,7 +23,7 @@ class ProductManager():
         form.status.data = product.status
         form.name.data = product.name
         form.price.data = product.price
-        
+
     def get_all(self):
         return ProductDao.read_all()
 
@@ -37,3 +37,6 @@ class ProductManager():
         id = lines[0].get('product_id')
         product = ProductDao.get_one(id)
         return product.category
+
+    def get_all_by_seller(self, seller_id):
+        return ProductDao.read_all_by_seller(seller_id)

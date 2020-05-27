@@ -11,6 +11,7 @@
                     <tr>
                         <th width="6%">id</th>
                         <th width="44%">Nom</th>
+                        <th width="50%">Email</th>
                     </tr>
                 </table>
             </td>
@@ -21,6 +22,7 @@
                     <tr>
                         <td width="6%" class="table-primary">{seller.id}</td>
                         <td width="44%">{seller.name}</td>
+                        <td width="44%">{seller.email}</td>
                     </tr>
                 </table>
             </td>
