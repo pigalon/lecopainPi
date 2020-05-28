@@ -31,7 +31,7 @@
                     <span if={order.shipping_status == 'NON'} style="color:grey" ><i class="fas fa-cart-arrow-down "></i></span>
                     <span if={order.payment_status == 'OUI'} style="color:green" ><i class="fas fa-credit-card"></i></i></span>
                     <span if={order.payment_status == 'NON'} style="color:grey" ><i class="fas fa-credit-card"></i></i></span>
-                    <span if={order.subscription_id != None} style="color:blue" ><i class="fas fa-clipboard-list"></i></i></span>
+                    <span if={order.subscription_id != None} class="btn btn-warning display:inline-block">Abo</span>
                     </td>
                 </tr>
             </table>
