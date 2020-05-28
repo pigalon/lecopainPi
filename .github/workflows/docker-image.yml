@@ -23,8 +23,8 @@ jobs:
     - name: Build the Docker image for flask
       run: docker build . --file infra/flask/Dockerfile --tag flask-lecopain:${{ steps.vars.outputs.docker_tag }} 
 
-    - name: Build the Docker image for 
-      run: docker build . --file infra/flask/Dockerfile --tag nginx-lecopain:${{ steps.vars.outputs.docker_tag }} 
+    - name: Build the Docker image for nginx
+      run: docker build . --file infra/nginx/Dockerfile --tag nginx-lecopain:${{ steps.vars.outputs.docker_tag }} 
 
     - name: Push to docker hub :latest
       run: |
