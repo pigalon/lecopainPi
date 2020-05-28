@@ -108,3 +108,9 @@ venv.bak/
 
 # mac OSX File
 .DS_Store
+infra/terraform/terraform.tfstate
+infra/terraform/terraform.tfstate.backup
+infra/terraform/.terraform/plugins/linux_amd64/lock.json
+infra/terraform/.terraform/plugins/linux_amd64/terraform-provider-aws_v2.63.0_x4
+terraform.tfstate
+lecopain.pem
