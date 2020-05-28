@@ -24,7 +24,7 @@ class CustomerTestCase(BaseTestCase, TestCase):
             response = client.get(f'/customers/{customer.id}',
                                   content_type='html/text')
         self.assertEqual(response.status_code, 200)
-        assert 'client' in str(response.data)
+        assert 'Clients' in str(response.data)
         assert str(customer.id) in str(response.data)
 
 

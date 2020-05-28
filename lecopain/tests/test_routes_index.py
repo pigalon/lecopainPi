@@ -22,7 +22,7 @@ class FlaskTestCase(BaseTestCase, TestCase):
 
     def test_index_login(self):
         page = self.login('admin', 'password')
-        assert 'home' in str(page.data)
+        assert 'View Details' in str(page.data)
 
     def test_products_index(self):
         with app.test_client() as client:
