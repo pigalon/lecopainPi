@@ -5,7 +5,7 @@ FROM python:3.8.2-slim-buster
 WORKDIR /app
 RUN mkdir /db
 RUN apt update && apt-get install --no-install-recommends -y locales locales-all \
-    gcc &&\
+    libc-dev gcc &&\
     apt-get clean && rm -rf /var/lib/apt/lists/*
 ENV LC_ALL fr_FR.UTF-8
 ENV LANG fr_FR.UTF-8
