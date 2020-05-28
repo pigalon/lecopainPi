@@ -1,0 +1,39 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set tag var
+      id: vars
+      run: |
+          echo ::set-output name=docker_tag::$(date +%s)
+    
+    - name: Build the Docker image for flask
+      run: docker build . --file infra/flask/Dockerfile --tag flask-lecopain:${{ steps.vars.outputs.docker_tag }} 
+
+    - name: Build the Docker image for 
+      run: docker build . --file infra/flask/Dockerfile --tag nginx-lecopain:${{ steps.vars.outputs.docker_tag }} 
+
+    - name: Push to docker hub :latest
+      run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin          
+          docker tag flask-lecopain:${{ steps.vars.outputs.docker_tag }} pierrickm/flask-lecopain:latest
+          docker tag flask-lecopain:${{ steps.vars.outputs.docker_tag }} pierrickm/flask-lecopain:${{ steps.vars.outputs.docker_tag }}
+          docker push pierrickm/flask-lecopain:${{ steps.vars.outputs.docker_tag }}
+          docker push pierrickm/flask-lecopain:latest
+          docker tag nginx-lecopain:${{ steps.vars.outputs.docker_tag }} pierrickm/nginx-lecopain:latest
+          docker tag nginx-lecopain:${{ steps.vars.outputs.docker_tag }} pierrickm/nginx-lecopain:${{ steps.vars.outputs.docker_tag }}
+          docker push pierrickm/nginx-lecopain:${{ steps.vars.outputs.docker_tag }}
+          docker push pierrickm/nginx-lecopain:latest
