@@ -4,10 +4,9 @@ FROM python:3.8.2-slim-buster
 # Set the working directory to /app
 WORKDIR /app
 RUN mkdir /db
-RUN apt update && apt-get install -y locales locales-all \
-    gcc \
-    libc-dev && \
-   rm -rf /var/lib/apt/lists/*
+RUN apt update && apt-get install --no-install-recommends -y locales locales-all \
+    gcc &&\
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 ENV LC_ALL fr_FR.UTF-8
 ENV LANG fr_FR.UTF-8
 ENV LANGUAGE fr_FR.UTF-8
@@ -20,7 +19,7 @@ ADD run.py /app
 ADD config.py /app
 
 # Install the dependencies
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # run the command to start uWSGI
 CMD ["uwsgi", "app.ini"]
