@@ -10,6 +10,8 @@ services:
       - DATABASE_URL=${DATABASE_URL}
     expose:
       - 8080
+    depends_on:
+      -postgres
 
   nginx:
     image:  pierrickm/nginx-lecopain
