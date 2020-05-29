@@ -8,7 +8,8 @@ class BaseConfig(object):
     TESTING = False
     # shortened for readability
     SECRET_KEY = '5791628bb0b13ce0c676dfde280ba245'
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///../../db/site.db'
+    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+    #SQLALCHEMY_DATABASE_URI = 'sqlite:///../../db/site.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 

@@ -3,10 +3,11 @@ version: "3"
 services:
   flask:
     image:  pierrickm/flask-lecopain
-    container_name: flask
+    container_name: flask-lecopain
     restart: always
     environment:
       - APP_NAME=Lecopain
+      - DATABASE_URL=${DATABASE_URL}
     expose:
       - 8080
     volumes:
@@ -14,10 +15,22 @@ services:
 
   nginx:
     image:  pierrickm/nginx-lecopain
-    container_name: nginx
+    container_name: nginx-lecopain
     restart: always
     ports:
       - "80:80"
       - "443:443"
-    volumes: 
-     - /usr/share/certs:/etc/nginx/certs
+    volumes:
+      - /usr/share/certs:/etc/nginx/certs
+
+  postgres:
+    image:  pierrickm/postgres-lecopain
+    container_name: postgres-lecopain
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+    - lecopain-db:/var/lib/postgresql/data
+
+volumes:
+  lecopain-db:
