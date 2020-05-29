@@ -10,8 +10,6 @@ services:
       - DATABASE_URL=${DATABASE_URL}
     expose:
       - 8080
-    volumes:
-      -  /usr/share/db/lecopain:/db
 
   nginx:
     image:  pierrickm/nginx-lecopain
@@ -21,7 +19,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - /usr/share/certs:/etc/nginx/certs
+      - /usr/share/certs/nginx:/etc/nginx/certs
 
   postgres:
     image:  pierrickm/postgres-lecopain
@@ -29,8 +27,11 @@ services:
     restart: always
     ports:
       - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
     - lecopain-db:/var/lib/postgresql/data
 
 volumes:
   lecopain-db:
+    external: true

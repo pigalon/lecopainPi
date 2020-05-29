@@ -6,10 +6,10 @@
             <option each="{ seller in sellers }" value={seller.id}>{seller.name} </option>
         </select>
         <div class="right">
-            <a role="button" href="/produts/new" class="btn btn-primary display:inline-block">Ajouter</i></a>
+            <a role="button" href="/products/new" class="btn btn-primary display:inline-block">Ajouter</i></a>
         </div>
     </div>
-    <table id="produts_list" width="100%">
+    <table id="products_list" width="100%">
         <tr>
             <td>
             <table width="100%">

@@ -5,6 +5,7 @@ from flask import session, Blueprint, render_template, redirect, url_for, Flask,
 from flask_login import login_required
 from sqlalchemy.orm import load_only
 from lecopain.services.product_manager import ProductManager
+from lecopain.services.seller_manager import SellerManager
 
 app = Flask(__name__, instance_relative_config=True)
 
@@ -13,6 +14,7 @@ product_page = Blueprint('product_page', __name__,
                          template_folder='../templates')
 
 productServices = ProductManager()
+sellerServices = SellerManager()
 
 #####################################################################
 #                                                                   #
@@ -31,6 +33,8 @@ def product(product_id):
 def products():
     products = Product.query.order_by(Product.name.desc()).all()
     return render_template('/products/products.html', products=products, title="Tous les produits")
+
+
 #####################################################################
 #                                                                   #
 #####################################################################
@@ -38,17 +42,18 @@ def products():
 @login_required
 def product_create():
     form = ProductForm()
-    sellers = Seller.query.all()
-    print("product form : " + str(form.validate_on_submit()))
+    
+    sellers = sellerServices.optim_get_all()
     if form.validate_on_submit():
-        product = Product(
-            name=form.name.data,  price=form.price.data, description=form.description.data, status=form.status.data, seller_id=form.seller_id.data)
-        db.session.add(product)
-        db.session.commit()
-        #flash(f'People created for {form.firstname.data}!', 'success')
+        product = {'name': form.name.data,
+                   'price': form.price.data,
+                   'seller_id': form.seller_id.data,
+                   'description': form.description.data,
+                   'category': form.category.data
+                 }
+        product = productServices.create(product)
         return redirect(url_for('product_page.products'))
-    productStatusList = _get_product_status()
-    return render_template('/products/create_product.html', title='Product form', form=form, productStatusList=productStatusList, sellers=sellers)
+    return render_template('/products/create_product.html', title='Product form', form=form, sellers=sellers)
 
 #####################################################################
 #                                                                   #
@@ -70,8 +75,7 @@ def display_update_product(product_id):
     productServices.convert_product_to_form(product=product, form=form)
     sellers = Seller.query.all()
 
-    productStatusList = _get_product_status()
-    return render_template('/products/update_product.html', product=product, title='Mise a jour de produit', form=form, sellers=sellers,  productStatusList=productStatusList)
+    return render_template('/products/update_product.html', product=product, title='Mise a jour de produit', form=form, sellers=sellers)
 
 #####################################################################
 #                                                                   #

@@ -7,10 +7,10 @@ from lecopain.dao.product_dao import ProductDao
 class ProductManager():
 
     def update_product(self, form, product):
-        productForm = Product(name=form.name.data, price=form.price.data, status=form.status.data, seller_id=int(
+        productForm = Product(name=form.name.data, price=form.price.data, category=form.category.data, seller_id=int(
             form.seller_id.data), description=form.description.data)
         product.name = productForm.name
-        product.status = productForm.status
+        product.category = productForm.category
         product.seller_id = productForm.seller_id
         product.description = productForm.description
         product.price = productForm.price
@@ -20,7 +20,7 @@ class ProductManager():
     def convert_product_to_form(self, product, form):
         form.seller_id.data = product.seller_id
         form.description.data = product.description
-        form.status.data = product.status
+        form.category.data = product.category
         form.name.data = product.name
         form.price.data = product.price
 
@@ -40,3 +40,6 @@ class ProductManager():
 
     def get_all_by_seller(self, seller_id):
         return ProductDao.read_all_by_seller(seller_id)
+    
+    def create(self, product):
+        ProductDao.create(product)

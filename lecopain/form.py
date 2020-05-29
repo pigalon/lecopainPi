@@ -46,7 +46,7 @@ class ProductForm(FlaskForm):
     price = DecimalField('Price')
     description = StringField('Description')
     seller_id = IntegerField('Seller Id:', validators=[DataRequired()])
-    status = StringField('Status')
+    category = StringField('Catégorie')
     submit = SubmitField('Valider')
 
 

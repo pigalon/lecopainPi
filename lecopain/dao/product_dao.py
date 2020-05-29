@@ -54,4 +54,15 @@ class ProductDao:
         # Serialize the data for the response
         product_schema = ProductSchema(many=True)
         return product_schema.dump(all_products)
+    
+    @staticmethod
+    def create(product):
+        
+        created_product = Product(name=product.get('name'),
+                            seller_id=product.get('seller_id'),
+                            price=product.get('price'),
+                            description=product.get('description'),
+                            category=product.get('category'), status='DISPONIBLE')
 
+        db.session.add(created_product)
+        db.session.commit()

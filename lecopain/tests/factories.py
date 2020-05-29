@@ -54,6 +54,7 @@ class ProductFactory(SQLAlchemyModelFactory):
     name = factory.Faker('word')
     description = factory.Faker('sentence')
     price = factory.Faker('pyfloat', right_digits=2,)
+    category = 'ARTICLE'
 
     seller = factory.SubFactory(SellerFactory)
 

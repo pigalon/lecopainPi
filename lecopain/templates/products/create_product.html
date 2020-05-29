@@ -32,15 +32,11 @@
             </div>
 
             <div class="form-group">
-                    Choix de l'état du produit :
-                    <select class="form-control" name="status" width="300px">
-                        {% for productStatus in productStatusList %}
-                            {% if(productStatus == "DISPONIBLE") %}
-                                <option value="{{ productStatus }}" SELECTED>{{ productStatus }}</option>
-                            {% else %}
-                                <option value="{{ productStatus }}" >{{ productStatus }}</option>
-                            {% endif %}    
-                        {% endfor %}
+                    Choix de la catégorie du produit :
+                    <select class="form-control" name="category" width="300px">
+                        <option value="ARTICLE" SELECTED>ARTICLE</option>
+                        <option value="COURSETTE">COURSETTE</option>
+                        <option value="DRIVE">DRIVE</option>
                     </select>
             </div>
             <div class="form-group">

@@ -6,7 +6,7 @@
             <option each="{ city in cities }" value={city}>{city} </option>
         </select>
         <div class="right">
-            <a role="button" href="/cutomers/new" class="btn btn-primary display:inline-block">Ajouter</i></a>
+            <a role="button" href="/customers/new" class="btn btn-primary display:inline-block">Ajouter</i></a>
         </div>
     </div>
     <table id="customers_list" width="100%">

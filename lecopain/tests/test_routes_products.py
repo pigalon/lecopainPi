@@ -37,7 +37,7 @@ class ProductTestCase(BaseTestCase, TestCase):
                 description=product.description,
                 price=product.price,
                 seller_id=product.seller_id,
-                status=product.status), follow_redirects=True)
+                category=product.category), follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         #assert product.name in str(response.data)
 
@@ -50,7 +50,8 @@ class ProductTestCase(BaseTestCase, TestCase):
                 name=name,
                 description='description',
                 price=0.65,
-                seller_id = seller.id), 
+                seller_id = seller.id,
+                category = 'ARTICLE'), 
                 follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         #assert name in str(response.data)

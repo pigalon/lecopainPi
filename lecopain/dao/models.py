@@ -143,7 +143,7 @@ class Product(db.Model):
     name = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(250))
     price = db.Column(db.Float)
-    status = db.Column(db.String(20))
+    status = db.Column(db.String(20), default='DISPONIBLE')
     orders = db.relationship("Order", secondary='lines', viewonly=True)
     seller_id = db.Column(db.Integer, db.ForeignKey(
         'sellers.id'), nullable=False)
@@ -159,8 +159,8 @@ class Product(db.Model):
             'name': self.name,
             'description': self.description,
             'price': self.price,
-            'status': self.status,
-            'seller_id': self.seller_id
+            'seller_id': self.seller_id,
+            'category':self.category
         }
 
 
@@ -247,7 +247,6 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return " "
 
-
 @login_manager.user_loader
 def get_user(username):
     return User.query.filter(User.username == username).first()
@@ -316,11 +315,10 @@ class SubscriptionLine(db.Model):
     __tablename__ = 'subscription_lines'
     __table_args__ = {'extend_existing': True}
 
-    id = db.Column(db.Integer, primary_key=True)
     subscription_day_id = db.Column(db.Integer, db.ForeignKey(
-        'subscription_days.id'))
+        'subscription_days.id'), primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey(
-        'products.id'))
+        'products.id'), primary_key=True)
     subscription_day = db.relationship(SubscriptionDay, backref=db.backref(
         "lines", cascade="all, delete-orphan"))
     product = db.relationship(Product, backref=db.backref(
