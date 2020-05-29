@@ -39,7 +39,7 @@ def create_seller():
         db.session.commit()
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('seller_page.sellers'))
-    return render_template('/sellers/create_seller.html', title='Formulaire Vendeur', form=form)
+    return render_template('/sellers/create_seller.html', title='Ajouter un Vendeur', form=form)
 
 
 @seller_page.route("/sellers/<int:seller_id>")
@@ -73,7 +73,7 @@ def display_update_order(seller_id):
         form.name.data = seller.name
         form.email.data = seller.email
 
-    return render_template('/sellers/update_seller.html', seller=seller, title='Mise a jour de vendeur', form=form)
+    return render_template('/sellers/update_seller.html', seller=seller, title='Mise a jour du vendeur', form=form)
 
 
 #####################################################################
@@ -83,7 +83,7 @@ def display_update_order(seller_id):
 @login_required
 def display_delete_seller(seller_id):
     seller = Seller.query.get_or_404(seller_id)
-    return render_template('/sellers/delete_seller.html', seller=seller, title='Suppression de vendeur')
+    return render_template('/sellers/delete_seller.html', seller=seller, title='Suppression du vendeur')
 
 #####################################################################
 #                                                                   #

@@ -53,7 +53,7 @@ def product_create():
                  }
         product = productServices.create(product)
         return redirect(url_for('product_page.products'))
-    return render_template('/products/create_product.html', title='Product form', form=form, sellers=sellers)
+    return render_template('/products/create_product.html', title='Ajouter un Produit', form=form, sellers=sellers)
 
 #####################################################################
 #                                                                   #
@@ -75,7 +75,7 @@ def display_update_product(product_id):
     productServices.convert_product_to_form(product=product, form=form)
     sellers = Seller.query.all()
 
-    return render_template('/products/update_product.html', product=product, title='Mise a jour de produit', form=form, sellers=sellers)
+    return render_template('/products/update_product.html', product=product, title='Mise a jour du produit', form=form, sellers=sellers)
 
 #####################################################################
 #                                                                   #
@@ -93,7 +93,7 @@ def _get_product_status():
 @login_required
 def display_delete_product(product_id):
     product = Product.query.get_or_404(product_id)
-    return render_template('/products/delete_product.html', product=product, title='Suppression de produit')
+    return render_template('/products/delete_product.html', product=product, title='Suppression du produit')
 
 #####################################################################
 #                                                                   #
