@@ -1,5 +1,3 @@
-# Use the Python3.7.2 image
-#FROM python:3.8.2-slim-buster
 FROM alpine
 
 
@@ -8,17 +6,11 @@ ADD requirements /app/requirements
 WORKDIR /app
 RUN mkdir /db
 
-#RUN apt update && apt-get install --no-install-recommends -y locales locales-all \
-#    libc-dev gcc libpq-dev &&\
-#    python3 -m ensurepip && \
-#    pip3 install --upgrade pip setuptools && \
-#    pip3 install -r requirements/prod.txt && \
-#    apt-get clean && rm -rf /var/lib/apt/lists/*
-
 RUN apk add --virtual .build-deps && apk add --no-cache \
     libc-dev linux-headers libpq gcc musl-dev postgresql-dev \
     python3 python3-dev\
     bash \
+    nginx \
     uwsgi \
     uwsgi-python3 \
     supervisor && \
@@ -27,6 +19,15 @@ RUN apk add --virtual .build-deps && apk add --no-cache \
     pip3 install --upgrade pip setuptools && \
     pip3 install --no-cache-dir -r requirements/prod.txt && \
     rm -r /root/.cache
+
+# Copy the Nginx global conf
+COPY infra/flask/nginx.conf /etc/nginx/
+# Copy the Flask Nginx site conf
+COPY infra/flask/flask-site-nginx.conf /etc/nginx/conf.d/
+# Copy the base uWSGI ini file to enable default dynamic uwsgi process number
+COPY infra/flask/uwsgi.ini /etc/uwsgi/
+# Custom Supervisord config
+COPY infra/flask/supervisord.conf /etc/supervisord.conf
 
 ENV LC_ALL fr_FR.UTF-8
 ENV LANG fr_FR.UTF-8
@@ -39,8 +40,5 @@ ADD app.ini /app/app.ini
 ADD run.py /app
 ADD config.py /app
 
-# Install the dependencies
-#RUN /usr/local/bin/python -m pip install --upgrade pip && pip install --no-cache-dir -r requirements/prod.txt
 
-# run the command to start uWSGI
-CMD ["uwsgi", "app.ini"]
+CMD ["/usr/bin/supervisord"]

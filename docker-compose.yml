@@ -8,20 +8,13 @@ services:
     environment:
       - APP_NAME=Lecopain
       - DATABASE_URL=${DATABASE_URL}
-    expose:
-      - 8080
-    depends_on:
-      - postgres
-
-  nginx:
-    image:  pierrickm/nginx-lecopain
-    container_name: nginx-lecopain
-    restart: always
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - /usr/share/certs/nginx:/etc/nginx/certs
+    depends_on:
+      - postgres
 
   postgres:
     image:  pierrickm/postgres-lecopain
