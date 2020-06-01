@@ -1,0 +1,11 @@
+Flask
+Flask-wtf
+Flask-sqlalchemy
+Flask-marshmallow
+flask-login
+uwsgi
+marshmallow-sqlalchemy
+psycopg2
+aenum
+Werkzeug==0.16.1
+flasgger

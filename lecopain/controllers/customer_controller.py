@@ -4,7 +4,7 @@ from lecopain.app import app, db
 from lecopain.form import PersonForm
 from flask import Blueprint, render_template, redirect, url_for, Flask, jsonify
 from flask_login import login_required
-import requests
+#import requests
 import json
 from collections import namedtuple
 

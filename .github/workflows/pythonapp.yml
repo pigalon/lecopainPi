@@ -24,7 +24,7 @@ jobs:
           sudo locale-gen "fr_FR.UTF-8"
           sudo dpkg-reconfigure locales
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements.txt ]; then pip install -r requirements/dev.txt; fi
       - name: Wemake Python Stylguide
         uses: wemake-services/wemake-python-styleguide@0.13.4
         continue-on-error: true

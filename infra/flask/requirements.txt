@@ -1,9 +1,9 @@
 Flask
-Flask-wtf
-Flask-restful
-Flask-bootstrap
-Flask-Nav
-Flask-script
+#Flask-wtf
+#Flask-restful
+#Flask-bootstrap
+#Flask-Nav
+#Flask-script
 Flask-sqlalchemy
 Flask-Migrate==2.5.2
 Flask-marshmallow
@@ -19,9 +19,9 @@ Jinja2
 MarkupSafe
 Werkzeug==0.16.1
 docopt
-itsdangerous
-records
-tablib
+#itsdangerous
+#records
+#tablib
 aenum
 
 codecov

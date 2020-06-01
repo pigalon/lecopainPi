@@ -1,0 +1,6 @@
+-r common.txt
+Flask-Testing==0.4.2
+codecov
+coverage
+factory_boy
+wemake-python-styleguide
