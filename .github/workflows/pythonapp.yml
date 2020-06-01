@@ -36,6 +36,8 @@ jobs:
         run: |
           coverage run -m unittest discover -v -s lecopain/tests -p 'test_*.py'
           coverage xml
+        env:
+          DATABASE_URL: test
       - name: Code coverage
         uses: codecov/codecov-action@v1
         with:
