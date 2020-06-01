@@ -16,7 +16,7 @@ RUN mkdir /db
 #    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN apk add --virtual .build-deps && apk add --no-cache \
-    libc-dev linux-headers libpq gcc python-dev musl-dev postgresql-dev \
+    libc-dev linux-headers libpq gcc musl-dev postgresql-dev \
     python3 python3-dev\
     bash \
     uwsgi \
