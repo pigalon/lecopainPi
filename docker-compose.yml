@@ -13,6 +13,7 @@ services:
       - "443:443"
     volumes:
       - /usr/share/certs/nginx:/etc/nginx/certs
+    restart: always
     depends_on:
       - postgres
 
@@ -26,6 +27,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
     - lecopain-db:/var/lib/postgresql/data
+    restart: always 
 
 volumes:
   lecopain-db:
