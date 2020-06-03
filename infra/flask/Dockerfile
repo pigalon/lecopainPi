@@ -35,7 +35,6 @@ ENV LANGUAGE fr_FR.UTF-8
 
 # Copy the current directory contents into the container at /app
 ADD lecopain /app/lecopain
-ADD app.ini /app/app.ini
 
 ADD run.py /app
 ADD config.py /app
