@@ -79,7 +79,7 @@ def order_update(order_id):
         orderServices.update_order_and_parse_line(
             order_id=order_id, lines=lines)
         #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect('/orders')
+        return redirect(f'/orders/{order_id}')
 
     order = orderServices.get_one(order_id)
 

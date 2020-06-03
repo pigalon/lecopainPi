@@ -37,7 +37,7 @@ class OrderManager():
         parsed_lines = self.parse_lines(lines)
         order = OrderDao.get_one(order_id)
         if order.subscription_id is not None:
-            items_remove_subscription(order)
+            self.items_remove_subscription(order)
         OrderDao.remove_all_lines(order)
         order.shipping_price = 0.0
         order.nb_products = 0
@@ -49,7 +49,7 @@ class OrderManager():
         order.category = order.products[0].category
         OrderDao.update_db(order)
         if order.subscription_id is not None:
-            items_add_subscription(order)
+            self.items_add_subscription(order)
         
     def items_remove_subscription(self, order):
         subscription = SubscriptionDao.get_one(order.subscription_id)
