@@ -35,7 +35,6 @@
             "request": "launch",
             "module": "flask",
             "env": {
-                "DATABASE_URL":"postgresql+psycopg2://postgres:lecopain@localhost/lecopain",
                 "FLASK_APP": "run.py",
                 "LC_ALL": "fr_FR.utf-8",
                 "LANG": "fr_FR.utf-8"

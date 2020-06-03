@@ -118,13 +118,8 @@ class SubscriptionManager():
         total_shipping_price = 0.0
         total_price = 0.0
 
-        #customer = subscription.customer
-        #subscription.category
         order['customer_id'] = subscription.customer_id
         order['seller_id'] = subscription.seller_id
-        #order['shipping_address'] = subscription.customer.shipping_address
-        #order['shipping_cp'] = subscription.customer.shipping_cp
-        #order['shipping_city'] = subscription.customer.shipping_city
         order['category'] = subscription.category
 
         while current_dt <= subscription.end_dt:

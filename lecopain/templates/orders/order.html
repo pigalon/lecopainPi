@@ -6,7 +6,7 @@
   <table width="100%" align="center">
     <tr>
       <td width="60%" style="text-align:right"><span class="float-left"><a href="/orders" class="btn btn-outline-dark">Retour List</a></span>Changer le statut : </td>
-      <td width="40%"  style="text-align:right"> 
+      <td width="40%"  style="text-align:right">
         {% if order.status != 'ANNULEE' %}
           <a href="/orders/{{ order.id }}/cancel" class="btn btn-outline-dark" >Annuler </a>
         {% endif %}
@@ -40,7 +40,7 @@
           {% set total = {'value': 0.00} %}
 
           <li class="list-group-item bg-light">
-            Vendeur : <b>{{order.seller_name}}</b>
+            Vendeur : <b>{{order.seller_name}}</b> <span class="float-right"><a href="/orders/update/{{ order.id }}" class="btn btn-warning">Modifier Articles</a></span>
           </li>
           <li class="list-group-item">
 

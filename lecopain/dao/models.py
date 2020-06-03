@@ -405,6 +405,7 @@ class OrderSchema(SQLAlchemyAutoSchema):
 
 class CompleteOrderSchema(SQLAlchemyAutoSchema):
     customer_name = fields.Method("format_customer_name", dump_only=True)
+    customer_id = fields.Method("format_customer_id", dump_only=True)
     seller_name = fields.Method("format_seller_name", dump_only=True)
     nb_products = fields.Method("format_nb_products", dump_only=True)
     lines = fields.Method("format_lines", dump_only=True)
@@ -418,6 +419,9 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
 
     def format_customer_name(self, order):
         return "{}, {}".format(order.customer.firstname, order.customer.lastname)
+
+    def format_customer_id(self, order):
+        return "{}".format(order.customer.id)
 
     def format_seller_name(self, order):
         return "{}".format(order.seller.name)

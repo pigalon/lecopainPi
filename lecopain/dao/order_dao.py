@@ -52,11 +52,14 @@ class OrderDao:
         order_schema = OrderSchema(many=True)
         return order_schema.dump(all_orders)
 
+    @staticmethod
+    def get_one(id):
+        return Order.query.get_or_404(id)
+
 
     @staticmethod
     def read_one(id):
 
-        # Create the list of people from our data
         order = Order.query.get_or_404(id)
 
         # Serialize the data for the response
@@ -169,6 +172,14 @@ class OrderDao:
         OrderDao.add_lines(created_order, lines)
         db.session.commit()
         return created_order
+    
+    # @
+    #
+    @staticmethod
+    def remove_all_lines(order):
+        for line in order.lines :
+            db.session.delete(line)
+        db.session.commit()
 
     @staticmethod
     def update_db(order):

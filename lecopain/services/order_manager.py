@@ -5,6 +5,7 @@ from lecopain.services.business_service import BusinessService
 from lecopain.dao.models import Line, Product, Seller, Customer, Order, OrderStatus_Enum
 from lecopain.helpers.date_utils import dates_range, Period_Enum
 from lecopain.dao.order_dao import OrderDao
+from lecopain.dao.subscription_dao import SubscriptionDao
 from lecopain.dao.product_dao import ProductDao
 import json
 from sqlalchemy import extract, Date, cast
@@ -32,61 +33,45 @@ class OrderManager():
     def delete_order(self, order_id):
         OrderDao.delete(order_id)
 
-    # @
-    #
-    def create_product_purchases(self, order, tmp_products, tmp_quantities, tmp_prices):
-        order = self.create_products_for_specific_order(
-            order=order, tmp_products=tmp_products)
-        db.session.add(order)
-        db.session.commit()
-
-        self.create_corresponding_purchases(
-            order=order, tmp_products=tmp_products, tmp_quantities=tmp_quantities, tmp_prices=tmp_prices)
-
-        return order
-    # @
-    #
-    def create_products_for_specific_order(self, order, tmp_products):
-
-        for i in range(0, len(tmp_products)):
-            product = Product.query.get(tmp_products[i])
-            order.selected_products.append(product)
-        return order
-
-    #########################################
-    #
-    def delete_every_order_dependencies(self, order):
-        # delete Line relation to recreate
-        Line.query.filter(Line.order_id == order.id).delete()
-
-        # TODO : missing delete seller order !!!!
-
-    # @
-    #
-    def create_order_with_his_products(self, order, tmp_products):
-
-        for i in range(0, len(tmp_products)):
-            product = Product.query.get(tmp_products[i])
-            order.selected_products.append(product)
-        return order
-
-    # @
-    #
-    def create_corresponding_purchases(self, order, tmp_products, tmp_quantities, tmp_prices):
-
-        for i in range(0, len(tmp_products)):
-            bought_item = Line.query.filter(Line.order_id == order.id).filter(
-                Line.product_id == tmp_products[i]).first()
-            bought_item.quantity = tmp_quantities[i]
-            bought_item.price = tmp_prices[i]
-
-    # @
-    #
-    def get_sellers_from_products(self, order):
-        sellerIds = set()
-        for product in order.selected_products:
-            sellerIds.add(product.seller_id)
-        return sellerIds
+    def update_order_and_parse_line(self, order_id, lines):
+        parsed_lines = self.parse_lines(lines)
+        order = OrderDao.get_one(order_id)
+        if order.subscription_id is not None:
+            items_remove_subscription(order)
+        OrderDao.remove_all_lines(order)
+        order.shipping_price = 0.0
+        order.nb_products = 0
+        order.shipping_rules = ''
+        OrderDao.add_lines(order, parsed_lines)
+        order.shipping_price, order.shipping_rules = self.businessService.apply_rules(
+            order)
+        OrderDao.update_db(order)
+        order.category = order.products[0].category
+        OrderDao.update_db(order)
+        if order.subscription_id is not None:
+            items_add_subscription(order)
+        
+    def items_remove_subscription(self, order):
+        subscription = SubscriptionDao.get_one(order.subscription_id)
+        items = []
+        items.append(
+            {'name': 'nb_products', 'value': (subscription.nb_products - order.nb_products)})
+        items.append({'name': 'shipping_price',
+                      'value': (subscription.shipping_price - order.shipping_price)})
+        items.append({'name': 'price', 'value': (subscription.price - order.price)})
+        SubscriptionDao.update_db(subscription, items)
+        
+    def items_add_subscription(self, order):
+        subscription = SubscriptionDao.get_one(order.subscription_id)
+        items = []
+        items.append(
+            {'name': 'nb_products', 'value': (subscription.nb_products + order.nb_products)})
+        items.append({'name': 'shipping_price',
+                      'value': (subscription.shipping_price + order.shipping_price)})
+        items.append({'name': 'price', 'value': (
+            subscription.price + order.price)})
+        SubscriptionDao.update_db(subscription, items)
+        
 
     # @
     #

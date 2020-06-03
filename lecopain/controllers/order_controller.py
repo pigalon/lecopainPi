@@ -60,6 +60,32 @@ def order_create():
 
     return render_template('/orders/create_order.html', title='Creation de commande', form=form, customers=customers)
 
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@order_page.route("/orders/update/<int:order_id>", methods=['GET', 'POST'])
+@login_required
+def order_update(order_id):
+    form = OrderForm()
+
+    lines = (
+        request.form.getlist('product_id[]'),
+        request.form.getlist('quantity[]'),
+        request.form.getlist('price[]'),
+    )
+
+    if form.validate_on_submit():
+        orderServices.update_order_and_parse_line(
+            order_id=order_id, lines=lines)
+        #flash(f'People created for {form.firstname.data}!', 'success')
+        return redirect('/orders')
+
+    order = orderServices.get_one(order_id)
+
+    return render_template('/orders/update_order.html', order=order, title='Mise à jour de commande', form=form)
+
+
 #####################################################################
 #                                                                   #
 #####################################################################
