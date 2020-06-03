@@ -360,14 +360,22 @@ class ProductSchema(SQLAlchemyAutoSchema):
 
 class LineSchema(SQLAlchemyAutoSchema):
     product_name = fields.Method("format_product_name", dump_only=True)
+    price = fields.Method("format_price", dump_only=True)
+    product_id = fields.Method("format_product_id", dump_only=True)
 
     class Meta:
         # Fields to expose
         model = Line
         load_instance = True
 
+    def format_price(self, line):
+        return "{}".format(line.price)
+
     def format_product_name(self, line):
         return "{}".format(line.product.name)
+    
+    def format_product_id(self, line):
+        return "{}".format(line.product.id)
 
 
 
@@ -407,6 +415,7 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
     customer_name = fields.Method("format_customer_name", dump_only=True)
     customer_id = fields.Method("format_customer_id", dump_only=True)
     seller_name = fields.Method("format_seller_name", dump_only=True)
+    seller_id = fields.Method("format_seller_id", dump_only=True)
     nb_products = fields.Method("format_nb_products", dump_only=True)
     lines = fields.Method("format_lines", dump_only=True)
     shipping_formatted_dt = fields.Method("format_shipping_dt", dump_only=True)
@@ -425,6 +434,9 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
 
     def format_seller_name(self, order):
         return "{}".format(order.seller.name)
+
+    def format_seller_id(self, order):
+        return "{}".format(order.seller.id)
 
     def format_nb_products(self, order):
         nb_products = 0

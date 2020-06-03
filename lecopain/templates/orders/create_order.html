@@ -40,6 +40,7 @@
 
 {% endblock %}
 {% block scripts %} 
+<script src="{{ url_for('static', filename='tag/orders/seller_product_lines.tag') }}" type="riot/tag"></script>
 <script type="text/javascript">
     riot.mount("seller-product-line");
     $(function () {

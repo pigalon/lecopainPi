@@ -16,7 +16,7 @@
             </div>
             <div class="form-group">
                 <div data-toggle="fieldset" id="product-fieldset">
-                    <seller-product-line></seller-product-line>
+                    <product-line seller_id='{{order.seller_id}}' lines="{{ str_lines }}"></product-line>
                 </div>
             </div>
             <div class="form-group">
@@ -35,8 +35,9 @@
     </div>
 {% endblock %}
 {% block scripts %}
+<script src="{{ url_for('static', filename='tag/orders/product_lines.tag') }}" type="riot/tag"></script>
 <script type="text/javascript">
-    riot.mount("seller-product-line");
+    riot.mount("product-line");
 </script>
 {% endblock %}
 

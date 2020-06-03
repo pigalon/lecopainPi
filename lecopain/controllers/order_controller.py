@@ -82,8 +82,10 @@ def order_update(order_id):
         return redirect(f'/orders/{order_id}')
 
     order = orderServices.get_one(order_id)
+    str_lines = str(order['lines'])
+    str_lines = str_lines.replace("{", "\{").replace("}", "\}")
 
-    return render_template('/orders/update_order.html', order=order, title='Mise à jour de commande', form=form)
+    return render_template('/orders/update_order.html', order=order, str_lines=str_lines, title='Mise à jour de commande', form=form)
 
 
 #####################################################################

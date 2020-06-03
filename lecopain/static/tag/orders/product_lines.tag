@@ -46,12 +46,20 @@
 		var self = this
 
 		seller_id =  opts.seller_id
-        
-    moment.locale('fr');
+		page_lines = opts.lines
+
+    	moment.locale('fr');
+
+		String.prototype.replaceAll = function(str1, str2, ignore)
+		{
+    		return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
+		}
 
 		this.on('mount', function() {
+			page_lines = page_lines.replaceAll("'", "\"")
+			this.load_lines()
 			this.load_products(seller_id)
-      const location  = $('window.location')
+      		const location  = $('window.location')
 		});
 
 
@@ -81,6 +89,19 @@
 				lines.splice(line.id, 1)
 			})
 		}
+
+
+		load_lines()
+		{
+			items = JSON.parse(page_lines)
+
+			items.forEach((item) => {
+				cpt = cpt + 1;
+				line =  {id : cpt, product_id:item.product_id, product_name:item.product_name, quantity:item.quantity,  price : item.price};
+				lines.push(line)
+			});  
+		}
+
 
 
 
