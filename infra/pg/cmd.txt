@@ -1,4 +1,6 @@
-docker run -it -p 5432:5432 -v lecopain-db:/var/lib/postgresql/data -e POSTGRES_PASSWORD=lecopain -d postgres:12.3-alpine
 
-docker-compose up --build -d
+
+DATABASE_URL=postgresql+psycopg2://postgres:lecopain@localhost/lecopain
+POSTGRES_PASSWORD=lecopain
+
 
