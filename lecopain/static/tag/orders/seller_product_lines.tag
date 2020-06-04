@@ -49,6 +49,7 @@
 		cpt=0
 		price=0
 		product_name=''
+		first_seller_id=0
 
 		var self = this
 
@@ -80,16 +81,23 @@
 		}
 
 		this.on('mount', function() {
-			this.load_sellers()
+			var ajaxCall = self.load_sellers()
+			ajaxCall.done(function(data) {
+				self.load_products();
+			});
+
 		});
+
+
 
 		/******************************************
        	load products list
     	*******************************************/
 		load_products(){
 			seller_id =  this.refs.seller.value
+
 			var url = '/api/products/sellers/'+seller_id;
-			$.ajax({
+			return $.ajax({
 					url: url,
 					type: "GET",
 					dataType: "json",
@@ -106,13 +114,14 @@
 
 		load_sellers(){
 		var url = '/api/sellers/';
-		$.ajax({
+		return $.ajax({
 				url: url,
 				type: "GET",
 				dataType: "json",
 				contentType: "application/json; charset=utf-8",
 				success: function(data) {
 					self.sellers = data['sellers']
+					first_seller_id = data['sellers'][0].id
 					self.update()
 				}
 			});
