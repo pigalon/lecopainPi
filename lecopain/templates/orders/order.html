@@ -40,7 +40,7 @@
           {% set total = {'value': 0.00} %}
 
           <li class="list-group-item bg-light">
-            Vendeur : <b>{{order.seller_name}}</b> <span class="float-right"><a href="/orders/update/{{ order.id }}" class="btn btn-warning">Modifier Articles</a></span>
+            Vendeur : <b>{{order.seller_name}}</b> <span class="float-right"><a href="/orders/update/{{ order.id }}" class="btn btn-info">Modifier Articles</a></span>
           </li>
           <li class="list-group-item">
 
@@ -71,7 +71,7 @@
                 <b><span style="float: right">Prix de la livraison : {{order.shipping_price}} €</span></b>
                 <br>
                 <br>
-                <p><b>Règles de calcul : </b> {{order.shipping_rules}}</p>
+                <p><b>Règles de calcul : </b> {{order.shipping_rules}}</p> <span class="float-right"><a href="/subscriptions/{{ order.subscription_id }}" class="btn btn-warning">Abonnement</a></span>
           </li>
         </ul>
         </div>

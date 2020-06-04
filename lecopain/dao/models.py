@@ -420,6 +420,7 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
     nb_products = fields.Method("format_nb_products", dump_only=True)
     lines = fields.Method("format_lines", dump_only=True)
     shipping_formatted_dt = fields.Method("format_shipping_dt", dump_only=True)
+    subscription_id = fields.Method("format_subscription_id", dump_only=True)
 
     class Meta:
         # Fields to expose
@@ -432,6 +433,9 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
 
     def format_customer_id(self, order):
         return "{}".format(order.customer.id)
+
+    def format_subscription_id(self, order):
+        return "{}".format(order.subscription.id)
 
     def format_seller_name(self, order):
         return "{}".format(order.seller.name)
