@@ -276,6 +276,7 @@ class Subscription(db.Model):
         db.String(20), default=Category_Enum.ARTICLE.value)
 
     days = db.relationship('SubscriptionDay', backref='week',
+                           order_by='asc(SubscriptionDay.day_of_week)',
                            lazy=True, cascade="all, delete-orphan")
     orders = db.relationship('Order', backref='subref', lazy=True)
 

@@ -158,9 +158,9 @@ class OrderDao:
     @staticmethod
     def delete(id):
         order = order = Order.query.get_or_404(id)
-        customer = Customer.query.get_or_404(int(order.get('customer_id')))
+        customer = Customer.query.get_or_404(order.customer.id)
         db.session.delete(order)
-        customer.nb_subscriptions = customer.nb_subscriptions + 1
+        customer.nb_subscriptions = customer.nb_orders - 1
         db.session.commit()
 
     # @

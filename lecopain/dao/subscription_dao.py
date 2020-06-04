@@ -95,8 +95,7 @@ class SubscriptionDao:
     @staticmethod
     def delete(id):
         subscription = Subscription.query.get_or_404(id)
-        customer = Customer.query.get_or_404(
-            int(subscription.get('customer_id')))
+        customer = Customer.query.get_or_404(subscription.customer.id)
         db.session.delete(subscription)
         customer.nb_subscriptions = customer.nb_subscriptions - 1
         db.session.commit()

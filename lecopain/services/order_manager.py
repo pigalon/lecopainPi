@@ -2,6 +2,7 @@ from datetime import datetime, date, timedelta
 
 from lecopain.app import app, db
 from lecopain.services.business_service import BusinessService
+from lecopain.services.item_service import ItemService
 from lecopain.dao.models import Line, Product, Seller, Customer, Order, OrderStatus_Enum
 from lecopain.helpers.date_utils import dates_range, Period_Enum
 from lecopain.dao.order_dao import OrderDao
@@ -13,6 +14,7 @@ from sqlalchemy import extract, Date, cast
 class OrderManager():
 
     businessService = BusinessService()
+    itemService = ItemService()
 
     def parse_lines(self, lines):
         headers = ('product_id', 'quantity', 'price' )
@@ -32,6 +34,9 @@ class OrderManager():
 
     def delete_order(self, order_id):
         OrderDao.delete(order_id)
+        order = OrderDao.get_one(order_id)
+        #if order.subscription_id is not None :
+            
 
     def update_order_and_parse_line(self, order_id, lines):
         parsed_lines = self.parse_lines(lines)
@@ -50,6 +55,13 @@ class OrderManager():
         OrderDao.update_db(order)
         if order.subscription_id is not None:
             self.items_add_subscription(order)
+            
+    def remove_order_subscriptions(self, order):
+        subscription = SubscriptionDao.get_one(order.subscription_id)
+        items = []
+        items.append(
+            {'name': 'nb_orders', 'value': (subscription.nb_orders - order.nb_orders)})
+        SubscriptionDao.update_db(subscription, items)
         
     def items_remove_subscription(self, order):
         subscription = SubscriptionDao.get_one(order.subscription_id)
@@ -63,14 +75,13 @@ class OrderManager():
         
     def items_add_subscription(self, order):
         subscription = SubscriptionDao.get_one(order.subscription_id)
-        items = []
-        items.append(
-            {'name': 'nb_products', 'value': (subscription.nb_products + order.nb_products)})
-        items.append({'name': 'shipping_price',
-                      'value': (subscription.shipping_price + order.shipping_price)})
-        items.append({'name': 'price', 'value': (
-            subscription.price + order.price)})
-        SubscriptionDao.update_db(subscription, items)
+        itemService = ItemService()
+        itemService.add_order_subscription_nb_products(subscription, order) \
+            .add_order_subscription_shipping_price_products(subscription, order) \
+            .add_order_subscription_shipping_price_products(subscription, order) \
+            .add_order_subscription_price_products(subscription, order)
+
+        SubscriptionDao.update_db(subscription, itemService.items)
         
 
     # @
