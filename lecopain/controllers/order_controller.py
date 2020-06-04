@@ -179,7 +179,7 @@ def display_delete_order(order_id):
 @login_required
 def delete_order(order_id):
     orderServices.delete_order(order_id)
-    return jsonify({})
+    return jsonify(success=True)
 
 #####################################################################
 #                                                                   #

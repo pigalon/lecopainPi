@@ -11,21 +11,45 @@ class ItemService:
             {'name': 'nb_orders', 'value': (subscription.nb_orders - 1)})
         return self
 
-    def add_order_subscription_nb_products(self, subscription, order):
+    def add_order_subscription_nb_orders(self, subscription, nb_orders):
         self.items.append(
-            {'name': 'nb_products', 'value': (subscription.nb_products + order.nb_products)})
+            {'name': 'nb_orders', 'value': (subscription.nb_orders + nb_orders)})
         return self
 
-    def add_order_subscription_shipping_price_products(self, subscription, order):
+    def add_order_subscription_nb_products(self, subscription, nb_products):
+        self.items.append(
+            {'name': 'nb_products', 'value': (subscription.nb_products + nb_products)})
+        return self
+
+    def add_order_subscription_shipping_price(self, subscription, shipping_price):
         self.items.append({'name': 'shipping_price',
-                      'value': (subscription.shipping_price + order.shipping_price)})
+                      'value': (subscription.shipping_price + shipping_price)})
         return self
 
-    def add_order_subscription_price_products(self, subscription, order):
+    def add_order_subscription_price(self, subscription, price):
         self.items.append({'name': 'price', 'value': (
-            subscription.price + order.price)})
+            subscription.price + price)})
         return self
 
+    def remove_order_subscription_nb_orders(self, subscription, nb_orders):
+        self.items.append(
+            {'name': 'nb_orders', 'value': (subscription.nb_orders - nb_orders)})
+        return self
+
+    def remove_order_subscription_nb_products(self, subscription, nb_products):
+        self.items.append(
+            {'name': 'nb_products', 'value': (subscription.nb_products - nb_products)})
+        return self
+
+    def remove_order_subscription_shipping_price(self, subscription, shipping_price):
+        self.items.append({'name': 'shipping_price',
+                           'value': (subscription.shipping_price - shipping_price)})
+        return self
+
+    def remove_order_subscription_price(self, subscription, price):
+        self.items.append({'name': 'price', 'value': (
+            subscription.price - price)})
+        return self
 
 
 

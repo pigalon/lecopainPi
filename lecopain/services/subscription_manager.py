@@ -7,11 +7,12 @@ from lecopain.dao.subscription_dao import SubscriptionDao
 from lecopain.dao.subscription_day_dao import SubscriptionDayDao
 from lecopain.helpers.date_utils import dates_range, Period_Enum
 from lecopain.services.business_service import BusinessService
+from lecopain.services.item_service import ItemService
 from datetime import timedelta
 
 
 class SubscriptionManager():
-    
+
     businessService = BusinessService()
 
     def create_subscription(self, subscription):
@@ -42,10 +43,10 @@ class SubscriptionManager():
 
     def get_one(self,  subscription_id):
         return SubscriptionDao.read_one(subscription_id)
-    
+
     def get_one_db(self,  subscription_id):
         return SubscriptionDao.get_one(subscription_id)
-    
+
     def get_one_day(self,  subscription_day_id):
         return SubscriptionDayDao.read_one(subscription_day_id)
 
@@ -55,7 +56,7 @@ class SubscriptionManager():
 
     def delete_subscription(self, subscription_id):
         SubscriptionDao.delete(subscription_id)
-        
+
     def parse_lines(self, lines):
         headers = ('product_id', 'quantity', 'price' )
         items = [{} for i in range(len(lines[0]))]
@@ -74,10 +75,9 @@ class SubscriptionManager():
     #
     def create_day(self, subscription_day, lines):
         id = subscription_day.get('id')
-        
         subscription_day_db = SubscriptionDayDao.get_one(id)
         SubscriptionDayDao.add_lines(subscription_day_db, lines)
-        
+
         subscription_day_complete = SubscriptionDayDao.read_one(id)
         category = SubscriptionDayDao.get_category(subscription_day_complete)
         city = subscription_day_complete.get('customer_city')
@@ -112,7 +112,6 @@ class SubscriptionManager():
         nb_days = 1
         order = {}
         total_nb_products = 0
-        items=[]
         nb_products = 0
         nb_orders = 0
         total_shipping_price = 0.0
@@ -145,20 +144,21 @@ class SubscriptionManager():
                 created_order)
                 created_order.category = created_order.products[0].category
                 created_order.subscription_id = subscription.id
-                OrderDao.update_db(created_order)
+                OrderDao.update_db(order)
                 nb_orders = nb_orders + 1
-                total_shipping_price = total_shipping_price + created_order.shipping_price
-                total_price = total_price + created_order.price
+                total_shipping_price = total_shipping_price + float(created_order.shipping_price)
+                total_price = total_price + float(created_order.price)
             # increment day
             current_dt = current_dt + timedelta(days=1)
             nb_days = nb_days + 1
-
-        items.append({'name' : 'nb_products', 'value' : total_nb_products})
-        items.append({'name': 'nb_orders', 'value': nb_orders})
-        items.append({'name': 'shipping_price', 'value': total_shipping_price})
-        items.append({'name': 'price', 'value': total_price})
         
-        SubscriptionDao.update_db(subscription, items)
+        itemService = ItemService()
+        itemService.add_order_subscription_nb_products(subscription, total_nb_products). \
+        add_order_subscription_nb_orders(subscription, nb_orders). \
+        add_order_subscription_shipping_price(subscription, total_shipping_price). \
+        add_order_subscription_price(subscription, total_price)
+        
+        SubscriptionDao.update_db(subscription, itemService.items)
 
 
 

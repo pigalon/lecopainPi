@@ -184,5 +184,3 @@ class OrderDao:
     @staticmethod
     def update_db(order):
         db.session.commit()
-
-
