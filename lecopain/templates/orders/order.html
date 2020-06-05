@@ -71,7 +71,10 @@
                 <b><span style="float: right">Prix de la livraison : {{order.shipping_price}} €</span></b>
                 <br>
                 <br>
-                <p><b>Règles de calcul : </b> {{order.shipping_rules}}</p> <span class="float-right"><a href="/subscriptions/{{ order.subscription_id }}" class="btn btn-warning">Abonnement</a></span>
+                <p><b>Règles de calcul : </b> {{order.shipping_rules}}</p> 
+                {% if order.subscription_id != None %}
+                  <span class="float-right"><a href="/subscriptions/{{ order.subscription_id }}" class="btn btn-warning">Abonnement</a></span>
+                {% endif %}
           </li>
         </ul>
         </div>

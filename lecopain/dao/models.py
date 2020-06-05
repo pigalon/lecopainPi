@@ -435,6 +435,8 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
         return "{}".format(order.customer.id)
 
     def format_subscription_id(self, order):
+        if order.subscription is None:
+            return None
         return "{}".format(order.subscription.id)
 
     def format_seller_name(self, order):
