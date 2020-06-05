@@ -86,6 +86,7 @@ class Order(db.Model):
     title = db.Column(db.String(50), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False,
                            default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime)
     customer_id = db.Column(db.Integer, db.ForeignKey(
         'customers.id'), nullable=False)
     customer = db.relationship('Customer')

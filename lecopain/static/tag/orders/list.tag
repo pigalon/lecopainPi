@@ -32,10 +32,12 @@
             <td>
             <table width="100%" class="table table-striped" onclick={ show_order(order.id) }>
                 <tr>
-                    <td if={order.status == 'CREE'} width="6%" class="table-primary">{order.id}</td>
+                    <td if={order.status == 'CREE' && order.updated_at == None} width="6%" class="table-primary">{order.id}</td>
+                    <td if={order.status == 'CREE' && order.updated_at != None} width="6%" class="table-warning">{order.id}</td>
                     <td if={order.status == 'ANNULEE'} width="6%" class="table-dark">{order.id}</td>
                     <td if={order.status == 'TERMINEE'} width="6%" class="table-success">{order.id}</td>
                     <td if={order.status == 'DEFAUT'} width="6%" class="table-danger">{order.id}</td>
+
                     <td width="20%">{moment(order.shipping_dt).format('Do MMMM YYYY' )}</td>
                     <td width="30%">{order.customer_name}</td>
                     <td width="30%">{order.seller_name}</td>

@@ -121,16 +121,6 @@ class OrderDao:
         order.price = format(total_price, '.2f')
         order.nb_products = nb_products
 
-
-    @staticmethod
-    def update(order):
-        created_order = Order(title=order.get('title'),
-                              customer_id=order.get('customer_id'),
-                              seller_id=order.get('seller_id'),
-                              shipping_dt=order.get('shipping_dt'))
-        db.session.add(created_order)
-        return created_order
-
     @staticmethod
     def update_shipping_dt(id, shipping_dt):
         order = order = Order.query.get_or_404(id)

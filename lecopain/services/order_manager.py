@@ -54,6 +54,7 @@ class OrderManager():
             order)
         OrderDao.update_db(order)
         order.category = order.products[0].category
+        order.updated_at = datetime.now()
         OrderDao.update_db(order)
         if order.subscription_id is not None:
             self.items_add_subscription(order)
