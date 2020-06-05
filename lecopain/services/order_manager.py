@@ -88,6 +88,13 @@ class OrderManager():
     # @
     #
     def update_order_status(self, order_id, order_status):
+        order = OrderDao.get_one(order_id)
+        if order_status == OrderStatus_Enum.ANNULEE.value and order.subscription_id is not None:
+            self.items_remove_subscription(order)
+
+        if order_status == OrderStatus_Enum.CREE.value and order.subscription_id is not None:
+            self.items_add_subscription(order)
+
         OrderDao.update_status(order_id, order_status)
 
     # @
