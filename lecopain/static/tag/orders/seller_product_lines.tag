@@ -2,7 +2,7 @@
 
 			<div class="form-group">
 				Choix du vendeur :
-				<select class="form-control" id="seller_id" name="seller_id" ref="seller" onchange="{ load_products }">
+				<select class="form-control" id="seller_id" name="seller_id" ref="seller" onchange="{ load_products }" {select_seller_disabled}>
 					<option each="{ seller in sellers }" value={seller.id}> {seller.name} </option>
                 </select>
 			</div>
@@ -25,7 +25,7 @@
                     <table id="tab_qn_ans" width="100%">
                         <tr>
                             <th width="20%">id</th>
-                            <th width="35%">nom</th>	
+                            <th width="35%">nom</th>
                             <th width="30%">quantité</th>
                             <th width="30%">prix</th>
                             <th width="10%"></th>
@@ -40,6 +40,10 @@
                     </table>
                 </div>
             </div>
+			<div class="form-group">
+                <input style="height:40px;width:120px" id="Button" ref="submit_button" class="btn btn-outline-info" value="Valider" onclick="{submit_order}"/>
+				<span class="left" style="color:red">{ message_validation }</span>
+            </div>
 
 
 	<script>
@@ -50,6 +54,7 @@
 		price=0
 		product_name=''
 		first_seller_id=0
+		
 
 		var self = this
 
@@ -87,6 +92,7 @@
 					}
 				}
 			}
+			
 
 			if(b_add_new_line){ // add line only if not already existing
 				n = text.lastIndexOf(" - ");
@@ -95,6 +101,7 @@
 				cpt = cpt + 1;
 				line =  {id : cpt, product_id:product_id, product_name:product_name, quantity : 1, price : price};
 				lines.push(line)
+				self.update()
 			}
 
 		}
@@ -102,6 +109,7 @@
 			lines = lines.filter(function(line) {
 				lines.splice(line.id, 1)
 			})
+			self.update()
 		}
 
 		this.on('mount', function() {
@@ -109,12 +117,30 @@
 			ajaxCall.done(function(data) {
 				self.load_products();
 			});
-
-						
-
+			if(self.refs.line_product_id == undefined){
+				message_validation = 'Veuillez saisir au moins un article!'
+				self.refs.submit_button.disabled = true
+				self.refs.seller.disabled = false
+			}
+			else{
+				message_validation = ''
+				self.refs.submit_button.disabled = false
+				self.refs.seller.disabled = true
+			}
 		});
 
-
+		this.on('update', function() {
+			if(self.refs.line_product_id == undefined){
+				message_validation = 'Veuillez saisir au moins un article!'
+				self.refs.submit_button.disabled = true
+				self.refs.seller.disabled = false
+			}
+			else{
+				message_validation = ''
+				self.refs.submit_button.disabled = false
+				self.refs.seller.disabled = true
+			}
+		});
 
 		/******************************************
        	load products list
@@ -151,6 +177,10 @@
 					self.update()
 				}
 			});
+		}
+		submit_order(){
+			this.refs.seller.disabled = false
+			document.getElementById("order_form").submit();
 		}
 	</script>
 </seller-product-line>;

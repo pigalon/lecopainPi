@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="content-section">
-        <form method="POST" action="" style="display: inline;">    
+        <form id="order_form" method="POST" action="" style="display: inline;">    
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
             <legend class="=border-bottom mb-4"></legend>
@@ -23,9 +23,6 @@
                 <input type="text" name="shipping_dt" id="datepicker_shipping" data-language='fr' class="form-control datepicker-input" />
             </div>
             <seller-product-line></seller-product-line>
-            <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
-            </div>
             {% if form.errors %}
                 <ul class="errors">
                     {% for field_name, field_errors in form.errors|dictsort if field_errors %}

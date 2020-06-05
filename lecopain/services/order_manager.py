@@ -27,9 +27,9 @@ class OrderManager():
     def create_order_and_parse_line(self, order, lines):
         parsed_lines = self.parse_lines(lines)
         created_order = OrderDao.create_order(order, parsed_lines)
+        created_order.category = created_order.products[0].category
         created_order.shipping_price, created_order.shipping_rules = self.businessService.apply_rules(
             created_order)
-        created_order.category = created_order.products[0].category
         db.session.commit()
 
     def delete_order(self, order_id):
@@ -50,10 +50,10 @@ class OrderManager():
         order.nb_products = 0
         order.shipping_rules = ''
         OrderDao.add_lines(order, parsed_lines)
+        created_order.category = order.products[0].category
         order.shipping_price, order.shipping_rules = self.businessService.apply_rules(
             order)
         OrderDao.update_db(order)
-        order.category = order.products[0].category
         order.updated_at = datetime.now()
         OrderDao.update_db(order)
         if order.subscription_id is not None:

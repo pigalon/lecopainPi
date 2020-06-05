@@ -34,6 +34,10 @@
                     </table>
                 </div>
             </div>
+			<div class="form-group">
+                <input  id="Button" ref="submit_button" class="btn btn-outline-info" value="Valider" type="submit"/>
+				<span class="left" style="color:red">{ message_validation }</span>
+            </div>
 
 
 	<script>
@@ -88,17 +92,37 @@
 				cpt = cpt + 1;
 				line =  {id : cpt, product_id:product_id, product_name:product_name, quantity : 1, price : price};
 				lines.push(line)
+				self.update()
 			}
 		}
 		remove_line(e) {
 			lines = lines.filter(function(line) {
 				lines.splice(line.id, 1)
 			})
+			self.update()
 		}
 
 		this.on('mount', function() {
 			console.log(opts.seller_id)
 			this.load_products(opts.seller_id)
+			if(self.refs.line_product_id == undefined){
+				message_validation = 'Veuillez saisir au moins un article!'
+				self.refs.submit_button.disabled = true
+			}
+			else{
+				message_validation = ''
+				self.refs.submit_button.disabled = false
+			}
+		});
+		this.on('update', function() {
+			if(self.refs.line_product_id == undefined){
+				message_validation = 'Veuillez saisir au moins un article!'
+				self.refs.submit_button.disabled = true
+			}
+			else{
+				message_validation = ''
+				self.refs.submit_button.disabled = false
+			}
 		});
 
 		/******************************************

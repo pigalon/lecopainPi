@@ -24,7 +24,7 @@
                             <th width="10%"></th>
                         </tr>
 						<tr each="{ line in lines }">
-                            <td width="20%"><input type="hidden" name="product_id[]" value="{line.product_id}"/>{line.id}</td>
+                            <td width="20%"><input type="hidden" ref="line_product_id" name="product_id[]" value="{line.product_id}"/>{line.id}</td>
                             <td width="35%">{line.product_name}</td>
                             <td width="30%"><input type="number" style="width: 5em" name="quantity[]" value="{line.quantity}"/></td>
                             <td width="30%"><input type="hidden" name="price[]" value="{line.price}"/>{line.price} €</td>
@@ -32,6 +32,10 @@
                         </tr>
                     </table>
                 </div>
+            </div>
+			<div class="form-group">
+                <input  id="Button" ref="submit_button" class="btn btn-outline-info" value="Valider" type="submit"/>
+				<span class="left" style="color:red">{ message_validation }</span>
             </div>
 
 
@@ -60,6 +64,24 @@
 			this.load_lines()
 			this.load_products(seller_id)
       		const location  = $('window.location')
+			if(self.refs.line_product_id == undefined){
+				message_validation = 'Veuillez saisir au moins un article!'
+				self.refs.submit_button.disabled = true
+			}
+			else{
+				message_validation = ''
+				self.refs.submit_button.disabled = false
+			}
+		});
+		this.on('update', function() {
+			if(self.refs.line_product_id == undefined){
+				message_validation = 'Veuillez saisir au moins un article!'
+				self.refs.submit_button.disabled = true
+			}
+			else{
+				message_validation = ''
+				self.refs.submit_button.disabled = false
+			}
 		});
 
 
@@ -83,11 +105,13 @@
 			cpt = cpt + 1;
 			line =  {id : cpt, product_id:product_id, product_name:product_name, quantity : 1, price : price};
 			lines.push(line)
+			self.update()
 		}
 		remove_line(e) {
 			lines = lines.filter(function(line) {
 				lines.splice(line.id, 1)
 			})
+			self.update()
 		}
 
 
@@ -99,7 +123,8 @@
 				cpt = cpt + 1;
 				line =  {id : cpt, product_id:item.product_id, product_name:item.product_name, quantity:item.quantity,  price : item.price};
 				lines.push(line)
-			});  
+			});
+			self.update()
 		}
 
 
