@@ -43,6 +43,7 @@ class OrderShippingDtForm(FlaskForm):
 
 class ProductForm(FlaskForm):
     name = StringField('Nom', validators=[DataRequired()])
+    short_name = StringField('Nom court', validators=[DataRequired()])
     price = DecimalField('Prix')
     description = StringField('Description')
     seller_id = IntegerField('Vendeur Id:', validators=[DataRequired()])

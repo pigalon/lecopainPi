@@ -15,10 +15,10 @@
             <table width="100%">
                 <tr>
                     <th width="6%">id</th>
-                    <th width="24%">Nom</th>
+                    <th width="29%">Nom</th>
                     <th width="20%">Prix</th>
                     <th width="20%">Catégorie</th>
-                    <th width="30%">Description</th>
+                    <th width="35%">Description</th>
                 </tr>
             </table>
             </td>
@@ -28,10 +28,10 @@
             <table width="100%" class="table table-striped" onclick={ show_product(product.id) }>
                 <tr>
                     <td width="6%" class="table-primary">{product.id}</td>
-                    <td width="24%">{product.name}</td>
+                    <td width="29%">{product.name} - {product.short_name}</td>
                     <td width="20%">{product.price}€</td>
                     <td width="20%">{product.category}</td>
-                    <td width="30%">{product.description}</td>
+                    <td width="25%">{product.description}</td>
                 </tr>
             </table>
             </td>

@@ -46,6 +46,7 @@ def product_create():
     sellers = sellerServices.optim_get_all()
     if form.validate_on_submit():
         product = {'name': form.name.data,
+                   'short_name': form.short_name.data,
                    'price': form.price.data,
                    'seller_id': form.seller_id.data,
                    'description': form.description.data,
