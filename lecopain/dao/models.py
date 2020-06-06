@@ -378,8 +378,8 @@ class LineSchema(SQLAlchemyAutoSchema):
     def format_product_name(self, line):
         return "{}".format(line.product.name)
 
-    def format_product_name(self, line):
-        return "{}".format(line.product.name)
+    def format_product_short_name(self, line):
+        return "{}".format(line.product.short_name)
     
     def format_product_id(self, line):
         return "{}".format(line.product.id)

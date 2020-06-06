@@ -105,7 +105,7 @@ class OrderDao:
         .all()
 
         # Serialize the data for the response
-        order_schema = OrderSchema(many=True)
+        order_schema = CompleteOrderSchema(many=True)
         return order_schema.dump(all_orders)
 
     @staticmethod
