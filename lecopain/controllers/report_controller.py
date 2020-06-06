@@ -1,4 +1,5 @@
 from lecopain.app import app
+from lecopain.services.order_manager import OrderManager
 
 from sqlalchemy import extract
 from datetime import datetime
@@ -11,7 +12,7 @@ app = Flask(__name__, instance_relative_config=True)
 report_page = Blueprint('report_page', __name__,
                        template_folder='../templates')
 
-
+orderServices= OrderManager()
 
 
 #####################################################################
@@ -27,9 +28,9 @@ def reports():
 #####################################################################
 
 
-@report_page.route("api/reports/period/<string:period>/date/<string:day>/sellers/<int:seller_id>", methods=['GET', 'POST'])
+@report_page.route("/api/reports/period/<string:period>/date/<string:day>/sellers/<int:seller_id>", methods=['GET', 'POST'])
 @login_required
-def reports(period, day, seller_id):
+def list_orders_seller_period(period, day, seller_id):
     # select orders for specific seller
     #  - check the date
     #  - get the correct period day or week around the day
@@ -37,5 +38,6 @@ def reports(period, day, seller_id):
     #from each order create a line customer + products
     # group if both for 1 customer
     
-    return render_template('/reports/reports.html', title="Rapports")
+    return jsonify({'orders': orderServices.get_all_by_seller_period(seller_id, period, day)})
 
+#api/reports/period/day/date/06%2F06%2F2020/sellers/1

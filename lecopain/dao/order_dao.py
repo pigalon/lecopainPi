@@ -88,6 +88,27 @@ class OrderDao:
         return order_schema.dump(all_orders)
 
     @staticmethod
+    def read_some_seller(seller_id, start, end):
+
+        all_orders = Order.query
+
+        if(start != 0 ):
+            all_orders = all_orders.filter(
+                Order.shipping_dt >= start).filter(
+                Order.shipping_dt <= end)
+
+        if seller_id != 0:
+            all_orders = all_orders.filter(
+                Order.seller_id == seller_id)
+
+        all_orders = all_orders.order_by(Order.shipping_dt.desc()) \
+        .all()
+
+        # Serialize the data for the response
+        order_schema = OrderSchema(many=True)
+        return order_schema.dump(all_orders)
+
+    @staticmethod
     def add(order):
         customer = Customer.query.get_or_404(int(order.get('customer_id')))
         seller = Seller.query.get_or_404(int(order.get('seller_id')))

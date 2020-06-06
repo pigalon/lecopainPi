@@ -363,6 +363,7 @@ class ProductSchema(SQLAlchemyAutoSchema):
 
 class LineSchema(SQLAlchemyAutoSchema):
     product_name = fields.Method("format_product_name", dump_only=True)
+    product_short_name = fields.Method("format_product_short_name", dump_only=True)
     price = fields.Method("format_price", dump_only=True)
     product_id = fields.Method("format_product_id", dump_only=True)
 
@@ -373,6 +374,9 @@ class LineSchema(SQLAlchemyAutoSchema):
 
     def format_price(self, line):
         return "{}".format(line.price)
+
+    def format_product_name(self, line):
+        return "{}".format(line.product.name)
 
     def format_product_name(self, line):
         return "{}".format(line.product.name)

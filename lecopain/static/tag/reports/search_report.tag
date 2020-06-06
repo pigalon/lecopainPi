@@ -6,12 +6,12 @@
             </tr>
             <tr>
                 <td>
-                    <select class="form-control" id="seller_id" name="seller_id" ref="seller">
+                    <select class="form-control" id="seller_id" name="seller_id" ref="seller_id">
 					    <option each="{ seller in sellers }" value={seller.id}> {seller.name} </option>
                     </select>
                 </td>
                 <td>
-                    <input type="text" name="day" id="datepicker_day" data-language='fr' class="form-control datepicker-input" />
+                    <input type="text" name="day" ref="day" id="datepicker_day" data-language='fr' class="form-control datepicker-input" />
                 </td>
                 <td>
                     <select class="form-control" name="period" id="period" ref="period" style="width: 12rem; display:inline-block">
@@ -61,9 +61,33 @@
 			});
 		}
 
+        String.prototype.replaceAll = function(str1, str2, ignore)
+		{
+    		return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
+		}
+
         search(){
-            result = " un Début !!"
-            self.update()
+            var url = '/api/reports/'
+            
+            var seller_id = self.refs.seller_id.value;
+            var period = self.refs.period.value;
+            var day = self.refs.day.value;
+
+            url = url.concat('period/',period,'/');
+            url = url.concat('date/', day.replaceAll("/",""),'/');
+            url = url.concat('sellers/',seller_id);
+
+            return $.ajax({
+				url: url,
+				type: "GET",
+				dataType: "json",
+				contentType: "application/json; charset=utf-8",
+				success: function(data) {
+					self.result = data['orders']
+					self.update()
+				}
+			});
+            
         }
 
 	</script>
