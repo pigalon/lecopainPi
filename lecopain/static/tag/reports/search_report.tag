@@ -25,8 +25,20 @@
                 </td>
             </tr>
         </table>
-        <p>
-        { result }
+        <p each="{day_report, index in days}">
+            {day_report['date']} :  Nb com : {day_report['amount']['nb_orders']} - Nb articles : {day_report['amount']['nb_products']} - Montant total : {day_report['amount']['price']} - Liv. total : {day_report['amount']['shipping_price']}
+            {index} - {days[index]['amount']['products']}
+
+             <table>
+                <tr>
+                <td each="{product in day_report['amount']['products']}"> 
+                    {product['short_name']}: {product['quantity']} 
+                </td>    
+                </tr>
+            </table>
+           
+
+            
         </p>
 
     <script>
@@ -36,6 +48,8 @@
         });
 
 		var self = this
+        days=[]
+        //day_report={'amount',}
 
         moment.locale('fr');
 
@@ -83,7 +97,7 @@
 				dataType: "json",
 				contentType: "application/json; charset=utf-8",
 				success: function(data) {
-					self.result = data['days']
+					self.days = data['days']
 					self.update()
 				}
 			});

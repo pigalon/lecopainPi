@@ -22,12 +22,18 @@ class ReportManager():
             #for line in order.lines:
             #    line
             #    products[]
-        self.orderServices.extract_products_from_orders(orders)
+        amount['products'] = self.orderServices.extract_products_from_orders(orders)
         amount['nb_orders'] = len(orders)
         return amount
 
     def prepareLines_by_customer(self, orders):
         lines = []
+
+        for order in orders:
+            line = {'customer':order['customer_name']}
+            line['products'] = []
+            for order_line in order['lines']:
+                line['products'].append({'name':order_line['product_short_name'], 'quantity':order_line['quantity']})
         return lines
 
     def prepareDay(self, day, orders):
@@ -39,7 +45,7 @@ class ReportManager():
         days=[]
         datetime_day = datetime.strptime(day, '%d%m%Y')
         start, end = dates_range(period, datetime_day)
-        while start <= end:
+        while start < end:
             day = {}
             day['date'] = start
             orders = self.orderServices.get_all_by_seller_period(
