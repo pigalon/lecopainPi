@@ -22,6 +22,7 @@ class ReportManager():
             #for line in order.lines:
             #    line
             #    products[]
+        self.orderServices.extract_products_from_orders(orders)
         amount['nb_orders'] = len(orders)
         return amount
 
