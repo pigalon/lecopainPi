@@ -154,13 +154,18 @@ class OrderManager():
 
     def extract_products_from_orders(self, orders):
         products = []
+        product = None
         for order in orders:
             for line in order['lines']:
                 short_name = line['product_short_name']
                 quantity  = line['quantity']
-                if self.find(products, short_name) != None:
-                    orders_tmp = [d for d in orders if d['line']['product_short_name'] == short_name]
-
+                product = self.find(products, short_name) 
+                if product != None:
+                    #line_tmp = [d for d in order['lines'] if d['line']['product_short_name'] == short_name]
+                    product['quantity'] = product['quantity'] + int(line['quantity'])
+                else :
+                    products.append({'short_name':line['product_short_name'], 'quantity':int(line['quantity'])})
+        return products
             
 
             
