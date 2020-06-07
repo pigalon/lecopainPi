@@ -30,18 +30,15 @@ def reports():
 #####################################################################
 
 
-@report_page.route("/api/reports/period/<string:period>/date/<string:day>/sellers/<int:seller_id>", methods=['GET', 'POST'])
+@report_page.route("/api/reports/days/period/<string:period>/date/<string:day>/sellers/<int:seller_id>", methods=['GET', 'POST'])
 @login_required
 def list_orders_seller_period(period, day, seller_id):
-    # select orders for specific seller
-    #  - check the date
-    #  - get the correct period day or week around the day
-    #orders = orderServices.get_all_by_seller_period(seller_id, period, day)
-    
-    
-    #from each order create a line customer + products
-    # group if both for 1 customer
-    
+   
     return jsonify({'days': reportServices.get_reports_by_seller(seller_id, period, day)})
 
-#api/reports/period/day/date/06%2F06%2F2020/sellers/1
+
+@report_page.route("/api/reports/amounts/period/<string:period>/date/<string:day>/sellers/<int:seller_id>", methods=['GET', 'POST'])
+@login_required
+def amounts_seller_period(period, day, seller_id):
+
+    return jsonify({'amounts': reportServices.get_main_amounts_by_seller(seller_id, period, day)})

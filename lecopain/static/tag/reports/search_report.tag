@@ -25,30 +25,51 @@
                 </td>
             </tr>
         </table>
-        <p each="{day_report, index in days}">
-            {day_report['date']} :  Nb com : {day_report['amount']['nb_orders']} - Nb articles : {day_report['amount']['nb_products']} - Montant total : {day_report['amount']['price']} - Liv. total : {day_report['amount']['shipping_price']}
-            {index} - {days[index]['amount']['products']}
+        <ul class="list-group" width="100%">
+            <li class="list-group-item" width="100%">
+                <span class="btn btn-warning">Totaux Période</span> -  <b>Nb commandes</b> : <span class="btn btn-warning">x{amounts['nb_orders']}</span> - <b>Nb articles</b> : <span class="btn btn-warning">x{amounts['nb_products']}</span> - <b>Montant total</b> : <span class="btn btn-warning">{amounts['price']}€</span> - <b>Livraison total</b> : <span class="btn btn-warning">{amounts['shipping_price']}€</span>
+                <table class="table table-bordered">
+                    <tr>
+                        <td each="{product in amounts['products']}">
+                            {product['short_name']}: x{product['quantity']}
+                        </td>
+                    </tr>
+                </table>
 
-             <table>
-                <tr>
-                <td each="{product in day_report['amount']['products']}"> 
-                    {product['short_name']}: {product['quantity']} 
-                </td>    
-                </tr>
-            </table>
-           
-
-            
-        </p>
+            <li width="100%" class="list-group-item" each="{day_report, index in days}">
+                <table><tr>
+                <td> <span style="width: 200px; display: block;" class="btn btn-secondary">{day_report['date']}</span> </td> <td>-  <b>Nb commandes</b> : x{day_report['amount']['nb_orders']} - <b>Nb articles</b> : x{day_report['amount']['nb_products']} - <b>Montant total</b> : {day_report['amount']['price']}€ - <b>Livraison total</b> : {day_report['amount']['shipping_price']}€</td>
+                <table class="table table-bordered" style="margin-bottom: 0px; padding-bottom: 0px">
+                    <tr class="table-secondary">
+                        <td each="{product in day_report['amount']['products']}">
+                            {product['short_name']}: x{product['quantity']}
+                        </td>
+                    </tr>
+                </table>
+                <table class="table table-bordered" style="margin-top: 0px; padding-top: 0px">
+                    <tr each="{line in day_report['lines']}">
+                        <td class="table-primary" width="15%">
+                            {line['customer']}
+                        </td>
+                        <td>
+                            <span each="{product in line['products']}">
+                                {product['name']}: x{product['quantity']},
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </li>
+        </ul>
 
     <script>
 
-         $(function () {
+        $(function () {
             $("#datepicker_day").datepicker();
         });
 
 		var self = this
         days=[]
+        amounts={}
         //day_report={'amount',}
 
         moment.locale('fr');
@@ -81,7 +102,12 @@
 		}
 
         search(){
-            var url = '/api/reports/'
+            this.search_days();
+            this.search_amounts();
+        }
+
+        search_days(){
+            var url = '/api/reports/days/'
             
             var seller_id = self.refs.seller_id.value;
             var period = self.refs.period.value;
@@ -98,6 +124,29 @@
 				contentType: "application/json; charset=utf-8",
 				success: function(data) {
 					self.days = data['days']
+					self.update()
+				}
+			});
+            
+        }
+        search_amounts(){
+            var url = '/api/reports/amounts/'
+            
+            var seller_id = self.refs.seller_id.value;
+            var period = self.refs.period.value;
+            var day = self.refs.day.value;
+
+            url = url.concat('period/',period,'/');
+            url = url.concat('date/', day.replaceAll("/",""),'/');
+            url = url.concat('sellers/',seller_id);
+
+            return $.ajax({
+				url: url,
+				type: "GET",
+				dataType: "json",
+				contentType: "application/json; charset=utf-8",
+				success: function(data) {
+					self.amounts = data['amounts']
 					self.update()
 				}
 			});
