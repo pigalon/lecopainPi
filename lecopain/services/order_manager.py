@@ -130,9 +130,7 @@ class OrderManager():
     def get_all_by_seller(self, seller_id):
         return OrderDao.read_by_seller(seller_id)
 
-    def get_all_by_seller_period(self, seller_id, period, day):
-        datetime_day = datetime.strptime(day, '%d%m%Y')
-        start,end = dates_range(period, datetime_day)
+    def get_all_by_seller_period(self, seller_id, start, end):
         return OrderDao.read_some_seller(seller_id=seller_id, start=start, end=end)
 
     def get_some(self,  customer_id=0, period=Period_Enum.ALL.value):

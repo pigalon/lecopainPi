@@ -1,5 +1,6 @@
 from lecopain.app import app
 from lecopain.services.order_manager import OrderManager
+from lecopain.services.report_manager import ReportManager
 
 from sqlalchemy import extract
 from datetime import datetime
@@ -13,6 +14,7 @@ report_page = Blueprint('report_page', __name__,
                        template_folder='../templates')
 
 orderServices= OrderManager()
+reportServices = ReportManager()
 
 
 #####################################################################
@@ -34,10 +36,12 @@ def list_orders_seller_period(period, day, seller_id):
     # select orders for specific seller
     #  - check the date
     #  - get the correct period day or week around the day
+    #orders = orderServices.get_all_by_seller_period(seller_id, period, day)
+    
     
     #from each order create a line customer + products
     # group if both for 1 customer
     
-    return jsonify({'orders': orderServices.get_all_by_seller_period(seller_id, period, day)})
+    return jsonify({'days': reportServices.get_reports_by_seller(seller_id, period, day)})
 
 #api/reports/period/day/date/06%2F06%2F2020/sellers/1

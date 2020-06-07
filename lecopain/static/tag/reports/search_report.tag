@@ -83,7 +83,7 @@
 				dataType: "json",
 				contentType: "application/json; charset=utf-8",
 				success: function(data) {
-					self.result = data['orders']
+					self.result = data['days']
 					self.update()
 				}
 			});
