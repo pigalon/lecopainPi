@@ -11,6 +11,9 @@ class BaseConfig(object):
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
     #SQLALCHEMY_DATABASE_URI = 'sqlite:///../../db/site.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    LANGUAGES = {
+        'fr': 'French'
+    }
 
 
 class TestConfig(BaseConfig):
@@ -22,3 +25,6 @@ class TestConfig(BaseConfig):
     TESTING = True
     DEBUG = False
     LOGIN_DISABLED = True
+    LANGUAGES = {
+        'fr': 'French'
+    }
