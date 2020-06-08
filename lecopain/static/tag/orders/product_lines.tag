@@ -24,9 +24,9 @@
                             <th width="10%"></th>
                         </tr>
 						<tr each="{ line in lines }">
-                            <td width="20%"><input type="hidden" ref="line_product_id" name="product_id[]" value="{line.product_id}"/>{line.id}</td>
+                            <td width="20%"><input type="hidden" ref="line_product_id" id="line_product_id" name="product_id[]" value="{line.product_id}"/ maxlength="2" readonly>{line.id}</td>
                             <td width="35%">{line.product_name}</td>
-                            <td width="30%"><input type="number" style="width: 5em" name="quantity[]" value="{line.quantity}"/></td>
+                            <td width="30%"><input type="number" style="width: 5em" ref="quantity" name="quantity[]" value="{line.quantity}"/></td>
                             <td width="30%"><input type="hidden" name="price[]" value="{line.price}"/>{line.price} €</td>
                             <td width="10%"><button type="button" id="remove" onclick="{remove_line}" class="btn btn-warning" ><i class="fa fa-minus"></i></button></td>
                         </tr>
@@ -98,14 +98,38 @@
 			index = this.refs.product.selectedIndex;
 			text = this.refs.product[index].innerText;
 			product_id = this.refs.product.value;
+			line_product_ids = this.refs.line_product_id
 
-			n = text.lastIndexOf(" - ");
-			product_name = text.substr(0,n);
-    		price = text.substr(n+3);
-			cpt = cpt + 1;
-			line =  {id : cpt, product_id:product_id, product_name:product_name, quantity : 1, price : price};
-			lines.push(line)
-			self.update()
+			b_add_new_line = true // we will determine if there is already a line with the same produt_id
+
+			if(line_product_ids != undefined){
+				if(line_product_ids.length == undefined){
+					if(product_id == line_product_ids.value){ // only one already existing line is equal
+						b_add_new_line = false
+						this.refs.quantity.value = parseInt(this.refs.quantity.value) + 1
+					}
+			    }
+				else{
+					for(i=0; i<(line_product_ids.length); i++){
+						if(product_id == line_product_ids[i].value){
+							b_add_new_line = false
+							this.refs.quantity[i].value = parseInt(this.refs.quantity[i].value) + 1
+						}
+					}
+				}
+			}
+			
+
+			if(b_add_new_line){ // add line only if not already existing
+				n = text.lastIndexOf(" - ");
+				product_name = text.substr(0,n);
+				price = text.substr(n+3);
+				cpt = cpt + 1;
+				line =  {id : cpt, product_id:product_id, product_name:product_name, quantity : 1, price : price};
+				lines.push(line)
+				self.update()
+			}
+
 		}
 		remove_line(e) {
 			lines = lines.filter(function(line) {
@@ -113,7 +137,6 @@
 			})
 			self.update()
 		}
-
 
 		load_lines()
 		{
