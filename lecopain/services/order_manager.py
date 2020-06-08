@@ -50,7 +50,7 @@ class OrderManager():
         order.nb_products = 0
         order.shipping_rules = ''
         OrderDao.add_lines(order, parsed_lines)
-        created_order.category = order.products[0].category
+        order.category = order.products[0].category
         order.shipping_price, order.shipping_rules = self.businessService.apply_rules(
             order)
         OrderDao.update_db(order)
