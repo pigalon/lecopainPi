@@ -11,9 +11,9 @@ class BaseConfig(object):
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
     #SQLALCHEMY_DATABASE_URI = 'sqlite:///../../db/site.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    LANGUAGES = {
-        'fr': 'French'
-    }
+    SUPPORTED_LANGUAGES = {'fr': 'Francais'}
+    BABEL_DEFAULT_LOCALE = 'fr'
+    BABEL_DEFAULT_TIMEZONE = 'UTC'
 
 
 class TestConfig(BaseConfig):
