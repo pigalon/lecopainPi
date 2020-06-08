@@ -1,5 +1,6 @@
 from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
+from flask_moment import Moment
 from flask_login import LoginManager
 from lecopain.extensions import db, ma, login_manager
 import locale
@@ -12,6 +13,7 @@ def register_extensions(app):
 
 
 app = Flask(__name__)
+moment = Moment(app)
 app.secret_key = 'super secret string'
 app.config.from_object('config.BaseConfig')
 register_extensions(app)

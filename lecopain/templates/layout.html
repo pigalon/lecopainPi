@@ -37,6 +37,9 @@
 		{% if title %}
 		<title>Flask page - {{ title }}</title>
 		{% endif %}
+		{{ moment.include_jquery() }}
+		{{ moment.include_moment() }}
+		{{ moment.lang("fr") }}
 	</head>
 
 	<body>

@@ -14,8 +14,7 @@ class ReportManager():
         amount_shipping_price = 0.0
         amount_price = 0.0
         for order in orders:
-            shipping_day = datetime.strptime(
-                order['shipping_dt'], '%Y-%m-%d').strftime('%d')
+            shipping_day = order['shipping_dt'].day
 
             amount_shipping_price = amount_shipping_price + \
                 float(order['shipping_price'])
@@ -34,8 +33,7 @@ class ReportManager():
         lines = []
 
         for order in orders:
-            shipping_day = datetime.strptime(
-                order['shipping_dt'], '%Y-%m-%d').strftime('%d')
+            shipping_day = order['shipping_dt'].day
             if int(shipping_day) == dt.day:
                 line = {'customer':order['customer_name']}
                 line['products'] = []
@@ -62,7 +60,7 @@ class ReportManager():
                 seller_id, start, end_day)
             
             start = start + timedelta(seconds=1)
-            day['date'] = start.strftime('%A %d %B')
+            day['date'] = start
 
             day = self.prepareDay(day, orders, start)
             days.append(day)

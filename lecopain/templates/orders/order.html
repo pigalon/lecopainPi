@@ -85,7 +85,7 @@
                   Livraison <span class="float-right"><a href="/orders/{{ order.id }}/shipping_dt" class="btn btn-light">Changer Date</a></span>
           </div>
           <div class="card-body">
-            <h5 class="card-title">Date de livraison {{ order.shipping_formatted_dt }}</h5>
+            <h5 class="card-title">Date de livraison {{ moment(order.shipping_dt).format('Do MMMM YYYY' )  }}</h5>
             <p class="card-text">Adresse  :  {{ order.shipping_address }} {{ order.shipping_cp }} {{ order.shipping_city }}</p>
           </div>
         </div>
