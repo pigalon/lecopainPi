@@ -52,6 +52,7 @@ class ProductFactory(SQLAlchemyModelFactory):
         model = Product
         sqlalchemy_session = db.session
     name = factory.Faker('word')
+    short_name = factory.Faker('word')
     description = factory.Faker('sentence')
     price = factory.Faker('pyfloat', right_digits=2,)
     category = 'ARTICLE'
