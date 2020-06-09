@@ -36,8 +36,9 @@ ENV LANGUAGE fr_FR.UTF-8
 # Copy the current directory contents into the container at /app
 ADD lecopain /app/lecopain
 
-ADD run.py /app
-ADD config.py /app
+COPY run.py /app
+COPY config.py /app
+COPY logging.conf /app
 
 
 CMD ["/usr/bin/supervisord"]
