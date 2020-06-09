@@ -9,7 +9,6 @@ from lecopain.dao.models import User
 from flask_login import current_user, login_user
 from flask_login import logout_user
 
-from werkzeug.security import generate_password_hash, check_password_hash
 
 
 app = Flask(__name__, instance_relative_config=True)
@@ -27,6 +26,10 @@ def login():
 
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
+            app.logger.error(" fails authentication: " + str(form.username.data) +
+                             " - " + str(form.password.data) +
+                            " with IP address : " + str(request.remote_addr))
+
             return redirect(url_for('user_page.login'))
 
         login_user(user)

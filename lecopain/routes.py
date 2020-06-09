@@ -15,7 +15,6 @@ from lecopain.controllers.subscription_controller import subscription_page
 from lecopain.controllers.report_controller import report_page
 
 
-from werkzeug.security import generate_password_hash, check_password_hash
 
 from flasgger import Swagger
 from flasgger.utils import swag_from
@@ -52,6 +51,8 @@ Swagger(app)
 @swag_from('specs/home.yml')
 def home():
     if current_user.is_authenticated:
+        app.logger.info("User connected : " + str(current_user) +
+                             " with IP address : " + str(request.remote_addr))
         customers_nb = Customer.query.count()
         orders_nb = Order.query.count()
         products_nb = Product.query.count()
@@ -59,6 +60,8 @@ def home():
         subscriptions_nb = Subscription.query.count()
         return render_template('base.html', customers_nb=customers_nb, orders_nb=orders_nb, products_nb=products_nb, sellers_nb=sellers_nb)
     else:
+        app.logger.info("Need to be authenticated: " +
+                        " with IP address : " + str(request.remote_addr))
         return redirect(url_for('user_page.login'))
 
 if __name__ == '__main__':
