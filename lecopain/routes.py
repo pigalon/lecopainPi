@@ -47,10 +47,6 @@ report_page = Blueprint('report_page',  __name__,
 
 Swagger(app)
 
-
-#locale.setlocale(locale.LC_TIME, "fr_FR")
-
-
 @app.route("/")
 @app.route("/home", methods=['GET', 'POST'])
 @swag_from('specs/home.yml')
@@ -64,25 +60,6 @@ def home():
         return render_template('base.html', customers_nb=customers_nb, orders_nb=orders_nb, products_nb=products_nb, sellers_nb=sellers_nb)
     else:
         return redirect(url_for('user_page.login'))
-
-
-@app.route("/home2", methods=['GET', 'POST'])
-def home2():
-    customers = [(row.id, row.firstname) for row in Customer.query.all()]
-    return jsonify(customers)
-
-
-@app.route('/_get_customers/')
-def _get_customers():
-    customers = [(row.id, row.firstname) for row in Customer.query.all()]
-    return jsonify(customers)
-
-
-@app.route("/settings")
-@login_required
-def settings():
-    pass
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
