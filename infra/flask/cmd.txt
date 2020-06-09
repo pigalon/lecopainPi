@@ -1,4 +1,9 @@
 sudo openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout lecopain.key -out lecopain.crt
 
 eval $(docker-machine env lecopain)
-eval $(docker-machine env --unset) 
+eval $(docker-machine env --unset)
+
+docker-compose up --force-recreate --build -d
+docker image prune -f
+
+docker-compose logs -f flask 
