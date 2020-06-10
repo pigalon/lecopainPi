@@ -13,7 +13,7 @@ services:
       - "7043:443"
     volumes:
       - /usr/share/certs/nginx:/etc/nginx/certs
-      -lecopain-tmp:/tmp
+      - lecopain-tmp:/tmp
     restart: always
     depends_on:
       - postgres
