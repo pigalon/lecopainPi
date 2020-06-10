@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  flask:
+    image:  testflask #pierrickm/flask-lecopain
+    container_name: flask-lecopain
+    restart: always
+    environment:
+      - APP_NAME=Lecopain
+      - DATABASE_URL=${DATABASE_URL}
+    ports:
+      - "7080:80"
+      - "7043:443"
+    volumes:
+      - /usr/share/certs/nginx:/etc/nginx/certs
+      -lecopain-tmp:/tmp
+    restart: always
+    depends_on:
+      - postgres
+
+  postgres:
+    image:  pierrickm/postgres-lecopain
+    container_name: postgres-lecopain
+    restart: always
+    ports:
+      - "5430:5432"
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+    - lecopain-db:/var/lib/postgresql/data
+    restart: always 
+
+volumes:
+  lecopain-db:
+  lecopain-tmp:
+    external: true

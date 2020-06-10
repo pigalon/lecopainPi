@@ -7,3 +7,7 @@ docker-compose up --force-recreate --build -d
 docker image prune -f
 
 docker-compose logs -f flask 
+
+docker build -t testflask --file infra/flask/Dockerfile .
+
+docker volume create --name=lecopain-db

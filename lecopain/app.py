@@ -4,7 +4,7 @@ from flask_moment import Moment
 from flask_login import LoginManager
 from lecopain.extensions import db, ma, login_manager
 import locale
-
+from flask_ipban import IpBan
 
 def register_extensions(app):
     db.init_app(app)
@@ -13,11 +13,13 @@ def register_extensions(app):
 
 
 app = Flask(__name__)
+ban_count = 20
+ban_seconds = 2000
+
+ip_ban = IpBan(app=app, ban_count=ban_count, ban_seconds=ban_seconds, record_dir='/tmp', persist=True)
+
 import logging, logging.config, yaml
 logging.config.dictConfig(yaml.load(open('logging.conf'), Loader=yaml.FullLoader))
-
-#logconsole = logging.getLogger('console')
-
 
 moment = Moment(app)
 app.secret_key = 'super secret string'

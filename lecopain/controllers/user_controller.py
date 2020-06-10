@@ -1,4 +1,4 @@
-from lecopain.app import app, db, login_manager
+from lecopain.app import app, db, login_manager, ip_ban
 from flask_login import login_required
 from flask import Blueprint, render_template, redirect, url_for, Flask, jsonify, request, flash, session
 from werkzeug.urls import url_parse
@@ -8,6 +8,7 @@ from lecopain.dao.models import User
 
 from flask_login import current_user, login_user
 from flask_login import logout_user
+
 
 
 
@@ -29,6 +30,7 @@ def login():
             app.logger.error(" fails authentication: " + str(form.username.data) +
                              " - " + str(form.password.data) +
                             " with IP address : " + str(request.remote_addr))
+            ip_ban.add()
 
             return redirect(url_for('user_page.login'))
 
