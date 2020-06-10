@@ -3,7 +3,12 @@ from lecopain.app import app, db
 import unittest
 import sys
 import os
-from lecopain.tests.factories import AdminFactory, ProductFactory, CustomerFactory, OrderFactory, SellerFactory
+from lecopain.tests.factories import (AdminFactory,
+    ProductFactory,
+    CustomerFactory,
+    OrderFactory,
+    SellerFactory,
+    ShipmentFactory)
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -25,14 +30,15 @@ class BaseTestCase(unittest.TestCase):
         self.create_users()
         self.create_products()
         self.create_customers()
+        self.create_shipments()
         self.create_orders()
         self.create_sellers()
 
-        order = Order.query.first()
+        #order = Order.query.first()
         product = Product.query.first()
         #order.add_products([(product, 6, 2)])
-        line = Line(order=order,product_id=product.id,quantity=2,price=1.00)
-        order.add_line(line)
+        #line = Line(order=order,product_id=product.id,quantity=2,price=1.00)
+        #order.add_line(line)
 
         db.session.commit()
 
@@ -64,4 +70,8 @@ class BaseTestCase(unittest.TestCase):
 
     def create_orders(self):
         OrderFactory.create()
+        
+    def create_shipments(self):
+        ShipmentFactory.create()
+        print("shipment created")
 

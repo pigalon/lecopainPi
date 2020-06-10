@@ -1,4 +1,4 @@
-from lecopain.dao.models import OrderStatus_Enum,  OrderStatus, ShippingStatus_Enum, PaymentStatus_Enum
+from lecopain.dao.models import OrderStatus_Enum,  ShippingStatus_Enum, PaymentStatus_Enum
 from lecopain.app import app
 from lecopain.form import OrderForm, OrderShippingDtForm, OrderAnnulationForm
 from lecopain.services.order_manager import OrderManager, Period_Enum

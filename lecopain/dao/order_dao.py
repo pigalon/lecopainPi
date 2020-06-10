@@ -183,7 +183,7 @@ class OrderDao:
         OrderDao.add_lines(created_order, lines)
         db.session.commit()
         return created_order
-    
+
     # @
     #
     @staticmethod

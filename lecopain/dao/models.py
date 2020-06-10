@@ -15,11 +15,16 @@ class OrderStatus_Enum(Enum):
     CREE = "CREE"
     TERMINEE = "TERMINEE"
 
+class ShipmentStatus_Enum(Enum):
+    ANNULEE = "ANNULEE"
+    DEFAUT = "DEFAUT"
+    CREE = "CREE"
+    TERMINEE = "TERMINEE"
+
 
 class ShippingStatus_Enum(Enum):
     NON = "NON"
     OUI = "OUI"
-
 
 class PaymentStatus_Enum(Enum):
     NON = "NON"
@@ -43,7 +48,12 @@ class Category_Enum(Enum):
     DRIVE = "DRIVE"
 
 
+class ProductStatus(db.Model):
+    name = db.Column(db.String(50), primary_key=True)
 
+    def __repr__(self):
+        return "ProductStatus('{self.name}')"
+    
 class Customer(db.Model):
     __tablename__ = 'customers'
     __table_args__ = {'extend_existing': True}
@@ -111,10 +121,9 @@ class Order(db.Model):
     category = db.Column(db.String(20), nullable=True, default=Category_Enum.ARTICLE.value)
     products = db.relationship(
         "Product", secondary='lines', viewonly=True)
-    subscription_id = db.Column(db.Integer, db.ForeignKey(
-        'subscriptions.id'), nullable=True)
-    subscription = db.relationship('Subscription', backref=db.backref(
-        "subscriptions", cascade="all, delete-orphan"))
+    shipment_id = db.Column(db.Integer, db.ForeignKey(
+        'shipments.id'), nullable=False)
+    shipment = db.relationship('Shipment')
 
     def add_line(self, line):
         self.lines.append(line)
@@ -131,11 +140,53 @@ class Order(db.Model):
             'customer_id': self.customer_id
         }
 
-class OrderStatus(db.Model):
-    name = db.Column(db.String(50), primary_key=True)
+class Shipment(db.Model):
+    __tablename__ = 'shipments'
+    __table_args__ = {'extend_existing': True}
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False,
+                           default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime)
+    customer_id = db.Column(db.Integer, db.ForeignKey(
+        'customers.id'), nullable=False)
+    customer = db.relationship('Customer')
+    status = db.Column(db.String(20), nullable=False,
+                       default=ShipmentStatus_Enum.CREE.value)
+    price = db.Column(db.Float)
+    nb_products = db.Column(db.Integer)
+    shipping_price = db.Column(db.Float)
+    shipping_status = db.Column(
+        db.String(20), nullable=False, default=ShippingStatus_Enum.NON.value)
+    shipping_dt = db.Column(db.DateTime)
+    shipping_address = db.Column(db.String(200))
+    shipping_cp = db.Column(db.String(20))
+    shipping_city = db.Column(db.String(50))
+
+    payment_status = db.Column(
+        db.String(20), nullable=False, default=PaymentStatus_Enum.NON.value)
+    shipping_rules = db.Column(db.String(20), nullable=True)
+    category = db.Column(db.String(20), nullable=True, default=Category_Enum.ARTICLE.value)
+    orders = db.relationship('Order', backref='shipping', lazy=True)
+    subscription_id = db.Column(db.Integer, db.ForeignKey(
+        'subscriptions.id'), nullable=True)
+    subscription = db.relationship('Subscription', backref=db.backref(
+        "subscriptions", cascade="all, delete-orphan"))
+
+    def add_order(self, order):
+        self.orders.append(order)
 
     def __repr__(self):
-        return "OrderStatus('{self.name}')"
+        return '<Shipment {}>'.format(self.id)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'shipping_dt': self.shipping_dt,
+            'status': self.status,
+            'customer_id': self.customer_id
+        }
 
 class Product(db.Model):
     __tablename__ = 'products'
@@ -164,14 +215,6 @@ class Product(db.Model):
             'seller_id': self.seller_id,
             'category':self.category
         }
-
-
-class ProductStatus(db.Model):
-    name = db.Column(db.String(50), primary_key=True)
-
-    def __repr__(self):
-        return "ProductStatus('{self.name}')"
-
 
 class Line(db.Model):
     __tablename__ = 'lines'
@@ -205,7 +248,6 @@ class Line(db.Model):
             'quantity': self.quantity,
             'price': self.price
         }
-
 
 class Seller(db.Model):
     __tablename__ = 'sellers'
@@ -280,7 +322,7 @@ class Subscription(db.Model):
     days = db.relationship('SubscriptionDay', backref='week',
                            order_by='asc(SubscriptionDay.day_of_week)',
                            lazy=True, cascade="all, delete-orphan")
-    orders = db.relationship('Order', backref='subref', lazy=True)
+    shipments = db.relationship('Shipment', backref='subref', lazy=True)
 
 
 
@@ -336,8 +378,6 @@ class SubscriptionLine(db.Model):
             'quantity': self.quantity,
             'price': self.price
         }
-
-
 
 class CustomerSchema(SQLAlchemyAutoSchema):
 
@@ -427,7 +467,7 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
     lines = fields.Method("format_lines", dump_only=True)
     shipping_formatted_dt = fields.Method("format_shipping_dt", dump_only=True)
     shipping_dt = fields.Method("return_shipping_dt", dump_only=True)
-    subscription_id = fields.Method("format_subscription_id", dump_only=True)
+    shipment_id = fields.Method("format_shipment_id", dump_only=True)
 
     class Meta:
         # Fields to expose
@@ -440,14 +480,14 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
 
     def format_customer_id(self, order):
         return "{}".format(order.customer.id)
-    
+
     def return_shipping_dt(self, order):
         return datetime(order.shipping_dt.year, order.shipping_dt.month, order.shipping_dt.day)
 
-    def format_subscription_id(self, order):
-        if order.subscription is None:
+    def format_shipment_id(self, order):
+        if order.shipment is None:
             return None
-        return "{}".format(order.subscription.id)
+        return "{}".format(order.shipment.id)
 
     def format_seller_name(self, order):
         return "{}".format(order.seller.name)
@@ -470,6 +510,60 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
 
     def format_shipping_dt(self, order):
         return order.shipping_dt.strftime('%A %d %B %Y')
+class ShipmentSchema(SQLAlchemyAutoSchema):
+    customer_name = fields.Method("format_customer_name", dump_only=True)
+    subscription_id = fields.Method(
+        "format_subscription_id", dump_only=True)
+
+    class Meta:
+        # Fields to expose
+        model = Shipment
+        load_instance = True
+        include_relationships = True
+
+    def format_customer_name(self, shipment):
+        return "{}, {}".format(shipment.customer.firstname, shipment.customer.lastname)
+
+    def format_subscription_id(self, shipment):
+        if shipment.subscription != None:
+            return "{}".format(shipment.subscription.id)
+
+class CompleteShipmentSchema(SQLAlchemyAutoSchema):
+    customer_name = fields.Method("format_customer_name", dump_only=True)
+    customer_id = fields.Method("format_customer_id", dump_only=True)
+    shipping_formatted_dt = fields.Method("format_shipping_dt", dump_only=True)
+    shipping_dt = fields.Method("return_shipping_dt", dump_only=True)
+    #subscription_id = fields.Method("format_subscription_id", dump_only=True)
+
+    class Meta:
+        # Fields to expose
+        model = Shipment
+        load_instance = True
+        include_relationships = True
+
+    def format_customer_name(self, shipment):
+        return "{}, {}".format(shipment.customer.firstname, shipment.customer.lastname)
+
+    def format_customer_id(self, shipment):
+        return "{}".format(shipment.customer.id)
+    
+    def return_shipping_dt(self, shipment):
+        return datetime(shipment.shipping_dt.year, shipment.shipping_dt.month, shipment.shipping_dt.day)
+
+    def format_subscription_id(self, shipment):
+        if shipment.subscription is None:
+            return None
+        return "{}".format(shipment.subscription.id)
+
+    def format_order(self, shipment):
+        orders = []
+        order_schema = OrderSchema(many=False)
+        for shipment in shipment.orders:
+            orders.append(order_schema.dump(shipment))
+        return orders
+
+    def format_shipping_dt(self, shipment):
+        return shipment.shipping_dt.strftime('%A %d %B %Y')
 
 class OptimizedProductSchema(SQLAlchemySchema):
 
