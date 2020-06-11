@@ -171,6 +171,12 @@ class Shipment(db.Model):
         self.nb_products = self.nb_products + order.nb_products
         self.nb_orders = self.nb_orders + 1
 
+    def remove_order(self, order):
+        self.nb_products = self.nb_products - order.nb_products
+        self.nb_orders = self.nb_orders - 1
+        self.orders.remove(order)
+
+
     def __repr__(self):
         return '<Shipment {}>'.format(self.id)
 
@@ -310,6 +316,7 @@ class Subscription(db.Model):
     price = db.Column(db.Float, default=0.0)
     shipping_price = db.Column(db.Float, default=0.0)
     nb_products = db.Column(db.Integer, default=0)
+    nb_orders = db.Column(db.Integer, default=0)
     nb_shipments = db.Column(db.Integer, default=0)
     category = db.Column(
         db.String(20), default=Category_Enum.ARTICLE.value)
@@ -318,6 +325,21 @@ class Subscription(db.Model):
                            order_by='asc(SubscriptionDay.day_of_week)',
                            lazy=True, cascade="all, delete-orphan")
     shipments = db.relationship('Shipment', backref='subref', lazy=True)
+
+    def remove_order(self, order):
+        nb_products = nb_products - order.nb_products
+        nb_orders = nb_orders - 1
+
+    def remove_shipment(self, shipment):
+        nb_products = nb_products - shipment.nb_products
+        nb_orders = nb_orders - shipment.nb_orders
+        nb_shipments = nb_shipments - 1
+
+    def add_shipment(self, shipment):
+        nb_products = nb_products + shipment.nb_products
+        nb_orders = nb_orders + shipment.nb_orders
+        nb_shipments = nb_shipments + 1
+
 
 
 

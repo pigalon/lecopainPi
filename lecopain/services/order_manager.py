@@ -8,6 +8,8 @@ from lecopain.helpers.date_utils import dates_range, Period_Enum
 from lecopain.dao.order_dao import OrderDao
 from lecopain.dao.subscription_dao import SubscriptionDao
 from lecopain.dao.product_dao import ProductDao
+from lecopain.dao.shipment_dao import ShipmentDao
+
 import json
 from sqlalchemy import extract, Date, cast
 
@@ -23,7 +25,7 @@ class OrderManager():
             for _x, _i in enumerate(i):
                 items[_x][headers[x]] = _i
         return items
-    
+
     def create_by_shipment(self, shipment, lines, seller_id):
         created_order = OrderDao.create_by_shipment(shipment, lines, seller_id)
         shipment.add_order(created_order)
@@ -35,11 +37,15 @@ class OrderManager():
 
     def delete_order(self, order_id):
         order = OrderDao.get_one(order_id)
-        if order.subscription_id is not None:
-            self.remove_order_subscriptions(order)
+        if order.shipment_id is not None:
+            self.remove_order_to_shipment(order)
+
+        if order.shipment.subscription_id is not None:
+            self.remove_order_to_subscription(order)
+
         OrderDao.delete(order_id)
         OrderDao.update_db(order)
-        #if order.subscription_id is not None :
+
 
     def update_order_and_parse_line(self, order_id, lines):
         parsed_lines = self.parse_lines(lines)
@@ -60,6 +66,22 @@ class OrderManager():
         if order.subscription_id is not None:
             self.items_add_subscription(order)
         db.session.commit()
+
+    def remove_order_to_shipment(self, order):
+        shipment = ShipmentDao.get_one(order.shipment_id)
+        shipment.remove_order(order)
+        old_shipping_price = order.shipment.shipping_price
+        order.shipment.shipping_price, order.shipment.shipping_rules = self.businessService.apply_rules(
+            order.shipment)
+        diff_price = old_shipping_price - float(order.shipment.shipping_price)
+
+        if order.shipment.subscription != None:
+            order.shipment.subscription = order.shipment.subscription - diff_price
+
+
+    def remove_order_to_subscription(self, order):
+        order.shipment.subscription.remove_order(order)
+
 
     def remove_order_subscriptions(self, order):
         subscription = SubscriptionDao.get_one(order.subscription_id)
