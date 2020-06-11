@@ -69,7 +69,7 @@ class ShipmentDao:
             all_shipments = all_shipments.filter(
                 Shipment.customer_id == customer_id)
 
-        all_shipments = all_shipments.shipment_by(Shipment.shipping_dt.desc()) \
+        all_shipments = all_shipments.order_by(Shipment.shipping_dt.desc()) \
         .all()
 
         # Serialize the data for the response
@@ -123,10 +123,8 @@ class ShipmentDao:
     # @
     #
     @staticmethod
-    def create_shipment(shipment, lines):
+    def create_shipment(shipment):
         created_shipment = ShipmentDao.add(shipment)
-        db.session.flush()
-        ShipmentDao.add_lines(created_shipment, lines)
         db.session.commit()
         return created_shipment
 

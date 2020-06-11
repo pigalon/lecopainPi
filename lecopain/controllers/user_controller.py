@@ -30,7 +30,10 @@ def login():
             app.logger.error(" fails authentication: " + str(form.username.data) +
                              " - " + str(form.password.data) +
                             " with IP address : " + str(request.remote_addr))
-            ip_ban.add()
+            try:
+                ip_ban.add()
+            except :
+                pass
 
             return redirect(url_for('user_page.login'))
 

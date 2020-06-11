@@ -1,0 +1,67 @@
+
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+        <p>Référence : {{shipment.id}}</p>
+        <p>Pour le client :  {{shipment.customer_name}}</p>
+        <p>Date de livraison : {{shipment.shipping_formatted_dt}}</p>
+    </div>
+    <div>
+        <h4>Liste des produits</h4>
+    </div>
+    <div class="content-section">
+        <table align="center" class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Produit</th>
+                    <th scope="col">Quantité</th>
+                    <th scope="col">Prix</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in shipment.orders %}
+                    {% for line in order.lines %}
+                        <tr>
+                            <td valign="center">{{line.product_name}}</td>
+                            <td valign="center">x {{line.quantity}}</td>
+                            <td valign="center">{{line.price}} €</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="content-section">
+        Etes-vous sûr de vouloir supprimer cette commande ?
+        <br>
+        <p align="center">
+            <button type="button" onclick="delete_shipment({{shipment.id}})" class="btn btn-danger">Supprimer</button>
+            <button class="btn btn-secondary" type="cancel" onclick="javascript:window.location='/shipments';">Annuler</button>
+        </p>
+    </div>
+   
+{% endblock %}
+{% block right_menu %}
+{% endblock %}
+
+{% block scripts %}
+
+    <script>
+        function delete_shipment(shipment_id) {
+
+            $.ajax({
+                type: "DELETE",
+                url: '/shipments/' + shipment_id,
+                success: function(msg){
+                    window.location='/shipments';
+                }
+            });
+        };
+    </script>
+{% endblock %}
+
+
+
+
+
+

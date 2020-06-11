@@ -1,6 +1,6 @@
 from lecopain.dao.models import OrderStatus_Enum,  ShippingStatus_Enum, PaymentStatus_Enum
 from lecopain.app import app
-from lecopain.form import OrderForm, OrderShippingDtForm, OrderAnnulationForm
+from lecopain.form import OrderForm, ShippingDtForm, CancellationForm
 from lecopain.services.order_manager import OrderManager, Period_Enum
 from lecopain.services.customer_manager import CustomerManager
 from lecopain.services.product_manager import ProductManager
@@ -105,7 +105,7 @@ def order(order_id):
 def display_update_order_time(order_id):
 
     order = orderServices.get_one(order_id)
-    form = OrderShippingDtForm()
+    form = ShippingDtForm()
 
     if form.validate_on_submit():
         orderServices.update_shipping_dt(
@@ -200,25 +200,16 @@ def api_orders_by_subscription(subscription_id):
 #####################################################################
 #                                                                   #
 #####################################################################
-@order_page.route('/api/orders/customers/<int:customer_id>')
-@login_required
-def api_orders_by_customer(customer_id):
-    return jsonify({'orders': orderServices.get_all_by_customer(customer_id)})
-
-#####################################################################
-#                                                                   #
-#####################################################################
 @order_page.route('/api/orders/sellers/<int:seller_id>')
 @login_required
 def api_orders_by_seller(seller_id):
     return jsonify({'orders': orderServices.get_all_by_seller(seller_id)})
 
-
 #####################################################################
 #                                                                   #
 #####################################################################
-@order_page.route('/api/orders/period/<string:period>/customers/<int:customer_id>')
+@order_page.route('/api/orders/period/<string:period>/sellers/<int:seller_id>')
 @login_required
-def api_day_orders(period, customer_id):
-    return jsonify({'orders': orderServices.get_some(period=period, customer_id=customer_id)})
+def api_day_orders(period, seller_id):
+    return jsonify({'orders': orderServices.get_some_by_seller(period=period, seller_id=seller_id)})
 

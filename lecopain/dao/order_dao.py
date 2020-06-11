@@ -1,7 +1,7 @@
 from lecopain.app import db
 
 from lecopain.dao.models import (
-    Order, Line, Seller, Customer, OrderSchema, CompleteOrderSchema
+    Order, Line, Seller, Customer, OrderSchema, CompleteOrderSchema, Shipment
 )
 
 class OrderDao:
@@ -73,8 +73,8 @@ class OrderDao:
 
         if(start != 0 ):
             all_orders = all_orders.filter(
-                Order.shipping_dt >= start).filter(
-                Order.shipping_dt <= end)
+                Order.shipment.shipping_dt >= start).filter(
+                Order.shipment.shipping_dt <= end)
 
         if customer_id != 0:
             all_orders = all_orders.filter(
@@ -90,18 +90,18 @@ class OrderDao:
     @staticmethod
     def read_some_seller(seller_id, start, end):
 
-        all_orders = Order.query
+        all_orders = Order.query.join(Shipment)
 
         if(start != 0 ):
             all_orders = all_orders.filter(
-                Order.shipping_dt >= start).filter(
-                Order.shipping_dt <= end)
+                Shipment.shipping_dt >= start).filter(
+                Shipment.shipping_dt <= end)
 
         if seller_id != 0:
             all_orders = all_orders.filter(
                 Order.seller_id == seller_id)
 
-        all_orders = all_orders.order_by(Order.shipping_dt.desc()) \
+        all_orders = all_orders.order_by(Shipment.shipping_dt.desc()) \
         .all()
 
         # Serialize the data for the response
@@ -126,6 +126,18 @@ class OrderDao:
             shipping_city=customer.city)
         db.session.add(created_order)
         customer.nb_orders = customer.nb_orders + 1
+        seller.nb_orders = seller.nb_orders + 1
+        return created_order
+    
+    @staticmethod
+    def add_by_shipment(shipment, seller_id):
+
+        seller = Seller.query.get_or_404(int(seller_id))
+        created_order = Order(title=shipment.title,
+            seller_id=seller_id,
+            shipment_id=shipment.id)
+            
+        db.session.add(created_order)
         seller.nb_orders = seller.nb_orders + 1
         return created_order
 
@@ -179,6 +191,14 @@ class OrderDao:
     @staticmethod
     def create_order(order, lines):
         created_order = OrderDao.add(order)
+        db.session.flush()
+        OrderDao.add_lines(created_order, lines)
+        db.session.commit()
+        return created_order
+    
+    @staticmethod
+    def create_by_shipment(shipment, lines, seller_id):
+        created_order = OrderDao.add_by_shipment(shipment, seller_id)
         db.session.flush()
         OrderDao.add_lines(created_order, lines)
         db.session.commit()

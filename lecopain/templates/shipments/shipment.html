@@ -1,0 +1,108 @@
+
+{% extends "layout.html" %}
+{% block content %}
+
+<br>
+  <table width="100%" align="center">
+    <tr>
+      <td width="60%" style="text-align:right"><span class="float-left"><a href="/shipments" class="btn btn-outline-dark">Retour List</a></span>Changer le statut : </td>
+      <td width="40%"  style="text-align:right">
+        {% if shipment.status != 'ANNULEE' %}
+          <a href="/shipments/{{ shipment.id }}/cancel" class="btn btn-outline-dark" >Annuler </a>
+        {% endif %}
+        {% if shipment.status == 'ANNULEE' %}
+        <a href="/shipments/{{ shipment.id }}/created" class="btn btn-outline-dark"> Rétablir </a>
+        {% endif %}
+        {% if shipment.payment_status != 'OUI' %}
+          <a href="/shipments/{{ shipment.id }}/paid/OUI" class="btn btn-outline-dark">Payée </a>
+        {% endif %}
+        {% if shipment.payment_status == 'OUI' %}
+        <a href="/shipments/{{ shipment.id }}/paid/NON" class="btn btn-outline-dark">Non Payée </a>
+        {% endif %}
+        {% if shipment.shipping_status != 'OUI' %}
+        <a href="/shipments/{{ shipment.id }}/shipped/OUI" class="btn btn-outline-dark">Livrée </a>
+        {% endif %}
+        {% if shipment.shipping_status == 'OUI' %}
+        <a href="/shipments/{{ shipment.id }}/shipped/NON" class="btn btn-outline-dark">Non Livrée </a>
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+
+
+<br>
+    <div class="card  " >
+        <div class="card-header text-white bg-info">
+          Livraison N° {{shipment.id}} - {{shipment.customer_name}} <span class="right">{{ shipment.shipping_formatted_dt }}</span>
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+          {% set total = {'value': 0.00} %}
+
+          <li class="list-group-item bg-light">
+            Vendeur : <b>{{shipment.seller_name}}</b> <span class="float-right"><a href="/shipments/update/{{ shipment.id }}" class="btn btn-info">Modifier Articles</a></span>
+          </li>
+          <li class="list-group-item">
+
+            <table align="center" class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Vendeur</th>
+                <th scope="col">N° Commande</th>
+                <th scope="col">Produit</th>
+                <th scope="col">Quantité</th>
+                <th scope="col">Prix</th>
+              </tr>
+            </thead>
+            <tbody>
+          {% for order in shipment.orders %}
+          {% for line in order.lines %}
+              <tr>
+                <td valign="center">{{order.seller_name}}</td>
+                <td valign="center">{{order.id}}</td>
+                <td valign="center">{{line.product_name}}</td>
+                <td valign="center">x {{line.quantity}}</td>
+                <td valign="center">{{line.price}} €</td>
+              </tr>
+          {% endfor %}
+          {% endfor %}
+          </tbody>
+          </table>
+          </li>
+
+          <li class="list-group-item">
+                <b><span style="float: right">Nb articles : {{shipment.nb_products}} - Prix Total : {{ "%.2f"|format(shipment.price|float) }}€</span></b>
+          </li>
+          <li class="list-group-item">
+                <b><span style="float: right">Prix de la livraison : {{shipment.shipping_price}} €</span></b>
+                <br>
+                <br>
+                <p><b>Règles de calcul : </b> {{shipment.shipping_rules}}</p> 
+                {% if shipment.subscription_id != None %}
+                  <span class="float-right"><a href="/subscriptions/{{ shipment.subscription_id }}" class="btn btn-warning">Abonnement</a></span>
+                {% endif %}
+          </li>
+        </ul>
+        </div>
+      </div>
+      <br>
+      <div class="card">
+          <div class="card-header text-white bg-info">
+                  Livraison <span class="float-right"><a href="/shipments/{{ shipment.id }}/shipping_dt" class="btn btn-light">Changer Date</a></span>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Date de livraison {{ moment(shipment.shipping_dt).format('Do MMMM YYYY' )  }}</h5>
+            <p class="card-text">Adresse  :  {{ shipment.shipping_address }} {{ shipment.shipping_cp }} {{ shipment.shipping_city }}</p>
+          </div>
+        </div>
+        <br>
+        <div class="card">
+          <div class="card-header text-white bg-info">
+            Suppression <span class="float-right"><a href="/shipments/delete/{{ shipment.id }}" class="btn btn-light text-danger" alt="Supprimer"><i class="fas fa-trash-alt"></i></a></span>
+          </div>
+        </div>
+
+
+{% endblock %}
+{% block right_menu %}
+{% endblock %}

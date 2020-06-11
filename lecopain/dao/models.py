@@ -63,12 +63,12 @@ class Customer(db.Model):
     address = db.Column(db.String(200))
     cp = db.Column(db.String(20))
     city = db.Column(db.String(50))
-    nb_orders = db.Column(db.Integer, default=0)
+    nb_shipments = db.Column(db.Integer, default=0)
     nb_subscriptions = db.Column(db.Integer, default=0)
     email = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False,
                            default=datetime.utcnow)
-    orders = db.relationship('Order', backref='owner', lazy=True)
+    shipments = db.relationship('Shipment', backref='owner', lazy=True)
     subscriptions = db.relationship('Subscription', backref='owner', lazy=True)
 
     def __repr__(self):
@@ -97,9 +97,6 @@ class Order(db.Model):
     created_at = db.Column(db.DateTime, nullable=False,
                            default=datetime.utcnow)
     updated_at = db.Column(db.DateTime)
-    customer_id = db.Column(db.Integer, db.ForeignKey(
-        'customers.id'), nullable=False)
-    customer = db.relationship('Customer')
     status = db.Column(db.String(20), nullable=False,
                        default=OrderStatus_Enum.CREE.value)
     seller_id = db.Column(db.Integer, db.ForeignKey(
@@ -107,23 +104,14 @@ class Order(db.Model):
     seller = db.relationship('Seller')
     price = db.Column(db.Float)
     nb_products = db.Column(db.Integer)
-    shipping_price = db.Column(db.Float)
-    shipping_status = db.Column(
-        db.String(20), nullable=False, default=ShippingStatus_Enum.NON.value)
-    shipping_dt = db.Column(db.DateTime)
-    shipping_address = db.Column(db.String(200))
-    shipping_cp = db.Column(db.String(20))
-    shipping_city = db.Column(db.String(50))
-
     payment_status = db.Column(
         db.String(20), nullable=False, default=PaymentStatus_Enum.NON.value)
-    shipping_rules = db.Column(db.String(20), nullable=True)
-    category = db.Column(db.String(20), nullable=True, default=Category_Enum.ARTICLE.value)
     products = db.relationship(
         "Product", secondary='lines', viewonly=True)
     shipment_id = db.Column(db.Integer, db.ForeignKey(
         'shipments.id'), nullable=False)
-    shipment = db.relationship('Shipment')
+    shipment = db.relationship('Shipment', backref=db.backref(
+        "shipments", cascade="all, delete-orphan"))
 
     def add_line(self, line):
         self.lines.append(line)
@@ -137,7 +125,8 @@ class Order(db.Model):
             'title': self.title,
             'shipping_dt': self.shipping_dt,
             'status': self.status,
-            'customer_id': self.customer_id
+            'seller_id': self.seller_id,
+            'shipment_id': self.shipment_id
         }
 
 class Shipment(db.Model):
@@ -315,7 +304,7 @@ class Subscription(db.Model):
     price = db.Column(db.Float, default=0.0)
     shipping_price = db.Column(db.Float, default=0.0)
     nb_products = db.Column(db.Integer, default=0)
-    nb_orders = db.Column(db.Integer, default=0)
+    nb_shipments = db.Column(db.Integer, default=0)
     category = db.Column(
         db.String(20), default=Category_Enum.ARTICLE.value)
 
@@ -344,7 +333,7 @@ class SubscriptionDay(db.Model):
     def add_products(self, items):
         for product_id, qty, price in items:
             self.lines.append(Line(
-                order=self, product_id=product_id, quantity=qty, price=price))
+                shipment=self, product_id=product_id, quantity=qty, price=price))
 
     def add_line(self, line):
         self.lines.append(line)
@@ -437,10 +426,7 @@ class OptimizedCustomerSchema(SQLAlchemySchema):
     lastname = auto_field()
 
 class OrderSchema(SQLAlchemyAutoSchema):
-    customer_name = fields.Method("format_customer_name", dump_only=True)
     seller_name = fields.Method("format_seller_name", dump_only=True)
-    subscription_id = fields.Method(
-        "format_subscription_id", dump_only=True)
 
     class Meta:
         # Fields to expose
@@ -448,26 +434,18 @@ class OrderSchema(SQLAlchemyAutoSchema):
         load_instance = True
         include_relationships = True
 
-    def format_customer_name(self, order):
-        return "{}, {}".format(order.customer.firstname, order.customer.lastname)
-
+    
     def format_seller_name(self, order):
         return "{}".format(order.seller.name)
 
-    def format_subscription_id(self, order):
-        if order.subscription != None:
-            return "{}".format(order.subscription.id)
 
 class CompleteOrderSchema(SQLAlchemyAutoSchema):
-    customer_name = fields.Method("format_customer_name", dump_only=True)
-    customer_id = fields.Method("format_customer_id", dump_only=True)
     seller_name = fields.Method("format_seller_name", dump_only=True)
     seller_id = fields.Method("format_seller_id", dump_only=True)
     nb_products = fields.Method("format_nb_products", dump_only=True)
     lines = fields.Method("format_lines", dump_only=True)
-    shipping_formatted_dt = fields.Method("format_shipping_dt", dump_only=True)
-    shipping_dt = fields.Method("return_shipping_dt", dump_only=True)
     shipment_id = fields.Method("format_shipment_id", dump_only=True)
+    shipping_dt = fields.Method("return_shipping_dt", dump_only=True)
 
     class Meta:
         # Fields to expose
@@ -475,14 +453,8 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
         load_instance = True
         include_relationships = True
 
-    def format_customer_name(self, order):
-        return "{}, {}".format(order.customer.firstname, order.customer.lastname)
-
-    def format_customer_id(self, order):
-        return "{}".format(order.customer.id)
-
     def return_shipping_dt(self, order):
-        return datetime(order.shipping_dt.year, order.shipping_dt.month, order.shipping_dt.day)
+        return datetime(order.shipment.shipping_dt.year, order.shipment.shipping_dt.month, order.shipment.shipping_dt.day)
 
     def format_shipment_id(self, order):
         if order.shipment is None:
@@ -508,8 +480,6 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
             lines.append(line_schema.dump(line))
         return lines
 
-    def format_shipping_dt(self, order):
-        return order.shipping_dt.strftime('%A %d %B %Y')
 class ShipmentSchema(SQLAlchemyAutoSchema):
     customer_name = fields.Method("format_customer_name", dump_only=True)
     subscription_id = fields.Method(
@@ -533,7 +503,8 @@ class CompleteShipmentSchema(SQLAlchemyAutoSchema):
     customer_id = fields.Method("format_customer_id", dump_only=True)
     shipping_formatted_dt = fields.Method("format_shipping_dt", dump_only=True)
     shipping_dt = fields.Method("return_shipping_dt", dump_only=True)
-    #subscription_id = fields.Method("format_subscription_id", dump_only=True)
+    orders = fields.Method("format_orders", dump_only=True)
+    subscription_id = fields.Method("format_subscription_id", dump_only=True)
 
     class Meta:
         # Fields to expose
@@ -546,7 +517,7 @@ class CompleteShipmentSchema(SQLAlchemyAutoSchema):
 
     def format_customer_id(self, shipment):
         return "{}".format(shipment.customer.id)
-    
+
     def return_shipping_dt(self, shipment):
         return datetime(shipment.shipping_dt.year, shipment.shipping_dt.month, shipment.shipping_dt.day)
 
@@ -555,9 +526,9 @@ class CompleteShipmentSchema(SQLAlchemyAutoSchema):
             return None
         return "{}".format(shipment.subscription.id)
 
-    def format_order(self, shipment):
+    def format_orders(self, shipment):
         orders = []
-        order_schema = OrderSchema(many=False)
+        order_schema = CompleteOrderSchema(many=False)
         for shipment in shipment.orders:
             orders.append(order_schema.dump(shipment))
         return orders

@@ -1,9 +1,9 @@
 <search-order>
     <div class="form-group">
         Client :<br>
-        <select onchange={ load_orders } class="form-control" name="customer_id" id="customer_id" ref="customer_id" style="width: 12rem; display:inline-block" >
+        <select onchange={ load_orders } class="form-control" name="seller_id" id="seller_id" ref="seller_id" style="width: 12rem; display:inline-block" >
             <option value="0" SELECTED>Tous</option>
-            <option each="{ customer in customers }" value={customer.id}>{customer.firstname} {customer.lastname}</option>
+            <option each="{ seller in sellers }" value={seller.id}>{seller.name} </option>
         </select><select onchange={ load_orders } class="form-control" name="period" id="period" ref="period" style="width: 12rem; display:inline-block">
             <option value="day">Jour</option>
             <option value="week">Semaine</option>
@@ -21,7 +21,7 @@
                 <tr>
                     <th width="6%">id</th>
                     <th width="20%">date</th>
-                    <th width="30%">client</th>
+                    <th width="30%">Livraison</th>
                     <th width="30%">Vendeur</th>
                     <th width="20%">Status</th>
                 </tr>
@@ -39,7 +39,7 @@
                     <td if={order.status == 'DEFAUT'} width="6%" class="table-danger">{order.id}</td>
 
                     <td width="20%">{moment(order.shipping_dt).format('Do MMMM YYYY' )}</td>
-                    <td width="30%">{order.customer_name}</td>
+                    <td width="30%">{order.shipment_id}</td>
                     <td width="30%">{order.seller_name}</td>
                     <td width="20%"><span if={order.shipping_status == 'OUI'} style="color:green" ><i class="fas fa-cart-arrow-down "></i></span>
                     <span if={order.shipping_status == 'NON'} style="color:grey" ><i class="fas fa-cart-arrow-down "></i></span>
@@ -67,9 +67,9 @@
 		/******************************************/
        	// load products list
     	/*******************************************/
-		load_orders(){
+		load_sellers(){
             var order_url = '/api/orders/';
-            var customer_id = self.refs.customer_id.value;
+            var seller_id = self.refs.seller_id.value;
             var period = self.refs.period.value;
 
             if (period == undefined){
@@ -78,7 +78,7 @@
 
             order_url = order_url.concat('period/',period,'/');
 
-            order_url = order_url.concat('customers/',customer_id);
+            order_url = order_url.concat('sellers/',seller_id);
 
 			$.ajax({
 					url: order_url,
@@ -91,18 +91,21 @@
 					}
 				});
 		}
-        load_customers(){
-			var url = '/api/customers/';
-			$.ajax({
-					url: url,
-					type: "GET",
-					dataType: "json",
-					contentType: "application/json; charset=utf-8",
-					success: function(data) {
-						self.customers = data['customers']
-                        self.update()
-					}
-				});
+        /******************************************
+		load sellers list
+		*******************************************/
+		load_sellers(){
+		var url = '/api/sellers/';
+		return $.ajax({
+				url: url,
+				type: "GET",
+				dataType: "json",
+				contentType: "application/json; charset=utf-8",
+				success: function(data) {
+					self.sellers = data['sellers']
+					self.update()
+				}
+			});
 		}
         show_order(order_id){
             return function(e) {

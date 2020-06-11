@@ -23,6 +23,9 @@ class OrderManager():
             for _x, _i in enumerate(i):
                 items[_x][headers[x]] = _i
         return items
+    
+    def create_by_shipment(self, shipment, lines, seller_id):
+        created_order = OrderDao.create_by_shipment(shipment, lines, seller_id)
 
     def create_order_and_parse_line(self, order, lines):
         parsed_lines = self.parse_lines(lines)
@@ -126,16 +129,20 @@ class OrderManager():
 
     def get_all_by_customer(self, customer_id):
         return OrderDao.read_by_customer(customer_id)
-
+    
     def get_all_by_seller(self, seller_id):
         return OrderDao.read_by_seller(seller_id)
 
     def get_all_by_seller_period(self, seller_id, start, end):
         return OrderDao.read_some_seller(seller_id=seller_id, start=start, end=end)
 
-    def get_some(self,  customer_id=0, period=Period_Enum.ALL.value):
+    def get_some_by_customer(self,  customer_id=0, period=Period_Enum.ALL.value):
         start,end = dates_range(period)
         return OrderDao.read_some(customer_id=customer_id, start=start, end=end)
+    
+    def get_some_by_seller(self,  seller_id=0, period=Period_Enum.ALL.value):
+        start,end = dates_range(period)
+        return OrderDao.read_some_seller(seller_id=seller_id, start=start, end=end)
 
     def get_one(self,  order_id):
         return OrderDao.read_one(order_id)

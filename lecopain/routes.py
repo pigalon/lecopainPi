@@ -7,6 +7,7 @@ from lecopain.form import PersonForm, OrderForm, ProductForm, LoginForm
 from lecopain.dao.models import Customer, Order, Product, Seller, User, Subscription
 
 from lecopain.controllers.customer_controller import customer_page
+from lecopain.controllers.shipment_controller import shipment_page
 from lecopain.controllers.order_controller import order_page
 from lecopain.controllers.product_controller import product_page
 from lecopain.controllers.seller_controller import seller_page
@@ -21,6 +22,7 @@ from flasgger.utils import swag_from
 
 
 app.register_blueprint(customer_page)
+app.register_blueprint(shipment_page)
 app.register_blueprint(order_page)
 app.register_blueprint(product_page)
 app.register_blueprint(seller_page)
@@ -31,6 +33,8 @@ app.register_blueprint(report_page)
 
 customer_page = Blueprint('customer_page',  __name__,
                           template_folder='./templates')
+shipment_page = Blueprint('shipment_page',  __name__,
+                       template_folder='./templates')
 order_page = Blueprint('order_page',  __name__,
                        template_folder='./templates')
 product_page = Blueprint('product_page',  __name__,

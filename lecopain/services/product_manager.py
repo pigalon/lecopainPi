@@ -42,6 +42,6 @@ class ProductManager():
 
     def get_all_by_seller(self, seller_id):
         return ProductDao.read_all_by_seller(seller_id)
-    
+
     def create(self, product):
         ProductDao.create(product)

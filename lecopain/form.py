@@ -35,7 +35,15 @@ class OrderForm(FlaskForm):
     status = StringField('Status')
     submit = SubmitField('Valider')
 
-class OrderShippingDtForm(FlaskForm):
+class ShipmentForm(FlaskForm):
+    title = StringField('Titre')
+    customer_id = IntegerField('Client Id:', validators=[DataRequired()])
+    shipping_dt = DateTimeField('Date de Livraison', format='%d/%m/%Y')
+    status = StringField('Status')
+    submit = SubmitField('Valider')
+
+
+class ShippingDtForm(FlaskForm):
     title = StringField('Titre')
     shipping_dt = DateTimeField('Date de Livraison', format='%d/%m/%Y %H:%M:%S')
     submit = SubmitField('Valider')
@@ -60,7 +68,7 @@ class ShippingForm(FlaskForm):
     submit = SubmitField('Valider')
 
 
-class OrderAnnulationForm(FlaskForm):
+class CancellationForm(FlaskForm):
     submit = SubmitField('Annulation')
 
 

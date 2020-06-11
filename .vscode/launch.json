@@ -44,14 +44,14 @@
                 "--no-debugger",
                 "--no-reload"
             ],
-            "jinja": "true"
+            "jinja": true
         },
         {
             "name": "Python: Current File (External Terminal)",
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "console": "externalTerminal"
+            "console": "externalTerminal",
         }
     ]
 }

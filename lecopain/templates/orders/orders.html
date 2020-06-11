@@ -5,9 +5,10 @@
 
 {% endblock %}
 {% block scripts %}
-<script>
-    riot.mount("search-order");
-</script>
+    <script src="{{ url_for('static', filename='tag/orders/list.tag') }}" type="riot/tag"></script>
+    <script>
+        riot.mount("search-order");
+    </script>
 {% endblock %}
 
 

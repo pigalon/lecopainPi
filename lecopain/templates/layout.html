@@ -62,6 +62,9 @@
 						<a class="nav-link" href="/customers">Clients</a>
 					</li>
 					<li class="nav-item">
+						<a class="nav-link" href="/shipments">Livraisons</a>
+					</li>
+					<li class="nav-item">
 						<a class="nav-link" href="/orders">Commandes</a>
 					</li>
 					<li class="nav-item">
@@ -165,10 +168,6 @@
 			src="{{ url_for('static', filename='tag/navbar/orders_count.tag') }}"
 			type="riot/tag"
 		></script>-->
-		
-		<script src="{{ url_for('static', filename='tag/orders/seller_product_lines.tag') }}" type="riot/tag"></script>
-		<script src="{{ url_for('static', filename='tag/orders/list.tag') }}" type="riot/tag"></script>
-		
 		{% block scripts %}{% endblock %}
 	
 	</body>
