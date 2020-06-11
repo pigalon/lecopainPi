@@ -62,7 +62,7 @@
 		this.on('mount', function() {
 			page_lines = page_lines.replaceAll("'", "\"")
 			this.load_lines()
-			this.load_products(seller_id)
+			this.load_products()
       		const location  = $('window.location')
 			if(self.refs.line_product_id == undefined){
 				message_validation = 'Veuillez saisir au moins un article!'

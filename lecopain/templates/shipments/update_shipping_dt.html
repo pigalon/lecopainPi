@@ -8,12 +8,12 @@
             <fieldset class="form-group">
             <legend class="=border-bottom mb-4"></legend>
             <div class="form-group">
-               Titre : {{ order.title }}
+               Titre : {{ shipment.title }}
             </div>
             <div class="form-group">
-                    client n° {{ order.customer }} : {{ order.customer_name }} 
+                    client n° {{ shipment.customer }} : {{ shipment.customer_name }} 
             </div>
-            <input type="hidden" name="shipping_dth" id="shipping_dth" value="{{ order.shipping_dt }}"/>
+            <input type="hidden" name="shipping_dth" id="shipping_dth" value="{{ shipment.shipping_dt }}"/>
             <div class="form-group">
                 <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
                     <input type="text" name="shipping_dt" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>

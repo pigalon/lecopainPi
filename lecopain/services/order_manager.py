@@ -26,13 +26,11 @@ class OrderManager():
     
     def create_by_shipment(self, shipment, lines, seller_id):
         created_order = OrderDao.create_by_shipment(shipment, lines, seller_id)
+        shipment.add_order(created_order)
 
     def create_order_and_parse_line(self, order, lines):
         parsed_lines = self.parse_lines(lines)
         created_order = OrderDao.create_order(order, parsed_lines)
-        created_order.category = created_order.products[0].category
-        created_order.shipping_price, created_order.shipping_rules = self.businessService.apply_rules(
-            created_order)
         db.session.commit()
 
     def delete_order(self, order_id):

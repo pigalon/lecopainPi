@@ -68,7 +68,6 @@
                 <b><span style="float: right">Nb articles : {{order.nb_products}} - Prix Total : {{ "%.2f"|format(order.price|float) }}€</span></b>
           </li>
           <li class="list-group-item">
-                <b><span style="float: right">Prix de la livraison : {{order.shipping_price}} €</span></b>
                 <br>
                 <br>
                 <p><b>Règles de calcul : </b> {{order.shipping_rules}}</p> 
@@ -82,7 +81,7 @@
       <br>
       <div class="card">
           <div class="card-header text-white bg-info">
-                  Livraison <span class="float-right"><a href="/orders/{{ order.id }}/shipping_dt" class="btn btn-light">Changer Date</a></span>
+                <span class="float-left"><a href="/shipments/{{ order.shipment_id }}" class="btn btn-light">Livraison N° {{ order.shipment_id }}</a></span>   <span class="float-right"><a href="/shipments/{{ order.shipment_id }}/shipping_dt" class="btn btn-light">Changer Date</a></span>
           </div>
           <div class="card-body">
             <h5 class="card-title">Date de livraison {{ moment(order.shipping_dt).format('Do MMMM YYYY' )  }}</h5>

@@ -16,9 +16,9 @@ class BusinessService:
     def is_drive(self, category):
         return category == Category_Enum.DRIVE.value
 
-    def apply_rules(self, order):
-        return self.get_price_and_associated_rules(order.category, order.shipping_city, order.nb_products)
-    
+    def apply_rules(self, shipment):
+        return self.get_price_and_associated_rules(shipment.category, shipment.shipping_city, shipment.nb_products)
+
     def get_price_and_associated_rules(self, category, city, nb_products=0):
         if self.is_article(category) and self.is_from_local_area(city) and nb_products < 7:
             ret, rules = self.local_shipping_price.get(int(nb_products)), "article_local_"+str(nb_products)

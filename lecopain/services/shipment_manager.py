@@ -29,25 +29,16 @@ class ShipmentManager():
     def sort_lines_by_seller(self, lines):
         sorted_lines = []
         for line in lines:
-            found = False
-            
             res_line = [sorted_line for sorted_line in sorted_lines if sorted_line["seller_id"] == line['seller_id']]
             new_line = {'product_id':line['product_id'],'quantity':line['quantity'],'price':line['price'] }
-            
+
             if len(res_line)>0 :
                 res_line[0]['lines'].append(new_line)
             else:
                 sorted_lines.append({'seller_id' : line['seller_id'], 'lines' : [new_line]})
-                
-            # if sorted_line == None:
-            #     found = True
-            #         new_line = {'product_id':line['product_id'],'quantity':line['quantity'],'price':line['price'] }
-                    
-            #     sorted_lines.append({'seller_id':, line['seller_id'] : [new_line]})
-            # else:
-            #     sorted_lines[line['seller_id']].append({'product_id':line['product_id'],'quantity':line['quantity'],'price':line['price'] })
-        return sorted_lines
 
+        return sorted_lines
+    
     def create_shipment_and_parse_line(self, shipment, lines):
         created_shipment = ShipmentDao.create_shipment(shipment)
 
@@ -55,10 +46,8 @@ class ShipmentManager():
         sorted_lines = self.sort_lines_by_seller(parsed_lines)
         for grouped_lines in sorted_lines:
             self.orderService.create_by_shipment(created_shipment, grouped_lines['lines'], grouped_lines['seller_id'])
-
-        #created_shipment.category = created_shipment.products[0].category
-        #created_shipment.shipping_price, created_shipment.shipping_rules = self.businessService.apply_rules(
-        #    created_shipment)
+        created_shipment.shipping_price, created_shipment.shipping_rules = self.businessService.apply_rules(
+            created_shipment)
         db.session.commit()
 
     def delete_shipment(self, shipment_id):

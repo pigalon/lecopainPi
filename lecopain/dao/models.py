@@ -116,6 +116,9 @@ class Order(db.Model):
     def add_line(self, line):
         self.lines.append(line)
 
+    def get_category(self):
+        products[0].category
+
     def __repr__(self):
         return '<Order {}>'.format(self.id)
 
@@ -143,7 +146,8 @@ class Shipment(db.Model):
     status = db.Column(db.String(20), nullable=False,
                        default=ShipmentStatus_Enum.CREE.value)
     price = db.Column(db.Float)
-    nb_products = db.Column(db.Integer)
+    nb_products = db.Column(db.Integer, default=0)
+    nb_orders = db.Column(db.Integer, default=0)
     shipping_price = db.Column(db.Float)
     shipping_status = db.Column(
         db.String(20), nullable=False, default=ShippingStatus_Enum.NON.value)
@@ -164,6 +168,8 @@ class Shipment(db.Model):
 
     def add_order(self, order):
         self.orders.append(order)
+        self.nb_products = self.nb_products + order.nb_products
+        self.nb_orders = self.nb_orders + 1
 
     def __repr__(self):
         return '<Shipment {}>'.format(self.id)
@@ -445,6 +451,7 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
     nb_products = fields.Method("format_nb_products", dump_only=True)
     lines = fields.Method("format_lines", dump_only=True)
     shipment_id = fields.Method("format_shipment_id", dump_only=True)
+    subscription_id = fields.Method("format_subscription_id", dump_only=True)
     shipping_dt = fields.Method("return_shipping_dt", dump_only=True)
 
     class Meta:
@@ -460,6 +467,11 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
         if order.shipment is None:
             return None
         return "{}".format(order.shipment.id)
+
+    def format_subscription_id(self, order):
+        if order.shipment is None:
+            return None
+        return order.shipment.subscription_id
 
     def format_seller_name(self, order):
         return "{}".format(order.seller.name)

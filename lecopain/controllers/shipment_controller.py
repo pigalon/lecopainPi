@@ -69,23 +69,24 @@ def shipment_create():
 def shipment_update(shipment_id):
     form = ShipmentForm()
 
-    # lines = (
-    #     request.form.getlist('product_id[]'),
-    #     request.form.getlist('quantity[]'),
-    #     request.form.getlist('price[]'),
-    # )
+    lines = (
+        request.form.getlist('product_id[]'),
+        request.form.getlist('seller_id[]'),
+        request.form.getlist('quantity[]'),
+        request.form.getlist('price[]'),
+    )
 
-    # if form.validate_on_submit():
-    #     shipmentServices.update_shipment_and_parse_line(
-    #         shipment_id=shipment_id, lines=lines)
-    #     #flash(f'People created for {form.firstname.data}!', 'success')
-    #     return redirect(f'/shipments/{shipment_id}')
+    if form.validate_on_submit():
+        shipmentServices.update_shipment_and_parse_line(
+            shipment_id=shipment_id, lines=lines)
+        #flash(f'People created for {form.firstname.data}!', 'success')
+        return redirect(f'/shipments/{shipment_id}')
 
-    # shipment = shipmentServices.get_one(shipment_id)
-    # str_lines = str(shipment['lines'])
-    # str_lines = str_lines.replace("{", "\{").replace("}", "\}")
+    shipment = shipmentServices.get_one(shipment_id)
+    str_lines = str(shipment['lines'])
+    str_lines = str_lines.replace("{", "\{").replace("}", "\}")
 
-    # return render_template('/shipments/update_shipment.html', shipment=shipment, str_lines=str_lines, title='Mise à jour de commande', form=form)
+    return render_template('/shipments/update_shipment.html', shipment=shipment, str_lines=str_lines, title='Mise à jour de livraison', form=form)
 
 
 #####################################################################
@@ -112,7 +113,7 @@ def display_update_shipment_time(shipment_id):
             shipment, shipping_dt=form.shipping_dt.data)
         return redirect('/shipments')
 
-    return render_template('/shipments/update_shipping_dt.html', shipment=shipment, title='Mise a jour du jour de la commande', form=form)
+    return render_template('/shipments/update_shipping_dt.html', shipment=shipment, title='Mise a jour du jour de la livraison', form=form)
 
 #####################################################################
 #                                                                   #
@@ -170,7 +171,7 @@ def update_shipment_paid(shipment_id, status):
 @login_required
 def display_delete_shipment(shipment_id):
     shipment = shipmentServices.get_one(shipment_id)
-    return render_template('/shipments/delete_shipment.html', shipment=shipment, title='Suppression de commande')
+    return render_template('/shipments/delete_shipment.html', shipment=shipment, title='Suppression de livraison')
 
 #####################################################################
 #                                                                   #
