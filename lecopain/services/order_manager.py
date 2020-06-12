@@ -3,7 +3,7 @@ from datetime import datetime, date, timedelta
 from lecopain.app import app, db
 from lecopain.services.business_service import BusinessService
 from lecopain.services.item_service import ItemService
-from lecopain.dao.models import Line, Product, Seller, Customer, Order, OrderStatus_Enum
+from lecopain.dao.models import Line, Product, Seller, Customer, Order, OrderStatus_Enum, ShipmentStatus_Enum
 from lecopain.helpers.date_utils import dates_range, Period_Enum
 from lecopain.dao.order_dao import OrderDao
 from lecopain.dao.subscription_dao import SubscriptionDao
@@ -70,6 +70,15 @@ class OrderManager():
     def remove_order_to_shipment(self, order):
         shipment = ShipmentDao.get_one(order.shipment_id)
         shipment.remove_order(order)
+        decrement_to_shipment(order)
+    
+    def cancel_order_to_shipment(self, order):
+        shipment = ShipmentDao.get_one(order.shipment_id)
+        shipment.cancel_order(order)
+        decrement_to_shipment(order)
+        
+        
+    def decrement_to_shipment(self, order):
         old_shipping_price = order.shipment.shipping_price
         order.shipment.shipping_price, order.shipment.shipping_rules = self.businessService.apply_rules(
             order.shipment)
@@ -77,6 +86,9 @@ class OrderManager():
 
         if order.shipment.subscription != None:
             order.shipment.subscription = order.shipment.subscription - diff_price
+        
+        order.shipment.updated_at = datetime.now()
+        ShipmentDao.update_db(order.shipment)
 
 
     def remove_order_to_subscription(self, order):
@@ -113,12 +125,30 @@ class OrderManager():
     def update_order_status(self, order_id, order_status):
         order = OrderDao.get_one(order_id)
         if order_status == OrderStatus_Enum.ANNULEE.value and order.subscription_id is not None:
-            self.items_remove_subscription(order)
+            self.cancel_order(order)
 
         if order_status == OrderStatus_Enum.CREE.value and order.subscription_id is not None:
-            self.items_add_subscription(order)
+            self.active(order)
 
-        OrderDao.update_status(order_id, order_status)
+    def cancel_order(self, order):
+        if order.shipment_id is not None:
+            self.remove_order_to_shipment(order)
+
+        if order.shipment.subscription_id is not None:
+            self.remove_order_to_subscription(order)
+        OrderDao.update_status(order.id, OrderStatus_Enum.ANNULEE.value)
+        order.shipment.updated_at = datetime.now()
+        ShipmentDao.update_db(order.shipment)
+
+    def active_order(self, order):
+        if order.shipment_id is not None:
+            self.add_order_to_shipment(order)
+
+        if order.shipment.subscription_id is not None:
+            self.add_order_to_subscription(order)
+        OrderDao.update_status(order.id, OrderStatus_Enum.CREE.value)
+        order.shipment.updated_at = datetime.now()
+        ShipmentDao.update_db(order.shipment)
 
     # @
     #

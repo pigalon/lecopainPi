@@ -166,15 +166,22 @@ class Shipment(db.Model):
     subscription = db.relationship('Subscription', backref=db.backref(
         "subscriptions", cascade="all, delete-orphan"))
 
-    def add_order(self, order):
-        self.orders.append(order)
+
+    def cancel_order(self, order):
+        self.nb_products = self.nb_products - order.nb_products
+        self.nb_orders = self.nb_orders - 1
+
+    def active_order(self, order):
         self.nb_products = self.nb_products + order.nb_products
         self.nb_orders = self.nb_orders + 1
 
     def remove_order(self, order):
-        self.nb_products = self.nb_products - order.nb_products
-        self.nb_orders = self.nb_orders - 1
+        self.cancel_order(order)
         self.orders.remove(order)
+
+    def add_order(self, order):
+        self.orders.append(order)
+        self.active_order(order)
 
 
     def __repr__(self):
