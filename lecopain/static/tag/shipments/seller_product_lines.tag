@@ -1,10 +1,28 @@
 <seller-product-line>
 
 			<div class="form-group">
-				Choix du vendeur :
-				<select class="form-control" id="seller_id" ref="seller" name="seller_id" ref="seller" onchange="{ load_products }" >
-					<option each="{ seller in sellers }" value={seller.id}> {seller.name} </option>
-                </select>
+				<table width="100%">
+                        <tr>
+                            <td>
+								Choix du vendeur :
+							</td>
+                            <td>
+								Choix de la catégorie
+							</td>
+						</tr>
+						<tr>
+                            <td>
+								<select class="form-control" id="seller_id" name="seller_id" ref="seller" onchange="{ load_products }" >
+									<option each="{ seller in sellers }" value={seller.id}> {seller.name} </option>
+								</select>
+							</td>
+                            <td>
+								<select class="form-control" id="category" ref="category" name="category" onchange="{ load_products }" >
+									<option each="{ category in categories }" value={category}> {category} </option>
+								</select>
+
+							</td>
+						</tr>
 			</div>
             <div class="form-group">
                 Choix du produit à ajouter à la commande
@@ -117,17 +135,22 @@
 		}
 
 		this.on('mount', function() {
-			var ajaxCall = self.load_sellers()
-			ajaxCall.done(function(data) {
-				self.load_products();
+			var ajaxCall_seller = self.load_sellers()
+			var ajaxCall_categories = self.load_categories()
+			ajaxCall_seller.done(function(data1) {
+				ajaxCall_categories.done(function(data2) {
+					self.load_products();
+				})
 			});
 			if(self.refs.line_product_id == undefined){
 				message_validation = 'Veuillez saisir au moins un article!'
 				self.refs.submit_button.disabled = true
+				self.refs.category.disabled = false
 			}
 			else{
 				message_validation = ''
 				self.refs.submit_button.disabled = false
+				self.refs.category.disabled = true
 			}
 		});
 
@@ -135,10 +158,12 @@
 			if(self.refs.line_product_id == undefined){
 				message_validation = 'Veuillez saisir au moins un article!'
 				self.refs.submit_button.disabled = true
+				self.refs.category.disabled = false
 			}
 			else{
 				message_validation = ''
 				self.refs.submit_button.disabled = false
+				self.refs.category.disabled = true
 			}
 		});
 
@@ -147,8 +172,9 @@
     	*******************************************/
 		load_products(){
 			seller_id =  this.refs.seller.value
+			category =  this.refs.category.value
 
-			var url = '/api/products/sellers/'+seller_id;
+			var url = '/api/products/sellers/'+seller_id+'/categories/'+category;
 			return $.ajax({
 					url: url,
 					type: "GET",
@@ -178,6 +204,21 @@
 				}
 			});
 		}
+
+		load_categories(){
+			var url = '/api/products/categories';
+			return $.ajax({
+					url: url,
+					type: "GET",
+					dataType: "json",
+					contentType: "application/json; charset=utf-8",
+					success: function(data) {
+						self.categories = data['categories']
+						self.update()
+					}
+				});
+		}
+
 		submit_shipment(){
 			this.refs.seller.disabled = false
 			document.getElementById("shipment_form").submit();

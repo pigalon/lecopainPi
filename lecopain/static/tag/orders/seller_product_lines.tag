@@ -2,7 +2,7 @@
 
 			<div class="form-group">
 				Choix du vendeur :
-				<select class="form-control" id="seller_id" name="seller_id" ref="seller" onchange="{ load_products }" {select_seller_disabled}>
+				<select class="form-control" id="seller_id" name="seller_id" ref="seller" onchange="{ load_products }" >
 					<option each="{ seller in sellers }" value={seller.id}> {seller.name} </option>
                 </select>
 			</div>

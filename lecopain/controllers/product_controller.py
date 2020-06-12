@@ -114,3 +114,19 @@ def delete_order(product_id):
 @login_required
 def api_products_by_seller(seller_id):
     return jsonify({'products': productServices.get_all_by_seller(seller_id)})
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@product_page.route('/api/products/categories')
+@login_required
+def api_products_categories():
+    return jsonify({'categories': productServices.get_all_categories()})
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@product_page.route('/api/products/sellers/<int:seller_id>/categories/<string:category>')
+@login_required
+def api_products_by_seller_and_category(seller_id, category):
+    return jsonify({'products': productServices.get_all_by_seller_category(seller_id, category)})

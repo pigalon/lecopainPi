@@ -54,10 +54,28 @@ class ProductDao:
         # Serialize the data for the response
         product_schema = ProductSchema(many=True)
         return product_schema.dump(all_products)
-    
+
+    @staticmethod
+    def read_all_by_seller_category(seller_id, category):
+        # Create the list of people from our data
+
+        all_products = Product.query
+        if seller_id !=0 :
+            all_products = all_products.filter(
+                Product.seller_id == seller_id)
+
+            all_products = all_products.filter(
+                Product.category == category)
+
+        all_products.order_by(Product.name).all()
+
+        # Serialize the data for the response
+        product_schema = ProductSchema(many=True)
+        return product_schema.dump(all_products)
+
     @staticmethod
     def create(product):
-        
+
         created_product = Product(name=product.get('name'),
                             seller_id=product.get('seller_id'),
                             price=product.get('price'),

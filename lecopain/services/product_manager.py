@@ -2,6 +2,7 @@ from lecopain.form import ProductForm
 from lecopain.dao.models import Product
 from lecopain.app import app, db
 from lecopain.dao.product_dao import ProductDao
+from lecopain.dao.models import Category_Enum
 
 
 class ProductManager():
@@ -42,6 +43,15 @@ class ProductManager():
 
     def get_all_by_seller(self, seller_id):
         return ProductDao.read_all_by_seller(seller_id)
+
+    def get_all_by_seller_category(self, seller_id, category):
+        return ProductDao.read_all_by_seller_category(seller_id, category)
+
+    def get_all_categories(self):
+        categories = []
+        for category in Category_Enum:
+            categories.append(category.value)
+        return categories
 
     def create(self, product):
         ProductDao.create(product)
