@@ -83,7 +83,9 @@ def shipment_update(shipment_id):
         return redirect(f'/shipments/{shipment_id}')
 
     shipment = shipmentServices.get_one(shipment_id)
-    str_lines = str(shipment['lines'])
+    str_lines = ''
+    for order in shipment['orders']:
+        str_lines = str_lines + str(order['lines'])
     str_lines = str_lines.replace("{", "\{").replace("}", "\}")
 
     return render_template('/shipments/update_shipment.html', shipment=shipment, str_lines=str_lines, title='Mise à jour de livraison', form=form)
