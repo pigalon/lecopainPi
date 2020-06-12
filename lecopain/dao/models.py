@@ -473,9 +473,9 @@ class OrderSchema(SQLAlchemyAutoSchema):
     def format_seller_name(self, order):
         return "{}".format(order.seller.name)
     
-    def format_shipment(self, shipment):
+    def format_shipment(self, order):
         shipment_schema = ShipmentSchema(many=False)
-        return shipment_schema.dump(shipment)
+        return shipment_schema.dump(order.shipment)
 
 
 
@@ -543,10 +543,11 @@ class ShipmentSchema(SQLAlchemyAutoSchema):
         include_relationships = True
 
     def format_customer_name(self, shipment):
-        return "{}, {}".format(shipment.customer.firstname, shipment.customer.lastname)
+        if shipment != None:
+            return "{}, {}".format(shipment.customer.firstname, shipment.customer.lastname)
 
     def format_subscription_id(self, shipment):
-        if shipment.subscription != None:
+        if shipment != None and shipment.subscription != None:
             return "{}".format(shipment.subscription.id)
 
 class CompleteShipmentSchema(SQLAlchemyAutoSchema):
