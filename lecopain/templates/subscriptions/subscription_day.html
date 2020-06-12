@@ -14,7 +14,7 @@
 
 
 <br>
-  <form method="POST" action="" style="display: inline;">
+  <form method="POST" id="subscription_form" action="" style="display: inline;">
     {{ form.hidden_tag() }}
 
     <div class="card  ">
@@ -32,6 +32,7 @@
               <thead>
                 <tr>
                   <th scope="col">Produit</th>
+                  <th scope="col">Vendeur</th>
                   <th scope="col">Quantité</th>
                   <th scope="col">Prix</th>
                 </tr>
@@ -40,6 +41,7 @@
                 {% for line in subscription_day.lines %}
                 <tr>
                   <td valign="center">{{line.product_name}}</td>
+                  <td valign="center">{{line.seller_name}}</td>
                   <td valign="center">x {{line.quantity}}</td>
                   <td valign="center">{{line.price}} €</td>
                 </tr>
@@ -48,7 +50,7 @@
             </table>
           </li>
         {%else%}
-          <product-line seller_id='{{subscription_day.seller_id}}'></product-line>
+          <seller-product-line></seller-product-line>
         {%endif%}
 
       </div>
@@ -68,8 +70,8 @@
 
 {% endblock %}
 {% block scripts %}
-<script src="{{ url_for('static', filename='tag/subscriptions/product_lines.tag') }}" type="riot/tag"></script>
+<script src="{{ url_for('static', filename='tag/subscriptions/seller_product_lines.tag') }}" type="riot/tag"></script>
 <script type="text/javascript">
-  riot.mount("product-line");
+  riot.mount("seller-product-line");
 </script>
 {% endblock %}

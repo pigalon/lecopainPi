@@ -316,9 +316,6 @@ class Subscription(db.Model):
     customer_id = db.Column(db.Integer, db.ForeignKey(
         'customers.id'), nullable=False)
     customer = db.relationship('Customer')
-    seller_id = db.Column(db.Integer, db.ForeignKey(
-        'sellers.id'), nullable=False)
-    seller = db.relationship('Seller')
     start_dt = db.Column(db.Date)
     end_dt = db.Column(db.Date)
     status = db.Column(db.String(40), default=SubscriptionStatus_Enum.CREE.value)
@@ -396,6 +393,10 @@ class SubscriptionLine(db.Model):
         "lines", cascade="all, delete-orphan"))
     product = db.relationship(Product, backref=db.backref(
         "subscription_lines"))
+    seller_id = db.Column(db.Integer, db.ForeignKey(
+        'sellers.id'), primary_key=True)
+    seller = db.relationship(Seller, backref=db.backref(
+        "subscription_lines"))
     quantity = db.Column(db.Integer, default=0)
     price = db.Column(db.Float, default=0.0)
 
@@ -403,6 +404,7 @@ class SubscriptionLine(db.Model):
         return {
             'subscription_day_id': self.subscription_day_id,
             'product_id': self.product_id,
+            'seller_id': self.seller_id,
             'quantity': self.quantity,
             'price': self.price
         }
@@ -642,7 +644,6 @@ class SubscriptionSchema(SQLAlchemyAutoSchema):
 
 class CompleteSubscriptionSchema(SQLAlchemyAutoSchema):
     customer_name = fields.Method("format_customer_name", dump_only=True)
-    seller_name = fields.Method("format_seller_name", dump_only=True)
     start_formatted_dt = fields.Method("format_start_dt", dump_only=True)
     end_formatted_dt = fields.Method("format_end_dt", dump_only=True)
     days = fields.Method("format_days", dump_only=True)
@@ -672,6 +673,7 @@ class CompleteSubscriptionSchema(SQLAlchemyAutoSchema):
 
 class SubscriptionLineSchema(SQLAlchemyAutoSchema):
     product_name = fields.Method("format_product_name", dump_only=True)
+    seller_name = fields.Method("format_seller_name", dump_only=True)
     product_id = fields.Method("format_product_id", dump_only=True)
     product_category = fields.Method("format_product_category", dump_only=True)
 
@@ -682,6 +684,9 @@ class SubscriptionLineSchema(SQLAlchemyAutoSchema):
 
     def format_product_name(self, subscription_line):
         return "{}".format(subscription_line.product.name)
+    
+    def format_seller_name(self, subscription_line):
+        return "{}".format(subscription_line.seller.name)
 
     def format_product_id(self, subscription_line):
         return "{}".format(subscription_line.product.id)
@@ -705,8 +710,6 @@ class CompleteSubscriptionDaySchema(SQLAlchemyAutoSchema):
     
     customer_name = fields.Method("format_customer_name", dump_only=True)
     customer_city = fields.Method("format_customer_city", dump_only=True)
-    seller_name = fields.Method("format_seller_name", dump_only=True)
-    seller_id = fields.Method("format_seller_id", dump_only=True)
     lines = fields.Method("format_lines", dump_only=True)
     class Meta:
         # Fields to expose
@@ -716,12 +719,6 @@ class CompleteSubscriptionDaySchema(SQLAlchemyAutoSchema):
 
     def format_customer_name(self, subscription_day):
         return "{}, {}".format(subscription_day.subscription.customer.firstname, subscription_day.subscription.customer.lastname)
-
-    def format_seller_name(self, subscription_day):
-        return "{}".format(subscription_day.subscription.seller.name)
-    
-    def format_seller_id(self, subscription_day):
-        return "{}".format(subscription_day.subscription.seller.id)
 
     def format_lines(self, subscription_day):
         lines = []

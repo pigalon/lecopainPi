@@ -81,7 +81,6 @@ def subscription_create():
 
     subscription = {
             'customer_id': form.customer_id.data,
-            'seller_id': form.seller_id.data,
             'start_dt': form.start_dt.data,
             'end_dt': form.end_dt.data,
             }
@@ -121,7 +120,7 @@ def delete_subscription(subscription_id):
 @login_required
 def generate_order(subscription_id):
     subscription = subscriptionServices.get_one_db(subscription_id)
-    subscriptionServices.generate_orders(subscription)
+    subscriptionServices.generate_shipments(subscription)
     return render_template('/subscriptions/subscription.html', subscription=subscription)
 
 #####################################################################
@@ -157,6 +156,7 @@ def subscription_week_day(subscription_id, week_day):
 
     lines = (
         request.form.getlist('product_id[]'),
+        request.form.getlist('seller_id[]'),
         request.form.getlist('quantity[]'),
         request.form.getlist('price[]'),
     )

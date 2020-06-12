@@ -80,7 +80,6 @@ class LoginForm(FlaskForm):
 
 class SubscriptionForm(FlaskForm):
     customer_id = IntegerField('Client Id:', validators=[DataRequired()])
-    seller_id = IntegerField('Vendeur Id:', validators=[DataRequired()])
     start_dt = DateTimeField('Date de debut', format='%d/%m/%Y')
     end_dt = DateTimeField('Date de fin', format='%d/%m/%Y')
     submit = SubmitField('Valider')

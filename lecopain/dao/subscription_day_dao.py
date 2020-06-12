@@ -47,11 +47,11 @@ class SubscriptionDayDao:
         nb_products = 0
         total_price = 0.0
         for line in lines:
-            product_id, qty, price = list(line.values())
+            product_id, seller_id, qty, price = list(line.values())
             nb_products = nb_products + int(qty)
             total_price = total_price + int(qty) * float(price)
             subscription_day.lines.append(SubscriptionLine(
-                subscription_day=subscription_day, product_id=product_id, quantity=qty, price=float(price)))
+                subscription_day=subscription_day, seller_id=seller_id, product_id=product_id, quantity=qty, price=float(price)))
         subscription_day.price = format(total_price, '.2f')
         subscription_day.nb_products = nb_products
         db.session.commit()

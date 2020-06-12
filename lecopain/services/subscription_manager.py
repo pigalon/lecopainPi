@@ -2,6 +2,7 @@ from datetime import datetime
 
 from lecopain.app import app, db
 from lecopain.dao.models import Customer, Subscription, Order
+from lecopain.dao.shipment_dao import ShipmentDao
 from lecopain.dao.order_dao import OrderDao
 from lecopain.dao.subscription_dao import SubscriptionDao
 from lecopain.dao.subscription_day_dao import SubscriptionDayDao
@@ -58,7 +59,7 @@ class SubscriptionManager():
         SubscriptionDao.delete(subscription_id)
 
     def parse_lines(self, lines):
-        headers = ('product_id', 'quantity', 'price' )
+        headers = ('product_id', 'seller_id', 'quantity', 'price' )
         items = [{} for i in range(len(lines[0]))]
         for x, i in enumerate(lines):
             for _x, _i in enumerate(i):
@@ -98,7 +99,7 @@ class SubscriptionManager():
         db.session.commit()
         return subscription_day
 
-    def generate_orders(self, subscription):
+    def generate_shipments(self, subscription):
         # get a list from all days fo the periode : dict
         # date_of_day : datetime 8:00
         # get the id of the subscription_day
@@ -110,20 +111,20 @@ class SubscriptionManager():
         current_dt = subscription.start_dt
         delta = subscription.end_dt - subscription.start_dt
         nb_days = 1
-        order = {}
+        shipment = {}
         total_nb_products = 0
         nb_products = 0
+        nb_shipments = 0
         nb_orders = 0
         total_shipping_price = 0.0
         total_price = 0.0
 
-        order['customer_id'] = subscription.customer_id
-        order['seller_id'] = subscription.seller_id
-        order['category'] = subscription.category
+        shipment['customer_id'] = subscription.customer_id
+        shipment['category'] = subscription.category
 
         while current_dt <= subscription.end_dt:
-            order['shipping_dt'] = current_dt
-            order['title'] = f'abo {subscription.id} - {nb_days}/{delta.days}'
+            shipment['shipping_dt'] = current_dt
+            shipment['title'] = f'abo {subscription.id} - {nb_days}/{delta.days}'
 
             week_day = current_dt.weekday()+1
             subscription_day = self.get_week_day(
@@ -131,7 +132,7 @@ class SubscriptionManager():
 
             nb_products = subscription_day.get('nb_products')
 
-            order['nb_products'] = nb_products
+            shipment['nb_products'] = nb_products
             total_nb_products = total_nb_products + nb_products
             lines = []
             if nb_products > 0:
@@ -139,7 +140,7 @@ class SubscriptionManager():
                     lines.append({'product_id': line.get('product_id'), 'quantity': line.get(
                         'quantity'), 'price': line.get('price')})
 
-                created_order = OrderDao.create_order(order, lines)
+                created_order = ShipmentDao.create_order(order, lines)
                 created_order.shipping_price, created_order.shipping_rules = self.businessService.apply_rules(
                 created_order)
                 created_order.category = created_order.products[0].category

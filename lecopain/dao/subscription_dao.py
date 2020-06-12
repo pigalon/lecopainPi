@@ -46,15 +46,11 @@ class SubscriptionDao:
     @staticmethod
     def add(subscription):
         customer = Customer.query.get_or_404(int(subscription.get('customer_id')))
-        seller = Seller.query.get_or_404(int(subscription.get('seller_id')))
         created_subscription = Subscription(customer_id=subscription.get('customer_id'),
-                                            seller_id=subscription.get(
-                                                'seller_id'),
                             start_dt=subscription.get('start_dt'),
                             end_dt=subscription.get('end_dt'))
         db.session.add(created_subscription)
         customer.nb_subscriptions = customer.nb_subscriptions + 1
-        seller.nb_subscriptions = seller.nb_subscriptions + 1
         return created_subscription
 
     @staticmethod
