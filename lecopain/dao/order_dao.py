@@ -215,3 +215,10 @@ class OrderDao:
     @staticmethod
     def update_db(order):
         db.session.commit()
+
+    @staticmethod
+    def find_by_shipment_and_seller_id(shipment_id, seller_id):
+        return Order.query.filter(Order.shipment_id == shipment_id)\
+            .filter(Order.seller_id == int(seller_id)).first()
+
+

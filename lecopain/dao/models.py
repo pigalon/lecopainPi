@@ -115,6 +115,9 @@ class Order(db.Model):
 
     def add_line(self, line):
         self.lines.append(line)
+    
+    def remove_lines(self):
+        self.lines.delete()
 
     def get_category(self):
         products[0].category
@@ -177,10 +180,12 @@ class Shipment(db.Model):
     def remove_order(self, order):
         self.cancel_order(order)
         self.orders.remove(order)
+        self.nb_orders = self.nb_orders - 1
 
     def add_order(self, order):
         self.orders.append(order)
         self.active_order(order)
+        self.nb_orders = self.nb_orders + 1
 
 
     def __repr__(self):
@@ -429,6 +434,8 @@ class LineSchema(SQLAlchemyAutoSchema):
     product_short_name = fields.Method("format_product_short_name", dump_only=True)
     price = fields.Method("format_price", dump_only=True)
     product_id = fields.Method("format_product_id", dump_only=True)
+    seller_id = fields.Method("format_seller_id", dump_only=True)
+    seller_name = fields.Method("format_seller_name", dump_only=True)
 
     class Meta:
         # Fields to expose
@@ -446,6 +453,12 @@ class LineSchema(SQLAlchemyAutoSchema):
     
     def format_product_id(self, line):
         return "{}".format(line.product.id)
+    
+    def format_seller_id(self, line):
+        return "{}".format(line.product.seller_id)
+    
+    def format_seller_name(self, line):
+        return "{}".format(line.product.seller.name)
 
 
 

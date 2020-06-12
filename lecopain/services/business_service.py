@@ -16,6 +16,10 @@ class BusinessService:
     def is_drive(self, category):
         return category == Category_Enum.DRIVE.value
 
+    def apply_rules_just_order(self, order):
+        return self.get_price_and_associated_rules(order.shipment.category, order.shipment.shipping_city, order.nb_products)
+
+
     def apply_rules(self, shipment):
         return self.get_price_and_associated_rules(shipment.category, shipment.shipping_city, shipment.nb_products)
 

@@ -50,7 +50,6 @@
 
 		var self = this
 		seller_id =  opts.seller_id
-		console.log('after : '+ opts.seller_id)
 
 		change(e) 
 		{

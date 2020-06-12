@@ -59,23 +59,25 @@ class ShipmentManager():
         #if shipment.subscription_id is not None :
 
     def update_shipment_and_parse_line(self, shipment_id, lines):
-        #parsed_lines = self.parse_lines(lines)
         shipment = ShipmentDao.get_one(shipment_id)
-        if shipment.subscription_id is not None:
-            self.items_remove_subscription(shipment)
-        ShipmentDao.remove_all_lines(shipment)
-        shipment.shipping_price = 0.0
-        shipment.nb_products = 0
-        shipment.shipping_rules = ''
-        #ShipmentDao.add_lines(shipment, parsed_lines)
-        shipment.category = shipment.products[0].category
-        #shipment.shipping_price, shipment.shipping_rules = self.businessService.apply_rules(
-        #    shipment)
-        ShipmentDao.update_db(shipment)
-        shipment.updated_at = datetime.now()
-        ShipmentDao.update_db(shipment)
-        if shipment.subscription_id is not None:
-            self.items_add_subscription(shipment)
+
+        parsed_lines = self.parse_lines(lines)
+        sorted_lines = self.sort_lines_by_seller(parsed_lines)
+
+        for order in shipment.orders:
+            b_delete = True
+            for grouped_lines in sorted_lines:
+                if str(order.seller_id) == grouped_lines['seller_id']:
+                    b_delete = False
+            if(b_delete):
+                shipment.remove_order(order)
+
+        for grouped_lines in sorted_lines:
+            self.orderService.update_by_shipment(shipment, grouped_lines['lines'], grouped_lines['seller_id'])
+
+        shipment.shipping_price, shipment.shipping_rules = self.businessService.apply_rules(
+            shipment)
+
         db.session.commit()
 
     def remove_shipment_subscriptions(self, shipment):

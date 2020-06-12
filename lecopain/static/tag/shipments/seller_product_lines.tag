@@ -25,7 +25,6 @@
 						</tr>
 			</div>
             <div class="form-group">
-                Choix du produit à ajouter à la commande
                 <div data-toggle="fieldset" id="product-fieldset">
                     <input type="hidden" name="row_nb" id="row_nb" value=0 />
                     <table width="50%">
@@ -76,6 +75,8 @@
 		first_seller_id=0
 
 		var self = this
+
+		page_lines = opts.lines
 
 		change(e) 
 		{
@@ -134,7 +135,17 @@
 			self.update()
 		}
 
+		String.prototype.replaceAll = function(str1, str2, ignore)
+		{
+    		return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
+		}
+
 		this.on('mount', function() {
+			if(page_lines != undefined){
+				page_lines = page_lines.replaceAll("'", "\"")
+				this.load_lines()
+			}
+
 			var ajaxCall_seller = self.load_sellers()
 			var ajaxCall_categories = self.load_categories()
 			ajaxCall_seller.done(function(data1) {
@@ -217,6 +228,18 @@
 						self.update()
 					}
 				});
+		}
+
+		load_lines()
+		{
+			items = JSON.parse(page_lines)
+
+			items.forEach((item) => {
+				cpt = cpt + 1;
+				line =  {id : cpt, product_id:item.product_id, product_name:item.product_name, seller_id:item.seller_id, seller_name:item.seller_name, quantity:item.quantity,  price : item.price};
+				lines.push(line)
+			});
+			self.update()
 		}
 
 		submit_shipment(){
