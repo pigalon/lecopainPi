@@ -51,10 +51,12 @@ class OrderManager():
 
     def delete_order(self, order_id):
         order = OrderDao.get_one(order_id)
-        if order.shipment_id is not None:
+        if order.status != OrderStatus_Enum.ANNULEE.value and \
+            order.shipment_id is not None:
             self.remove_order_to_shipment(order)
 
-        if order.shipment.subscription_id is not None:
+        if order.status != OrderStatus_Enum.ANNULEE.value and \
+            order.shipment.subscription_id is not None:
             self.remove_order_to_subscription(order)
 
         OrderDao.delete(order_id)
@@ -109,8 +111,6 @@ class OrderManager():
         shipment.shipping_price, shipment.shipping_rules = self.businessService.apply_rules(
             shipment)
         diff_shipping_price = old_shipping_price - float(shipment.shipping_price)
-        
-        shipment.shipping_price = shipment.shipping_price - diff_shipping_price
 
         if order.shipment.subscription != None:
             order.shipment.subscription = order.shipment.subscription - diff_shipping_price
@@ -126,8 +126,6 @@ class OrderManager():
             shipment)
         diff_shipping_price = old_shipping_price - float(shipment.shipping_price)
         
-        shipment.shipping_price = shipment.shipping_price + diff_shipping_price
-
         if order.shipment.subscription != None:
             order.shipment.subscription = order.shipment.subscription + diff_shipping_price
         
