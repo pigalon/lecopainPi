@@ -60,14 +60,14 @@
 
 		this.on('mount', function() {
 			this.load_orders()
-            this.load_customers()
+            this.load_sellers()
             const location  = $('window.location')
 		});
 
 		/******************************************/
        	// load products list
     	/*******************************************/
-		load_sellers(){
+		load_orders(){
             var order_url = '/api/orders/';
             var seller_id = self.refs.seller_id.value;
             var period = self.refs.period.value;

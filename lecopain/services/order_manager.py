@@ -70,12 +70,22 @@ class OrderManager():
     def remove_order_to_shipment(self, order):
         shipment = ShipmentDao.get_one(order.shipment_id)
         shipment.remove_order(order)
-        decrement_to_shipment(order)
+        self.decrement_to_shipment(order)
     
     def cancel_order_to_shipment(self, order):
         shipment = ShipmentDao.get_one(order.shipment_id)
         shipment.cancel_order(order)
-        decrement_to_shipment(order)
+        self.decrement_to_shipment(order)
+        
+    def add_order_to_shipment(self, order):
+        shipment = ShipmentDao.get_one(order.shipment_id)
+        shipment.add_order(order)
+        self.increment_to_shipment(order)
+    
+    def active_order_to_shipment(self, order):
+        shipment = ShipmentDao.get_one(order.shipment_id)
+        shipment.active_order(order)
+        self.increment_to_shipment(order)
         
         
     def decrement_to_shipment(self, order):
@@ -89,6 +99,19 @@ class OrderManager():
         
         order.shipment.updated_at = datetime.now()
         ShipmentDao.update_db(order.shipment)
+        
+    def increment_to_shipment(self, order):
+        old_shipping_price = order.shipment.shipping_price
+        order.shipment.shipping_price, order.shipment.shipping_rules = self.businessService.apply_rules(
+            order.shipment)
+        diff_price = old_shipping_price + float(order.shipment.shipping_price)
+
+        if order.shipment.subscription != None:
+            order.shipment.subscription = order.shipment.subscription + diff_price
+        
+        order.shipment.updated_at = datetime.now()
+        ShipmentDao.update_db(order.shipment)
+
 
 
     def remove_order_to_subscription(self, order):
@@ -124,15 +147,15 @@ class OrderManager():
     #
     def update_order_status(self, order_id, order_status):
         order = OrderDao.get_one(order_id)
-        if order_status == OrderStatus_Enum.ANNULEE.value and order.subscription_id is not None:
+        if order_status == OrderStatus_Enum.ANNULEE.value:
             self.cancel_order(order)
 
-        if order_status == OrderStatus_Enum.CREE.value and order.subscription_id is not None:
-            self.active(order)
+        if order_status == OrderStatus_Enum.CREE.value:
+            self.active_order(order)
 
     def cancel_order(self, order):
         if order.shipment_id is not None:
-            self.remove_order_to_shipment(order)
+            self.cancel_order_to_shipment(order)
 
         if order.shipment.subscription_id is not None:
             self.remove_order_to_subscription(order)
@@ -142,7 +165,7 @@ class OrderManager():
 
     def active_order(self, order):
         if order.shipment_id is not None:
-            self.add_order_to_shipment(order)
+            self.active_order_to_shipment(order)
 
         if order.shipment.subscription_id is not None:
             self.add_order_to_subscription(order)

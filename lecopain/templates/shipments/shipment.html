@@ -59,10 +59,25 @@
           {% for line in order.lines %}
               <tr>
                 <td valign="center">{{order.seller_name}}</td>
-                <td valign="center"><span><a href="/orders/{{ order.id }}" class="btn btn-info">{{order.id}}</a></span></td>
+                <td valign="center">
+                  <span>
+                    {% if order.status =='CREE' %} <a href="/orders/{{ order.id }}" class="btn btn-info"> {%endif%}
+                    {% if order.status =='ANNULEE' %} <a href="/orders/{{ order.id }}" class="btn btn-dark"> {%endif%}
+                    {% if order.status =='DEFAULT' %} <a href="/orders/{{ order.id }}" class="btn btn-danger"> {%endif%}
+                      {{order.id}}
+                    </a>
+                  </span>
+                </td>
                 <td valign="center">{{line.product_name}}</td>
-                <td valign="center">x {{line.quantity}}</td>
-                <td valign="center">{{line.price}} €</td>
+                <td valign="center">
+                  {% if order.status =='ANNULEE' %} Annulé {%endif%}
+                  {% if order.status =='CREE' %} x {{line.quantity}} {%endif%}
+                </td>
+                <td valign="center">
+                  {% if order.status =='ANNULEE' %} 0 {%endif%}
+                  {% if order.status =='CREE' %} {{line.price}} {%endif%}
+                    €
+                </td>
               </tr>
           {% endfor %}
           {% endfor %}
