@@ -461,6 +461,7 @@ class OptimizedCustomerSchema(SQLAlchemySchema):
 
 class OrderSchema(SQLAlchemyAutoSchema):
     seller_name = fields.Method("format_seller_name", dump_only=True)
+    shipment = fields.Method("format_shipment", dump_only=True)
 
     class Meta:
         # Fields to expose
@@ -471,6 +472,11 @@ class OrderSchema(SQLAlchemyAutoSchema):
     
     def format_seller_name(self, order):
         return "{}".format(order.seller.name)
+    
+    def format_shipment(self, shipment):
+        shipment_schema = ShipmentSchema(many=False)
+        return shipment_schema.dump(shipment)
+
 
 
 class CompleteOrderSchema(SQLAlchemyAutoSchema):
@@ -481,6 +487,7 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
     shipment_id = fields.Method("format_shipment_id", dump_only=True)
     subscription_id = fields.Method("format_subscription_id", dump_only=True)
     shipping_dt = fields.Method("return_shipping_dt", dump_only=True)
+    shipment = fields.Method("format_shipment", dump_only=True)
 
     class Meta:
         # Fields to expose
@@ -519,6 +526,10 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
         for line in order.lines:
             lines.append(line_schema.dump(line))
         return lines
+
+    def format_shipment(self, order):
+        shipment_schema = ShipmentSchema(many=False)
+        return shipment_schema.dump(order.shipment)
 
 class ShipmentSchema(SQLAlchemyAutoSchema):
     customer_name = fields.Method("format_customer_name", dump_only=True)

@@ -45,7 +45,7 @@ class OrderDao:
     def read_by_seller(seller_id):
         all_orders = Order.query \
             .filter(Order.seller_id == seller_id) \
-            .order_by(Order.shipping_dt.desc()) \
+            .order_by(Order.created_at.desc()) \
             .all()
 
         # Serialize the data for the response
