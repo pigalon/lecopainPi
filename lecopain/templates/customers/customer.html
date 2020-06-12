@@ -17,17 +17,17 @@
                     <b>Adresse : </b> {{customer.address}} {{customer.cp}} {{customer.city}}
                 </li>
                 <li class="list-group-item">
-                    <b>Email : </b> {{customer.email}} 
+                    <b>Email : </b> {{customer.email}}
                 </li>
             </ul>
         </div>
     </div>
-    {%if customer.nb_orders | int > 0 %}
-        <order-list customer_id='{{customer.id}}'></order-list>
+    {%if customer.nb_subscriptions | int > 0 %}
+    <subscription-list customer_id='{{customer.id}}'></subscription-list>
     {%endif%}
     <br>
-    {%if customer.nb_subscriptions | int > 0 %}
-        <subscription-list customer_id='{{customer.id}}'></subscription-list>
+    {%if customer.nb_shipments | int > 0 %}
+    <shipment-list customer_id='{{customer.id}}'></shipment-list>
     {%endif%}
 
     <div class="card">
@@ -39,10 +39,10 @@
 
 {% endblock %}
 {% block scripts %}
-<script src="{{ url_for('static', filename='tag/customers/order_list.tag') }}" type="riot/tag"></script>
+<script src="{{ url_for('static', filename='tag/customers/shipment_list.tag') }}" type="riot/tag"></script>
 <script src="{{ url_for('static', filename='tag/customers/subscription_list.tag') }}" type="riot/tag"></script>
 <script>
-    riot.mount("order-list");
+    riot.mount("shipment-list");
     riot.mount("subscription-list");
 </script>
 {% endblock %}

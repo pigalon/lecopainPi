@@ -34,7 +34,7 @@ class ShipmentDao:
     def read_by_customer(customer_id):
         all_shipments = Shipment.query \
             .filter(Shipment.customer_id == customer_id) \
-            .shipment_by(Shipment.shipping_dt.desc()) \
+            .order_by(Shipment.shipping_dt.desc()) \
             .all()
 
         # Serialize the data for the response
@@ -110,6 +110,12 @@ class ShipmentDao:
     def update_payment_status(id, status):
         shipment = shipment = Shipment.query.get_or_404(id)
         shipment.payment_status = status
+        db.session.commit()
+
+    @staticmethod
+    def update_shipping_status(id, status):
+        shipment = shipment = Shipment.query.get_or_404(id)
+        shipment.shipping_status = status
         db.session.commit()
 
     @staticmethod

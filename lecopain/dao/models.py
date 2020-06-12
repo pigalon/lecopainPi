@@ -155,7 +155,6 @@ class Shipment(db.Model):
     shipping_address = db.Column(db.String(200))
     shipping_cp = db.Column(db.String(20))
     shipping_city = db.Column(db.String(50))
-
     payment_status = db.Column(
         db.String(20), nullable=False, default=PaymentStatus_Enum.NON.value)
     shipping_rules = db.Column(db.String(20), nullable=True)
@@ -597,7 +596,6 @@ class ProductSchema(SQLAlchemyAutoSchema):
 
 class SubscriptionSchema(SQLAlchemyAutoSchema):
     customer_name = fields.Method("format_customer_name", dump_only=True)
-    seller_name = fields.Method("format_seller_name", dump_only=True)
     start_formatted_dt = fields.Method("format_start_dt", dump_only=True)
     end_formatted_dt = fields.Method("format_end_dt", dump_only=True)
 
@@ -610,9 +608,6 @@ class SubscriptionSchema(SQLAlchemyAutoSchema):
     def format_customer_name(self, subscription):
         return "{}, {}".format(subscription.customer.firstname, subscription.customer.lastname)
 
-    def format_seller_name(self, subscription):
-        return "{}".format(subscription.seller.name)
-
     def format_start_dt(self, subscription):
         return subscription.start_dt.strftime('%A %d %B %Y')
 
@@ -623,7 +618,6 @@ class SubscriptionSchema(SQLAlchemyAutoSchema):
 class CompleteSubscriptionSchema(SQLAlchemyAutoSchema):
     customer_name = fields.Method("format_customer_name", dump_only=True)
     seller_name = fields.Method("format_seller_name", dump_only=True)
-    seller_id = fields.Method("format_seller_id", dump_only=True)
     start_formatted_dt = fields.Method("format_start_dt", dump_only=True)
     end_formatted_dt = fields.Method("format_end_dt", dump_only=True)
     days = fields.Method("format_days", dump_only=True)
@@ -637,12 +631,6 @@ class CompleteSubscriptionSchema(SQLAlchemyAutoSchema):
 
     def format_customer_name(self, subscription):
         return "{}, {}".format(subscription.customer.firstname, subscription.customer.lastname)
-
-    def format_seller_name(self, subscription):
-        return "{}".format(subscription.seller.name)
-    
-    def format_seller_id(self, subscription):
-        return "{}".format(subscription.seller.id)
 
     def format_start_dt(self, subscription):
         return subscription.start_dt.strftime('%A %d %B %Y')
