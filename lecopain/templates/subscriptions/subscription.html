@@ -17,7 +17,7 @@
     <div class="card  " >
         <div class="card-header text-white bg-info">
           Abonnement N° {{subscription.id}} - {{subscription.customer_name}} 
-          {% if subscription.nb_products == 0 %}
+          {% if subscription.nb_shipments == 0 %}
             <span class="right"><a href="/subscriptions/generate/{{ subscription.id }}" class="btn btn-outline-dark">Générer livraisons/commandes</a></span>
           {% endif %}
         </div>
@@ -69,10 +69,10 @@
           </li>
 
           <li class="list-group-item">
-                <b><span >Nb articles de l'abonnement: {{subscription.nb_products}} - Prix Total Marchandise : {{ "%.2f"|format(subscription.price|float) }}€</span></b>
+                <b><span >Nb articles de l'abonnement: {{subscription.nb_products}}
           </li>
           <li class="list-group-item">
-                <b><span >Prix de la livraison pour l'abonnement : {{subscription.shipping_price}} €</span></b>
+                <b><span >Prix des livraisons pour l'abonnement : {{subscription.shipping_price}} €</span></b>
                 <br>
                 <br>
                 <p><b>Nombres total de Livraisons : </b> {{subscription.nb_shipments}}</p>

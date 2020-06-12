@@ -90,6 +90,9 @@ class ShipmentDao:
             shipping_address = customer.address,
             shipping_cp=customer.cp,
             shipping_city=customer.city)
+        if(shipment.get('subscription_id') != None):
+           created_shipment.subscription_id = int(shipment.get('subscription_id'))
+        
         db.session.add(created_shipment)
         customer.nb_shipments = customer.nb_shipments + 1
         return created_shipment

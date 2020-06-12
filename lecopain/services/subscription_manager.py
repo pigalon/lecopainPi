@@ -2,19 +2,19 @@ from datetime import datetime
 
 from lecopain.app import app, db
 from lecopain.dao.models import Customer, Subscription, Order
-from lecopain.dao.shipment_dao import ShipmentDao
 from lecopain.dao.order_dao import OrderDao
 from lecopain.dao.subscription_dao import SubscriptionDao
 from lecopain.dao.subscription_day_dao import SubscriptionDayDao
 from lecopain.helpers.date_utils import dates_range, Period_Enum
 from lecopain.services.business_service import BusinessService
-from lecopain.services.item_service import ItemService
+from lecopain.services.shipment_manager import ShipmentManager
 from datetime import timedelta
 
 
 class SubscriptionManager():
 
     businessService = BusinessService()
+    shipmentServices = ShipmentManager()
 
     def create_subscription(self, subscription):
         created_subscription = SubscriptionDao.add(subscription)
@@ -119,47 +119,53 @@ class SubscriptionManager():
         total_shipping_price = 0.0
         total_price = 0.0
 
-        shipment['customer_id'] = subscription.customer_id
-        shipment['category'] = subscription.category
 
         while current_dt <= subscription.end_dt:
-            shipment['shipping_dt'] = current_dt
-            shipment['title'] = f'abo {subscription.id} - {nb_days}/{delta.days}'
+            
 
             week_day = current_dt.weekday()+1
             subscription_day = self.get_week_day(
                 subscription_id=subscription.id, week_day=week_day)
 
+            shipment = {'title': f'abo {subscription.id} - {nb_days}/{delta.days}',
+                'customer_id': subscription.customer_id,
+                'shipping_dt': current_dt,
+                'subscription_id': subscription.id,
+                
+            }
             nb_products = subscription_day.get('nb_products')
-
-            shipment['nb_products'] = nb_products
             total_nb_products = total_nb_products + nb_products
             lines = []
             if nb_products > 0:
                 for line in subscription_day.get('lines') :
-                    lines.append({'product_id': line.get('product_id'), 'quantity': line.get(
+                    lines.append({'product_id': line.get('product_id'), 'seller_id': line.get('seller_id'), 'quantity': line.get(
                         'quantity'), 'price': line.get('price')})
-
-                created_order = ShipmentDao.create_order(order, lines)
-                created_order.shipping_price, created_order.shipping_rules = self.businessService.apply_rules(
-                created_order)
-                created_order.category = created_order.products[0].category
-                created_order.subscription_id = subscription.id
-                OrderDao.update_db(order)
-                nb_orders = nb_orders + 1
-                total_shipping_price = total_shipping_price + float(created_order.shipping_price)
-                total_price = total_price + float(created_order.price)
-            # increment day
+                    
+                self.shipmentServices.create_shipment(shipment, lines)
+            #increment day
             current_dt = current_dt + timedelta(days=1)
             nb_days = nb_days + 1
+
+        #         created_order = ShipmentDao.create_order(order, lines)
+        #         created_order.shipping_price, created_order.shipping_rules = self.businessService.apply_rules(
+        #         created_order)
+        #         created_order.category = created_order.products[0].category
+        #         created_order.subscription_id = subscription.id
+        #         OrderDao.update_db(order)
+        #         nb_orders = nb_orders + 1
+        #         total_shipping_price = total_shipping_price + float(created_order.shipping_price)
+        #         total_price = total_price + float(created_order.price)
+        #     # increment day
+        #     current_dt = current_dt + timedelta(days=1)
+        #     nb_days = nb_days + 1
         
-        itemService = ItemService()
-        itemService.add_order_subscription_nb_products(subscription, total_nb_products). \
-        add_order_subscription_nb_orders(subscription, nb_orders). \
-        add_order_subscription_shipping_price(subscription, total_shipping_price). \
-        add_order_subscription_price(subscription, total_price)
+        # itemService = ItemService()
+        # itemService.add_order_subscription_nb_products(subscription, total_nb_products). \
+        # add_order_subscription_nb_orders(subscription, nb_orders). \
+        # add_order_subscription_shipping_price(subscription, total_shipping_price). \
+        # add_order_subscription_price(subscription, total_price)
         
-        SubscriptionDao.update_db(subscription, itemService.items)
+        # SubscriptionDao.update_db(subscription, itemService.items)
 
 
 

@@ -673,6 +673,7 @@ class CompleteSubscriptionSchema(SQLAlchemyAutoSchema):
 
 class SubscriptionLineSchema(SQLAlchemyAutoSchema):
     product_name = fields.Method("format_product_name", dump_only=True)
+    seller_id = fields.Method("format_seller_id", dump_only=True)
     seller_name = fields.Method("format_seller_name", dump_only=True)
     product_id = fields.Method("format_product_id", dump_only=True)
     product_category = fields.Method("format_product_category", dump_only=True)
@@ -685,6 +686,9 @@ class SubscriptionLineSchema(SQLAlchemyAutoSchema):
     def format_product_name(self, subscription_line):
         return "{}".format(subscription_line.product.name)
     
+    def format_seller_id(self, subscription_line):
+        return "{}".format(subscription_line.seller.id)
+
     def format_seller_name(self, subscription_line):
         return "{}".format(subscription_line.seller.name)
 
