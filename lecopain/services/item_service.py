@@ -28,7 +28,7 @@ class ItemService:
 
     def add_shipment_subscription_shipping_price(self, subscription, shipping_price):
         self.items.append({'name': 'shipping_price',
-                      'value': (subscription.shipping_price + shipping_price)})
+                      'value': (float(subscription.shipping_price) + float(shipping_price))})
         return self
 
     # def add_order_subscription_price(self, subscription, price):

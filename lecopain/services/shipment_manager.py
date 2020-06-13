@@ -63,6 +63,9 @@ class ShipmentManager():
 
     def update_shipment_and_parse_line(self, shipment_id, lines):
         shipment = ShipmentDao.get_one(shipment_id)
+        
+        if shipment.subscription != None:
+            self.remove_shipment_subscriptions(shipment)
 
         parsed_lines = self.parse_lines(lines)
         sorted_lines = self.sort_lines_by_seller(parsed_lines)
@@ -80,6 +83,9 @@ class ShipmentManager():
 
         shipment.shipping_price, shipment.shipping_rules = self.businessService.apply_rules(
             shipment)
+        
+        if shipment.subscription != None:
+            self.add_shipment_subscriptions(shipment)
 
         db.session.commit()
 
@@ -89,9 +95,20 @@ class ShipmentManager():
         itemService.decrement_subscription_nb_shipments(subscription) \
             .remove_shipment_subscription_nb_products(subscription, shipment.nb_products) \
             .remove_shipment_subscription_shipping_price(subscription, shipment.shipping_price) \
-            .remove_shipment_subscription_nb_orders(subscription, shipment.nb_products)
+            .remove_shipment_subscription_nb_orders(subscription, shipment.nb_orders)
             #.remove_shipment_subscription_price(subscription, shipment.price)
         SubscriptionDao.update_db(subscription, itemService.items)
+    
+    def add_shipment_subscriptions(self, shipment):
+        subscription = SubscriptionDao.get_one(shipment.subscription_id)
+        itemService = ItemService()
+        itemService.increment_subscription_nb_shipments(subscription) \
+            .add_shipment_subscription_nb_products(subscription, shipment.nb_products) \
+            .add_shipment_subscription_shipping_price(subscription, shipment.shipping_price) \
+            .add_shipment_subscription_nb_orders(subscription, shipment.nb_orders)
+            #.remove_shipment_subscription_price(subscription, shipment.price)
+        SubscriptionDao.update_db(subscription, itemService.items)
+
 
     def items_remove_subscription(self, shipment):
         subscription = SubscriptionDao.get_one(shipment.subscription_id)
@@ -99,7 +116,7 @@ class ShipmentManager():
         itemService.remove_shipment_subscription_nb_products(subscription, shipment.nb_products) \
             .remove_shipment_subscription_shipping_price(subscription, shipment.shipping_price) \
             .decrement_subscription_nb_shipments(subscription) \
-            .remove_shipment_subscription_nb_orders(subscription, shipment.nb_products)
+            .remove_shipment_subscription_nb_orders(subscription, shipment.nb_orders)
             #.remove_shipment_subscription_price(subscription, shipment.price)
         SubscriptionDao.update_db(subscription, itemService.items)
 
@@ -109,7 +126,7 @@ class ShipmentManager():
         itemService.add_shipment_subscription_nb_products(subscription, shipment.nb_products) \
             .add_shipment_subscription_shipping_price(subscription, shipment.shipping_price) \
             .increment_subscription_nb_shipments(subscription) \
-            .add_shipment_subscription_nb_orders(subscription, shipment.nb_products)
+            .add_shipment_subscription_nb_orders(subscription, shipment.nb_orders)
             #.add_shipment_subscription_price(subscription, shipment.price)
         SubscriptionDao.update_db(subscription, itemService.items)
 

@@ -51,6 +51,7 @@ class BusinessService:
 
         elif self.is_drive(category) and not self.is_from_local_area(city):
             ret, rules = self.far_shipping_price.get('d'), "drive_non-local"
-
+        if ret == None:
+            ret = 0.0
         return format(ret, '.2f'), rules
 
