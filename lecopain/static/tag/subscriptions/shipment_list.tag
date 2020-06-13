@@ -47,7 +47,7 @@
         subscription_id =  opts.subscription_id
 
 		this.on('mount', function() {
-			this.load_orders(subscription_id)
+			this.load_shipments(subscription_id)
             const location  = $('window.location')
 		});
 
@@ -62,7 +62,7 @@
 					dataType: "json",
 					contentType: "application/json; charset=utf-8",
 					success: function(data) {
-						self.shipments = data['shipments']
+						self.shipments = data['data']
                         self.update()
 					}
 				});

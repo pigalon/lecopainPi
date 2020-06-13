@@ -4,6 +4,7 @@ from lecopain.form import ShipmentForm, ShippingDtForm, CancellationForm
 from lecopain.services.shipment_manager import ShipmentManager, Period_Enum
 from lecopain.services.customer_manager import CustomerManager
 from lecopain.services.product_manager import ProductManager
+from lecopain.helpers.pagination import Pagination
 
 from sqlalchemy import extract
 from datetime import datetime
@@ -226,5 +227,16 @@ def api_shipments_by_seller(seller_id):
 @shipment_page.route('/api/shipments/period/<string:period>/customers/<int:customer_id>')
 @login_required
 def api_day_shipments(period, customer_id):
-    return jsonify({'shipments': shipmentServices.get_some(period=period, customer_id=customer_id)})
-
+    data = shipmentServices.get_some(period=period, customer_id=customer_id)
+    
+    start = request.args.get("start")
+    limit = request.args.get("limit")
+    if start is None:
+        start = 1
+    if limit is None:
+        limit = 10
+    
+    return jsonify(Pagination.get_paginated_list(
+        data, '/api/shipments/period/'+period+'/customers/'+str(customer_id),
+        start=request.args.get('start', int(start)),
+        limit=request.args.get('limit', int(limit))))

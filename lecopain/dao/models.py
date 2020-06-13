@@ -529,7 +529,7 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
         if order.shipment is None:
             return None
         return order.shipment.subscription_id
-    
+
     def format_customer_name(self, order):
         return "{} {}".format(order.shipment.customer.firstname, order.shipment.customer.lastname)
 

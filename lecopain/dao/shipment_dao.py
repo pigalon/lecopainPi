@@ -1,4 +1,5 @@
 from lecopain.app import db
+from flask import jsonify
 
 from lecopain.dao.models import (
     Shipment, Order, Customer, ShipmentSchema, CompleteShipmentSchema

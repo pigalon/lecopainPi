@@ -44,7 +44,7 @@ class CustomerDao:
         if city != 'all' :
             all_customers = all_customers.filter(func.lower(Customer.city) == func.lower(city)) 
         
-        all_customers.order_by(Customer.lastname).all()
+        all_customers = all_customers.order_by(Customer.firstname).all()
 
         # Serialize the data for the response
         customer_schema = CustomerSchema(many=True)
