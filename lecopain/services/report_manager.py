@@ -8,7 +8,7 @@ class ReportManager():
     orderServices = OrderManager()
 
     def prepareAmount(self, orders):
-        amount = {'shipping_price': 0.0, 'price': 0.0,
+        amount = {'price': 0.0,
                   'nb_products': 0, 'nb_orders': 0}
         products = []
         amount_shipping_price = 0.0
@@ -16,15 +16,14 @@ class ReportManager():
         for order in orders:
             shipping_day = order['shipping_dt'].day
 
-            amount_shipping_price = amount_shipping_price + \
-                float(order['shipping_price'])
+            #amount_shipping_price = amount_shipping_price + \
+            #    float(order['shipping_price'])
 
             amount_price = (amount_price + order['price'])
             amount['nb_products'] = int(amount['nb_products']) + \
                 order['nb_products']
         
         amount['price'] = format(amount_price, '.2f')
-        amount['shipping_price'] = format(amount_shipping_price, '.2f')
         amount['products'] = self.orderServices.extract_products_from_orders(orders)
         amount['nb_orders'] = len(orders)
         return amount
