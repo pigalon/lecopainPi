@@ -96,7 +96,6 @@ class OrderFactory(SQLAlchemyModelFactory):
     created_at = factory.Faker('date_time')
     payment_status = PaymentStatus_Enum.NON.value
 
-    customer = factory.SubFactory(CustomerFactory)
     seller = factory.SubFactory(SellerFactory)
     shipment = factory.SubFactory(ShipmentFactory)
 
