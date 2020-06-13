@@ -180,12 +180,11 @@ class Shipment(db.Model):
     def remove_order(self, order):
         self.cancel_order(order)
         self.orders.remove(order)
-        self.nb_orders = self.nb_orders - 1
 
     def add_order(self, order):
         self.orders.append(order)
         self.active_order(order)
-        self.nb_orders = self.nb_orders + 1
+
 
 
     def __repr__(self):
@@ -335,18 +334,18 @@ class Subscription(db.Model):
     shipments = db.relationship('Shipment', backref='subref', lazy=True)
 
     def remove_order(self, order):
-        nb_products = nb_products - order.nb_products
-        nb_orders = nb_orders - 1
+        self.nb_products = self.nb_products - order.nb_products
+        self.nb_orders = self.nb_orders - 1
 
     def remove_shipment(self, shipment):
-        nb_products = nb_products - shipment.nb_products
-        nb_orders = nb_orders - shipment.nb_orders
-        nb_shipments = nb_shipments - 1
+        self.nb_products = self.nb_products - shipment.nb_products
+        self.nb_orders = self.nb_orders - shipment.nb_orders
+        self.nb_shipments = self.nb_shipments - 1
 
     def add_shipment(self, shipment):
-        nb_products = nb_products + shipment.nb_products
-        nb_orders = nb_orders + shipment.nb_orders
-        nb_shipments = nb_shipments + 1
+        self.nb_products = self.nb_products + shipment.nb_products
+        self.nb_orders = self.nb_orders + shipment.nb_orders
+        self.nb_shipments = self.nb_shipments + 1
 
 
 

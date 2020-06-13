@@ -41,7 +41,7 @@ class ShipmentManager():
     
     def create_shipment_and_parse_line(self, shipment, lines):
         parsed_lines = self.parse_lines(lines)
-        self.create_shipment(shipment, lines)
+        self.create_shipment(shipment, parsed_lines)
 
     def create_shipment(self, shipment, lines):
         created_shipment = ShipmentDao.create_shipment(shipment)
@@ -60,7 +60,6 @@ class ShipmentManager():
             self.remove_shipment_subscriptions(shipment)
         ShipmentDao.delete(shipment_id)
         ShipmentDao.update_db(shipment)
-        #if shipment.subscription_id is not None :
 
     def update_shipment_and_parse_line(self, shipment_id, lines):
         shipment = ShipmentDao.get_one(shipment_id)
@@ -90,6 +89,7 @@ class ShipmentManager():
         itemService.decrement_subscription_nb_shipments(subscription) \
             .remove_shipment_subscription_nb_products(subscription, shipment.nb_products) \
             .remove_shipment_subscription_shipping_price(subscription, shipment.shipping_price) \
+            .remove_shipment_subscription_nb_orders(subscription, shipment.nb_products)
             #.remove_shipment_subscription_price(subscription, shipment.price)
         SubscriptionDao.update_db(subscription, itemService.items)
 

@@ -13,12 +13,12 @@ class ItemService:
 
     def add_shipment_subscription_nb_orders(self, subscription, nb_orders):
         self.items.append(
-            {'name': 'nb_shipments', 'value': (subscription.nb_orders + nb_orders)})
+            {'name': 'nb_orders', 'value': (subscription.nb_orders + nb_orders)})
         return self
     
     def remove_shipment_subscription_nb_orders(self, subscription, nb_orders):
         self.items.append(
-            {'name': 'nb_shipments', 'value': (subscription.nb_orders - nb_orders)})
+            {'name': 'nb_orders', 'value': (subscription.nb_orders - nb_orders)})
         return self
 
     def add_shipment_subscription_nb_products(self, subscription, nb_products):

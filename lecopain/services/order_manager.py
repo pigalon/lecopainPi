@@ -113,7 +113,7 @@ class OrderManager():
         diff_shipping_price = old_shipping_price - float(shipment.shipping_price)
 
         if order.shipment.subscription != None:
-            order.shipment.subscription = order.shipment.subscription - diff_shipping_price
+            order.shipment.subscription.shipping_price = order.shipment.subscription.shipping_price - diff_shipping_price
         
         order.shipment.updated_at = datetime.now()
         ShipmentDao.update_db(order.shipment)
@@ -127,7 +127,7 @@ class OrderManager():
         diff_shipping_price = old_shipping_price - float(shipment.shipping_price)
         
         if order.shipment.subscription != None:
-            order.shipment.subscription = order.shipment.subscription + diff_shipping_price
+            order.shipment.subscription.shipping_price = order.shipment.subscription.shipping_price + diff_shipping_price
         
         order.shipment.updated_at = datetime.now()
         ShipmentDao.update_db(order.shipment)
