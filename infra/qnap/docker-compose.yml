@@ -2,7 +2,7 @@ version: "3"
 
 services:
   flask:
-    image:  testflask #pierrickm/flask-lecopain
+    image:  pierrickm/flask-lecopain
     container_name: flask-lecopain
     restart: always
     environment:

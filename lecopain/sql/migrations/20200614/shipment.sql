@@ -1,5 +1,4 @@
-ALTER TABLE public.customers DROP nb_orders;
-ALTER TABLE public.customers ADD nb_shipments int4 NULL;
+ALTER TABLE public.customers RENAME COLUMN nb_orders TO nb_shipments;
 
 ALTER TABLE public.orders DROP shipping_status;
 ALTER TABLE public.orders DROP shipping_rules;
@@ -9,8 +8,7 @@ ALTER TABLE public.orders DROP shipping_cp;
 ALTER TABLE public.orders DROP shipping_city;
 ALTER TABLE public.orders DROP shipping_price;
 
-ALTER TABLE public.orders DROP subscription_id;
-ALTER TABLE public.orders ADD shipment_id text NULL;
+ALTER TABLE public.orders RENAME COLUMN subscription_id TO shipment_id;
 
 ALTER TABLE public.subscription_lines ADD seller_id int4 NULL;
 

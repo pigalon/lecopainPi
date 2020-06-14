@@ -95,6 +95,7 @@ class ShipmentDao:
            created_shipment.subscription_id = int(shipment.get('subscription_id'))
         
         db.session.add(created_shipment)
+        
         customer.nb_shipments = customer.nb_shipments + 1
         return created_shipment
 
