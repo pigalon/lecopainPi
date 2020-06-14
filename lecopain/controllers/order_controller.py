@@ -203,7 +203,8 @@ def api_orders_by_subscription(subscription_id):
 @order_page.route('/api/orders/sellers/<int:seller_id>')
 @login_required
 def api_orders_by_seller(seller_id):
-    return jsonify({'orders': orderServices.get_all_by_seller(seller_id)})
+    data = orderServices.get_all_by_seller(seller_id)
+    return jsonify({'orders': data})
 
 #####################################################################
 #                                                                   #

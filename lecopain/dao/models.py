@@ -459,7 +459,8 @@ class LineSchema(SQLAlchemyAutoSchema):
         return "{}".format(line.product.seller_id)
     
     def format_seller_name(self, line):
-        return "{}".format(line.product.seller.name)
+        seller_name= line.product.seller.name.replace("'","_")
+        return "{}".format(seller_name)
 
 
 
@@ -486,10 +487,11 @@ class OrderSchema(SQLAlchemyAutoSchema):
         include_relationships = True
 
     def get_shipping_dt(self, order):
-        return Shipment.shipping_dt
+        return order.shipment.shipping_dt
         
     def format_seller_name(self, order):
-        return "{}".format(order.seller.name)
+        seller_name = order.seller.name
+        return "{}".format(seller_name)
     
     def format_customer_name(self, order):
         return "{} {}".format(order.shipment.customer.firstname, order.shipment.customer.lastname)

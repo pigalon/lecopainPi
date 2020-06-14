@@ -42,7 +42,7 @@ def create_customer():
         db.session.commit()
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect('/customers')
-    return render_template('/customers/create_customer.html', title='Person form', form=form)
+    return render_template('/customers/create_customer.html', title='Création du client', form=form)
 
 
 #####################################################################
@@ -52,7 +52,7 @@ def create_customer():
 @login_required
 def customer(customer_id):
     customer = customerServices.get_one(customer_id)
-    return render_template('/customers/customer.html', customer=customer, title='Client')
+    return render_template('/customers/customer.html', customer=customer, title='Clients')
 
 #####################################################################
 #                                                                   #

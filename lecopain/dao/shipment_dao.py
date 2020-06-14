@@ -13,7 +13,7 @@ class ShipmentDao:
         # Create the list of people from our data
 
         all_shipments = Shipment.query \
-            .shipment_by(Shipment.shipping_dt.desc()) \
+            .order_by(Shipment.shipping_dt.desc()) \
             .all()
 
         # Serialize the data for the response
@@ -24,7 +24,7 @@ class ShipmentDao:
     def read_by_subscription(subscription_id):
         all_shipments = Shipment.query \
             .filter(Shipment.subscription_id == subscription_id) \
-            .shipment_by(Shipment.shipping_dt.desc()) \
+            .order_by(Shipment.shipping_dt.desc()) \
             .all()
 
         # Serialize the data for the response

@@ -31,17 +31,6 @@ class OrderDao:
         return order_schema.dump(all_orders)
 
     @staticmethod
-    def read_by_customer(customer_id):
-        all_orders = Order.query \
-            .filter(Order.customer_id == customer_id) \
-            .order_by(Order.shipping_dt.desc()) \
-            .all()
-
-        # Serialize the data for the response
-        order_schema = OrderSchema(many=True)
-        return order_schema.dump(all_orders)
-
-    @staticmethod
     def read_by_seller(seller_id):
         all_orders = Order.query \
             .filter(Order.seller_id == seller_id) \

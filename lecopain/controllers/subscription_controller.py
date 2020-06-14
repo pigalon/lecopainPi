@@ -93,7 +93,7 @@ def subscription_create():
     sellers = sellerServices.optim_get_all()
     customers = customerServices.optim_get_all()
 
-    return render_template('/subscriptions/create_subscription.html', title='Creation de commande', form=form, customers=customers, sellers=sellers)
+    return render_template('/subscriptions/create_subscription.html', title="Creation d'abonnement", form=form, customers=customers, sellers=sellers)
 
 #####################################################################
 #                                                                   #
@@ -102,7 +102,7 @@ def subscription_create():
 @login_required
 def display_delete_subscription(subscription_id):
     subscription = subscriptionServices.get_one(subscription_id)
-    return render_template('/subscriptions/delete_subscription.html', subscription=subscription, title='Suppression de commande')
+    return render_template('/subscriptions/delete_subscription.html', subscription=subscription, title="Suppression d'abonnement")
 
 #####################################################################
 #                                                                   #

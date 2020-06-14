@@ -202,7 +202,22 @@ def api_shipments():
 @shipment_page.route('/api/shipments/subscriptions/<int:subscription_id>')
 @login_required
 def api_shipments_by_subscription(subscription_id):
-    return jsonify({'shipments': shipmentServices.get_all_by_subscription(subscription_id)})
+    
+    data = shipmentServices.get_all_by_subscription(subscription_id)
+    
+    start = request.args.get("start")
+    limit = request.args.get("limit")
+    if start is None:
+        start = 1
+    if limit is None:
+        limit = 10
+    
+    return jsonify(Pagination.get_paginated_list(
+        data, '/api/shipments/subscriptions/'+str(subscription_id),
+        start=request.args.get('start', int(start)),
+        limit=request.args.get('limit', int(limit))))
+    
+    #return jsonify({'shipments': shipmentServices.get_all_by_subscription(subscription_id)})
 
 #####################################################################
 #                                                                   #

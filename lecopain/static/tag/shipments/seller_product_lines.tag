@@ -142,7 +142,7 @@
 		this.on('mount', function() {
 			if(page_lines != undefined){
 				page_lines = page_lines.replaceAll("'", "\"")
-				this.load_lines()
+				this.load_lines(page_lines)
 			}
 
 			var ajaxCall_seller = self.load_sellers()
@@ -228,8 +228,9 @@
 				});
 		}
 
-		load_lines()
+		load_lines(page_lines)
 		{
+			console.log('page_lines :'+ page_lines)
 			items = JSON.parse(page_lines)
 
 			items.forEach((item) => {
