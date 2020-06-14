@@ -49,7 +49,7 @@ class ProductDao:
             all_products = all_products.filter(
                 Product.seller_id == seller_id)
 
-        all_products =  all_products.order_by(Product.name).all()
+        all_products =  all_products.order_by(Product.name.asc()).all()
 
         # Serialize the data for the response
         product_schema = ProductSchema(many=True)
@@ -67,7 +67,7 @@ class ProductDao:
             all_products = all_products.filter(
                 Product.category == category)
 
-        all_products.order_by(Product.name).all()
+        all_products = all_products.order_by(Product.name.asc()).all()
 
         # Serialize the data for the response
         product_schema = ProductSchema(many=True)

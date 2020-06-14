@@ -54,13 +54,13 @@
         <tr>
             <td width="24%"> </td>
             <td width="24%">
-                <a if={ start > limit } role="button" onclick="{load_shipments_previous}"  class="btn btn-primary display:inline-block">Livraisons précédentes <i class="fas fa-arrow-left"></i></a>
+                <a if={ (start - limit) > 0 } role="button" onclick="{load_shipments_previous}"  class="btn btn-primary display:inline-block">Livraisons précédentes <i class="fas fa-arrow-left"></i></a>
             </td>
             <td width="2%">
                 |
             </td>
             <td width="22%">
-                <a if={ start < count } role="button" onclick="{load_shipments_next}"  class="btn btn-primary display:inline-block"> <i class="fas fa-arrow-right"></i> Livraisons suivantes </a>
+                <a if={ (start * limit) < count } role="button" onclick="{load_shipments_next}"  class="btn btn-primary display:inline-block"> <i class="fas fa-arrow-right"></i> Livraisons suivantes </a>
             </td>
             <td width="26%"> </td>
         </tr>

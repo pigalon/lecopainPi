@@ -18,6 +18,17 @@ class SellerDao:
         # Serialize the data for the response
         seller_schema = SellerSchema(many=True)
         return seller_schema.dump(all_sellers)
+    
+    @staticmethod
+    def get_all():
+
+        # Create the list of people from our data
+
+        return Seller.query \
+        .order_by(Seller.name) \
+        .all()
+
+
 
     @staticmethod
     def read_one(id):

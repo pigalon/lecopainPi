@@ -72,7 +72,6 @@
 		cpt=0
 		price=0
 		product_name=''
-		first_seller_id=0
 
 		var self = this
 
@@ -210,7 +209,6 @@
 				contentType: "application/json; charset=utf-8",
 				success: function(data) {
 					self.sellers = data['sellers']
-					first_seller_id = data['sellers'][0].id
 					self.update()
 				}
 			});

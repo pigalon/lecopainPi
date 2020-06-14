@@ -13,8 +13,11 @@
             <div class="form-group">
                 Choix du client :
                 <select class="form-control" name="customer_id" width="300px">
-                    {% for o in customers %}
-                        <option value="{{ o.id }}" SELECTED>{{ o.firstname }}</option>
+                    {% for customer in customers %}
+                        {% if loop.index == 1 %}
+                            <option value="{{ customer.id }}" SELECTED>{{ customer.firstname }}</option>
+                        {% endif %}    
+                        <option value="{{ customer.id }}">{{ customer.firstname }}</option>
                     {% endfor %}
                 </select>
             </div>

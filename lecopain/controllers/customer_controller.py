@@ -113,7 +113,7 @@ def delete_customer(customer_id):
 @customer_page.route('/api/customers/')
 @login_required
 def api_customers():
-    return jsonify({'customers': customerServices.optim_get_all()})
+    return jsonify({'customers': customerServices.get_all()})
 
 @customer_page.route('/api/customers/cities')
 @login_required

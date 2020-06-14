@@ -5,7 +5,7 @@
 <br>
   <table width="100%" align="center">
     <tr>
-      <td width="60%" style="text-align:right"><span class="float-left"><a href="/orders" class="btn btn-outline-dark">Retour List</a></span>Changer le statut : </td>
+      <td width="60%" style="text-align:right"><span class="float-left"><a href="/shipments" class="btn btn-outline-dark">Retour List</a></span>Changer le statut : </td>
       <td width="40%"  style="text-align:right">
         {% if order.status != 'ANNULEE' %}
           <a href="/orders/{{ order.id }}/cancel" class="btn btn-outline-dark" >Annuler </a>

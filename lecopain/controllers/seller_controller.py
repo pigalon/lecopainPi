@@ -1,4 +1,5 @@
 from lecopain.dao.models import Seller
+from lecopain.dao.seller_dao import SellerDao
 from lecopain.services.seller_manager import SellerManager
 from lecopain.app import app, db
 from lecopain.form import SellerForm
@@ -7,26 +8,20 @@ from flask_login import login_required
 from sqlalchemy.orm import load_only
 
 
+
 app = Flask(__name__, instance_relative_config=True)
 
 
 seller_page = Blueprint('seller_page', __name__,
                         template_folder='../templates')
-
 sellerServices = SellerManager()
 
 
 @seller_page.route("/sellers", methods=['GET', 'POST'])
 @login_required
 def sellers():
-    new_orders = []
-
-    sellers = Seller.query.all()
-    # TODO new ref to order !!!!
-    # for seller in sellers:
-    #    new_orders.append(sellerManager.get_last_order(seller))
-
-    return render_template('/sellers/sellers.html', sellers=sellers, new_orders=new_orders, cpt=0)
+    sellers = SellerDao.get_all()
+    return render_template('/sellers/sellers.html', sellers=sellers)
 
 
 @seller_page.route("/sellers/new", methods=['GET', 'POST'])
