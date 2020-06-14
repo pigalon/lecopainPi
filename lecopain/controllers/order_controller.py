@@ -5,6 +5,8 @@ from lecopain.services.order_manager import OrderManager, Period_Enum
 from lecopain.services.customer_manager import CustomerManager
 from lecopain.services.product_manager import ProductManager
 
+from lecopain.helpers.pagination import Pagination
+
 from sqlalchemy import extract
 from datetime import datetime
 
@@ -203,8 +205,21 @@ def api_orders_by_subscription(subscription_id):
 @order_page.route('/api/orders/sellers/<int:seller_id>')
 @login_required
 def api_orders_by_seller(seller_id):
-    data = orderServices.get_all_by_seller(seller_id)
-    return jsonify({'orders': data})
+    data = data = orderServices.get_all_by_seller(seller_id)
+    
+    start = request.args.get("start")
+    limit = request.args.get("limit")
+    if start is None:
+        start = 1
+    if limit is None:
+        limit = 10
+    
+    return jsonify(Pagination.get_paginated_list(
+        data, '/api/orders/sellers/'+str(seller_id),
+        start=request.args.get('start', int(start)),
+        limit=request.args.get('limit', int(limit))))
+   # data = orderServices.get_all_by_seller(seller_id)
+   # return jsonify({'orders': data})
 
 #####################################################################
 #                                                                   #
@@ -212,5 +227,20 @@ def api_orders_by_seller(seller_id):
 @order_page.route('/api/orders/period/<string:period>/sellers/<int:seller_id>')
 @login_required
 def api_day_orders(period, seller_id):
-    return jsonify({'orders': orderServices.get_some_by_seller(period=period, seller_id=seller_id)})
+    data = orderServices.get_some(period=period, seller_id=seller_id)
+    
+    start = request.args.get("start")
+    limit = request.args.get("limit")
+    if start is None:
+        start = 1
+    if limit is None:
+        limit = 10
+    
+    return jsonify(Pagination.get_paginated_list(
+        data, '/api/shipments/period/'+period+'/sellers/'+str(seller_id),
+        start=request.args.get('start', int(start)),
+        limit=request.args.get('limit', int(limit))))
+    
+    
+    #return jsonify({'orders': orderServices.get_some_by_seller(period=period, seller_id=seller_id)})
 

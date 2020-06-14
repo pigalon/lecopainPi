@@ -138,7 +138,6 @@
 		}
         show_shipment(shipment_id){
             return function(e) {
-                console.log('show' + shipment_id)
                 location = "/shipments/"+shipment_id;
             }
 		}

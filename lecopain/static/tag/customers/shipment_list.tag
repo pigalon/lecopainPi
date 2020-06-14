@@ -32,16 +32,36 @@
                     <span if={shipment.shipping_status == 'NON'} style="color:grey" ><i class="fas fa-cart-arrow-down "></i></span>
                     <span if={shipment.payment_status == 'OUI'} style="color:green" ><i class="fas fa-credit-card "></i></span>
                     <span if={shipment.payment_status == 'NON'} style="color:grey" ><i class="fas fa-credit-card "></i></span>
-                    <span if={shipment.subscription_id != None} style="color:blue" ><i class="fas fa-clipboard-list"></i></i></span>
+                    <span if={shipment.subscription_id != None} class="badge badge-warning" >Ab.</span>
                     </td>
                 </tr>
             </table>
             </td>
         </tr>
     </table>
+    <table width="100%">
+        <tr>
+            <td width="24%"> </td>
+            <td width="24%">
+                <a if={ (start - limit) > 0 } role="button" onclick="{load_shipments_previous}"  class="btn btn-primary display:inline-block">Livraisons précédentes <i class="fas fa-arrow-left"></i></a>
+            </td>
+            <td width="2%">
+                |
+            </td>
+            <td width="22%">
+                <a if={ (start * limit) < count } role="button" onclick="{load_shipments_next}"  class="btn btn-primary display:inline-block"> <i class="fas fa-arrow-right"></i> Livraisons suivantes </a>
+            </td>
+            <td width="26%"> </td>
+        </tr>
+    </table>
     <script>
 
 		var self = this
+        var next_start = 0
+        var previous_start = 0
+        var limit = 10
+        var start= 1
+        var next_url = ''
 
         customer_id =  opts.customer_id
 
@@ -55,19 +75,68 @@
 		/******************************************/
        	// load shipments list
     	/*******************************************/
-		load_shipments(customer_id){
+        load_shipments(customer_id){
             var shipment_url = '/api/shipments/customers/'+customer_id;
 
 			$.ajax({
-					url: shipment_url,
-					type: "GET",
-					dataType: "json",
-					contentType: "application/json; charset=utf-8",
-					success: function(data) {
-						self.shipments = data['shipments']
-                        self.update()
-					}
-				});
+                url: shipment_url,
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function(data) {
+                    self.shipments = data['results']
+                    self.count = data['count']
+                    self.limit = data['limit']
+                    self.start = data['start']
+                    self.next_start = parseInt(data['start'])+parseInt(limit)
+                    self.previous_start = parseInt(data['start'])-parseInt(limit)
+                    self.next_url = data['next']
+                    self.update()
+                }
+            });
+		}
+        load_shipments_next(){
+            var shipment_url = self.next_url;
+
+			$.ajax({
+                url: shipment_url,
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function(data) {
+                    self.shipments = data['results']
+                    self.count = data['count']
+                    self.limit = data['limit']
+                    self.start = data['start']
+                    self.next_start = parseInt(data['start'])+parseInt(limit)
+                    self.previous_start = parseInt(data['start'])-parseInt(limit)
+                    self.next_url = data['next']
+                    self.previous_url = data['previous']
+                    self.update()
+                }
+            });
+		}
+        load_shipments_previous(){
+            var shipment_url = self.previous_url;
+
+			$.ajax({
+                url: shipment_url,
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function(data) {
+                    self.shipments = data['results']
+                    self.count = data['count']
+                    self.limit = data['limit']
+                    self.start = data['start']
+                    console.log('start :' + self.start)
+                    self.next_start = parseInt(data['start'])+parseInt(limit)
+                    self.previous_start = parseInt(data['start'])-parseInt(limit)
+                    self.next_url = data['next']
+                    self.previous_url = data['previous']
+                    self.update()
+                }
+            });
 		}
         show_shipment(shipment_id){
             return function(e) {

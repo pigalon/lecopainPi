@@ -23,9 +23,6 @@
     <order-list seller_id='{{seller.id}}'></order-list>
 {%endif%}
 <br>
-{%if seller.nb_subscriptions | int > 0 %}
-    <subscription-list seller_id='{{seller.id}}'></subscription-list>
-{%endif%}
 
 <div class="card">
     <div class="card-header text-white bg-info">
@@ -37,7 +34,7 @@
 {% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='tag/sellers/order_list.tag') }}" type="riot/tag"></script>
-<script src="{{ url_for('static', filename='tag/sellers/subscription_list.tag') }}" type="riot/tag"></script>
+
 <script>
     riot.mount("order-list");
     riot.mount("subscription-list");

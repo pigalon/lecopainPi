@@ -31,19 +31,38 @@
                     <td width="30%">{order.customer_name}</td>
                     <td width="30%">{order.seller_name}</td>
                     <td width="20%"><span if={order.shipping_status == 'OUI'} style="color:green" ><i class="fas fa-cart-arrow-down "></i></span>
-                    <span if={order.shipping_status == 'NON'} style="color:grey" ><i class="fas fa-cart-arrow-down "></i></span>
                     <span if={order.payment_status == 'OUI'} style="color:green" ><i class="fas fa-credit-card"></i></i></span>
                     <span if={order.payment_status == 'NON'} style="color:grey" ><i class="fas fa-credit-card"></i></i></span>
-                    <span if={order.subscription_id != None} style="color:blue" ><i class="fas fa-clipboard-list"></i></i></span>
                     </td>
                 </tr>
             </table>
             </td>
         </tr>
     </table>
+    <table width="100%">
+        <tr>
+            <td width="24%"> </td>
+            <td width="24%">
+                <a if={ (start - limit) > 0 } role="button" onclick="{load_orders_previous}"  class="btn btn-primary display:inline-block">Commandes précédentes <i class="fas fa-arrow-left"></i></a>
+            </td>
+            <td width="2%">
+                |
+            </td>
+            <td width="22%">
+                <a if={ (start * limit) < count } role="button" onclick="{load_orders_next}"  class="btn btn-primary display:inline-block"> <i class="fas fa-arrow-right"></i> Commandes suivantes </a>
+            </td>
+            <td width="26%"> </td>
+        </tr>
+    </table>
     <script>
 
 		var self = this
+        var next_start = 0
+        var previous_start = 0
+        var limit = 10
+        var start= 1
+        var next_url = ''
+
 
         seller_id =  opts.seller_id
 
@@ -66,15 +85,61 @@
 					dataType: "json",
 					contentType: "application/json; charset=utf-8",
 					success: function(data) {
-						self.orders = data['orders']
+                        self.orders = data['results']
+                        self.count = data['count']
+                        self.limit = data['limit']
+                        self.start = data['start']
+                        self.next_start = parseInt(data['start'])+parseInt(limit)
+                        self.previous_start = parseInt(data['start'])-parseInt(limit)
+                        self.next_url = data['next']
                         self.update()
-                        console.log('!!!!!!')
 					}
 				});
 		}
+         load_orders_next(){
+            var order_url = self.next_url;
+
+			$.ajax({
+                url: order_url,
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function(data) {
+                    self.orders = data['results']
+                    self.count = data['count']
+                    self.limit = data['limit']
+                    self.start = data['start']
+                    self.next_start = parseInt(data['start'])+parseInt(limit)
+                    self.previous_start = parseInt(data['start'])-parseInt(limit)
+                    self.next_url = data['next']
+                    self.previous_url = data['previous']
+                    self.update()
+                }
+            });
+		}
+        load_orders_previous(){
+            var order_url = self.previous_url;
+
+			$.ajax({
+                url: order_url,
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function(data) {
+                    self.orders = data['results']
+                    self.count = data['count']
+                    self.limit = data['limit']
+                    self.start = data['start']
+                    self.next_start = parseInt(data['start'])+parseInt(limit)
+                    self.previous_start = parseInt(data['start'])-parseInt(limit)
+                    self.next_url = data['next']
+                    self.previous_url = data['previous']
+                    self.update()
+                }
+            });
+		}
         show_order(order_id){
             return function(e) {
-                console.log('show' + order_id)
                 location = "/orders/"+order_id;
             }
 		}
