@@ -47,7 +47,7 @@
                 |
             </td>
             <td width="22%">
-                <a if={ (start * limit) < count } role="button" onclick="{load_products_next}"  style="color:white" class="btn btn-primary display:inline-block"> Produits suivants <i class="fas fa-arrow-right"></i> </a>
+                <a if={ (start + limit) <= count } role="button" onclick="{load_products_next}"  style="color:white" class="btn btn-primary display:inline-block"> Produits suivants <i class="fas fa-arrow-right"></i> </a>
             </td>
             <td width="26%"> </td>
         </tr>

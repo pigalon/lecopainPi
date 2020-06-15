@@ -28,6 +28,21 @@
             </td>
         </tr>
     </table>
+    <table width="100%">
+        <tr>
+            <td width="24%"> </td>
+            <td width="24%">
+                <a if={ (start - limit) > 0 } role="button" onclick="{load_selles_previous}"  style="color:white" class="btn btn-primary display:inline-block"> <i class="fas fa-arrow-left"></i> Vendeurs précédentes </a>
+            </td>
+            <td width="2%">
+                |
+            </td>
+            <td width="22%">
+                <a if={ (start + limit) <= count } role="button" onclick="{load_sellers_next}"  style="color:white" class="btn btn-primary display:inline-block"> Vendeurs suivantes <i class="fas fa-arrow-right"></i> </a>
+            </td>
+            <td width="26%"> </td>
+        </tr>
+    </table>
     
     <br>
     <br>
@@ -78,7 +93,7 @@
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function(data) {
-                    self.orders = data['results']
+                    self.sellers = data['results']
                     self.count = data['count']
                     self.limit = data['limit']
                     self.start = data['start']
@@ -99,7 +114,7 @@
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function(data) {
-                    self.orders = data['results']
+                    self.sellers = data['results']
                     self.count = data['count']
                     self.limit = data['limit']
                     self.start = data['start']
