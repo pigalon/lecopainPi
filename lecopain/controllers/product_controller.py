@@ -1,7 +1,8 @@
 from lecopain.dao.models import Product, Seller, ProductStatus
 from lecopain.app import app, db
 from lecopain.form import ProductForm
-from flask import session, Blueprint, render_template, redirect, url_for, Flask, jsonify
+from lecopain.helpers.pagination import Pagination
+from flask import session, Blueprint, render_template, redirect, request, url_for, Flask, jsonify
 from flask_login import login_required
 from sqlalchemy.orm import load_only
 from lecopain.services.product_manager import ProductManager
@@ -113,7 +114,19 @@ def delete_order(product_id):
 @product_page.route('/api/products/sellers/<int:seller_id>')
 @login_required
 def api_products_by_seller(seller_id):
-    return jsonify({'products': productServices.get_all_by_seller(seller_id)})
+    data = productServices.get_all_by_seller(seller_id)
+    start = request.args.get("start")
+    limit = request.args.get("limit")
+    if start is None:
+        start = 1
+    if limit is None:
+        limit = 10
+
+    return jsonify(Pagination.get_paginated_list(
+        data, '/api/products/sellers/'+str(seller_id),
+        start=request.args.get('start', int(start)),
+        limit=request.args.get('limit', int(limit))))
+    #return jsonify({'products': productServices.get_all_by_seller(seller_id)})
 
 #####################################################################
 #                                                                   #

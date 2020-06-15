@@ -3,7 +3,8 @@ from lecopain.dao.seller_dao import SellerDao
 from lecopain.services.seller_manager import SellerManager
 from lecopain.app import app, db
 from lecopain.form import SellerForm
-from flask import Blueprint, render_template, redirect, url_for, Flask, jsonify
+from lecopain.helpers.pagination import Pagination
+from flask import Blueprint, render_template, redirect, request, url_for, Flask, jsonify
 from flask_login import login_required
 from sqlalchemy.orm import load_only
 
@@ -94,5 +95,19 @@ def delete_seller(seller_id):
 @seller_page.route('/api/sellers/')
 @login_required
 def api_sellers():
-    return jsonify({'sellers': sellerServices.optim_get_all()})
+    data = sellerServices.optim_get_all()
+    
+    start = request.args.get("start")
+    limit = request.args.get("limit")
+    if start is None:
+        start = 1
+    if limit is None:
+        limit = 10
+    
+    return jsonify(Pagination.get_paginated_list(
+        data, '/api/sellers/',
+        start=request.args.get('start', int(start)),
+        limit=request.args.get('limit', int(limit))))
+    
+    #return jsonify({'sellers': sellerServices.optim_get_all()})
 

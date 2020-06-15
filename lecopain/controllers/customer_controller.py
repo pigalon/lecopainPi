@@ -2,7 +2,8 @@ from lecopain.dao.models import Customer
 from lecopain.services.customer_manager import CustomerManager
 from lecopain.app import app, db
 from lecopain.form import PersonForm
-from flask import Blueprint, render_template, redirect, url_for, Flask, jsonify
+from lecopain.helpers.pagination import Pagination
+from flask import Blueprint, render_template, request, redirect, url_for, Flask, jsonify
 from flask_login import login_required
 #import requests
 import json
@@ -123,4 +124,16 @@ def api_cities():
 @customer_page.route('/api/customers/cities/<string:city>')
 @login_required
 def api_customers_cities(city):
-    return jsonify({'customers': customerServices.get_all_by_city(city)})
+    data = customerServices.get_all_by_city(city)
+    start = request.args.get("start")
+    limit = request.args.get("limit")
+    if start is None:
+        start = 1
+    if limit is None:
+        limit = 10
+    
+    return jsonify(Pagination.get_paginated_list(
+        data, '/api/customers/cities/'+city,
+        start=request.args.get('start', int(start)),
+        limit=request.args.get('limit', int(limit))))
+    #return jsonify({'customers': customerServices.get_all_by_city(city)})

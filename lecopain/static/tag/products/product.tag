@@ -37,9 +37,31 @@
             </td>
         </tr>
     </table>
+    <table width="100%">
+        <tr>
+            <td width="24%"> </td>
+            <td width="24%">
+                <a if={ (start - limit) > 0 } role="button" onclick="{load_products_previous}"  style="color:white" class="btn btn-primary display:inline-block"> <i class="fas fa-arrow-left"></i> Produits précédents </a>
+            </td>
+            <td width="2%">
+                |
+            </td>
+            <td width="22%">
+                <a if={ (start * limit) < count } role="button" onclick="{load_products_next}"  style="color:white" class="btn btn-primary display:inline-block"> Produits suivants <i class="fas fa-arrow-right"></i> </a>
+            </td>
+            <td width="26%"> </td>
+        </tr>
+    </table>
+    <br>
+    <br>
     <script>
 
 		var self = this
+        var next_start = 0
+        var previous_start = 0
+        var limit = 10
+        var start= 1
+        var next_url = ''
 
         moment.locale('fr');
 
@@ -64,10 +86,58 @@
 					dataType: "json",
 					contentType: "application/json; charset=utf-8",
 					success: function(data) {
-						self.products = data['products']
+						self.products = data['results']
+                        self.count = data['count']
+                        self.limit = data['limit']
+                        self.start = data['start']
+                        self.next_start = parseInt(data['start'])+parseInt(limit)
+                        self.previous_start = parseInt(data['start'])-parseInt(limit)
+                        self.next_url = data['next']
                         self.update()
 					}
 				});
+		}
+        load_products_next(){
+            var product_url = self.next_url;
+
+			$.ajax({
+                url: product_url,
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function(data) {
+                    self.products = data['results']
+                    self.count = data['count']
+                    self.limit = data['limit']
+                    self.start = data['start']
+                    self.next_start = parseInt(data['start'])+parseInt(limit)
+                    self.previous_start = parseInt(data['start'])-parseInt(limit)
+                    self.next_url = data['next']
+                    self.previous_url = data['previous']
+                    self.update()
+                }
+            });
+		}
+        load_products_previous(){
+            var product_url = self.previous_url;
+
+			$.ajax({
+                url: product_url,
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function(data) {
+                    self.products = data['results']
+                    self.count = data['count']
+                    self.limit = data['limit']
+                    self.start = data['start']
+                    self.next_start = parseInt(data['start'])+parseInt(limit)
+                    self.previous_start = parseInt(data['start'])-parseInt(limit)
+                    self.next_url = data['next']
+                    self.previous_url = data['previous']
+                    self.update()
+                }
+            });
 		}
         show_product(product_id){
             return function(e) {
