@@ -33,7 +33,7 @@
 <br>
     <div class="card  " >
         <div class="card-header text-white bg-info">
-          Livraison N° {{shipment.id}} - {{shipment.customer_name}} <span class="right">{{ shipment.shipping_formatted_dt }}</span>
+          Livraison N° {{shipment.id}} - {{shipment.customer_name}} <span class="right">{{ moment(shipment.shipping_dt).format('Do MMMM YYYY' )  }}</span>
         </div>
         <div class="card-body">
           <ul class="list-group list-group-flush">

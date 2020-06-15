@@ -33,7 +33,7 @@
 <br>
     <div class="card  " >
         <div class="card-header text-white bg-info">
-          Commande N° {{order.id}} - {{order.customer_name}} <span class="right">{{ order.shipping_formatted_dt }}</span>
+          Commande N° {{order.id}} - {{order.customer_name}} <span class="right">{{ moment(order.shipping_dt).format('Do MMMM YYYY' )  }}</span>
         </div>
         <div class="card-body">
           <ul class="list-group list-group-flush">
