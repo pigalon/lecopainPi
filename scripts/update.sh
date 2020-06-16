@@ -1,4 +1,4 @@
-deactivate
+env/bin/deactivate
 rm -rf env/
 virtualenv env/
 source env/bin/activate
