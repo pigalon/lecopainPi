@@ -209,8 +209,8 @@
 				dataType: "json",
 				contentType: "application/json; charset=utf-8",
 				success: function(data) {
-					self.sellers = data['sellers']
-					first_seller_id = data['sellers'][0].id
+					self.sellers = data['results']
+					first_seller_id = data['results'][0].id
 					self.update()
 				}
 			});
