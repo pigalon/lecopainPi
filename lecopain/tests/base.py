@@ -4,6 +4,7 @@ import unittest
 import sys
 import os
 from lecopain.tests.factories import (AdminFactory,
+    LineFactory,
     ProductFactory,
     CustomerFactory,
     OrderFactory,
@@ -32,13 +33,8 @@ class BaseTestCase(unittest.TestCase):
         self.create_customers()
         self.create_shipments()
         self.create_orders()
-        self.create_sellers()
 
-        #order = Order.query.first()
-        product = Product.query.first()
-        #order.add_products([(product, 6, 2)])
-        #line = Line(order=order,product_id=product.id,quantity=2,price=1.00)
-        #order.add_line(line)
+        self.create_sellers()
 
         db.session.commit()
 
@@ -70,6 +66,10 @@ class BaseTestCase(unittest.TestCase):
 
     def create_orders(self):
         OrderFactory.create()
+        
+    # def create_lines(self):
+    #     LineFactory.create()
+        
         
     def create_shipments(self):
         ShipmentFactory.create()

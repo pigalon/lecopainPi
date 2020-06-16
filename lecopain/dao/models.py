@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from aenum import Enum
 from marshmallow import fields
 from marshmallow_sqlalchemy import (ModelSchema, SQLAlchemySchema, SQLAlchemyAutoSchema, auto_field)
+from sqlalchemy.dialects.postgresql import ARRAY
 
 
 
@@ -73,21 +74,6 @@ class Customer(db.Model):
 
     def __repr__(self):
         return "Customer('{self.firstname}','{self.lastname}','{self.email}')"
-
-    # def to_dict(self):
-    #     orders_dict = []
-    #     for order in self.orders:
-    #         orders_dict.append(order.to_dict())
-    #     return {
-    #         'id': self.id,
-    #         'firstname': self.firstname,
-    #         'lastname': self.lastname,
-    #         'address': self.address,
-    #         'cp': self.cp,
-    #         'city': self.city,
-    #         'email': self.email,
-    #         'orders': orders_dict
-    #     }
 
 class Order(db.Model):
     __tablename__ = 'orders'
@@ -237,6 +223,7 @@ class Line(db.Model):
         'products.id'), primary_key=True)
     quantity = db.Column(db.Integer)
     price = db.Column(db.Float)
+    specifications = db.Column(db.String(250))
 
     order = db.relationship(Order, backref=db.backref(
         "lines", cascade="all, delete-orphan"))
@@ -246,11 +233,12 @@ class Line(db.Model):
     def __repr__(self):
         return '<Line {}>'.format(str(self.order.id)+" "+self.product.name)
 
-    def __init__(self, order=None, product_id=None, quantity=None, price=None):
+    def __init__(self, order=None, product_id=None, quantity=None, price=None, specifications=None):
         self.order = order
         self.product_id = product_id
         self.quantity = quantity
         self.price = price
+        self.specifications = specifications
 
     def to_dict(self):
         return {
@@ -398,6 +386,7 @@ class SubscriptionLine(db.Model):
         "subscription_lines"))
     quantity = db.Column(db.Integer, default=0)
     price = db.Column(db.Float, default=0.0)
+    specifications = db.Column(db.String(250))
 
     def to_dict(self):
         return {

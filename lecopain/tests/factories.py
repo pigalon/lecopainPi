@@ -1,5 +1,5 @@
 from factory.alchemy import SQLAlchemyModelFactory
-from lecopain.dao.models import User, Product, Seller, Customer, Order, Shipment
+from lecopain.dao.models import User, Product, Seller, Customer, Order, Shipment, Line
 from lecopain.dao.models import OrderStatus_Enum, PaymentStatus_Enum, ShipmentStatus_Enum
 from werkzeug.security import generate_password_hash
 from lecopain.app import db
@@ -98,6 +98,19 @@ class OrderFactory(SQLAlchemyModelFactory):
 
     seller = factory.SubFactory(SellerFactory)
     shipment = factory.SubFactory(ShipmentFactory)
+    
+    
+class LineFactory(SQLAlchemyModelFactory):
+    class Meta:
+        model = Line
+        sqlalchemy_session = db.session
+    quantity = 1
+    price = factory.Faker('pyfloat', right_digits=2)
+
+    product = factory.SubFactory(ProductFactory)
+    order = factory.SubFactory(OrderFactory)
+    specifications = "bien cuit, coupé"
+
 
 class SellerFactory(SQLAlchemyModelFactory):
 
