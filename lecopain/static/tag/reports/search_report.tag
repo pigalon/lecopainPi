@@ -90,7 +90,7 @@
 				dataType: "json",
 				contentType: "application/json; charset=utf-8",
 				success: function(data) {
-					self.sellers = data['sellers']
+					self.sellers = data['results']
 					self.update()
 				}
 			});
