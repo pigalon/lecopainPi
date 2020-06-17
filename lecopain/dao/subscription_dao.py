@@ -14,7 +14,7 @@ class SubscriptionDao:
         # Create the list of people from our data
 
         all_subscriptions = Subscription.query \
-            .order_by(Subscription.start_dt.desc()) \
+            .order_by(Subscription.id.desc()) \
             .all()
 
         # Serialize the data for the response
@@ -25,7 +25,7 @@ class SubscriptionDao:
     def read_all_by_customer(customer_id):
         all_subscriptions = Subscription.query \
             .filter(Subscription.customer_id == customer_id) \
-            .order_by(Subscription.start_dt.desc()) \
+            .order_by(Subscription.id.desc()) \
             .all()
 
         # Serialize the data for the response
@@ -36,7 +36,7 @@ class SubscriptionDao:
     def read_all_by_seller(seller_id):
         all_subscriptions = Subscription.query \
             .filter(Subscription.seller_id == seller_id) \
-            .order_by(Subscription.start_dt.desc()) \
+            .order_by(Subscription.id.desc()) \
             .all()
 
         # Serialize the data for the response
@@ -69,7 +69,7 @@ class SubscriptionDao:
             all_subscriptions = all_subscriptions.filter(
                 Subscription.customer_id == customer_id)
 
-        all_subscriptions = all_subscriptions.order_by(Subscription.start_dt.desc()) \
+        all_subscriptions = all_subscriptions.order_by(Subscription.id.desc()) \
             .all()
 
         # Serialize the data for the response

@@ -11,9 +11,9 @@
                 <select class="form-control" name="customer_id" width="300px">
                     {% for customer in customers %}
                     {% if loop.index == 1 %}
-                    <option value="{{ customer.id }}" SELECTED>{{ customer.firstname }}</option>
+                    <option value="{{ customer.id }}" SELECTED>{{ customer.firstname }} {{ customer.lastname }}</option>
                     {% endif %}
-                    <option value="{{ customer.id }}">{{ customer.firstname }}</option>
+                    <option value="{{ customer.id }}">{{ customer.firstname }} {{ customer.lastname }}</option>
                     {% endfor %}
                 </select>
             </div>

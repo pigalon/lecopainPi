@@ -4,6 +4,7 @@ from lecopain.form import SubscriptionForm, SubscriptionDayForm
 from lecopain.services.subscription_manager import SubscriptionManager
 from lecopain.services.customer_manager import CustomerManager
 from lecopain.services.seller_manager import SellerManager
+from lecopain.helpers.pagination import Pagination
 
 
 from sqlalchemy import extract
@@ -69,7 +70,21 @@ def api_subscriptions_by_seller(seller_id):
 @subscription_page.route('/api/subscriptions/period/<string:period>/customers/<int:customer_id>')
 @login_required
 def api_day_subscriptions(period, customer_id):
-    return jsonify({'subscriptions': subscriptionServices.get_some(period=period, customer_id=customer_id)})
+    
+    data = subscriptionServices.get_some(period=period, customer_id=customer_id)
+    
+    start = request.args.get("start")
+    limit = request.args.get("limit")
+    if start is None:
+        start = 1
+    if limit is None:
+        limit = 10
+    
+    return jsonify(Pagination.get_paginated_list(
+        data, '/api/subscriptions/period/'+period+'/customers/'+str(customer_id),
+        start=request.args.get('start', int(start)),
+        limit=request.args.get('limit', int(limit))))
+    #return jsonify({'subscriptions': subscriptionServices.get_some(period=period, customer_id=customer_id)})
 
 #####################################################################
 #                                                                   #
