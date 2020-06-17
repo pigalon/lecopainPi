@@ -59,6 +59,7 @@ def display_update_order(seller_id):
 
         #shipping_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.shipping_dt.data)
         seller.name = form.name.data
+        seller.city = form.city.data
         seller.email = form.email.data
 
         db.session.commit()
@@ -67,6 +68,7 @@ def display_update_order(seller_id):
         return redirect(url_for('seller_page.sellers'))
     else:
         form.name.data = seller.name
+        seller.city = form.city.data
         form.email.data = seller.email
 
     return render_template('/sellers/update_seller.html', seller=seller, title='Mise a jour du vendeur', form=form)

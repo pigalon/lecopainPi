@@ -168,6 +168,10 @@ class Shipment(db.Model):
     subscription = db.relationship('Subscription', backref=db.backref(
         "subscriptions", cascade="all, delete-orphan"))
 
+    def init_stats(self):
+            self.nb_products = 0
+            self.nb_orders = 0
+            self.shipping_price = 0.0
 
     def cancel_order(self, order):
         self.nb_products = self.nb_products - order.nb_products
@@ -178,7 +182,7 @@ class Shipment(db.Model):
         self.nb_orders = self.nb_orders + 1
 
     def remove_order(self, order):
-        self.cancel_order(order)
+        #self.cancel_order(order)
         self.orders.remove(order)
 
     def add_order(self, order):
@@ -265,6 +269,7 @@ class Seller(db.Model):
     __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
+    city = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(200), nullable=False)
     nb_orders = db.Column(db.Integer, default=0)
     nb_subscriptions = db.Column(db.Integer, default=0)
@@ -504,6 +509,7 @@ class OrderSchema(SQLAlchemyAutoSchema):
 
 class CompleteOrderSchema(SQLAlchemyAutoSchema):
     seller_name = fields.Method("format_seller_name", dump_only=True)
+    seller_city = fields.Method("format_seller_city", dump_only=True)
     customer_name = fields.Method("format_customer_name", dump_only=True)
     seller_id = fields.Method("format_seller_id", dump_only=True)
     nb_products = fields.Method("format_nb_products", dump_only=True)
@@ -537,6 +543,11 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
 
     def format_seller_name(self, order):
         return "{}".format(order.seller.name)
+    
+    
+    def format_seller_city(self, order):
+        return "{}".format(order.seller.city)
+
 
     def format_seller_id(self, order):
         return "{}".format(order.seller.id)

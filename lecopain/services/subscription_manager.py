@@ -83,7 +83,7 @@ class SubscriptionManager():
         category = SubscriptionDayDao.get_category(subscription_day_complete)
         city = subscription_day_complete.get('customer_city')
         nb_products = subscription_day_complete.get('nb_products')
-        subscription_day_db.shipping_price, subscription_day_db.shipping_rules = self.businessService.get_price_and_associated_rules(
+        subscription_day_db.shipping_price, subscription_day_db.shipping_rules = self.businessService.get_price_and_associated_rules_sub(
             category=category, city=city, nb_products=nb_products)
         subscription_day_db.subscription.category = category
         db.session.commit()

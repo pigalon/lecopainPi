@@ -22,6 +22,8 @@ class PersonForm(FlaskForm):
 class SellerForm(FlaskForm):
     name = StringField('Nom', validators=[
                        DataRequired(), Length(min=2, max=200)])
+    city = StringField('Ville', validators=[
+                       DataRequired(), Length(min=2, max=200)])
     email = StringField('Email', validators=[
                         DataRequired(), Length(min=2, max=200)])
     submit = SubmitField('Valider')

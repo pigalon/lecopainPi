@@ -78,8 +78,8 @@ def order_update(order_id):
     )
 
     if form.validate_on_submit():
-        orderServices.update_order_and_parse_line(
-            order_id=order_id, lines=lines)
+        # orderServices.update_order_and_parse_line(
+        #     order_id=order_id, lines=lines)
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(f'/orders/{order_id}')
 
@@ -122,8 +122,9 @@ def display_update_order_time(order_id):
 @order_page.route("/orders/<int:order_id>/cancel", methods=['GET', 'POST'])
 @login_required
 def display_update_order_annulation(order_id):
+    order = orderServices.get_one(order_id)
     orderServices.update_order_status(order_id, OrderStatus_Enum.ANNULEE.value)
-    return redirect('/orders')
+    return redirect('/shipments/'+str(order['shipment_id']))
 
 #####################################################################
 #                                                                   #
@@ -132,8 +133,9 @@ def display_update_order_annulation(order_id):
 @order_page.route("/orders/<int:order_id>/created", methods=['GET', 'POST'])
 @login_required
 def display_update_order_created(order_id):
+    order = orderServices.get_one(order_id)
     orderServices.update_order_status(order_id, OrderStatus_Enum.CREE.value)
-    return redirect('/orders')
+    return redirect('/shipments/'+str(order['shipment_id']))
 
 #####################################################################
 #                                                                   #
@@ -142,11 +144,12 @@ def display_update_order_created(order_id):
 @order_page.route("/orders/<int:order_id>/shipped/<string:status>", methods=['GET', 'POST'])
 @login_required
 def update_order_shipped(order_id, status):
+    order = orderServices.get_one(order_id)
     if status == 'NON':
         orderServices.update_order_shipping_status(order_id, ShippingStatus_Enum.NON.value)
     else:
         orderServices.update_order_shipping_status(order_id, ShippingStatus_Enum.OUI.value)
-    return redirect('/orders')
+    return redirect('/shipments/'+str(order.shipment.id))
 
 #####################################################################
 #                                                                   #
@@ -162,7 +165,7 @@ def update_order_paid(order_id, status):
     else:
         orderServices.update_order_payment_status(
             order_id, PaymentStatus_Enum.OUI.value)
-    return redirect('/orders')
+    return redirect('/shipments/'+str(order['shipment_id']))
 
 
 #####################################################################

@@ -28,7 +28,7 @@ class OrderManager():
 
     def create_by_shipment(self, shipment, lines, seller_id):
         created_order = OrderDao.create_by_shipment(shipment, lines, seller_id)
-        shipment.add_order(created_order)
+        shipment.active_order(created_order)
 
     def update_by_shipment(self, shipment, lines, seller_id):
         order = OrderDao.find_by_shipment_and_seller_id(shipment.id, seller_id)
@@ -56,32 +56,35 @@ class OrderManager():
             self.remove_order_to_shipment(order)
 
         if order.status != OrderStatus_Enum.ANNULEE.value and \
-            order.shipment.subscription_id is not None:
+            order.shipment_id is not None and order.shipment.subscription_id is not None:
             self.remove_order_to_subscription(order)
 
         OrderDao.delete(order_id)
         OrderDao.update_db(order)
 
 
-    def update_order_and_parse_line(self, order_id, lines):
-        parsed_lines = self.parse_lines(lines)
-        order = OrderDao.get_one(order_id)
-        if order.subscription_id is not None:
-            self.items_remove_subscription(order)
-        OrderDao.remove_all_lines(order)
-        order.shipping_price = 0.0
-        order.nb_products = 0
-        order.shipping_rules = ''
-        OrderDao.add_lines(order, parsed_lines)
-        order.category = order.products[0].category
-        order.shipping_price, order.shipping_rules = self.businessService.apply_rules(
-            order)
-        OrderDao.update_db(order)
-        order.updated_at = datetime.now()
-        OrderDao.update_db(order)
-        if order.subscription_id is not None:
-            self.items_add_subscription(order)
-        db.session.commit()
+    # def update_order_and_parse_line(self, order_id, lines):
+    #     parsed_lines = self.parse_lines(lines)
+    #     order = OrderDao.get_one(order_id)
+    #     if order.subscription_id is not None:
+    #         self.items_remove_subscription(order)
+    #     OrderDao.remove_all_lines(order)
+    #     order.shipping_price = 0.0
+    #     order.nb_products = 0
+    #     order.shipping_rules = ''
+    #     OrderDao.add_lines(order, parsed_lines)
+    #     order.category = order.products[0].category
+    #     order.updated_at = datetime.now()
+    #     OrderDao.update_db(order)
+        
+    #     order.shipment = order.products[0].category
+    #     order.shipment.shipping_price, ordershipment.shipping_rules = self.businessService.apply_rules_for_shipment(
+    #         order.shipment)
+    #     ShipmentDao.update_db(order.shipment)
+        
+    #     if order.subscription_id is not None:
+    #         self.items_add_subscription(order)
+    #     db.session.commit()
 
     def remove_order_to_shipment(self, order):
         shipment = ShipmentDao.get_one(order.shipment_id)
@@ -107,9 +110,12 @@ class OrderManager():
     def decrement_to_shipment(self, order):
         shipment = order.shipment
         
-        old_shipping_price = shipment.shipping_price
-        shipment.shipping_price, shipment.shipping_rules = self.businessService.apply_rules(
-            shipment)
+        if(shipment.shipping_price is not None):
+            old_shipping_price = shipment.shipping_price
+        else:
+            old_shipping_price = 0.0
+        
+        shipment.shipping_price, shipment.shipping_rules = self.businessService.apply_rules_for_shipment(shipment)
         diff_shipping_price = old_shipping_price - float(shipment.shipping_price)
 
         if order.shipment.subscription != None:
@@ -122,7 +128,7 @@ class OrderManager():
         shipment = order.shipment
         
         old_shipping_price = shipment.shipping_price
-        shipment.shipping_price, shipment.shipping_rules = self.businessService.apply_rules(
+        shipment.shipping_price, shipment.shipping_rules = self.businessService.apply_rules_for_shipment(
             shipment)
         diff_shipping_price = old_shipping_price - float(shipment.shipping_price)
         
@@ -160,7 +166,7 @@ class OrderManager():
         subscription = SubscriptionDao.get_one(order.subscription_id)
         itemService = ItemService()
         itemService.add_order_subscription_nb_products(subscription, order.nb_products) \
-            .add_order_subscription_shipping_price(subscription, order.shipping_price) \
+            .add_shipment_subscription_shipping_price(subscription, order.shipment.shipping_price) \
             .add_order_subscription_price(subscription, order.price)
         SubscriptionDao.update_db(subscription, itemService.items)
 
@@ -175,22 +181,22 @@ class OrderManager():
             self.active_order(order)
 
     def cancel_order(self, order):
+        OrderDao.update_status(order.id, OrderStatus_Enum.ANNULEE.value)
         if order.shipment_id is not None:
             self.cancel_order_to_shipment(order)
 
         if order.shipment.subscription_id is not None:
             self.remove_order_to_subscription(order)
-        OrderDao.update_status(order.id, OrderStatus_Enum.ANNULEE.value)
         order.shipment.updated_at = datetime.now()
         ShipmentDao.update_db(order.shipment)
 
     def active_order(self, order):
+        OrderDao.update_status(order.id, OrderStatus_Enum.CREE.value)
         if order.shipment_id is not None:
             self.active_order_to_shipment(order)
 
         if order.shipment.subscription_id is not None:
             self.add_order_to_subscription(order)
-        OrderDao.update_status(order.id, OrderStatus_Enum.CREE.value)
         order.shipment.updated_at = datetime.now()
         ShipmentDao.update_db(order.shipment)
 
