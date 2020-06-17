@@ -42,6 +42,7 @@ class ShipmentForm(FlaskForm):
     customer_id = IntegerField('Client Id:', validators=[DataRequired()])
     shipping_dt = DateTimeField('Date de Livraison', format='%d/%m/%Y')
     status = StringField('Status')
+    category_name = StringField('Catégorie')
     submit = SubmitField('Valider')
 
 

@@ -44,8 +44,10 @@ class SubscriptionFrequency_Enum(Enum):
 
 class Category_Enum(Enum):
     ARTICLE = "ARTICLE"
+    COURSE = "COURSE"
     COURSETTE = "COURSETTE"
     DRIVE = "DRIVE"
+    PETITOU = "PETITOU"
 
 
 class ProductStatus(db.Model):

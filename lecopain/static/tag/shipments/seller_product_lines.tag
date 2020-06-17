@@ -20,7 +20,7 @@
 								<select class="form-control" id="category" ref="category" name="category" onchange="{ load_products }" >
 									<option each="{ category in categories }" value={category}> {category} </option>
 								</select>
-
+								<input type="hidden" id="category_name" name="category_name" ref="category_name" value={category} />
 							</td>
 						</tr>
 			</div>

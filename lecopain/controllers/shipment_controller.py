@@ -49,6 +49,7 @@ def shipment_create():
     shipment = {'title': form.title.data,
              'customer_id': form.customer_id.data,
              'shipping_dt': form.shipping_dt.data,
+             'category': form.category_name.data,
     }
 
     if form.validate_on_submit():
@@ -69,6 +70,7 @@ def shipment_create():
 @login_required
 def shipment_update(shipment_id):
     form = ShipmentForm()
+    
 
     lines = (
         request.form.getlist('product_id[]'),
