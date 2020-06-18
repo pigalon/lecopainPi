@@ -1,0 +1,1 @@
+ALTER TABLE public.city ADD seller varchar NULL;

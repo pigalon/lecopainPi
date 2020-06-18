@@ -44,6 +44,7 @@ class SellerFactory(SQLAlchemyModelFactory):
         sqlalchemy_session = db.session
     name = factory.Faker('company')
     email = 'seller@mail.com'
+    city = 'Langlade'
 
 
 class ProductFactory(SQLAlchemyModelFactory):
@@ -98,12 +99,4 @@ class OrderFactory(SQLAlchemyModelFactory):
 
     seller = factory.SubFactory(SellerFactory)
     shipment = factory.SubFactory(ShipmentFactory)
-
-class SellerFactory(SQLAlchemyModelFactory):
-
-    class Meta:
-        model = Seller
-        sqlalchemy_session = db.session
-    name = factory.Faker('company')
-    email = factory.Faker('ascii_email')
 

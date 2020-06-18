@@ -25,5 +25,3 @@ ALTER TABLE public.products ADD category_id varchar NULL;
 ALTER TABLE ONLY public.products
     ADD CONSTRAINT products_category_id_fkey FOREIGN KEY (category_id) REFERENCES public.categories(id);
 
-ALTER TABLE public.lines ADD specification_id varchar NULL;
-ALTER TABLE public.subscription_lines ADD specification_id varchar NULL;
