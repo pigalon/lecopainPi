@@ -60,20 +60,26 @@ class BusinessService:
 
     # def apply_rules_just_order(self, order):
     #     return self.get_price_and_associated_rules(order.shipment.category, order.shipment.shipping_city, order.seller.city, order.nb_products)
-
+    
+    def get_all_products_numbers(self, subscription_day):
+        nb_local_products = 0
+        nb_far_products = 0
+        
+        for line in subscription_day.lines:
+            if self.is_from_local_area(line.product.seller.city) and self.is_from_local_area(subscription_day.subscription.customer.city):
+                nb_local_products = nb_local_products + line.quantity
+            else :
+                nb_local_products = nb_local_products + line.quantity
+        return nb_local_products, nb_far_products
 
     def apply_rules_for_subscription_day(self, subscription_day):
         amount = 0.0
         nb_local_products = 0
         nb_far_products = 0
+
+        nb_local_products, nb_far_products = self.get_all_products_numbers(subscription_day)
                 
-        # for order in subscription_day:
-        #     if(self.is_from_local_area(order.seller_city) and self.is_from_local_area(shipment.shipping_city)):
-        #         nb_local_products = nb_local_products + order.nb_products
-        #     else:
-        #         nb_far_products = nb_far_products + order.nb_products
-                
-        # return self.get_price_and_associated_rules(shipment.category, nb_local_products, nb_far_products)
+        return self.get_price_and_associated_rules(subscription_day.subscription.category, nb_local_products, nb_far_products)
 
     def apply_rules_for_shipment(self, shipment):
         amount = 0.0
