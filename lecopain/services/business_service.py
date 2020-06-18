@@ -111,7 +111,7 @@ class BusinessService:
             ret = ret + self.far_shipping_price.get(int(nb_far_products))
             rules = rules + "article_non-local_"+str(nb_far_products)
             
-        elif self.is_article(category) and nb_far_products < 6  and nb_local_products  >= 7:
+        elif self.is_article(category) and nb_far_products > 0 and nb_far_products < 6  and nb_local_products  >= 7:
             ret = ret + self.far_shipping_price.get(1) + (self.far_shipping_price.get(
                 'n') * int(nb_far_products-1))
             rules = rules + "article_local-et-non-local_"+str(nb_far_products)
