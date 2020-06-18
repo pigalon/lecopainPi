@@ -30,7 +30,7 @@ def sellers():
 def create_seller():
     form = SellerForm()
     if form.validate_on_submit():
-        seller = Seller(name=form.name.data, email=form.email.data)
+        seller = Seller(name=form.name.data, email=form.email.data, city=form.city.data)
         db.session.add(seller)
         db.session.commit()
         #flash(f'People created for {form.firstname.data}!', 'success')
@@ -68,7 +68,7 @@ def display_update_order(seller_id):
         return redirect(url_for('seller_page.sellers'))
     else:
         form.name.data = seller.name
-        seller.city = form.city.data
+        form.city.data = seller.city
         form.email.data = seller.email
 
     return render_template('/sellers/update_seller.html', seller=seller, title='Mise a jour du vendeur', form=form)

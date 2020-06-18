@@ -44,7 +44,9 @@
 <script type="text/javascript">
     riot.mount("seller-product-line");
     $(function () {
-        $("#datepicker_shipping").datepicker();
+        $("#datepicker_shipping").datepicker(
+            {autoClose: true}
+        );
     });
 </script>
 {% endblock %}

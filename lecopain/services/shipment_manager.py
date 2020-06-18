@@ -173,8 +173,11 @@ class ShipmentManager():
     def get_all_by_customer(self, customer_id):
         return ShipmentDao.read_by_customer(customer_id)
 
-    def get_some(self,  customer_id=0, period=Period_Enum.ALL.value):
-        start,end = dates_range(period)
+    def get_some(self,  customer_id=0, day=datetime.utcnow, period=Period_Enum.ALL.value):
+        
+        datetime_day = datetime.strptime(day, '%d%m%Y')
+        start, end = dates_range(period, datetime_day)
+        
         return ShipmentDao.read_some(customer_id=customer_id, start=start, end=end)
 
     def get_one(self,  shipment_id):

@@ -1,15 +1,30 @@
 <search-shipment>
     <div class="form-group">
         Client :<br>
-        <select onchange={ load_shipments } class="form-control" name="customer_id" id="customer_id" ref="customer_id" style="width: 12rem; display:inline-block" >
-            <option value="0" SELECTED>Tous</option>
-            <option each="{ customer in customers }" value={customer.id}>{customer.firstname} {customer.lastname}</option>
-        </select><select onchange={ load_shipments } class="form-control" name="period" id="period" ref="period" style="width: 12rem; display:inline-block">
-            <option value="day">Jour</option>
-            <option value="week">Semaine</option>
-            <option value="month">Mois</option>
-            <option value="all">Toutes</option>
-        </select>
+        <table>
+            <tr>
+                <td>
+                    <select class="form-control" name="customer_id" id="customer_id" ref="customer_id" style="width: 12rem; display:inline-block" >
+                        <option value="0" SELECTED>Tous</option>
+                        <option each="{ customer in customers }" value={customer.id}>{customer.firstname} {customer.lastname}</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text"style="width:200px" name="day" ref="day" id="datepicker_day" data-language='fr' class="form-control datepicker-input" />
+                </td>
+                <td>
+                    <select class="form-control" name="period" id="period" ref="period" style="width: 12rem; display:inline-block">
+                        <option value="day">Jour</option>
+                        <option value="week">Semaine</option>
+                        <option value="month">Mois</option>
+                        <option value="all">Toutes</option>
+                    </select>
+                </td>
+                <td>
+                    <button type="button" id="search" onclick="{load_shipments}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
+                </td>
+            </tr>
+        </table>
         <div class="right">
             <a role="button" href="/shipments/new" class="btn btn-primary display:inline-block">Ajouter</i></a>
         </div>
@@ -37,7 +52,7 @@
                     <td if={shipment.status == 'TERMINEE'} width="6%" class="table-success">{shipment.id}</td>
                     <td if={shipment.status == 'DEFAUT'} width="6%" class="table-danger">{shipment.id}</td>
 
-                    <td width="20%">{moment(shipment.shipping_dt).format('Do MMMM YYYY' )}</td>
+                    <td width="20%">{moment(shipment.shipping_dt).format('ddd Do MMMM' )}</td>
                     <td width="30%">{shipment.customer_name}</td>
                     <td width="20%"><span if={shipment.shipping_status == 'OUI'} style="color:green" ><i class="fas fa-cart-arrow-down "></i></span>
                     <span if={shipment.shipping_status == 'NON'} style="color:grey" ><i class="fas fa-cart-arrow-down "></i></span>
@@ -83,6 +98,17 @@
             const location  = $('window.location')
 		});
 
+        $(function () {
+            $("#datepicker_day").datepicker(
+                {autoClose: true}
+            );
+        });
+
+        String.prototype.replaceAll = function(str1, str2, ignore)
+		{
+    		return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
+		}
+
 		/******************************************/
        	// load products list
     	/*******************************************/
@@ -91,12 +117,16 @@
             var customer_id = self.refs.customer_id.value;
             var period = self.refs.period.value;
 
+            var day = self.refs.day.value;
+
+            
+            
             if (period == undefined){
                 period = 'all'
             }
 
             shipment_url = shipment_url.concat('period/',period,'/');
-
+            shipment_url = shipment_url.concat('date/', day.replaceAll("/",""),'/');
             shipment_url = shipment_url.concat('customers/',customer_id);
 
 			$.ajax({

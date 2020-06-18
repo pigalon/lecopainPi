@@ -24,7 +24,7 @@
                     <td if={subscription.status == 'ANNULE'} width="6%" class="table-dark">{subscription.id}</td>
                     <td if={subscription.status == 'TERMINE'} width="6%" class="table-success">{subscription.id}</td>
                     <td if={subscription.status == 'DEFAUT'} width="6%" class="table-danger">{subscription.id}</td>
-                    <td width="64%">du <b>{moment(subscription.start_dt).format('Do MMMM YYYY' )}</b> au <b>{moment(subscription.end_dt).format('Do MMMM YYYY' )}</b></td>
+                    <td width="64%">du <b>{moment(subscription.start_dt).format('ddd Do MMMM YYYY' )}</b> au <b>{moment(subscription.end_dt).format('ddd Do MMMM YYYY' )}</b></td>
                     <td width="30%">{subscription.customer_name}</td>
                     </td>
                 </tr>

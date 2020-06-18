@@ -10,8 +10,9 @@
                 <table width="100%">
                     <tr>
                         <th width="6%">id</th>
-                        <th width="44%">Nom</th>
-                        <th width="50%">Email</th>
+                        <th width="30%">Nom</th>
+                        <th width="30%">Ville</th>
+                        <th width="34%">Email</th>
                     </tr>
                 </table>
             </td>
@@ -21,8 +22,9 @@
                 <table width="100%" class="table table-striped" onclick={ show_seller(seller.id) }>
                     <tr>
                         <td width="6%" class="table-primary">{seller.id}</td>
-                        <td width="44%">{seller.name}</td>
-                        <td width="44%">{seller.email}</td>
+                        <td width="30%">{seller.name}</td>
+                        <td width="30%">{seller.city}</td>
+                        <td width="34%">{seller.email}</td>
                     </tr>
                 </table>
             </td>

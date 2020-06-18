@@ -64,7 +64,9 @@
     <script>
 
         $(function () {
-            $("#datepicker_day").datepicker();
+            $("#datepicker_day").datepicker(
+                {autoClose: true}
+            );
         });
 
 		var self = this

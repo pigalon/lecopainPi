@@ -46,8 +46,12 @@
 {% block scripts %}
 <script type="text/javascript">
     $(function () {
-        $("#datepicker_start").datepicker();
-        $("#datepicker_end").datepicker();
+        $("#datepicker_start").datepicker(
+            {autoClose: true}
+        );
+        $("#datepicker_end").datepicker(
+            {autoClose: true}
+        );
     });
 </script>
 {% endblock %}

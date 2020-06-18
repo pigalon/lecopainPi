@@ -254,10 +254,10 @@ def api_shipments_by_seller(seller_id):
 #####################################################################
 #                                                                   #
 #####################################################################
-@shipment_page.route('/api/shipments/period/<string:period>/customers/<int:customer_id>')
+@shipment_page.route('/api/shipments/period/<string:period>/date/<string:day>/customers/<int:customer_id>')
 @login_required
-def api_day_shipments(period, customer_id):
-    data = shipmentServices.get_some(period=period, customer_id=customer_id)
+def api_day_shipments(period, day, customer_id):
+    data = shipmentServices.get_some(period=period, day=day, customer_id=customer_id)
     
     start = request.args.get("start")
     limit = request.args.get("limit")
@@ -267,6 +267,6 @@ def api_day_shipments(period, customer_id):
         limit = 10
     
     return jsonify(Pagination.get_paginated_list(
-        data, '/api/shipments/period/'+period+'/customers/'+str(customer_id),
+        data, '/api/shipments/period/'+period+'/day/'+day+'/customers/'+str(customer_id),
         start=request.args.get('start', int(start)),
         limit=request.args.get('limit', int(limit))))

@@ -27,7 +27,7 @@
                     <td if={order.status == 'ANNULEE'} width="6%" class="table-dark">{order.id}</td>
                     <td if={order.status == 'TERMINEE'} width="6%" class="table-success">{order.id}</td>
                     <td if={order.status == 'DEFAUT'} width="6%" class="table-danger">{order.id}</td>
-                    <td width="20%">{moment(order.shipping_dt).format('Do MMMM YYYY' )}</td>
+                    <td width="20%">{moment(order.shipping_dt).format('ddd MMMM' )}</td>
                     <td width="30%">{order.customer_name}</td>
                     <td width="30%">{order.seller_name}</td>
                     <td width="20%"><span if={order.shipping_status == 'OUI'} style="color:green" ><i class="fas fa-cart-arrow-down "></i></span>
