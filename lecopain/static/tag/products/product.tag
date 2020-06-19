@@ -1,10 +1,24 @@
 <search-product>
     <div class="form-group">
-        Vendeur :<br>
-        <select onchange={ load_products } class="form-control" name="seller_id" id="seller_id" ref="seller_id" style="width: 12rem; display:inline-block" >
-            <option value="0" SELECTED>Tous</option>
-            <option each="{ seller in sellers }" value={seller.id}>{seller.name} </option>
-        </select>
+    <table>
+            <tr>
+            <th>
+                Vendeur:
+            </th>
+            </tr>
+            <tr>
+                <td>
+                    <select class="form-control" name="seller_id" id="seller_id" ref="seller_id" style="width: 12rem; display:inline-block" >
+                        <option value="0" SELECTED>Tous</option>
+                        <option each="{ seller in sellers }"  value={seller.id}>{seller.name} </option>
+                    </select>
+                </td>
+                <td>
+                    <button type="button" id="search" onclick="{load_products}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
+                </td>
+            </tr>
+        </table>
+
         <div class="right">
             <a role="button" href="/products/new" class="btn btn-primary display:inline-block">Ajouter</i></a>
         </div>
@@ -18,7 +32,7 @@
                     <th width="29%">Nom</th>
                     <th width="20%">Prix</th>
                     <th width="20%">Catégorie</th>
-                    <th width="35%">Description</th>
+                    <th width="35%">Vendeur</th>
                 </tr>
             </table>
             </td>
@@ -31,7 +45,7 @@
                     <td width="29%">{product.name} - {product.short_name}</td>
                     <td width="20%">{product.price}€</td>
                     <td width="20%">{product.category}</td>
-                    <td width="25%">{product.description}</td>
+                    <td width="25%">{product.seller_name}</td>
                 </tr>
             </table>
             </td>
@@ -70,7 +84,7 @@
 			ajaxCall_sellers.done(function(data) {
 				$(self.refs.seller_id).select2();
 			})
-            this.load_products()
+            //this.load_products()
             const location  = $('window.location')
 		});
 

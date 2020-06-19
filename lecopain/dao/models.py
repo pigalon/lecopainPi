@@ -639,12 +639,16 @@ class OptimizedProductSchema(SQLAlchemySchema):
     seller_id = auto_field()
 
 class ProductSchema(SQLAlchemyAutoSchema):
+    seller_name = fields.Method("format_seller_name", dump_only=True)
 
     class Meta:
         # Fields to expose
         model = Product
         load_instance = True
         include_relationships = True
+    
+    def format_seller_name(self, order):
+        return "{}".format(order.seller.name)
 
 class SubscriptionSchema(SQLAlchemyAutoSchema):
     customer_name = fields.Method("format_customer_name", dump_only=True)
