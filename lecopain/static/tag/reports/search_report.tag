@@ -1,30 +1,18 @@
 <search-report>
     <div class="form-group">
-        <table id="orders_list" width="100%">
-            <tr>
-                <td>Vendeur :</td><td>Date</td><td>Durée</td><td></td>
-            </tr>
-            <tr>
-                <td>
-                    <select class="form-control" id="seller_id" name="seller_id" ref="seller_id">
-					    <option each="{ seller in sellers }" value={seller.id}> {seller.name} </option>
-                    </select>
-                </td>
-                <td>
-                    <input type="text" name="day" ref="day" id="datepicker_day" data-language='fr' class="form-control datepicker-input" />
-                </td>
-                <td>
-                    <select class="form-control" name="period" id="period" ref="period" style="width: 12rem; display:inline-block">
-                        <option value="day">Jour</option>
-                        <option value="week">Semaine</option>
-                        <option value="all">Toutes</option>
-                    </select>
-                </td>
-                <td>
-                    <button type="button" id="search" onclick="{search}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
-                </td>
-            </tr>
-        </table>
+        Vendeur:
+        <br>
+        <select class="form-control" id="seller_id" name="seller_id" ref="seller_id" style="width: 14rem; display:inline-block">
+		    <option each="{ seller in sellers }" value={seller.id}> {seller.name} </option>
+        </select>
+        <input type="text" style="width: 12rem; display:inline-block" name="day" ref="day" id="datepicker_day" data-language='fr' class="form-control datepicker-input" />
+        <select class="form-control" name="period" id="period" ref="period" style="width: 12rem; display:inline-block">
+            <option value="day">Jour</option>
+            <option value="week">Semaine</option>
+            <option value="all">Toutes</option>
+        </select>
+        <button type="button" id="search" onclick="{search}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
+
         <ul class="list-group" width="100%">
             <li class="list-group-item" width="100%">
                 <span class="btn btn-warning">Totaux Période</span> -  <b>Nb commandes</b> : <span class="btn btn-warning">x{amounts['nb_orders']}</span> - <b>Nb articles</b> : <span class="btn btn-warning">x{amounts['nb_products']}</span> - <b>Montant total</b> : <span class="btn btn-warning">{amounts['price']}€</span>

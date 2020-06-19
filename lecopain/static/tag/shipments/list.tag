@@ -1,30 +1,17 @@
 <search-shipment>
     <div class="form-group">
-        Client :<br>
-        <table>
-            <tr>
-                <td>
-                    <select class="form-control" name="customer_id" id="customer_id" ref="customer_id" style="width: 12rem; display:inline-block" >
-                        <option value="0" SELECTED>Tous</option>
-                        <option each="{ customer in customers }" value={customer.id}>{customer.firstname} {customer.lastname}</option>
-                    </select>
-                </td>
-                <td>
-                    <input type="text"style="width:200px" name="day" ref="day" id="datepicker_day" data-language='fr' class="form-control datepicker-input" />
-                </td>
-                <td>
-                    <select class="form-control" name="period" id="period" ref="period" style="width: 12rem; display:inline-block">
-                        <option value="day">Jour</option>
-                        <option value="week">Semaine</option>
-                        <option value="month">Mois</option>
-                        <option value="all">Toutes</option>
-                    </select>
-                </td>
-                <td>
-                    <button type="button" id="search" onclick="{load_shipments}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
-                </td>
-            </tr>
-        </table>
+        <select class="form-control" name="customer_id" id="customer_id" ref="customer_id" style="width: 12rem; display:inline-block" >
+            <option value="0" SELECTED>Tous</option>
+            <option each="{ customer in customers }" value={customer.id}>{customer.firstname} {customer.lastname}</option>
+        </select>
+        <input type="text"style="width:200px; display: inline-block;" name="day" ref="day" id="datepicker_day" data-language='fr' class="form-control datepicker-input" />
+        <select class="form-control" name="period" id="period" ref="period" style="width: 12rem; display:inline-block">
+            <option value="day">Jour</option>
+            <option value="week">Semaine</option>
+            <option value="month">Mois</option>
+            <option value="all">Toutes</option>
+        </select>
+        <button type="button" id="search" onclick="{load_shipments}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
         <div class="right">
             <a role="button" href="/shipments/new" class="btn btn-primary display:inline-block">Ajouter</i></a>
         </div>

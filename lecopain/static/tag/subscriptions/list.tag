@@ -1,16 +1,19 @@
 <search-subscription>
     <div class="form-group">
-        Client :<br>
-        <select onchange={ load_subscriptions } class="form-control" name="customer_id" id="customer_id" ref="customer_id" style="width: 12rem; display:inline-block" >
+        <select class="form-control" name="customer_id" id="customer_id" ref="customer_id" style="width: 12rem; display:inline-block" >
             <option value="0" SELECTED>Tous</option>
             <option each="{ customer in customers }" value={customer.id}>{customer.firstname} {customer.lastname}</option>
-        </select><select onchange={ load_subscriptions } class="form-control" name="period" id="period" ref="period" style="width: 12rem; display:inline-block">
-            <option value="month">Mois</option>
-            <option value="all">Tous</option>
         </select>
+                    <select class="form-control" name="period" id="period" ref="period" style="width: 12rem; display:inline-block">
+                        <option value="month">Mois</option>
+                        <option value="all">Tous</option>
+                    </select>
+         <button type="button" id="search" onclick="{load_subscriptions}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
+        
         <div class="right">
             <a role="button" href="/subscriptions/new" class="btn btn-primary display:inline-block">Ajouter</i></a>
         </div>
+        
     </div>
     <table id="subscriptions_list" width="100%">
         <tr>
@@ -69,7 +72,6 @@
         moment.locale('fr');
 
 		this.on('mount', function() {
-			this.load_subscriptions()
             var ajaxCall_customers = self.load_customers();
 			ajaxCall_customers.done(function(data) {
 				$(self.refs.customer_id).select2();

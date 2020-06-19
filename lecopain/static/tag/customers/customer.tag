@@ -1,32 +1,16 @@
 <search-customer>
     <div class="form-group">
-        <table>
-            <tr>
-            <th>
-                Ville:
-            </th>
-            <th>
-                Nom:
-            </th>
-            </tr>
-            <tr>
-                <td>
-                    <select onchange={ load_customers } class="form-control" name="city" id="city" ref="city" style="width: 12rem; display:inline-block" >
-                        <option value="all" SELECTED>Toutes</option>
-                        <option each="{ city in cities }" value={city}>{city} </option>
-                    </select>
-                </td>
-                <td>
-                    <select class="form-control" id="customer_id" name="customer_id" ref="customer_id" >
-                        <option value="0" SELECTED>Tous</option>
-						<option each="{ customer_name in customer_names }" value={customer_name.id}> {customer_name.firstname} {customer_name.lastname} </option>
-					</select>
-                </td>
-                <td>
-                    <button type="button" id="search" onclick="{load_customers}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
-                </td>
-            </tr>
-        </table>
+        Villes:
+        <br>
+        <select onchange={ load_customers } class="form-control" name="city" id="city" ref="city" style="width: 12rem; display:inline-block" >
+            <option value="all" SELECTED>Toutes</option>
+            <option each="{ city in cities }" value={city}>{city} </option>
+        </select>
+        <select class="form-control" id="customer_id" name="customer_id" ref="customer_id" style="width: 12rem; display:inline-block">
+            <option value="0" SELECTED>Tous</option>
+            <option each="{ customer_name in customer_names }" value={customer_name.id}> {customer_name.firstname} {customer_name.lastname} </option>
+        </select>
+        <button type="button" id="search" onclick="{load_customers}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
 
         <div class="right">
             <a role="button" href="/customers/new" class="btn btn-primary display:inline-block">Ajouter</i></a>
