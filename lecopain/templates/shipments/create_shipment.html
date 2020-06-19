@@ -12,7 +12,7 @@
             </div>
             <div class="form-group">
                 Choix du client :
-                <select class="form-control" name="customer_id" width="300px">
+                <select class="form-control search-cutomer" name="customer_id" width="300px">
                     {% for customer in customers %}
                         {% if loop.index == 1 %}
                             <option value="{{ customer.id }}" SELECTED>{{ customer.firstname }} {{ customer.lastname }}</option>
@@ -47,6 +47,9 @@
         $("#datepicker_shipping").datepicker(
             {autoClose: true}
         );
+    });
+    $(document).ready(function() {
+        $('.search-cutomer').select2();
     });
 </script>
 {% endblock %}

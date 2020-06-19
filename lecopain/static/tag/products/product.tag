@@ -66,7 +66,10 @@
         moment.locale('fr');
 
 		this.on('mount', function() {
-            this.load_sellers()
+            var ajaxCall_sellers = self.load_sellers();
+			ajaxCall_sellers.done(function(data) {
+				$(self.refs.seller_id).select2();
+			})
             this.load_products()
             const location  = $('window.location')
 		});
@@ -146,7 +149,7 @@
 		}
         load_sellers(){
 			var url = '/api/sellers/';
-			$.ajax({
+			return $.ajax({
 					url: url,
 					type: "GET",
 					dataType: "json",

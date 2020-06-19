@@ -114,7 +114,7 @@ def delete_customer(customer_id):
 @customer_page.route('/api/customers/')
 @login_required
 def api_customers():
-    return jsonify({'customers': customerServices.get_all()})
+    return jsonify({'customers': customerServices.optim_get_all()})
 
 @customer_page.route('/api/customers/cities')
 @login_required
@@ -136,4 +136,24 @@ def api_customers_cities(city):
         data, '/api/customers/cities/'+city,
         start=request.args.get('start', int(start)),
         limit=request.args.get('limit', int(limit))))
+    
+@customer_page.route('/api/customers/cities/<string:city>/id/<string:customer_id>')
+@login_required
+def api_customers_customer_id(city, customer_id):
+    
+    customer = customerServices.get_one(customer_id)
+    data = [customer]
+    
+    start = request.args.get("start")
+    limit = request.args.get("limit")
+    if start is None:
+        start = 1
+    if limit is None:
+        limit = 10
+    
+    return jsonify(Pagination.get_paginated_list(
+        data, '/api/customers/cities/'+city,
+        start=request.args.get('start', int(start)),
+        limit=request.args.get('limit', int(limit))))
+
     #return jsonify({'customers': customerServices.get_all_by_city(city)})

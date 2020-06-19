@@ -149,7 +149,10 @@
 			var ajaxCall_categories = self.load_categories()
 			ajaxCall_seller.done(function(data1) {
 				ajaxCall_categories.done(function(data2) {
-					self.load_products();
+					var ajaxCall_product = self.load_products();
+					ajaxCall_product.done(function(data3) {
+						$(self.refs.product).select2();
+					})
 				})
 			});
 			if(self.refs.line_product_id == undefined){

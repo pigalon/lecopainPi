@@ -70,7 +70,10 @@
 
 		this.on('mount', function() {
 			this.load_subscriptions()
-            this.load_customers()
+            var ajaxCall_customers = self.load_customers();
+			ajaxCall_customers.done(function(data) {
+				$(self.refs.customer_id).select2();
+			})
             const location  = $('window.location')
 		});
 
@@ -141,7 +144,6 @@
                     self.count = data['count']
                     self.limit = data['limit']
                     self.start = data['start']
-                    console.log('start :' + self.start)
                     self.next_start = parseInt(data['start'])+parseInt(limit)
                     self.previous_start = parseInt(data['start'])-parseInt(limit)
                     self.next_url = data['next']
@@ -152,7 +154,7 @@
 		}
         load_customers(){
 			var url = '/api/customers/';
-			$.ajax({
+			return $.ajax({
 					url: url,
 					type: "GET",
 					dataType: "json",

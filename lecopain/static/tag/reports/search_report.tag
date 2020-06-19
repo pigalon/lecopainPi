@@ -78,6 +78,7 @@
 
 		this.on('mount', function() {
             this.load_sellers()
+            self.refs.day.value = moment().format('DD/MM/YYYY')
 		});
 
         /******************************************

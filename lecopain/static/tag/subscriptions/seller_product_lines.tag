@@ -30,7 +30,7 @@
                     <table width="50%">
                         <tr>
                             <td>
-                                <select class="form-control" id="product_id" name="product_id" ref="product">
+                                <select class="form-contro search-product" id="product_id" name="product_id" ref="product">
 									<option each="{ product in products }" value={product.id}> {product.name}  - {product.price}</option>
                                 </select>
                             </td>
@@ -150,9 +150,15 @@
 			var ajaxCall_categories = self.load_categories()
 			ajaxCall_seller.done(function(data1) {
 				ajaxCall_categories.done(function(data2) {
-					self.load_products();
+					var ajaxCall_product = self.load_products();
+					ajaxCall_product.done(function(data3) {
+						$(self.refs.product).select2();
+					})
+
 				})
 			});
+			
+
 			if(self.refs.line_product_id == undefined){
 				message_validation = 'Veuillez saisir au moins un article!'
 				self.refs.submit_button.disabled = true
@@ -163,6 +169,8 @@
 				self.refs.submit_button.disabled = false
 				self.refs.category.disabled = true
 			}
+			
+    		
 		});
 
 		this.on('update', function() {

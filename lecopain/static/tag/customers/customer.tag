@@ -1,10 +1,33 @@
 <search-customer>
     <div class="form-group">
-        Ville :<br>
-        <select onchange={ load_customers } class="form-control" name="city" id="city" ref="city" style="width: 12rem; display:inline-block" >
-            <option value="all" SELECTED>Toutes</option>
-            <option each="{ city in cities }" value={city}>{city} </option>
-        </select>
+        <table>
+            <tr>
+            <th>
+                Ville:
+            </th>
+            <th>
+                Nom:
+            </th>
+            </tr>
+            <tr>
+                <td>
+                    <select onchange={ load_customers } class="form-control" name="city" id="city" ref="city" style="width: 12rem; display:inline-block" >
+                        <option value="all" SELECTED>Toutes</option>
+                        <option each="{ city in cities }" value={city}>{city} </option>
+                    </select>
+                </td>
+                <td>
+                    <select class="form-control" id="customer_id" name="customer_id" ref="customer_id" >
+                        <option value="0" SELECTED>Tous</option>
+						<option each="{ customer_name in customer_names }" value={customer_name.id}> {customer_name.firstname} {customer_name.lastname} </option>
+					</select>
+                </td>
+                <td>
+                    <button type="button" id="search" onclick="{load_customers}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
+                </td>
+            </tr>
+        </table>
+
         <div class="right">
             <a role="button" href="/customers/new" class="btn btn-primary display:inline-block">Ajouter</i></a>
         </div>
@@ -64,8 +87,17 @@
         moment.locale('fr');
 
 		this.on('mount', function() {
-            this.load_customers()
-            this.load_cities()
+            
+            var ajaxCall_cities = self.load_cities();
+			ajaxCall_cities.done(function(data) {
+				$(self.refs.city).select2();
+			})
+
+            var ajaxCall_customer_names = self.load_customer_names();
+			ajaxCall_customer_names.done(function(data) {
+				$(self.refs.customer_id).select2();
+			})
+            
             const location  = $('window.location')
 		});
 
@@ -75,12 +107,17 @@
 		load_customers(){
             var customer_url = '/api/customers/';
             var city = self.refs.city.value;
+            var customer_id = self.refs.customer_id.value;
 
             if (city == undefined){
                 city = 'all'
             }
 
             customer_url = customer_url.concat('cities/',city);
+
+            if ( customer_id != undefined && customer_id != '0'){
+                customer_url = customer_url.concat('/id/',customer_id);
+            }
 
 			$.ajax({
 					url: customer_url,
@@ -143,7 +180,7 @@
 		}
         load_cities(){
 			var url = '/api/customers/cities';
-			$.ajax({
+			return $.ajax({
 					url: url,
 					type: "GET",
 					dataType: "json",
@@ -153,6 +190,19 @@
                         self.update()
 					}
 				});
+		}
+        load_customer_names(){
+			var url = '/api/customers/';
+			return $.ajax({
+                url: url,
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function(data) {
+                    self.customer_names = data['customers']
+                    self.update()
+                }
+            });
 		}
         show_customer(customer_id){
             return function(e) {
