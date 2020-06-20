@@ -1,11 +1,13 @@
 
 from lecopain.helpers.date_utils import dates_range, Period_Enum
 from lecopain.services.order_manager import OrderManager
+from lecopain.services.shipment_manager import ShipmentManager
 from datetime import datetime, date, timedelta
 
 class ReportManager():
 
     orderServices = OrderManager()
+    shipmentServices = ShipmentManager()
 
     def prepareAmount(self, orders):
         amount = {'price': 0.0,
@@ -75,4 +77,22 @@ class ReportManager():
                 seller_id, start, end)
 
         return self.prepareAmount(orders)
+    
+    def get_reports_by_customer(self, customer_id, period, day):
+        
+        report = {}
+        nb_products = 0
+        shipping_price = 0.0
+        shipments = self.shipmentServices.get_some( customer_id, day, period)
+        
+        for shipment in shipments:
+            nb_products = nb_products + shipment['nb_products']
+            shipping_price = shipping_price + shipment['shipping_price']
+        
+        report['nb_shipments'] = len(shipments)
+        report['nb_products'] = nb_products
+        report['shipping_price'] = format(shipping_price, '.2f') 
+        report['shipments'] = shipments                       
+
+        return report
 
