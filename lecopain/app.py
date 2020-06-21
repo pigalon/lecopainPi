@@ -16,7 +16,7 @@ app = Flask(__name__)
 ban_count = 20
 ban_seconds = 2000
 try:
-    ip_ban = IpBan(app=app, ban_count=ban_count, ban_seconds=ban_seconds, record_dir='/tmp', persist=True)
+    ip_ban = IpBan(app=app, ban_count=ban_count, ban_seconds=ban_seconds, record_dir='/tmp', persist=False)
     ip_ban.whitelist_add('127.0.0.1')
     ip_ban.whitelist_add('176.155.187.146')
 

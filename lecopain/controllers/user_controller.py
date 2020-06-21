@@ -9,6 +9,8 @@ from lecopain.dao.models import User
 from flask_login import current_user, login_user
 from flask_login import logout_user
 
+from time import sleep
+
 
 
 
@@ -25,8 +27,17 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
 
-        if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
+        if user is None: 
+            app.logger.error(" fails not found authentication: " + str(form.username.data) +
+                             " - " + str(form.password.data) +
+                            " with IP address : " + str(request.remote_addr))
+            flash("L'utilisateur n'existe pas !")
+            sleep(3)
+            return redirect(url_for('user_page.login'))
+            
+        if not user.check_password(form.password.data):
+            flash("Le mot de passe est incorrect")
+            sleep(3)
             app.logger.error(" fails authentication: " + str(form.username.data) +
                              " - " + str(form.password.data) +
                             " with IP address : " + str(request.remote_addr))
