@@ -69,7 +69,7 @@ class BusinessService:
             if self.is_from_local_area(line.product.seller.city) and self.is_from_local_area(subscription_day.subscription.customer.city):
                 nb_local_products = nb_local_products + line.quantity
             else :
-                nb_local_products = nb_local_products + line.quantity
+                nb_far_products = nb_far_products + line.quantity
         return nb_local_products, nb_far_products
 
     def apply_rules_for_subscription_day(self, subscription_day):

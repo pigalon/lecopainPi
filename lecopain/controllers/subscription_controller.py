@@ -133,10 +133,21 @@ def delete_subscription(subscription_id):
 #####################################################################
 @subscription_page.route("/subscriptions/generate/<int:subscription_id>")
 @login_required
-def generate_order(subscription_id):
+def generate_shipments(subscription_id):
     subscription = subscriptionServices.get_one_db(subscription_id)
     subscriptionServices.generate_shipments(subscription)
     return render_template('/subscriptions/subscription.html', subscription=subscription)
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@subscription_page.route("/subscriptions/delete_shipments/<int:subscription_id>")
+@login_required
+def delete_shipments(subscription_id):
+    subscription = subscriptionServices.get_one_db(subscription_id)
+    subscriptionServices.delete_all_shipments(subscription)
+    return render_template('/subscriptions/subscription.html', subscription=subscription)
+
 
 #####################################################################
 #                                                                   #

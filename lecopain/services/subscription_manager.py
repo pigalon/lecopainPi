@@ -2,7 +2,7 @@ from datetime import datetime
 
 from lecopain.app import app, db
 from lecopain.dao.models import Customer, Subscription, Order
-from lecopain.dao.order_dao import OrderDao
+from lecopain.dao.shipment_dao import ShipmentDao
 from lecopain.dao.subscription_dao import SubscriptionDao
 from lecopain.dao.subscription_day_dao import SubscriptionDayDao
 from lecopain.helpers.date_utils import dates_range, Period_Enum
@@ -117,7 +117,6 @@ class SubscriptionManager():
                 'customer_id': subscription.customer_id,
                 'shipping_dt': current_dt,
                 'subscription_id': subscription.id,
-                
             }
             nb_products = subscription_day.get('nb_products')
             lines = []
@@ -130,6 +129,17 @@ class SubscriptionManager():
             #increment day
             current_dt = current_dt + timedelta(days=1)
             nb_days = nb_days + 1
+
+    def delete_all_shipments(self, subscription):
+        for shipment in subscription.shipments:
+            ShipmentDao.delete(shipment.id)
+        subscription.nb_products = 0
+        subscription.nb_orders = 0
+        subscription.price = 0.0
+        subscription.shipping_price = 0.0
+        subscription.nb_shipments = 0
+        db.session.commit()
+
 
 
 

@@ -48,10 +48,10 @@ class ShipmentManager():
         sorted_lines = self.sort_lines_by_seller(lines)
         for grouped_lines in sorted_lines:
             self.orderService.create_by_shipment(created_shipment, grouped_lines['lines'], grouped_lines['seller_id'])
-        db.session.commit()
-        created_shipment.shipping_price, created_shipment.shipping_rules = self.businessService.apply_rules_for_shipment(
+            db.session.commit()
+            created_shipment.shipping_price, created_shipment.shipping_rules = self.businessService.apply_rules_for_shipment(
             created_shipment)
-        db.session.commit()
+            db.session.commit()
         if created_shipment.subscription_id is not None :
             self.items_add_subscription(created_shipment)
 
