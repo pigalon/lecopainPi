@@ -89,6 +89,8 @@ class ShipmentManager():
         shipment.shipping_price, shipment.shipping_rules = self.businessService.apply_rules_for_shipment(
             shipment)
         
+        shipment.updated_at = datetime.now()
+        
         if shipment.subscription != None:
             self.add_shipment_subscriptions(shipment)
 

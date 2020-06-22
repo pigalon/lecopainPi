@@ -10,7 +10,7 @@
         <select class="form-control" name="period" id="period" ref="period" style="width: 12rem; display:inline-block">
             <option value="day">Jour</option>
             <option value="week">Semaine</option>
-            <option value="all">Toutes</option>
+            <option value="month">Mois</option>
         </select>
         <button type="button" id="search" onclick="{search_reports}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
         <br>
@@ -36,8 +36,6 @@
                 </td>
             </tr>
         </table>
-
-       
     <script>
 
         String.prototype.replaceAll = function(str1, str2, ignore)
