@@ -50,7 +50,9 @@ def shipment_create():
              'customer_id': form.customer_id.data,
              'shipping_dt': form.shipping_dt.data,
              'category': form.category_name.data,
+             'subscription_id': form.subscription_id.data,
     }
+    
 
     if form.validate_on_submit():
         shipmentServices.create_shipment_and_parse_line(
@@ -59,8 +61,9 @@ def shipment_create():
         return redirect('/shipments')
 
     customers = customerService.optim_get_all()
+    subscription_id = request.args.get("subscription_id")
 
-    return render_template('/shipments/create_shipment.html', title='Creation de livraison', form=form, customers=customers)
+    return render_template('/shipments/create_shipment.html', title='Creation de livraison', form=form, customers=customers, subscription_id=subscription_id)
 
 
 #####################################################################

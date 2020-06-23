@@ -43,6 +43,7 @@ class ShipmentForm(FlaskForm):
     shipping_dt = DateTimeField('Date de Livraison', format='%d/%m/%Y')
     status = StringField('Status')
     category_name = StringField('Catégorie')
+    subscription_id = StringField('Id Abonnement')
     submit = SubmitField('Valider')
 
 

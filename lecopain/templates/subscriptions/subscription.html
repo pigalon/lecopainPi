@@ -84,6 +84,7 @@
         </div>
       </div>
       {%if subscription.nb_shipments | int > 0 %}
+       <span class="right"><a href="/shipments/new?subscription_id={{ subscription.id }}" class="btn btn-outline-dark">Ajouter une livraison à l'abonnement</a></span>
         <shipment-list subscription_id='{{subscription.id}}'></shipment-list>
       {%endif%}
       <br>
