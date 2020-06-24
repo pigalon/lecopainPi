@@ -154,7 +154,7 @@ class Shipment(db.Model):
     price = db.Column(db.Float)
     nb_products = db.Column(db.Integer, default=0)
     nb_orders = db.Column(db.Integer, default=0)
-    shipping_price = db.Column(db.Float)
+    shipping_price = db.Column(db.Float,default=0.0)
     shipping_status = db.Column(
         db.String(20), nullable=False, default=ShippingStatus_Enum.NON.value)
     shipping_dt = db.Column(db.DateTime)

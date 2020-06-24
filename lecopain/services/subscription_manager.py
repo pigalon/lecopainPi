@@ -16,6 +16,19 @@ class SubscriptionManager():
     businessService = BusinessService()
     shipmentServices = ShipmentManager()
 
+    def duplicate_subscription(self, subscription_id, subscription):
+        existing_subscription = SubscriptionDao.get_one(subscription_id)
+        created_subscription = SubscriptionDao.add(subscription)
+        created_subscription.category = existing_subscription.category
+        db.session.flush()
+        for subscription_day in existing_subscription.days:
+            created_day = SubscriptionDayDao.add(created_subscription.id, subscription_day.day_of_week)
+            created_day.nb_products = subscription_day.nb_products
+            created_day.price = subscription_day.price
+            created_day.shipping_price = subscription_day.shipping_price
+            SubscriptionDayDao.add_existing_lines(created_day, subscription_day.lines)
+
+
     def create_subscription(self, subscription):
         created_subscription = SubscriptionDao.add(subscription)
         db.session.flush()

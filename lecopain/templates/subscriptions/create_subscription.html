@@ -16,7 +16,9 @@
                     <option value="{{ customer.id }}">{{ customer.firstname }} {{ customer.lastname }}</option>
                     {% endfor %}
                 </select>
+                <input type="hidden" id="subscription_id" name="subscription_id" ref="subscription_id" value={{subscription_id}} />
             </div>
+            
 
             <div class="form-group">
                 Saisie de la date de début :

@@ -55,6 +55,13 @@ class SubscriptionDayDao:
         subscription_day.price = format(total_price, '.2f')
         subscription_day.nb_products = nb_products
         db.session.commit()
+        
+    @staticmethod
+    def add_existing_lines(subscription_day, lines):
+        for line in lines:
+            subscription_day.lines.append(SubscriptionLine(
+                subscription_day=subscription_day, seller_id=line.seller_id, product_id=line.product_id, quantity=line.quantity, price=line.price))
+        db.session.commit()
 
     @staticmethod
     def get_category(subscription_day):

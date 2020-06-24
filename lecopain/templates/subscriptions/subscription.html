@@ -24,11 +24,13 @@
           {% endif %}
         </div>
         <div class="card-body">
+          
           <ul class="list-group list-group-flush">
           {% set total = {'value': 0.00} %}
 
           <li class="list-group-item bg-light">
             Vendeur : <b>{{subscription.seller_name}}</b>
+            <span class="right"><a href="/subscriptions/new?subscription_id={{ subscription.id }}" class="btn btn-outline-dark">Dupliquer l'abonnement</a></span>
           </li>
           <li class="list-group-item">
             Jour de la semaine:

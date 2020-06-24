@@ -99,14 +99,28 @@ def subscription_create():
             'start_dt': form.start_dt.data,
             'end_dt': form.end_dt.data,
             }
+    
+    subscription_id = request.args.get("subscription_id")
 
     if form.validate_on_submit():
-        subscriptionServices.create_subscription(
+        
+        if subscription_id is not None:
+            subscriptionServices.duplicate_subscription(subscription_id=int(subscription_id),
             subscription=subscription)
+        else:
+            subscriptionServices.create_subscription(
+            subscription=subscription)
+            
         return redirect('/subscriptions')
 
     sellers = sellerServices.optim_get_all()
-    customers = customerServices.optim_get_all()
+    
+    if subscription_id is not None:
+        customers = []
+        subscription = subscriptionServices.get_one_db(int(subscription_id))
+        customers.append(subscription.customer)
+    else:
+        customers = customerServices.optim_get_all()
 
     return render_template('/subscriptions/create_subscription.html', title="Creation d'abonnement", form=form, customers=customers, sellers=sellers)
 
