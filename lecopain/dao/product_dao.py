@@ -77,6 +77,7 @@ class ProductDao:
     def create(product):
 
         created_product = Product(name=product.get('name'),
+                                  short_name=product.get('short_name'),
                             seller_id=product.get('seller_id'),
                             price=product.get('price'),
                             description=product.get('description'),
