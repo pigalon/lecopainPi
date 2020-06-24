@@ -34,11 +34,9 @@ class BusinessService:
     def is_from_caveirac_area(self, city):
         return city.lower() == 'caveirac'
     
-    def is_from_calvisson_area(self, city):
-        return city.lower() == 'calvisson'
+    def is_from_calvisson_bizac_area(self, city):
+        return 'calvisson' in city.lower() or 'bizac' in city.lower()
     
-    def is_from_bizac_area(self, city):
-        return city.lower() == 'bizac'
     
     def is_from_boissieres_area(self, city):
         return city.lower() == 'boissières'
@@ -164,11 +162,8 @@ class BusinessService:
         elif self.is_petitou(category) and self.is_from_stdionisy_area(city):
             ret, rules = self.petitou.get('stdionisy'), "petitou_stdionisy"
         
-        elif self.is_petitou(category) and self.is_from_bizac_area(city):
-            ret, rules = self.petitou.get('bizac'), "petitou_bizac"
-        
-        elif self.is_petitou(category) and self.is_from_calvisson_area(city):
-            ret, rules = self.petitou.get('calvisson'), "petitou_bizac"
+        elif self.is_petitou(category) and self.is_from_calvisson_bizac_area(city):
+            ret, rules = self.petitou.get('bizac'), "petitou_calvi_bizac"
 
         
         if ret == None:
