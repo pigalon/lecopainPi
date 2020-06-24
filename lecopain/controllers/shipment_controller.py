@@ -270,6 +270,6 @@ def api_day_shipments(period, day, customer_id):
         limit = 10
     
     return jsonify(Pagination.get_paginated_list(
-        data, '/api/shipments/period/'+period+'/day/'+day+'/customers/'+str(customer_id),
+        data, '/api/shipments/period/'+period+'/date/'+day+'/customers/'+str(customer_id),
         start=request.args.get('start', int(start)),
         limit=request.args.get('limit', int(limit))))

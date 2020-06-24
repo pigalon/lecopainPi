@@ -1,23 +1,15 @@
 <search-product>
     <div class="form-group">
-    <table>
-            <tr>
-            <th>
-                Vendeur:
-            </th>
-            </tr>
-            <tr>
-                <td>
-                    <select class="form-control" name="seller_id" id="seller_id" ref="seller_id" style="width: 12rem; display:inline-block" >
-                        <option value="0" SELECTED>Tous</option>
-                        <option each="{ seller in sellers }"  value={seller.id}>{seller.name} </option>
-                    </select>
-                </td>
-                <td>
-                    <button type="button" id="search" onclick="{load_products}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
-                </td>
-            </tr>
-        </table>
+        Vendeur:
+        <select class="form-control" name="seller_id" id="seller_id" ref="seller_id" style="width: 12rem; display:inline-block" >
+            <option value="0" SELECTED>Tous</option>
+            <option each="{ seller in sellers }"  value={seller.id}>{seller.name} </option>
+        </select>
+        <select class="form-control" id="product_id" name="product_id" ref="product_id" style="width: 12rem; display:inline-block">
+            <option value="0" SELECTED>Tous</option>
+            <option each="{ product_name in product_names }" value={product_name.id}> {product_name.name} </option>
+        </select>
+        <button type="button" id="search" onclick="{load_products}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
 
         <div class="right">
             <a role="button" href="/products/new" class="btn btn-primary display:inline-block">Ajouter</i></a>
@@ -81,8 +73,13 @@
 
 		this.on('mount', function() {
             var ajaxCall_sellers = self.load_sellers();
-			ajaxCall_sellers.done(function(data) {
+			    ajaxCall_sellers.done(function(data) {
 				$(self.refs.seller_id).select2();
+			})
+
+            var ajaxCall_product_names = self.load_product_names();
+			    ajaxCall_product_names.done(function(data) {
+				$(self.refs.product_id).select2();
 			})
             //this.load_products()
             const location  = $('window.location')
@@ -94,8 +91,13 @@
 		load_products(){
             var product_url = '/api/products/';
             var seller_id = self.refs.seller_id.value;
+            var product_id = self.refs.product_id.value;
 
             product_url = product_url.concat('sellers/',seller_id);
+
+            if ( product_id != undefined && product_id != '0'){
+                product_url = product_url.concat('/id/',product_id);
+            }
 
 			$.ajax({
 					url: product_url,
@@ -152,6 +154,19 @@
                     self.previous_start = parseInt(data['start'])-parseInt(limit)
                     self.next_url = data['next']
                     self.previous_url = data['previous']
+                    self.update()
+                }
+            });
+		}
+        load_product_names(){
+			var url = '/api/products/';
+			return $.ajax({
+                url: url,
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function(data) {
+                    self.product_names = data['products']
                     self.update()
                 }
             });

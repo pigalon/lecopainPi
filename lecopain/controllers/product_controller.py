@@ -111,6 +111,15 @@ def delete_order(product_id):
 #####################################################################
 #                                                                   #
 #####################################################################
+@product_page.route('/api/products/')
+@login_required
+def api_products():
+    return jsonify({'products': productServices.optim_get_all()})
+    
+
+#####################################################################
+#                                                                   #
+#####################################################################
 @product_page.route('/api/products/sellers/<int:seller_id>')
 @login_required
 def api_products_by_seller(seller_id):
@@ -143,3 +152,23 @@ def api_products_categories():
 @login_required
 def api_products_by_seller_and_category(seller_id, category):
     return jsonify({'products': productServices.get_all_by_seller_category(seller_id, category)})
+
+@product_page.route('/api/products/sellers/<int:seller_id>/id/<string:product_id>')
+@login_required
+def api_products_by_product_id(seller_id, product_id):
+
+    product = productServices.get_one(int(product_id))
+    data = [product]
+    
+    start = request.args.get("start")
+    limit = request.args.get("limit")
+    if start is None:
+        start = 1
+    if limit is None:
+        limit = 10
+    
+    return jsonify(Pagination.get_paginated_list(
+        data, '/api/products/sellers/'+str(seller_id),
+        start=request.args.get('start', int(start)),
+        limit=request.args.get('limit', int(limit))))
+
