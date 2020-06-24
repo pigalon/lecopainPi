@@ -20,7 +20,7 @@
 								<select class="form-control" id="category" ref="category" name="category" onchange="{ load_products }" >
 									<option each="{ category in categories }" value={category}> {category} </option>
 								</select>
-
+								<input type="hidden" id="category_name" name="category_name" ref="category_name" value={category} />
 							</td>
 						</tr>
 			</div>
@@ -73,6 +73,8 @@
 		price=0
 		product_name=''
 		first_seller_id=0
+
+		sub_category =  opts.sub_category
 
 		var self = this
 
@@ -145,14 +147,20 @@
 				page_lines = page_lines.replaceAll("'", "\"")
 				this.load_lines()
 			}
+			
 
 			var ajaxCall_seller = self.load_sellers()
 			var ajaxCall_categories = self.load_categories()
 			ajaxCall_seller.done(function(data1) {
 				ajaxCall_categories.done(function(data2) {
+
+					if(sub_category != 'INIT'){
+						self.refs.category.value = sub_category
+						self.refs.category.disabled = true
+					}
 					var ajaxCall_product = self.load_products();
 					ajaxCall_product.done(function(data3) {
-						$(self.refs.product).select2();
+						$(self.refs.product).select2({ width: 'resolve' });
 					})
 
 				})
@@ -162,7 +170,12 @@
 			if(self.refs.line_product_id == undefined){
 				message_validation = 'Veuillez saisir au moins un article!'
 				self.refs.submit_button.disabled = true
-				self.refs.category.disabled = false
+				if(sub_category == 'INIT'){
+					self.refs.category.disabled = false
+				}
+				else{
+					self.refs.category.disabled = true
+				}
 			}
 			else{
 				message_validation = ''
@@ -177,13 +190,19 @@
 			if(self.refs.line_product_id == undefined){
 				message_validation = 'Veuillez saisir au moins un article!'
 				self.refs.submit_button.disabled = true
-				self.refs.category.disabled = false
+				if(sub_category == 'INIT'){
+					self.refs.category.disabled = false
+				}
+				else{
+					self.refs.category.disabled = true
+				}
 			}
 			else{
 				message_validation = ''
 				self.refs.submit_button.disabled = false
 				self.refs.category.disabled = true
 			}
+			
 		});
 
 		/******************************************
@@ -202,6 +221,7 @@
 					success: function(data) {
 						self.products = data['products']
 						self.update()
+						$(self.refs.product).select2({ width: 'resolve' });
 					}
 				});
 		}

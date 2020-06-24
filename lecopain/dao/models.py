@@ -50,6 +50,7 @@ class Category_Enum(Enum):
     PETITOU = "PETITOU"
 
 
+
 class ProductStatus(db.Model):
     name = db.Column(db.String(50), primary_key=True)
 
@@ -333,7 +334,7 @@ class Subscription(db.Model):
     nb_orders = db.Column(db.Integer, default=0)
     nb_shipments = db.Column(db.Integer, default=0)
     category = db.Column(
-        db.String(20), default=Category_Enum.ARTICLE.value)
+        db.String(20), default='INIT')
 
     days = db.relationship('SubscriptionDay', backref='week',
                            order_by='asc(SubscriptionDay.day_of_week)',
@@ -662,7 +663,7 @@ class SubscriptionSchema(SQLAlchemyAutoSchema):
         include_relationships = True
 
     def format_customer_name(self, subscription):
-        return "{}, {}".format(subscription.customer.firstname, subscription.customer.lastname)
+        return "{} {}".format(subscription.customer.firstname, subscription.customer.lastname)
 
     def format_start_dt(self, subscription):
         return subscription.start_dt.strftime('%A %d %B %Y')
@@ -685,7 +686,7 @@ class CompleteSubscriptionSchema(SQLAlchemyAutoSchema):
         include_relationships = True
 
     def format_customer_name(self, subscription):
-        return "{}, {}".format(subscription.customer.firstname, subscription.customer.lastname)
+        return "{} {}".format(subscription.customer.firstname, subscription.customer.lastname)
 
     def format_start_dt(self, subscription):
         return subscription.start_dt.strftime('%A %d %B %Y')
@@ -744,6 +745,7 @@ class CompleteSubscriptionDaySchema(SQLAlchemyAutoSchema):
     customer_name = fields.Method("format_customer_name", dump_only=True)
     customer_city = fields.Method("format_customer_city", dump_only=True)
     lines = fields.Method("format_lines", dump_only=True)
+    category = fields.Method("format_category", dump_only=True)
     class Meta:
         # Fields to expose
         model = SubscriptionDay
@@ -751,7 +753,7 @@ class CompleteSubscriptionDaySchema(SQLAlchemyAutoSchema):
         include_relationships = True
 
     def format_customer_name(self, subscription_day):
-        return "{}, {}".format(subscription_day.subscription.customer.firstname, subscription_day.subscription.customer.lastname)
+        return "{} {}".format(subscription_day.subscription.customer.firstname, subscription_day.subscription.customer.lastname)
 
     def format_lines(self, subscription_day):
         lines = []
@@ -762,5 +764,8 @@ class CompleteSubscriptionDaySchema(SQLAlchemyAutoSchema):
     
     def format_customer_city(self, subscription_day):
         return "{}".format(subscription_day.subscription.customer.city)
+
+    def format_category(self, subscription_day):
+        return "{}".format(subscription_day.subscription.category)
 
 

@@ -9,7 +9,7 @@ from lecopain.helpers.date_utils import dates_range, Period_Enum
 from lecopain.services.business_service import BusinessService
 from lecopain.services.shipment_manager import ShipmentManager
 from datetime import timedelta
-
+from lecopain.dao.models import Category_Enum
 
 class SubscriptionManager():
 
@@ -68,17 +68,21 @@ class SubscriptionManager():
 
     # @
     #
-    def create_day_and_parse_line(self, subscription_day, lines):
+    def create_day_and_parse_line(self, subscription_day, lines, category=Category_Enum.ARTICLE.value):
         parsed_lines = self.parse_lines(lines)
-        self.create_day(subscription_day, parsed_lines)
+        self.create_day(subscription_day, parsed_lines, category)
 
     # @
     #
-    def create_day(self, subscription_day, lines):
+    def create_day(self, subscription_day, lines, category=Category_Enum.ARTICLE.value):
         id = subscription_day.get('id')
         subscription_day_db = SubscriptionDayDao.get_one(id)
         SubscriptionDayDao.add_lines(subscription_day_db, lines)
-                
+        
+        if subscription_day_db.subscription.category == 'INIT':
+            subscription_day_db.subscription.category = category
+            db.session.commit()
+        
         subscription_day_db.shipping_price, subscription_day_db.shipping_rules = self.businessService.apply_rules_for_subscription_day(
             subscription_day_db)
         
@@ -117,6 +121,7 @@ class SubscriptionManager():
                 'customer_id': subscription.customer_id,
                 'shipping_dt': current_dt,
                 'subscription_id': subscription.id,
+                'category' : subscription.category,
             }
             nb_products = subscription_day.get('nb_products')
             lines = []

@@ -90,4 +90,5 @@ class SubscriptionForm(FlaskForm):
     
 
 class SubscriptionDayForm(FlaskForm):
+    category_name = StringField('Catégorie')
     submit = SubmitField('Valider')

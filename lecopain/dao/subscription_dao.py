@@ -48,7 +48,8 @@ class SubscriptionDao:
         customer = Customer.query.get_or_404(int(subscription.get('customer_id')))
         created_subscription = Subscription(customer_id=subscription.get('customer_id'),
                             start_dt=subscription.get('start_dt'),
-                            end_dt=subscription.get('end_dt'))
+                            end_dt=subscription.get('end_dt'),
+                            category='INIT')
         db.session.add(created_subscription)
         customer.nb_subscriptions = customer.nb_subscriptions + 1
         return created_subscription

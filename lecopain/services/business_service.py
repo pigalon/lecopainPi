@@ -78,8 +78,12 @@ class BusinessService:
         nb_far_products = 0
 
         nb_local_products, nb_far_products = self.get_all_products_numbers(subscription_day)
+        
+        subscription = subscription_day.subscription
+        
+        city = subscription.customer.city.lower()
                 
-        return self.get_price_and_associated_rules(subscription_day.subscription.category, nb_local_products, nb_far_products)
+        return self.get_price_and_associated_rules(category=subscription_day.subscription.category, nb_local_products=nb_local_products, nb_far_products=nb_far_products, city=city)
 
     def apply_rules_for_shipment(self, shipment):
         amount = 0.0

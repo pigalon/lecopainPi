@@ -179,17 +179,20 @@ def subscription_day(subscription_day_id):
 def subscription_week_day(subscription_id, week_day):
     subscription_day = subscriptionServices.get_week_day(subscription_id, week_day)
     form = SubscriptionDayForm()
-
-    lines = (
-        request.form.getlist('product_id[]'),
-        request.form.getlist('seller_id[]'),
-        request.form.getlist('quantity[]'),
-        request.form.getlist('price[]'),
-    )
+    
 
     if form.validate_on_submit():
+        lines = (
+            request.form.getlist('product_id[]'),
+            request.form.getlist('seller_id[]'),
+            request.form.getlist('quantity[]'),
+            request.form.getlist('price[]'),
+        )
+
+        category =  form.category_name.data
+
         subscriptionServices.create_day_and_parse_line(
-            subscription_day=subscription_day, lines=lines)
+            subscription_day=subscription_day, lines=lines, category=category)
         return redirect('/subscriptions/'+str(subscription_day.get('subscription')))
 
     return render_template('/subscriptions/subscription_day.html', form=form, subscription_day=subscription_day)

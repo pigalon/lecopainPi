@@ -16,7 +16,7 @@
 <br>
     <div class="card  " >
         <div class="card-header text-white bg-info">
-          Abonnement N° {{subscription.id}} - {{subscription.customer_name}} 
+          Abonnement N° {{subscription.id}} - De : {{subscription.customer_name}} - Catégorie : {{subscription.category}} 
           {% if subscription.nb_shipments < 1 %}
             <span class="right"><a href="/subscriptions/generate/{{ subscription.id }}" class="btn btn-outline-dark">Générer livraisons/commandes</a></span>
           {% else %}

@@ -50,12 +50,12 @@
             </table>
           </li>
         {%else%}
-          <seller-product-line></seller-product-line>
+          <seller-product-line sub_category='{{subscription_day.category}}'></seller-product-line>
         {%endif%}
 
       </div>
     </div>
-   {%if subscription_day.lines | length == 0 %}
+  {%if subscription_day.lines | length == 0 %}
   {%endif%}
 
       <br>
