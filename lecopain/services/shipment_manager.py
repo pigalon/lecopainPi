@@ -4,7 +4,7 @@ from lecopain.app import app, db
 from lecopain.services.business_service import BusinessService
 from lecopain.services.item_service import ItemService
 from lecopain.services.order_manager import OrderManager
-from lecopain.dao.models import Line, Product, Seller, Customer, Shipment, ShipmentStatus_Enum
+from lecopain.dao.models import Line, Product, Seller, Customer, Shipment, ShipmentStatus_Enum, Category_Enum
 from lecopain.helpers.date_utils import dates_range, Period_Enum
 from lecopain.dao.shipment_dao import ShipmentDao
 from lecopain.dao.subscription_dao import SubscriptionDao
@@ -49,7 +49,11 @@ class ShipmentManager():
         for grouped_lines in sorted_lines:
             self.orderService.create_by_shipment(created_shipment, grouped_lines['lines'], grouped_lines['seller_id'])
             db.session.commit()
-            created_shipment.shipping_price, created_shipment.shipping_rules = self.businessService.apply_rules_for_shipment(
+            if created_shipment.category != Category_Enum.PRESTATION.value:
+                created_shipment.shipping_price, created_shipment.shipping_rules = self.businessService.apply_rules_for_shipment(
+            created_shipment)
+            else :
+                created_shipment.shipping_price, created_shipment.shipping_rules = self.businessService.prestation_rules_for_shipment(
             created_shipment)
             db.session.commit()
         if created_shipment.subscription_id is not None :

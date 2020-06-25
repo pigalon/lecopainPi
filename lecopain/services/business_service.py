@@ -142,10 +142,10 @@ class BusinessService:
             ret, rules = self.drive.get('!langlade'), "drive_non-local"
         
         if self.is_course(category) and nb_local_products > 0:
-            ret, rules = self.course.get('langlade'), "drive_local"
+            ret, rules = self.course.get('langlade'), "course_local"
             
         elif self.is_course(category) and nb_far_products > 0:
-            ret, rules = self.course.get('!langlade'), "drive_non-local"
+            ret, rules = self.course.get('!langlade'), "course_non-local"
             
         if self.is_petitou(category) and self.is_from_local_area(city):
             ret, rules = self.petitou.get('langlade'), "petitou_local"
@@ -164,10 +164,19 @@ class BusinessService:
         
         elif self.is_petitou(category) and self.is_from_calvisson_bizac_area(city):
             ret, rules = self.petitou.get('bizac'), "petitou_calvi_bizac"
-
         
         if ret == None:
             ret = 0.0
         return format(ret, '.2f'), rules
+    
+    def prestation_rules_for_shipment(self, shipement):
+        shipping_price = 0.0
+        rules = 'prestation'
+        for order in shipement.orders:
+            shipping_price = shipping_price + order.price
+            
+        if shipping_price == None:
+            shipping_price = 0.0
+        return format(shipping_price, '.2f'), rules
 
 

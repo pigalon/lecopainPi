@@ -48,6 +48,7 @@ class Category_Enum(Enum):
     COURSETTE = "COURSETTE"
     DRIVE = "DRIVE"
     PETITOU = "PETITOU"
+    PRESTATION = "PRESTATION"
 
 
 
@@ -76,21 +77,6 @@ class Customer(db.Model):
 
     def __repr__(self):
         return "Customer('{self.firstname}','{self.lastname}','{self.email}')"
-
-    # def to_dict(self):
-    #     orders_dict = []
-    #     for order in self.orders:
-    #         orders_dict.append(order.to_dict())
-    #     return {
-    #         'id': self.id,
-    #         'firstname': self.firstname,
-    #         'lastname': self.lastname,
-    #         'address': self.address,
-    #         'cp': self.cp,
-    #         'city': self.city,
-    #         'email': self.email,
-    #         'orders': orders_dict
-    #     }
 
 class Order(db.Model):
     __tablename__ = 'orders'
@@ -191,8 +177,6 @@ class Shipment(db.Model):
     def add_order(self, order):
         self.orders.append(order)
         self.active_order(order)
-
-
 
     def __repr__(self):
         return '<Shipment {}>'.format(self.id)
@@ -354,9 +338,6 @@ class Subscription(db.Model):
         self.nb_products = self.nb_products + shipment.nb_products
         self.nb_orders = self.nb_orders + shipment.nb_orders
         self.nb_shipments = self.nb_shipments + 1
-
-
-
 
 class SubscriptionDay(db.Model):
     __tablename__ = 'subscription_days'

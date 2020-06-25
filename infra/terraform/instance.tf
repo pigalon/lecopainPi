@@ -25,18 +25,23 @@ resource "aws_instance" "lecopain" {
 
   provisioner "remote-exec" {
     inline = [
-        "sudo apt-get update",
-        "sudo apt install -y docker.io",
+        "sudo sudo apt-get update -yqq && sudo apt-get install -yqq docker.io",
         "sudo usermod -aG docker ubuntu",
         "sudo curl -L \"https://github.com/docker/compose/releases/download/1.26.0-rc4/docker-compose-$(uname -s)-$(uname -m)\" -o /usr/local/bin/docker-compose",
         "sudo chmod +x /usr/local/bin/docker-compose",
         "sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose",
-        "sudo mkdir /usr/share/db",
-        "sudo mkdir /usr/share/db/lecopain",
-        "sudo chown ubuntu:ubuntu /usr/share/db/lecopain",
-        "sudo chmod 664 /usr/share/db/lecopain"
+        "sudo mkdir /usr/share/certs",
+        "sudo mkdir /usr/share/certs/nginx",
+        "sudo chown ubuntu:ubuntu /usr/share/certs/nginx",
+        "sudo chmod 664 /usr/share/certs/nginx"
       ]
+    }
+  
+  provisioner "file" {
+      source      = "~/dev/infra/keys_cert/lecopain/"
+      destination = "/usr/share/certs/nginx"
   }
+  
 }
 
 resource "aws_security_group" "lecopain" {
@@ -73,6 +78,9 @@ resource "aws_security_group" "lecopain" {
 }
 
 resource "aws_eip" "lecopain_ip" {
-    vpc = true
-    instance = aws_instance.lecopain.id
+  vpc = true
+  instance = aws_instance.lecopain.id
+    tags = {
+      Name  = "lecopain-ip"
+  }
 }
