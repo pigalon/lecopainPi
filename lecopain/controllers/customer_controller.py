@@ -1,6 +1,5 @@
-from lecopain.dao.models import Customer
 from lecopain.services.customer_manager import CustomerManager
-from lecopain.app import app, db
+from lecopain.app import app
 from lecopain.form import PersonForm
 from lecopain.helpers.pagination import Pagination
 from flask import Blueprint, render_template, request, redirect, url_for, Flask, jsonify
@@ -34,13 +33,7 @@ def customers():
 def create_customer():
     form = PersonForm()
     if form.validate_on_submit():
-        customer = Customer(firstname=form.firstname.data,
-                            lastname=form.lastname.data, email=form.email.data)
-        customer.address = form.address.data
-        customer.cp = form.cp.data
-        customer.city = form.city.data
-        db.session.add(customer)
-        db.session.commit()
+        customerServices.add_customer_form(form)
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect('/customers')
     return render_template('/customers/create_customer.html', title='Création du client', form=form)
@@ -52,7 +45,7 @@ def create_customer():
 @customer_page.route("/customers/<int:customer_id>", methods=['GET', 'POST'])
 @login_required
 def customer(customer_id):
-    customer = customerServices.get_one(customer_id)
+    customer = customerServices.read_one(customer_id)
     return render_template('/customers/customer.html', customer=customer, title='Clients')
 
 #####################################################################
@@ -61,22 +54,12 @@ def customer(customer_id):
 @customer_page.route("/customers/update/<int:customer_id>", methods=['GET', 'POST'])
 @login_required
 def display_update_order(customer_id):
-    customer = Customer.query.get_or_404(customer_id)
+    customer = customerServices.get_one(customer_id)
     form = PersonForm()
 
     if form.validate_on_submit():
-        print('update form validate : ' + str(customer.id))
 
-        #shipping_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.shipping_dt.data)
-        customer.firstname = form.firstname.data
-        customer.lastname = form.lastname.data
-        customer.email = form.email.data
-        customer.address = form.address.data
-        customer.cp = form.cp.data
-        customer.city = form.city.data
-
-        db.session.commit()
-
+        customerServices.update_customer_form(customer_id, form)
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('customer_page.customers'))
     else:
@@ -96,7 +79,7 @@ def display_update_order(customer_id):
 @customer_page.route("/customers/delete/<int:customer_id>")
 @login_required
 def display_delete_customer(customer_id):
-    customer = Customer.query.get_or_404(customer_id)
+    customer = customerServices.get_one(customer_id)
     return render_template('/customers/delete_customer.html', customer=customer, title='Suppression de client')
 
 #####################################################################
@@ -105,9 +88,7 @@ def display_delete_customer(customer_id):
 @customer_page.route("/customers/<int:customer_id>", methods=['DELETE'])
 @login_required
 def delete_customer(customer_id):
-    customer = Customer.query.get_or_404(customer_id)
-    db.session.delete(customer)
-    db.session.commit()
+    
     return jsonify({})
 
 
@@ -141,7 +122,7 @@ def api_customers_cities(city):
 @login_required
 def api_customers_customer_id(city, customer_id):
     
-    customer = customerServices.get_one(customer_id)
+    customer = customerServices.read_one(customer_id)
     data = [customer]
     
     start = request.args.get("start")

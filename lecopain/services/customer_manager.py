@@ -21,12 +21,41 @@ class CustomerManager():
 
     def optim_get_all(self):
         return CustomerDao.optim_read_all()
+    
+    def read_one(self, id):
+        return CustomerDao.read_one(id)
 
     def get_one(self, id):
-        return CustomerDao.read_one(id)
+        return CustomerDao.get_one(id)
 
     def get_all_cities(self):
         return CustomerDao.get_all_cities()
 
     def get_all_by_city(self, city):
         return CustomerDao.read_all_by_cities(city)
+    
+    def add_customer_form(self, form):
+        customer = Customer(firstname=form.firstname.data,
+                            lastname=form.lastname.data, email=form.email.data)
+        customer.address = form.address.data
+        customer.cp = form.cp.data
+        customer.city = form.city.data
+        CustomerDao.add(customer)
+        
+    def update_customer_form(self, customer_id, form):
+        
+        customer = CustomerDao.get_one(customer_id)
+
+        customer.firstname = form.firstname.data
+        customer.lastname = form.lastname.data
+        customer.email = form.email.data
+        customer.address = form.address.data
+        customer.cp = form.cp.data
+        customer.city = form.city.data
+        
+        CustomerDao.update()
+        
+    def delete(self, id):
+        customer = CustomerDao.get_one(id)
+        CustomerDao.delete(customer)
+

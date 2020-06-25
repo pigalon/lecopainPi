@@ -22,11 +22,13 @@ class CustomerDao:
 
     @staticmethod
     def get_all():
-
-        # Create the list of people from our data
         return Customer.query \
         .order_by(Customer.firstname.asc()) \
         .all()
+        
+    @staticmethod
+    def get_one(customer_id):
+        return Customer.query.get_or_404(customer_id)
 
     @staticmethod
     def read_all():
@@ -74,3 +76,18 @@ class CustomerDao:
         for city in cities:
             final_cities.append(city[0])
         return final_cities
+    
+    @staticmethod
+    def add(customer):
+        db.session.add(customer)
+        db.session.commit()
+        
+    @staticmethod
+    def update():
+        db.session.commit()
+        
+    @staticmethod
+    def delete(customer):
+        db.session.delete(customer)
+        db.session.commit()
+
