@@ -11,6 +11,7 @@
                     <th width="20%">date</th>
                     <th width="30%">client</th>
                     <th width="20%">Status</th>
+                    <th width="20%">Liv.</th>
                 </tr>
             </table>
             </td>
@@ -32,6 +33,9 @@
                     <span if={shipment.payment_status == 'OUI'} style="color:green" ><i class="fas fa-credit-card"></i></i></span>
                     <span if={shipment.payment_status == 'NON'} style="color:grey" ><i class="fas fa-credit-card"></i></i></span>
                     <span if={shipment.subscription_id != None} class="badge badge-warning">Ab.</span>
+                    </td>
+                    <td width="20%">
+                        {shipment.shipping_price.toFixed(2)} €
                     </td>
                 </tr>
             </table>

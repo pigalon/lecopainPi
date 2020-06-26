@@ -13,6 +13,7 @@
                     <th width="20%">date</th>
                     <th width="30%">client</th>
                     <th width="20%">Status</th>
+                    <th width="20%">Liv.</th>
                 </tr>
             </table>
             </td>
@@ -29,10 +30,13 @@
                     <td width="20%">{moment(shipment.shipping_dt).format('ddd Do MMMM' )}</td>
                     <td width="30%">{shipment.customer_name}</td>
                     <td width="20%"><span if={shipment.shipping_status == 'OUI'} style="color:green" ><i class="fas fa-cart-arrow-down "></i></span>
-                    <span if={shipment.shipping_status == 'NON'} style="color:grey" ><i class="fas fa-cart-arrow-down "></i></span>
-                    <span if={shipment.payment_status == 'OUI'} style="color:green" ><i class="fas fa-credit-card "></i></span>
-                    <span if={shipment.payment_status == 'NON'} style="color:grey" ><i class="fas fa-credit-card "></i></span>
-                    <span if={shipment.subscription_id != None} class="badge badge-warning" >Ab.</span>
+                        <span if={shipment.shipping_status == 'NON'} style="color:grey" ><i class="fas fa-cart-arrow-down "></i></span>
+                        <span if={shipment.payment_status == 'OUI'} style="color:green" ><i class="fas fa-credit-card "></i></span>
+                        <span if={shipment.payment_status == 'NON'} style="color:grey" ><i class="fas fa-credit-card "></i></span>
+                        <span if={shipment.subscription_id != None} class="badge badge-warning" >Ab.</span>
+                    </td>
+                    <td width="20%">
+                        {shipment.shipping_price.toFixed(2)} €
                     </td>
                 </tr>
             </table>
