@@ -20,9 +20,9 @@ class FlaskTestCase(BaseTestCase, TestCase):
             response = client.get('/login', content_type='html/text')
         self.assertEqual(response.status_code, 200)
 
-    def test_index_login(self):
-        page = self.login('admin', 'password')
-        assert 'View Details' in str(page.data)
+    # def test_index_login(self):
+    #     page = self.login('admin', 'password')
+    #     assert 'View Details' in str(page.data)
 
     def test_products_index(self):
         with app.test_client() as client:
