@@ -7,8 +7,6 @@ from aenum import Enum
 from marshmallow import fields
 from marshmallow_sqlalchemy import (ModelSchema, SQLAlchemySchema, SQLAlchemyAutoSchema, auto_field)
 
-
-
 class OrderStatus_Enum(Enum):
     ANNULEE = "ANNULEE"
     DEFAUT = "DEFAUT"
@@ -49,8 +47,6 @@ class Category_Enum(Enum):
     DRIVE = "DRIVE"
     PETITOU = "PETITOU"
     PRESTATION = "PRESTATION"
-
-
 
 class ProductStatus(db.Model):
     name = db.Column(db.String(50), primary_key=True)
@@ -396,6 +392,11 @@ class SubscriptionLine(db.Model):
             'quantity': self.quantity,
             'price': self.price
         }
+class Stat(db.Model):
+    __tablename__ = 'stats'
+    __table_args__ = {'extend_existing': True}
+    id = db.Column(db.Integer, primary_key=True)
+    updated_at = db.Column(db.DateTime)
 
 class CustomerSchema(SQLAlchemyAutoSchema):
 

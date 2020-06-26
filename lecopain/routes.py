@@ -4,7 +4,8 @@ from datetime import datetime
 import locale
 from lecopain.app import app, db
 from lecopain.form import PersonForm, OrderForm, ProductForm, LoginForm
-from lecopain.dao.models import Customer, Order, Product, Seller, User, Subscription
+from lecopain.dao.models import Customer, Order, Product, Seller, User, Subscription, Shipment, Stat
+import lecopain.dao.events_session
 
 from lecopain.controllers.customer_controller import customer_page
 from lecopain.controllers.shipment_controller import shipment_page
@@ -62,7 +63,11 @@ def home():
         products_nb = Product.query.count()
         sellers_nb = Seller.query.count()
         subscriptions_nb = Subscription.query.count()
-        return render_template('base.html', customers_nb=customers_nb, orders_nb=orders_nb, products_nb=products_nb, sellers_nb=sellers_nb)
+        shipments_nb = Shipment.query.count()
+        
+        stat = Stat.query.get_or_404(1)
+        
+        return render_template('base.html', customers_nb=customers_nb, orders_nb=orders_nb, products_nb=products_nb, sellers_nb=sellers_nb, subscriptions_nb=subscriptions_nb, shipments_nb=shipments_nb, stat=stat)
     else:
         app.logger.info("Need to be authenticated: " +
                         " with IP address : " + str(request.remote_addr))
