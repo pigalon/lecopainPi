@@ -29,7 +29,7 @@ def get_week_range(year, calendar_week):
 
 
 def get_month_range(year, calendar_month):
-    start = datetime.today().replace(day=1)
+    start = datetime.today().replace(day=1)-timedelta(days=1)
     tmp, day_end = calendar.monthrange(year, calendar_month)
     end = datetime.today().replace(day=day_end)
     return start, end
