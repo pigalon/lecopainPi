@@ -4,10 +4,11 @@
             <option value="0" SELECTED>Tous</option>
             <option each="{ customer in customers }" value={customer.id}>{customer.firstname} {customer.lastname}</option>
         </select>
-                    <select class="form-control" name="period" id="period" ref="period" style="width: 12rem; display:inline-block">
-                        <option value="month">Mois</option>
-                        <option value="all">Tous</option>
-                    </select>
+        <input type="text"style="width:200px; display: inline-block;" name="day" ref="day" id="datepicker_day" data-language='fr' class="form-control datepicker-input" />
+        <select class="form-control" name="period" id="period" ref="period" style="width: 12rem; display:inline-block">
+            <option value="month">Mois</option>
+            <option value="all">Tous</option>
+        </select>
          <button type="button" id="search" onclick="{load_subscriptions}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
         
         <div class="right">
@@ -21,8 +22,10 @@
             <table width="100%">
                 <tr>
                     <th width="6%">id</th>
-                    <th width="64%">Période</th>
+                    <th width="34%">Période</th>
                     <th width="30%">client</th>
+                    <th width="20%">Catégorie</th>
+                    <th width="10%">Liv.</th>
                 </tr>
             </table>
             </td>
@@ -35,9 +38,10 @@
                     <td if={subscription.status == 'ANNULE'} width="6%" class="table-dark">{subscription.id}</td>
                     <td if={subscription.status == 'TERMINE'} width="6%" class="table-success">{subscription.id}</td>
                     <td if={subscription.status == 'DEFAUT'} width="6%" class="table-danger">{subscription.id}</td>
-                    <td width="64%">du <b>{moment(subscription.start_dt).format('ddd Do MMMM' )}</b> au <b>{moment(subscription.end_dt).format('ddd Do MMMM YYYY' )}</b></td>
+                    <td width="34%">du <b>{moment(subscription.start_dt).format('ddd Do MMMM' )}</b> au <b>{moment(subscription.end_dt).format('ddd Do MMMM YYYY' )}</b></td>
                     <td width="30%">{subscription.customer_name}</td>
-                    </td>
+                    <td width="20%">{subscription.category}</td>
+                    <td width="10%">{subscription.shipping_price.toFixed(2)} €</td>
                 </tr>
             </table>
             </td>
@@ -76,8 +80,16 @@
 			ajaxCall_customers.done(function(data) {
 				$(self.refs.customer_id).select2();
 			})
+            self.refs.day.value = moment().format('DD/MM/YYYY')
             const location  = $('window.location')
 		});
+
+        $(function () {
+            $("#datepicker_day").datepicker(
+                {autoClose: true}
+                
+            );
+        });
 
 		/******************************************/
        	// load subscription list
@@ -86,13 +98,14 @@
             var subscription_url = '/api/subscriptions/';
             var customer_id = self.refs.customer_id.value;
             var period = self.refs.period.value;
+            var day = self.refs.day.value;
 
             if (period == undefined){
                 period = 'all'
             }
 
             subscription_url = subscription_url.concat('period/',period,'/');
-
+            subscription_url = subscription_url.concat('date/', day.replaceAll("/",""),'/');
             subscription_url = subscription_url.concat('customers/',customer_id);
 
 			$.ajax({

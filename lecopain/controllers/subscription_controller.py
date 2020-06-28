@@ -67,11 +67,11 @@ def api_subscriptions_by_seller(seller_id):
 #####################################################################
 #                                                                   #
 #####################################################################
-@subscription_page.route('/api/subscriptions/period/<string:period>/customers/<int:customer_id>')
+@subscription_page.route('/api/subscriptions/period/<string:period>/date/<string:day>/customers/<int:customer_id>')
 @login_required
-def api_day_subscriptions(period, customer_id):
+def api_day_subscriptions(period, day, customer_id):
     
-    data = subscriptionServices.get_some(period=period, customer_id=customer_id)
+    data = subscriptionServices.get_some(period=period, day=day, customer_id=customer_id)
     
     start = request.args.get("start")
     limit = request.args.get("limit")
@@ -81,7 +81,7 @@ def api_day_subscriptions(period, customer_id):
         limit = 10
     
     return jsonify(Pagination.get_paginated_list(
-        data, '/api/subscriptions/period/'+period+'/customers/'+str(customer_id),
+        data, '/api/subscriptions/period/'+period+'/date/'+day+'/customers/'+str(customer_id),
         start=request.args.get('start', int(start)),
         limit=request.args.get('limit', int(limit))))
     #return jsonify({'subscriptions': subscriptionServices.get_some(period=period, customer_id=customer_id)})
@@ -210,7 +210,6 @@ def subscription_week_day(subscription_id, week_day):
         return redirect('/subscriptions/'+str(subscription_day.get('subscription')))
 
     return render_template('/subscriptions/subscription_day.html', form=form, subscription_day=subscription_day)
-
 
 
 #####################################################################

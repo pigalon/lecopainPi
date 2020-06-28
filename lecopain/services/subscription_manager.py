@@ -50,9 +50,9 @@ class SubscriptionManager():
     def get_all_by_seller(self, seller_id):
         return SubscriptionDao.read_all_by_seller(seller_id)
 
-
-    def get_some(self,  customer_id=0, period=Period_Enum.ALL.value):
-        start, end = dates_range(period)
+    def get_some(self,  customer_id=0, day=datetime.utcnow, period=Period_Enum.ALL.value):
+        datetime_day = datetime.strptime(day, '%d%m%Y')
+        start, end = dates_range(period, datetime_day)
         return SubscriptionDao.read_some(customer_id=customer_id, start=start, end=end)
 
     def get_one(self,  subscription_id):
