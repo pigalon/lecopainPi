@@ -35,7 +35,7 @@
                 <tr>
                     <td width="6%" class="table-primary">{product.id}</td>
                     <td width="29%">{product.name} - {product.short_name}</td>
-                    <td width="20%">{product.price}€</td>
+                    <td width="20%">{product.price.toFixed(2)}€</td>
                     <td width="20%">{product.category}</td>
                     <td width="25%">{product.seller_name}</td>
                 </tr>

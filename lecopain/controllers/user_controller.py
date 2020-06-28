@@ -49,7 +49,7 @@ def login():
         return redirect(url_for('home'))
 
     else:
-        return render_template('login.html', title='Sign In', form=form)
+        return render_template('login.html', title='Se connecter', form=form)
 
 
 @user_page.route("/logout")

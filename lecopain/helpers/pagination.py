@@ -7,13 +7,18 @@ class Pagination:
         start = int(start)
         limit = int(limit)
         count = len(results)
-        if count < start or limit < 0:
-            abort(404)
-        # make response
+        
         obj = {}
         obj['start'] = start
         obj['limit'] = limit
         obj['count'] = count
+                
+        
+        if count < start or limit < 0:
+            obj['results'] = []
+            return obj
+        # make response
+        
         # make URLs
         # make previous url
         if start == 1:

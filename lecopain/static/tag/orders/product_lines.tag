@@ -7,7 +7,7 @@
                         <tr>
                             <td>
                                 <select class="form-control" id="product_id" name="product_id" ref="product">
-									<option each="{ product in products }" value={product.id}> {product.name}  - {product.price}</option>
+									<option each="{ product in products }" value={product.id}> {product.name}  - {product.price.toFixed(2)}</option>
                                 </select>
                             </td>
                             <td>
@@ -27,7 +27,7 @@
                             <td width="20%"><input type="hidden" ref="line_product_id" id="line_product_id" name="product_id[]" value="{line.product_id}"/ maxlength="2" readonly>{line.id}</td>
                             <td width="35%">{line.product_name}</td>
                             <td width="30%"><input type="number" style="width: 5em" ref="quantity" name="quantity[]" value="{line.quantity}"/></td>
-                            <td width="30%"><input type="hidden" name="price[]" value="{line.price}"/>{line.price} €</td>
+                            <td width="30%"><input type="hidden" name="price[]" value="{line.price}"/>{line.price.toFixed(2)} €</td>
                             <td width="10%"><button type="button" id="remove" onclick="{remove_line}" class="btn btn-warning" ><i class="fa fa-minus"></i></button></td>
                         </tr>
                     </table>
@@ -53,11 +53,6 @@
 		page_lines = opts.lines
 
     	moment.locale('fr');
-
-		String.prototype.replaceAll = function(str1, str2, ignore)
-		{
-    		return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
-		}
 
 		this.on('mount', function() {
 			page_lines = page_lines.replaceAll("'", "\"")

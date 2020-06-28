@@ -15,7 +15,7 @@
 
         <ul class="list-group" width="100%">
             <li class="list-group-item" width="100%">
-                <span class="btn btn-warning">Totaux Période</span> -  <b>Nb commandes</b> : <span class="btn btn-warning">x{amounts['nb_orders']}</span> - <b>Nb articles</b> : <span class="btn btn-warning">x{amounts['nb_products']}</span> - <b>Montant total</b> : <span class="btn btn-warning">{amounts['price']}€</span>
+                <span class="btn btn-warning">Totaux Période</span> -  <b>Nb commandes</b> : <span class="btn btn-warning">x{amounts['nb_orders']}</span> - <b>Nb articles</b> : <span class="btn btn-warning">x{amounts['nb_products']}</span> - <b>Montant total</b> : <span class="btn btn-warning">{amounts['price'].toFixed(2)} €</span>
                 <table class="table table-bordered">
                     <tr>
                         <td each="{product in amounts['products']}">
@@ -26,7 +26,7 @@
 
             <li width="100%" class="list-group-item" each="{day_report, index in days}">
                 <table><tr>
-                <td> <span style="width: 200px; display: block;" class="btn btn-secondary">{moment(day_report['date']).format('dddd Do MMMM' ) }</span> </td> <td>-  <b>Nb commandes</b> : x{day_report['amount']['nb_orders']} - <b>Nb articles</b> : x{day_report['amount']['nb_products']} - <b>Montant total</b> : {day_report['amount']['price']}€</td>
+                <td> <span style="width: 200px; display: block;" class="btn btn-secondary">{moment(day_report['date']).format('dddd Do MMMM' ) }</span> </td> <td>-  <b>Nb commandes</b> : x{day_report['amount']['nb_orders']} - <b>Nb articles</b> : x{day_report['amount']['nb_products']} - <b>Montant total</b> : {day_report['amount']['price'].toFixed(2)} €</td>
                 <table class="table table-bordered" style="margin-bottom: 0px; padding-bottom: 0px">
                     <tr class="table-secondary">
                         <td each="{product in day_report['amount']['products']}">
@@ -85,11 +85,6 @@
 					self.update()
 				}
 			});
-		}
-
-        String.prototype.replaceAll = function(str1, str2, ignore)
-		{
-    		return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
 		}
 
         search(){

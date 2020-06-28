@@ -1,4 +1,13 @@
-from flask import Flask, Blueprint, render_template, url_for,  flash, redirect, jsonify, request, session
+from flask import (Flask, 
+                   Blueprint, 
+                   render_template, 
+                   url_for,  
+                   flash, 
+                   redirect, 
+                   jsonify, 
+                   request, 
+                   session,
+                   send_from_directory)
 from flask_login import login_required, current_user
 from datetime import datetime
 import locale
@@ -72,6 +81,11 @@ def home():
         app.logger.info("Need to be authenticated: " +
                         " with IP address : " + str(request.remote_addr))
         return redirect(url_for('user_page.login'))
+    
+    @app.route('/favicon.ico')
+    def favicon():
+        return send_from_directory(os.path.join(app.root_path, 'static'),
+                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

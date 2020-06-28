@@ -21,7 +21,7 @@
     <ul>
         <li><b>Nb Livraisons</b> : <span class="btn btn-warning">x{reports['nb_shipments']}</span> </li>
         <li><b>Nb Articles</b> : <span class="btn btn-warning">x{reports['nb_products']}</span></li>  
-        <li><b>Montant Livraison total</b> : <span class="btn btn-warning">{reports['shipping_price']}€</span></li>
+        <li><b>Montant Livraison total</b> : <span class="btn btn-warning">{reports['shipping_price'].toFixed(2)}€</span></li>
     </ul>
         <br><br>
         <h4>Liste des livraisons:</h4> 
@@ -32,16 +32,11 @@
                     <h5>Livraison N° : {shipment.id}</h5>
                     <p>Livré le : {moment(shipment.shipping_dt).format('ddd Do MMMM' )} <br>
                     Client :  {shipment.customer_name} <br>
-                    Montant livraison :  {shipment.shipping_price} €</p>
+                    Montant livraison :  {shipment.shipping_price.toFixed(2)} €</p>
                 </td>
             </tr>
         </table>
     <script>
-
-        String.prototype.replaceAll = function(str1, str2, ignore)
-        {
-            return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
-        }
 
         $(function () {
             $("#datepicker_day").datepicker(
