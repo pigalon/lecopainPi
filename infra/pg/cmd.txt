@@ -9,3 +9,4 @@ docker exec -it postgres-lecopain pg_dump -Fc -U postgres lecopain > backup-$(da
 
 crontab -e 
 * 21 * * * /home/ubuntu/backup.sh
+
