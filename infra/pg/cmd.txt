@@ -4,3 +4,8 @@ DATABASE_URL=postgresql+psycopg2://postgres:lecopain@localhost/lecopain
 POSTGRES_PASSWORD=lecopain
 
 
+docker exec -it postgres-lecopain pg_dump -Fc -U postgres lecopain > backup-$(date +%F_%T | tr ':' '-')
+
+
+crontab -e 
+* 21 * * * /home/ubuntu/backup.sh

@@ -10,9 +10,6 @@
             <option value="month">Mois</option>
             <option value="all">Toutes</option>
         </select>
-        <div class="right">
-            <a role="button" href="/orders/new" class="btn btn-primary display:inline-block">Ajouter</i></a>
-        </div>
     </div>
     <table id="orders_list" width="100%">
         <tr>
