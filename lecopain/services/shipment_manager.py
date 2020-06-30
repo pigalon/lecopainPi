@@ -141,23 +141,24 @@ class ShipmentManager():
     #
     def update_shipment_status(self, shipment_id, shipment_status):
         shipment = ShipmentDao.get_one(shipment_id)
-        if shipment_status == ShipmentStatus_Enum.ANNULEE.value and shipment.subscription_id is not None:
-            self.items_remove_subscription(shipment)
+        if shipment.status != shipment_status:
+            if shipment_status == ShipmentStatus_Enum.ANNULEE.value and shipment.subscription_id is not None:
+                self.items_remove_subscription(shipment)
 
-        if shipment_status == ShipmentStatus_Enum.CREE.value and shipment.subscription_id is not None:
-            self.items_add_subscription(shipment)
+            if shipment_status == ShipmentStatus_Enum.CREE.value and shipment.subscription_id is not None:
+                self.items_add_subscription(shipment)
 
-        ShipmentDao.update_status(shipment_id, shipment_status)
-
-    # @
-    #
-    def update_shipment_shipping_status(self, shipment_id, shipment_status):
-        ShipmentDao.update_shipping_status(shipment_id, shipment_status)
+            ShipmentDao.update_status(shipment_id, shipment_status)
 
     # @
     #
-    def update_shipment_payment_status(self, shipment_id, shipment_status):
-        ShipmentDao.update_payment_status(shipment_id, shipment_status)
+    def update_shipment_shipping_status(self, shipment_id, shipping_status):
+        ShipmentDao.update_shipping_status(shipment_id, shipping_status)
+
+    # @
+    #
+    def update_shipment_payment_status(self, shipment_id, payment_status):
+        ShipmentDao.update_payment_status(shipment_id, payment_status)
 
     # @
     #
