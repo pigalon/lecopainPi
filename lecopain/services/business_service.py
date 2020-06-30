@@ -9,7 +9,7 @@ class BusinessService:
     drive = {'langlade': 8.0, '!langlade': 8.0}
     petitou = {'langlade': 5.0, 
                       'nages':6,
-                      'stDionisy':6, 
+                      'stdionisy':6, 
                       'clarensac':7,
                       'caveirac':7,
                       'calvisson':8,
@@ -17,29 +17,29 @@ class BusinessService:
                       'boissières':8} 
                       
     def is_from_local_area(self, city):
-        return city.lower() == 'langlade'
+        return city.lower().replace(" ", "") == 'langlade'
     
     def is_from_foreign_area(self, city):
-        return city.lower() != 'langlade'
+        return city.lower().replace(" ", "") != 'langlade'
     
     def is_from_clarensac_area(self, city):
-        return city.lower() == 'clarensac'
+        return city.lower().replace(" ", "") == 'clarensac'
     
     def is_from_stdionisy_area(self, city):
-        return city.lower() == 'stdionisy'
+        return city.lower().replace(" ", "") == 'stdionisy'
     
     def is_from_nages_area(self, city):
-        return city.lower() == 'nages et solorgues'
+        return city.lower().replace(" ", "") == 'nages et solorgues'
     
     def is_from_caveirac_area(self, city):
-        return city.lower() == 'caveirac'
+        return city.lower().replace(" ", "") == 'caveirac'
     
     def is_from_calvisson_bizac_area(self, city):
-        return 'calvisson' in city.lower() or 'bizac' in city.lower()
+        return 'calvisson' in city.lower().replace(" ", "") or 'bizac' in city.lower().replace(" ", "")
     
     
     def is_from_boissieres_area(self, city):
-        return city.lower() == 'boissières'
+        return city.lower().replace(" ", "") == 'boissières'
 
     def is_article(self, category):
         return category == Category_Enum.ARTICLE.value

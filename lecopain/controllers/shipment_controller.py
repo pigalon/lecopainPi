@@ -122,7 +122,7 @@ def display_update_shipment_time(shipment_id):
     if form.validate_on_submit():
         shipmentServices.update_shipping_dt(
             shipment, shipping_dt=form.shipping_dt.data)
-        return redirect('/shipments')
+        return redirect(f'/shipments/{shipment_id}')
 
     return render_template('/shipments/update_shipping_dt.html', shipment=shipment, title='Mise a jour du jour de la livraison', form=form)
 
@@ -133,7 +133,7 @@ def display_update_shipment_time(shipment_id):
 @login_required
 def display_update_shipment_annulation(shipment_id):
     shipmentServices.update_shipment_status(shipment_id, ShipmentStatus_Enum.ANNULEE.value)
-    return redirect('/shipments')
+    return redirect(f'/shipments/{shipment_id}')
 
 #####################################################################
 #                                                                   #
@@ -143,7 +143,7 @@ def display_update_shipment_annulation(shipment_id):
 @login_required
 def display_update_shipment_created(shipment_id):
     shipmentServices.update_shipment_status(shipment_id, ShipmentStatus_Enum.CREE.value)
-    return redirect('/shipments')
+    return redirect(f'/shipments/{shipment_id}')
 
 #####################################################################
 #                                                                   #

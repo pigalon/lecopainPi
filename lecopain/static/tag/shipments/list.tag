@@ -48,7 +48,8 @@
                     <span if={shipment.payment_status == 'NON'} style="color:grey" ><i class="fas fa-credit-card"></i></i></span>
                     <span if={shipment.subscription_id != None} class="badge badge-warning">Ab.</span>
                     </td>
-                    <td width="20%">
+                    <td if={shipment.status == 'ANNULEE'} width="20%" >0 €</td>
+                    <td {shipment.status != 'ANNULEE'} width="20%">
                         {shipment.shipping_price.toFixed(2)} €
                     </td>
                 </tr>
