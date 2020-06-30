@@ -35,6 +35,7 @@ class AdminFactory(SQLAlchemyModelFactory):
     username = 'admin'
     password = generate_password_hash('password')
     email = "admin@test.com"
+    active = False
 
 
 class SellerFactory(SQLAlchemyModelFactory):

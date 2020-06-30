@@ -17,17 +17,12 @@ class CustomerDAOTestCase(BaseTestCase, TestCase):
 
     # Ensure that Flask was set up correctly
     def test_get_all_cities(self):
-
         cities = CustomerDao.get_all_cities()
-
-        print(f'cities : {cities}')
         assert len(cities) > 0
 
     def test_read_all_by_city(self):
         customer = Customer.query.first()
         customers = CustomerDao.read_all_by_cities(customer.city)
-
-        print(f'customers : {customers}')
         assert len(customers) > 0
 
 if __name__ == '__main__':

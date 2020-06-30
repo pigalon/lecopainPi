@@ -11,11 +11,7 @@ class OrdermanagerTestCase(BaseTestCase, TestCase):
 
     # Ensure that Flask was set up correctly
     def test_order_status(self):
-
         orderServices = OrderManager()
-        
-        for status in orderServices.get_order_status():
-            print(f'status : {status}')
 
 
 if __name__ == '__main__':

@@ -18,7 +18,6 @@ class BusinessServiceTestCase(BaseTestCase, TestCase):
         businessService = BusinessService()
         price, rules = businessService.get_price_and_associated_rules(
             category=Category_Enum.ARTICLE.value, nb_local_products=7)
-        print(f'price : {price}')
         assert float(price) == 3.00
     
     def test_article_far_less_six(self):

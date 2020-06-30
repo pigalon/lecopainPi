@@ -87,8 +87,9 @@
 				</ul>
 				<!--
       <a href="" class="notif"><span class="notification_count">2<span></a>-->
-				<mytag> </mytag>
-				<span class="navbar-text">
+				
+
+				<span class="navbar-text" style="padding-right:100px;">
 					<a href="/logout"
 						><p style="color: white; font-size: 18px;">
 							<i class="fa fa-eject"></i></p
@@ -98,6 +99,9 @@
 		</nav>
 
 		<div class="container">
+			<span class="float-right">
+				Utilisateur connecté : {{current_user.get_id()}}
+			</span>
 			{% with messages = get_flashed_messages(with_categories=true) %} {% if
 			messages %} {% for category, message in messages %}
 			<div class="alert alert-{{ category }}">

@@ -17,12 +17,8 @@ class OrderDAOTestCase(BaseTestCase, TestCase):
 
     # Ensure that Flask was set up correctly
     def test_read_one(self):
-
         order = db.session.query(Order).first()
-
         order_result = OrderDao.read_one(order.id)
-
-        print(f'order : {order_result}')
         assert order.title in str(order_result)
 
 

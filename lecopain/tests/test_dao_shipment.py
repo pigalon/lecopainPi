@@ -17,13 +17,9 @@ class ShipmentDAOTestCase(BaseTestCase, TestCase):
 
     # Ensure that Flask was set up correctly
     def test_read_one(self):
-
         shipment = db.session.query(Shipment).first()
-
         shipment_result = ShipmentDao.read_one(shipment.id)
-
         assert shipment.title in str(shipment_result)
-
 
 if __name__ == '__main__':
     unittest.main()

@@ -270,29 +270,42 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(100), nullable=False)
     joined_at = db.Column(db.DateTime)
-    is_admin = db.Column(db.Boolean)
+    active = db.Column(db.Boolean, default=0)
+    firstname = db.Column(db.String(50))
+    lastname = db.Column(db.String(50))
 
     def __repr__(self):
-        return "User('{self.username}', '{self.email}', '{self.password}')"
+        return 'username :' + self.username + \
+        ', email :'+ self.email + ', password :'+ self.password + 'is_admin : '
+        # is_active : {self.is_active}'
 
     def get_id(self):
         return self.username
-
     def is_active(self):
-        return True
-
+        return self.active
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
-    def __repr__(self):
-        return " "
-
 @login_manager.user_loader
 def get_user(username):
     return User.query.filter(User.username == username).first()
+
+# Define the Role data-model
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(50), unique=True)
+
+# Define the UserRoles association table
+class UserRoles(db.Model):
+    __tablename__ = 'user_roles'
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
+    role_id = db.Column(db.Integer(), db.ForeignKey('roles.id', ondelete='CASCADE'))
+
 
 
 class Subscription(db.Model):
