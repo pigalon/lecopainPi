@@ -236,8 +236,11 @@ class OrderManager():
     def get_all_by_seller_period(self, seller_id, start, end):
         return OrderDao.read_some_seller(seller_id=seller_id, start=start, end=end)
     
-    def get_all_by_seller_period_vaid(self, seller_id, start, end):
+    def get_all_by_seller_period_valid(self, seller_id, start, end):
         return OrderDao.read_some_seller_valid(seller_id=seller_id, start=start, end=end)
+    
+    def get_all_by_seller_customer_period_valid(self, seller_id, customer_id, start, end):
+        return OrderDao.read_some_seller_customer_valid(seller_id=seller_id, customer_id=customer_id, start=start, end=end)
 
     def get_some_by_customer(self,  customer_id=0, period=Period_Enum.ALL.value):
         start,end = dates_range(period)

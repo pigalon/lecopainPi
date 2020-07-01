@@ -48,7 +48,7 @@ class ReportManager():
         day['lines'] = self.prepareLines_by_customer(orders, dt)
         return day
 
-    def get_reports_by_seller(self, seller_id, period, day):
+    def get_reports_by_seller(self, seller_id, customer_id, period, day):
         days=[]
         datetime_day = datetime.strptime(day, '%d%m%Y')
         start, end = dates_range(period, datetime_day)
@@ -57,8 +57,8 @@ class ReportManager():
             end_day = start + timedelta(days=1)
             
             day = {}
-            orders = self.orderServices.get_all_by_seller_period_vaid(
-                seller_id, start, end_day - timedelta(seconds=1))
+            orders = self.orderServices.get_all_by_seller_customer_period_valid(
+                seller_id, customer_id, start, end_day - timedelta(seconds=1))
             
             start = start + timedelta(seconds=1)
             day['date'] = start
@@ -68,13 +68,13 @@ class ReportManager():
             start = end_day
         return days
 
-    def get_main_amounts_by_seller(self, seller_id, period, day):
+    def get_main_amounts_by_seller(self, seller_id, customer_id, period, day):
         days = []
         datetime_day = datetime.strptime(day, '%d%m%Y')
         start, end = dates_range(period, datetime_day)
 
-        orders = self.orderServices.get_all_by_seller_period_vaid(
-                seller_id, start, end)
+        orders = self.orderServices.get_all_by_seller_customer_period_valid(
+                seller_id, customer_id, start, end)
 
         return self.prepareAmount(orders)
     

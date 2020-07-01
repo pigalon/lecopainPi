@@ -127,6 +127,35 @@ class OrderDao:
         # Serialize the data for the response
         order_schema = CompleteOrderSchema(many=True)
         return order_schema.dump(all_orders)
+    
+    @staticmethod
+    def read_some_seller_customer_valid(seller_id, customer_id, start, end):
+
+        all_orders = Order.query.join(Shipment)
+
+        if(start != 0 ):
+            all_orders = all_orders.filter(
+                Shipment.shipping_dt >= start).filter(
+                Shipment.shipping_dt <= end)
+
+        if seller_id != 0:
+            all_orders = all_orders.filter(
+                Order.seller_id == seller_id)
+        
+        if customer_id != 0:
+            all_orders = all_orders.filter(
+                Shipment.customer_id == customer_id)
+        
+        all_orders = all_orders.filter(
+            Order.status != OrderStatus_Enum.ANNULEE.value)
+
+        all_orders = all_orders.order_by(Shipment.shipping_dt.desc()) \
+        .all()
+
+        # Serialize the data for the response
+        order_schema = CompleteOrderSchema(many=True)
+        return order_schema.dump(all_orders)
+
 
     @staticmethod
     def add(order):

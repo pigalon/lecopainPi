@@ -9,7 +9,11 @@
         <select class="form-control" name="period" id="period" ref="period" style="width: 12rem; display:inline-block">
             <option value="day">Jour</option>
             <option value="week">Semaine</option>
-            <option value="all">Toutes</option>
+            <option value="month">Mois</option>
+        </select>
+        <select class="form-control" id="customer_id" name="customer_id" ref="customer_id" style="width: 14rem; display:inline-block">
+        <option value="0" SELECTED>Tous</option>
+		    <option each="{ customer in customers }" value={customer.id}> {customer.firstname} {customer.lastname} </option>
         </select>
         <button type="button" id="search" onclick="{search}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
 
@@ -67,6 +71,11 @@
 		this.on('mount', function() {
             this.load_sellers()
             self.refs.day.value = moment().format('DD/MM/YYYY')
+            
+            var ajaxCall_customers = self.load_customers();
+			ajaxCall_customers.done(function(data) {
+				$(self.refs.customer_id).select2();
+			})
 		});
 
         /******************************************
@@ -96,12 +105,14 @@
             var url = '/api/reports/days/'
             
             var seller_id = self.refs.seller_id.value;
+            var customer_id = self.refs.customer_id.value;
             var period = self.refs.period.value;
             var day = self.refs.day.value;
 
             url = url.concat('period/',period,'/');
             url = url.concat('date/', day.replaceAll("/",""),'/');
-            url = url.concat('sellers/',seller_id);
+            url = url.concat('sellers/',seller_id, '/');
+            url = url.concat('customers/',customer_id);
 
             return $.ajax({
 				url: url,
@@ -119,12 +130,14 @@
             var url = '/api/reports/amounts/'
             
             var seller_id = self.refs.seller_id.value;
+            var customer_id = self.refs.customer_id.value;
             var period = self.refs.period.value;
             var day = self.refs.day.value;
 
             url = url.concat('period/',period,'/');
             url = url.concat('date/', day.replaceAll("/",""),'/');
-            url = url.concat('sellers/',seller_id);
+            url = url.concat('sellers/',seller_id,'/');
+            url = url.concat('customers/',customer_id);
 
             return $.ajax({
 				url: url,
@@ -138,6 +151,23 @@
 			});
             
         }
+         /******************************************
+		load customers list
+		*******************************************/
+
+		load_customers(){
+		var url = '/api/customers/';
+		return $.ajax({
+				url: url,
+				type: "GET",
+				dataType: "json",
+				contentType: "application/json; charset=utf-8",
+				success: function(data) {
+					self.customers = data['customers']
+					self.update()
+				}
+			});
+		}
 
 	</script>
 </search-report>
