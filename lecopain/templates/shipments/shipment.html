@@ -31,16 +31,25 @@
 
 
 <br>
-    <div class="card  " >
+    <div class="card " >
+      {% if shipment.status == 'ANNULEE' %}
+          <div class="card-header text-white bg-dark">
+      {% else %}
         <div class="card-header text-white bg-info">
-          Livraison N° {{shipment.id}} - {{shipment.customer_name}} <span class="right">{{ moment(shipment.shipping_dt).format('Do MMMM YYYY' )  }}</span>
+      {% endif %}
+        
+
+          Livraison N° {{shipment.id}} - Statut : {{shipment.status}} <span class="right">{{ moment(shipment.shipping_dt).format('Do MMMM YYYY' )  }}</span>
         </div>
         <div class="card-body">
           <ul class="list-group list-group-flush">
           {% set total = {'value': 0.00} %}
 
           <li class="list-group-item bg-light">
-            Vendeur : <b>{{shipment.seller_name}}</b> <span class="float-right"><a href="/shipments/update/{{ shipment.id }}" class="btn btn-info">Modifier Articles</a></span>
+            Client : <b>{{shipment.customer_name}}</b> 
+            {% if shipment.status != 'ANNULEE' %}
+              <span class="float-right"><a href="/shipments/update/{{ shipment.id }}" class="btn btn-info">Modifier Articles</a></span>
+            {% endif %}  
           </li>
           <li class="list-group-item">
 
@@ -102,7 +111,11 @@
       </div>
       <br>
       <div class="card">
+        {% if shipment.status == 'ANNULEE' %}
+          <div class="card-header text-white bg-dark">
+        {% else %}
           <div class="card-header text-white bg-info">
+        {% endif %}
                   Livraison <span class="float-right"><a href="/shipments/{{ shipment.id }}/shipping_dt" class="btn btn-light">Changer Date</a></span>
           </div>
           <div class="card-body">
@@ -112,7 +125,11 @@
         </div>
         <br>
         <div class="card">
-          <div class="card-header text-white bg-info">
+          {% if shipment.status == 'ANNULEE' %}
+            <div class="card-header text-white bg-dark">
+          {% else %}
+            <div class="card-header text-white bg-info">
+          {% endif %}
             Suppression <span class="float-right"><a href="/shipments/delete/{{ shipment.id }}" class="btn btn-light text-danger" alt="Supprimer"><i class="fas fa-trash-alt"></i></a></span>
           </div>
         </div>

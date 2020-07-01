@@ -148,6 +148,9 @@ class ShipmentManager():
             if shipment_status == ShipmentStatus_Enum.CREE.value and shipment.subscription_id is not None:
                 self.items_add_subscription(shipment)
 
+            for order in shipment.orders:
+                order.status = shipment_status
+
             ShipmentDao.update_status(shipment_id, shipment_status)
 
     # @

@@ -57,7 +57,7 @@ class ReportManager():
             end_day = start + timedelta(days=1)
             
             day = {}
-            orders = self.orderServices.get_all_by_seller_period(
+            orders = self.orderServices.get_all_by_seller_period_vaid(
                 seller_id, start, end_day - timedelta(seconds=1))
             
             start = start + timedelta(seconds=1)
@@ -73,7 +73,7 @@ class ReportManager():
         datetime_day = datetime.strptime(day, '%d%m%Y')
         start, end = dates_range(period, datetime_day)
 
-        orders = self.orderServices.get_all_by_seller_period(
+        orders = self.orderServices.get_all_by_seller_period_vaid(
                 seller_id, start, end)
 
         return self.prepareAmount(orders)

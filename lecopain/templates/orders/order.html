@@ -32,7 +32,11 @@
 
 <br>
     <div class="card  " >
+      {% if order.status == 'ANNULEE' %}
+          <div class="card-header text-white bg-dark">
+      {% else %}
         <div class="card-header text-white bg-info">
+      {% endif %}
           Commande N° {{order.id}} - {{order.customer_name}} <span class="right">{{ moment(order.shipping_dt).format('Do MMMM YYYY' )  }}</span>
         </div>
         <div class="card-body">
