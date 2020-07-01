@@ -2,7 +2,12 @@ from lecopain.app import db
 from flask import jsonify
 
 from lecopain.dao.models import (
-    Shipment, Order, Customer, ShipmentSchema, CompleteShipmentSchema
+    Shipment, 
+    Order, 
+    Customer, 
+    ShipmentSchema, 
+    CompleteShipmentSchema,
+    ShipmentStatus_Enum
 )
 
 class ShipmentDao:
@@ -76,6 +81,31 @@ class ShipmentDao:
         # Serialize the data for the response
         shipment_schema = ShipmentSchema(many=True)
         return shipment_schema.dump(all_shipments)
+    
+    @staticmethod
+    def read_some_valid(customer_id, start, end):
+
+        all_shipments = Shipment.query
+
+        if(start != 0 ):
+            all_shipments = all_shipments.filter(
+                Shipment.shipping_dt >= start).filter(
+                Shipment.shipping_dt <= end)
+
+        if customer_id != 0:
+            all_shipments = all_shipments.filter(
+                Shipment.customer_id == customer_id)
+        
+        all_shipments = all_shipments.filter(
+                Shipment.status != ShipmentStatus_Enum.ANNULEE.value)
+
+        all_shipments = all_shipments.order_by(Shipment.shipping_dt.desc()) \
+        .all()
+
+        # Serialize the data for the response
+        shipment_schema = ShipmentSchema(many=True)
+        return shipment_schema.dump(all_shipments)
+
 
     @staticmethod
     def add(shipment):

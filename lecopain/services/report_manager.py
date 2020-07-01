@@ -83,7 +83,7 @@ class ReportManager():
         report = {}
         nb_products = 0
         shipping_price = 0.0
-        shipments = self.shipmentServices.get_some( customer_id, day, period)
+        shipments = self.shipmentServices.get_some_valid( customer_id, day, period)
         
         for shipment in shipments:
             nb_products = nb_products + shipment['nb_products']

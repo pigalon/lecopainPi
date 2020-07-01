@@ -15,7 +15,7 @@
 
         <ul class="list-group" width="100%">
             <li class="list-group-item" width="100%">
-                <span class="btn btn-warning">Totaux Période</span> -  <b>Nb commandes</b> : <span class="btn btn-warning">x{amounts['nb_orders']}</span> - <b>Nb articles</b> : <span class="btn btn-warning">x{amounts['nb_products']}</span> - <b>Montant total</b> : <span class="btn btn-warning">{amounts['price'].toFixed(2)} €</span>
+                <span class="btn btn-warning">Totaux Période</span> -  <b>Nb commandes</b> : <span class="btn btn-warning">x{amounts['nb_orders']}</span> - <b>Nb articles</b> : <span class="btn btn-warning">x{amounts['nb_products']}</span> - <b>Montant total</b> : <span class="btn btn-warning">{amounts['price']} €</span>
                 <table class="table table-bordered">
                     <tr>
                         <td each="{product in amounts['products']}">

@@ -21,7 +21,7 @@
     <ul>
         <li><b>Nb Livraisons</b> : <span class="btn btn-warning">x{reports['nb_shipments']}</span> </li>
         <li><b>Nb Articles</b> : <span class="btn btn-warning">x{reports['nb_products']}</span></li>  
-        <li><b>Montant Livraison total</b> : <span class="btn btn-warning">{reports['shipping_price'].toFixed(2)}€</span></li>
+        <li><b>Montant Livraison total</b> : <span class="btn btn-warning">{reports['shipping_price']} €</span></li>
     </ul>
         <br><br>
         <h4>Liste des livraisons:</h4> 
