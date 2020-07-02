@@ -1,0 +1,46 @@
+
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Formulaire de suppression d'Utilisateur</h1>
+    <div class="content-section">
+        <p>Référence : {{user.id}}</p>
+        <p>{{user.firstname}} {{user.lastname}}</p>
+    </div>
+    <div class="content-section">
+            Etes-vous sûr de vouloir supprimer cet Utilisateur ?
+    </div>
+    <div class="content-section">
+        <table>
+            <tr>
+                <td>
+                    <button type="button" onclick="delete_user({{user.id}})" class="btn btn-danger">Supprimer</button>
+                </td>
+                <td>
+                    <button class="btn btn-secondary" type="cancel" onclick="javascript:window.location='/users';">Annuler</button>
+                </td>
+            </tr>
+        </table>  
+    </div>    
+{% endblock %}
+
+{% block scripts %} 
+
+    <script>
+        function delete_user(user_id) {
+
+            $.ajax({
+                type: "DELETE",
+                url: '/users/' + user_id,
+                success: function(msg){
+                    location.href = "/users";
+                }
+            });
+        };
+    </script>
+{% endblock %}
+        
+
+
+
+
+

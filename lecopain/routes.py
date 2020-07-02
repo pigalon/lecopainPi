@@ -22,6 +22,7 @@ from lecopain.controllers.order_controller import order_page
 from lecopain.controllers.product_controller import product_page
 from lecopain.controllers.seller_controller import seller_page
 from lecopain.controllers.user_controller import user_page
+from lecopain.controllers.user_controller import user_page
 from lecopain.controllers.subscription_controller import subscription_page
 from lecopain.controllers.report_controller import report_page
 
@@ -37,6 +38,7 @@ app.register_blueprint(order_page)
 app.register_blueprint(product_page)
 app.register_blueprint(seller_page)
 app.register_blueprint(user_page)
+app.register_blueprint(user_page)
 app.register_blueprint(subscription_page)
 app.register_blueprint(report_page)
 
@@ -50,6 +52,8 @@ order_page = Blueprint('order_page',  __name__,
 product_page = Blueprint('product_page',  __name__,
                          template_folder='./templates')
 seller_page = Blueprint('seller_page',  __name__,
+                        template_folder='./templates')
+user_page = Blueprint('user_page',  __name__,
                         template_folder='./templates')
 user_page = Blueprint('user_page',  __name__,
                       template_folder='./templates')

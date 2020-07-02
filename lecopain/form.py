@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, IntegerField, DateTimeField, DecimalField
+from wtforms import StringField, PasswordField, SubmitField, IntegerField, DateTimeField, DecimalField, BooleanField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 
 
@@ -27,6 +27,19 @@ class SellerForm(FlaskForm):
     email = StringField('Email', validators=[
                         DataRequired(), Length(min=2, max=200)])
     submit = SubmitField('Valider')
+    
+class UserForm(FlaskForm):
+    username = StringField('Login', validators=[
+                       DataRequired(), Length(min=2, max=200)])
+    firstname = StringField('Prénom', validators=[
+                       DataRequired(), Length(min=2, max=200)])
+    lastname = StringField('Nom', validators=[
+                       DataRequired(), Length(min=2, max=200)])
+    email = StringField('Email', validators=[
+                        DataRequired(), Length(min=2, max=200)])
+    actif = BooleanField('Activé')
+    submit = SubmitField('Valider')
+
 
 
 class OrderForm(FlaskForm):

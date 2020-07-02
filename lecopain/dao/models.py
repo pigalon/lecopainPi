@@ -424,6 +424,13 @@ class SellerSchema(SQLAlchemyAutoSchema):
         # Fields to expose
         model = Seller
         load_instance = True
+        
+class UserSchema(SQLAlchemyAutoSchema):
+
+    class Meta:
+        # Fields to expose
+        model = User
+        load_instance = True
 
 
 class ProductSchema(SQLAlchemyAutoSchema):

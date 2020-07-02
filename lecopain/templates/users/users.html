@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Utilisateurs</h1>
+
+<search-user></search-user>
+
+{% endblock %}
+{% block scripts %}
+    <script src="{{ url_for('static', filename='tag/users/user.tag') }}" type="riot/tag"></script>
+
+    <script>
+        riot.mount("search-user");
+    </script>
+{% endblock %}

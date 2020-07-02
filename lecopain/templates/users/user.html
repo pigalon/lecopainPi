@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block content %}
+
+
+    <div class="card  ">
+        <div class="card-header text-white bg-info">
+            Client N° {{user.id}} <span class="right"><a href="/users/update/{{ user.id }}" class="btn btn-outline-dark">Modifier
+                    </a></span>
+        </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                {% set total = {'value': 0.00} %}
+                <li class="list-group-item">
+                    <b>Prénom Nom : </b>{{user.firstname}} {{user.lastname}}
+                </li>
+                <li class="list-group-item">
+                    <b>Adresse : </b> {{user.address}} {{user.cp}} {{user.city}}
+                </li>
+                <li class="list-group-item">
+                    <b>Email : </b> {{user.email}}
+                </li>
+            </ul>
+        </div>
+    </div>
+    {%if user.nb_subscriptions | int > 0 %}
+    <subscription-list user_id='{{user.id}}'></subscription-list>
+    {%endif%}
+    <br>
+    {%if user.nb_shipments | int > 0 %}
+    <shipment-list user_id='{{user.id}}'></shipment-list>
+    {%endif%}
+
+    <div class="card">
+        <div class="card-header text-white bg-info">
+            Suppression <span class="float-right"><a href="/users/delete/{{ user.id }}"
+                    class="btn btn-light text-danger" alt="Supprimer"><i class="fas fa-trash-alt"></i></a></span>
+        </div>
+    </div>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='tag/users/shipment_list.tag') }}" type="riot/tag"></script>
+<script src="{{ url_for('static', filename='tag/users/subscription_list.tag') }}" type="riot/tag"></script>
+<script>
+    riot.mount("shipment-list");
+    riot.mount("subscription-list");
+</script>
+{% endblock %}
+
+
+
