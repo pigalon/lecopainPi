@@ -226,26 +226,3 @@ def api_orders_by_seller(seller_id):
         prev_page=prev_page, next_page=next_page))
 
 
-#####################################################################
-#                                                                   #
-#####################################################################
-@order_page.route('/api/orders/period/<string:period>/sellers/<int:seller_id>')
-@login_required
-def api_day_orders(period, seller_id):
-    data = orderServices.get_some(period=period, seller_id=seller_id)
-    
-    start = request.args.get("start")
-    limit = request.args.get("limit")
-    if start is None:
-        start = 1
-    if limit is None:
-        limit = 10
-    
-    return jsonify(Pagination.get_paginated_list(
-        data, '/api/shipments/period/'+period+'/sellers/'+str(seller_id),
-        start=request.args.get('start', int(start)),
-        limit=request.args.get('limit', int(limit))))
-    
-    
-    #return jsonify({'orders': orderServices.get_some_by_seller(period=period, seller_id=seller_id)})
-

@@ -97,19 +97,20 @@ def delete_seller(seller_id):
 @seller_page.route('/api/sellers/')
 @login_required
 def api_sellers():
-    data = sellerServices.optim_get_all()
+    page = request.args.get("page")
+    per_page = request.args.get("per_page")
+
+    if page is None:
+        page = 1
+    if per_page is None:
+        per_page=10
+
+    data, prev_page, next_page = sellerServices.optim_get_all_pagination(page=int(page), per_page=int(per_page))
     
-    start = request.args.get("start")
-    limit = request.args.get("limit")
-    if start is None:
-        start = 1
-    if limit is None:
-        limit = 10
-    
-    return jsonify(Pagination.get_paginated_list(
+    return jsonify(Pagination.get_paginated_db(
         data, '/api/sellers/',
-        start=request.args.get('start', int(start)),
-        limit=request.args.get('limit', int(limit))))
+        page=request.args.get('page', page),
+        per_page=request.args.get('per_page', per_page),
+        prev_page=prev_page, next_page=next_page))
     
-    #return jsonify({'sellers': sellerServices.optim_get_all()})
     

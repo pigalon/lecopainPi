@@ -33,6 +33,9 @@ class CustomerManager():
 
     def get_all_by_city(self, city):
         return CustomerDao.read_all_by_cities(city)
+
+    def get_all_by_city_pagination(self, city, page=1, per_page=10):
+        return CustomerDao.read_all_by_cities_pagination(city, page, per_page)
     
     def add_customer_form(self, form):
         customer = Customer(firstname=form.firstname.data,

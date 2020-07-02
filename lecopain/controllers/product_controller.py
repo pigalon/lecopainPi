@@ -158,19 +158,23 @@ def api_products_by_seller_and_category(seller_id, category):
 @product_page.route('/api/products/sellers/<int:seller_id>/id/<string:product_id>')
 @login_required
 def api_products_by_product_id(seller_id, product_id):
+    page = request.args.get("page")
+    per_page = request.args.get("per_page")
+
+    if page is None:
+        page = 1
+    if per_page is None:
+        per_page=10
 
     product = productServices.get_one(int(product_id))
     data = [product]
+    prev_page = None
+    next_page = None
     
-    start = request.args.get("start")
-    limit = request.args.get("limit")
-    if start is None:
-        start = 1
-    if limit is None:
-        limit = 10
-    
-    return jsonify(Pagination.get_paginated_list(
+   
+    return jsonify(Pagination.get_paginated_db(
         data, '/api/products/sellers/'+str(seller_id),
-        start=request.args.get('start', int(start)),
-        limit=request.args.get('limit', int(limit))))
+        page=request.args.get('page', page),
+        per_page=request.args.get('per_page', per_page),
+        prev_page=prev_page, next_page=next_page))
 

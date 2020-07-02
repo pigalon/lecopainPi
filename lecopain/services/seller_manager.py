@@ -7,6 +7,9 @@ class SellerManager():
 
     def optim_get_all(self):
         return SellerDao.optim_read_all()
+    
+    def optim_get_all_pagination(self, page=1, per_page=10):
+        return SellerDao.optim_read_all_pagination(page, per_page)
 
     def get_one(self,  seller_id):
         return SellerDao.read_one(seller_id)

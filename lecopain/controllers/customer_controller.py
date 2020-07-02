@@ -105,36 +105,42 @@ def api_cities():
 @customer_page.route('/api/customers/cities/<string:city>')
 @login_required
 def api_customers_cities(city):
-    data = customerServices.get_all_by_city(city)
-    start = request.args.get("start")
-    limit = request.args.get("limit")
-    if start is None:
-        start = 1
-    if limit is None:
-        limit = 10
+    page = request.args.get("page")
+    per_page = request.args.get("per_page")
+
+    if page is None:
+        page = 1
+    if per_page is None:
+        per_page=10
     
-    return jsonify(Pagination.get_paginated_list(
+    data, prev_page, next_page = customerServices.get_all_by_city_pagination(city, page=int(page), per_page=int(per_page))
+    
+    
+    return jsonify(Pagination.get_paginated_db(
         data, '/api/customers/cities/'+city,
-        start=request.args.get('start', int(start)),
-        limit=request.args.get('limit', int(limit))))
+        page=request.args.get('page', page),
+        per_page=request.args.get('per_page', per_page),
+        prev_page=prev_page, next_page=next_page))
     
 @customer_page.route('/api/customers/cities/<string:city>/id/<string:customer_id>')
 @login_required
 def api_customers_customer_id(city, customer_id):
-    
+    page = request.args.get("page")
+    per_page = request.args.get("per_page")
+
+    if page is None:
+        page = 1
+    if per_page is None:
+        per_page=10
+        
     customer = customerServices.read_one(customer_id)
     data = [customer]
+    prev_page = None
+    next_page = None
     
-    start = request.args.get("start")
-    limit = request.args.get("limit")
-    if start is None:
-        start = 1
-    if limit is None:
-        limit = 10
-    
-    return jsonify(Pagination.get_paginated_list(
+    return jsonify(Pagination.get_paginated_db(
         data, '/api/customers/cities/'+city,
-        start=request.args.get('start', int(start)),
-        limit=request.args.get('limit', int(limit))))
+        page=request.args.get('page', page),
+        per_page=request.args.get('per_page', per_page),
+        prev_page=prev_page, next_page=next_page))
 
-    #return jsonify({'customers': customerServices.get_all_by_city(city)})

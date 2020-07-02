@@ -56,6 +56,21 @@ class CustomerDao:
         # Serialize the data for the response
         customer_schema = CustomerSchema(many=True)
         return customer_schema.dump(all_customers)
+    
+    @staticmethod    
+    def read_all_by_cities_pagination(city, page, per_page):
+        # Create the list of people from our data
+        all_customers = Customer.query
+
+        if city != 'all' :
+            all_customers = all_customers.filter(func.lower(Customer.city) == func.lower(city)) 
+
+        all_customers = all_customers.order_by(Customer.firstname.asc())\
+            .paginate(page=page, per_page=per_page)
+
+        # Serialize the data for the response
+        customer_schema = CustomerSchema(many=True)
+        return customer_schema.dump(all_customers.items), all_customers.prev_num, all_customers.next_num
 
     @staticmethod
     def read_one(id):
