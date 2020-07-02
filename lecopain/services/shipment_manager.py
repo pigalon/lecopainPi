@@ -179,14 +179,25 @@ class ShipmentManager():
 
     def get_all_by_subscription(self, subscription_id):
         return ShipmentDao.read_by_subscription(subscription_id)
+    
+    def get_all_by_subscription_pagination(self, subscription_id, page=1, per_page=10):
+        return ShipmentDao.read_by_subscription_pagination(subscription_id, page, per_page)
 
     def get_all_by_customer(self, customer_id):
         return ShipmentDao.read_by_customer(customer_id)
+    
+    def get_all_by_customer_pagination(self, customer_id, page=1, per_page=10):
+        return ShipmentDao.read_by_customer_pagination(customer_id, page, per_page)
 
     def get_some(self,  customer_id=0, day=datetime.utcnow, period=Period_Enum.ALL.value):
         datetime_day = datetime.strptime(day, '%d%m%Y')
         start, end = dates_range(period, datetime_day)
         return ShipmentDao.read_some(customer_id=customer_id, start=start, end=end)
+    
+    def get_some_pagination(self,  customer_id=0, day=datetime.utcnow, period=Period_Enum.ALL.value, page=1, per_page=10):
+        datetime_day = datetime.strptime(day, '%d%m%Y')
+        start, end = dates_range(period, datetime_day)
+        return ShipmentDao.read_some_pagination(customer_id=customer_id, start=start, end=end, page=page, per_page=per_page)
     
     def get_some_valid(self,  customer_id=0, day=datetime.utcnow, period=Period_Enum.ALL.value):
         datetime_day = datetime.strptime(day, '%d%m%Y')

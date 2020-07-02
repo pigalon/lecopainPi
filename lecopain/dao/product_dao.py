@@ -54,6 +54,23 @@ class ProductDao:
         # Serialize the data for the response
         product_schema = ProductSchema(many=True)
         return product_schema.dump(all_products)
+    
+    @staticmethod
+    def read_all_by_seller_pagination(seller_id, page, per_page):
+
+        # Create the list of people from our data
+
+        all_products = Product.query
+        if seller_id !=0 :
+            all_products = all_products.filter(
+                Product.seller_id == seller_id)
+
+        all_products =  all_products.order_by(Product.name.asc())\
+        .paginate(page=page, per_page=per_page)
+
+        # Serialize the data for the response
+        product_schema = ProductSchema(many=True)
+        return product_schema.dump(all_products.items), all_products.prev_num, all_products.next_num
 
     @staticmethod
     def read_all_by_seller_category(seller_id, category):

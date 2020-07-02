@@ -47,6 +47,17 @@ class OrderDao:
         # Serialize the data for the response
         order_schema = OrderSchema(many=True)
         return order_schema.dump(all_orders)
+    
+    @staticmethod
+    def read_by_seller_pagination(seller_id, page, per_page):
+        all_orders = Order.query \
+            .filter(Order.seller_id == seller_id) \
+            .order_by(Order.created_at.desc()) \
+            .paginate(page=page, per_page=per_page)
+
+        # Serialize the data for the response
+        order_schema = OrderSchema(many=True)
+        return order_schema.dump(all_orders.items) , all_orders.prev_num, all_orders.next_num
 
     @staticmethod
     def get_one(id):

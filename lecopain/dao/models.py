@@ -490,14 +490,16 @@ class OrderSchema(SQLAlchemyAutoSchema):
         include_relationships = True
 
     def get_shipping_dt(self, order):
-        return order.shipment.shipping_dt
+        if order.shipment is not None:
+            return order.shipment.shipping_dt
         
     def format_seller_name(self, order):
         seller_name = order.seller.name
         return "{}".format(seller_name)
     
     def format_customer_name(self, order):
-        return "{} {}".format(order.shipment.customer.firstname, order.shipment.customer.lastname)
+        if order.shipment is not None:
+            return "{} {}".format(order.shipment.customer.firstname, order.shipment.customer.lastname)
     
     def format_shipment(self, order):
         shipment_schema = ShipmentSchema(many=False)

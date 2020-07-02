@@ -208,21 +208,23 @@ def api_orders_by_subscription(subscription_id):
 @order_page.route('/api/orders/sellers/<int:seller_id>')
 @login_required
 def api_orders_by_seller(seller_id):
-    data = data = orderServices.get_all_by_seller(seller_id)
+    page = request.args.get("page")
+    per_page = request.args.get("per_page")
+ 
+    if page is None:
+        page = 1
+    if per_page is None:
+        per_page=10
+        
+    data, prev_page, next_page = orderServices.get_all_by_seller_pagination(seller_id, page=int(page), per_page=int(per_page))
     
-    start = request.args.get("start")
-    limit = request.args.get("limit")
-    if start is None:
-        start = 1
-    if limit is None:
-        limit = 10
     
-    return jsonify(Pagination.get_paginated_list(
+    return jsonify(Pagination.get_paginated_db(
         data, '/api/orders/sellers/'+str(seller_id),
-        start=request.args.get('start', int(start)),
-        limit=request.args.get('limit', int(limit))))
-   # data = orderServices.get_all_by_seller(seller_id)
-   # return jsonify({'orders': data})
+        page=request.args.get('page', page),
+        per_page=request.args.get('per_page', per_page),
+        prev_page=prev_page, next_page=next_page))
+
 
 #####################################################################
 #                                                                   #

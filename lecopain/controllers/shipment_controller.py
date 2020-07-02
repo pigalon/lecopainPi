@@ -208,19 +208,21 @@ def api_shipments():
 @login_required
 def api_shipments_by_subscription(subscription_id):
     
-    data = shipmentServices.get_all_by_subscription(subscription_id)
+    page = request.args.get("page")
+    per_page = request.args.get("per_page")
+
+    if page is None:
+        page = 1
+    if per_page is None:
+        per_page=10
+        
+    data, prev_page, next_page = shipmentServices.get_all_by_subscription_pagination(subscription_id, page=int(page), per_page=int(per_page))
     
-    start = request.args.get("start")
-    limit = request.args.get("limit")
-    if start is None:
-        start = 1
-    if limit is None:
-        limit = 10
-    
-    return jsonify(Pagination.get_paginated_list(
+    return jsonify(Pagination.get_paginated_db(
         data, '/api/shipments/subscriptions/'+str(subscription_id),
-        start=request.args.get('start', int(start)),
-        limit=request.args.get('limit', int(limit))))
+        page=request.args.get('page', page),
+        per_page=request.args.get('per_page', per_page),
+        prev_page=prev_page, next_page=next_page ))
     
     #return jsonify({'shipments': shipmentServices.get_all_by_subscription(subscription_id)})
 
@@ -230,19 +232,21 @@ def api_shipments_by_subscription(subscription_id):
 @shipment_page.route('/api/shipments/customers/<int:customer_id>')
 @login_required
 def api_shipments_by_customer(customer_id):
-    data = shipmentServices.get_all_by_customer(customer_id)
+    page = request.args.get("page")
+    per_page = request.args.get("per_page")
+
+    if page is None:
+        page = 1
+    if per_page is None:
+        per_page=10
     
-    start = request.args.get("start")
-    limit = request.args.get("limit")
-    if start is None:
-        start = 1
-    if limit is None:
-        limit = 10
+    data, prev_page, next_page = shipmentServices.get_all_by_customer_pagination(customer_id, page=int(page), per_page=int(per_page))
     
-    return jsonify(Pagination.get_paginated_list(
+    return jsonify(Pagination.get_paginated_db(
         data, '/api/shipments/customers/'+str(customer_id),
-        start=request.args.get('start', int(start)),
-        limit=request.args.get('limit', int(limit))))
+        page=request.args.get('page', page),
+        per_page=request.args.get('per_page', per_page),
+        prev_page=prev_page, next_page=next_page ))
     #return jsonify({'shipments': shipmentServices.get_all_by_customer(customer_id)})
 
 #####################################################################
@@ -260,16 +264,18 @@ def api_shipments_by_seller(seller_id):
 @shipment_page.route('/api/shipments/period/<string:period>/date/<string:day>/customers/<int:customer_id>')
 @login_required
 def api_day_shipments(period, day, customer_id):
-    data = shipmentServices.get_some(period=period, day=day, customer_id=customer_id)
+    page = request.args.get("page")
+    per_page = request.args.get("per_page")
+
+    if page is None:
+        page = 1
+    if per_page is None:
+        per_page=10
     
-    start = request.args.get("start")
-    limit = request.args.get("limit")
-    if start is None:
-        start = 1
-    if limit is None:
-        limit = 10
-    
-    return jsonify(Pagination.get_paginated_list(
+    data, prev_page, next_page = shipmentServices.get_some_pagination(period=period, day=day, customer_id=customer_id, page=int(page), per_page=int(per_page))
+
+    return jsonify(Pagination.get_paginated_db(
         data, '/api/shipments/period/'+period+'/date/'+day+'/customers/'+str(customer_id),
-        start=request.args.get('start', int(start)),
-        limit=request.args.get('limit', int(limit))))
+        page=request.args.get('page', page),
+        per_page=request.args.get('per_page', per_page),
+        prev_page=prev_page, next_page=next_page))

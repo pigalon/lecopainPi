@@ -76,6 +76,29 @@ class SubscriptionDao:
         # Serialize the data for the response
         subscription_schema = SubscriptionSchema(many=True)
         return subscription_schema.dump(all_subscriptions)
+    
+    @staticmethod
+    def read_some_pagination(customer_id, start, end, page, per_page):
+        all_subscriptions = Subscription.query
+
+        if(start !=0):
+            startDate = start.date()
+            endDate = end.date()
+
+            all_subscriptions = all_subscriptions.filter(
+                ((Subscription.start_dt >= startDate) & (Subscription.start_dt <= endDate))
+                | ((Subscription.end_dt >= start) & (Subscription.end_dt <= end)))
+
+        if customer_id != 0:
+            all_subscriptions = all_subscriptions.filter(
+                Subscription.customer_id == customer_id)
+
+        all_subscriptions = all_subscriptions.order_by(Subscription.id.desc()) \
+            .paginate(page=page, per_page=per_page)
+
+        # Serialize the data for the response
+        subscription_schema = SubscriptionSchema(many=True)
+        return subscription_schema.dump(all_subscriptions.items), all_subscriptions.prev_num, all_subscriptions.next_num
 
     @staticmethod
     def read_one(id):

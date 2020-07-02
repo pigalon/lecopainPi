@@ -43,6 +43,9 @@ class ProductManager():
 
     def get_all_by_seller(self, seller_id):
         return ProductDao.read_all_by_seller(seller_id)
+    
+    def get_all_by_seller_pagination(self, seller_id, page=1, per_page=10):
+        return ProductDao.read_all_by_seller_pagination(seller_id, page, per_page)
 
     def get_all_by_seller_category(self, seller_id, category):
         return ProductDao.read_all_by_seller_category(seller_id, category)

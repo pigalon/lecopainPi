@@ -232,6 +232,9 @@ class OrderManager():
     
     def get_all_by_seller(self, seller_id):
         return OrderDao.read_by_seller(seller_id)
+    
+    def get_all_by_seller_pagination(self, seller_id, page=1, per_page=10):
+        return OrderDao.read_by_seller_pagination(seller_id, page=page, per_page=per_page)
 
     def get_all_by_seller_period(self, seller_id, start, end):
         return OrderDao.read_some_seller(seller_id=seller_id, start=start, end=end)

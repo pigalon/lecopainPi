@@ -71,19 +71,21 @@ def api_subscriptions_by_seller(seller_id):
 @login_required
 def api_day_subscriptions(period, day, customer_id):
     
-    data = subscriptionServices.get_some(period=period, day=day, customer_id=customer_id)
+    page = request.args.get("page")
+    per_page = request.args.get("per_page")
+
+    if page is None:
+        page = 1
+    if per_page is None:
+        per_page=10
     
-    start = request.args.get("start")
-    limit = request.args.get("limit")
-    if start is None:
-        start = 1
-    if limit is None:
-        limit = 10
+    data, prev_page, next_page = subscriptionServices.get_some_pagination(period=period, day=day, customer_id=customer_id, page=int(page), per_page=int(per_page))
     
-    return jsonify(Pagination.get_paginated_list(
+    return jsonify(Pagination.get_paginated_db(
         data, '/api/subscriptions/period/'+period+'/date/'+day+'/customers/'+str(customer_id),
-        start=request.args.get('start', int(start)),
-        limit=request.args.get('limit', int(limit))))
+        page=request.args.get('page', page),
+        per_page=request.args.get('per_page', per_page),
+        prev_page=prev_page, next_page=next_page))
     #return jsonify({'subscriptions': subscriptionServices.get_some(period=period, customer_id=customer_id)})
 
 #####################################################################
