@@ -37,7 +37,7 @@ class UserForm(FlaskForm):
                        DataRequired(), Length(min=2, max=200)])
     email = StringField('Email', validators=[
                         DataRequired(), Length(min=2, max=200)])
-    actif = BooleanField('Activé')
+    active = BooleanField('Activé')
     submit = SubmitField('Valider')
 
 

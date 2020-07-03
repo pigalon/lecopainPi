@@ -270,7 +270,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(100), nullable=False)
     joined_at = db.Column(db.DateTime)
-    active = db.Column(db.Boolean, default=0)
+    active = db.Column(db.Boolean, default=False)
     firstname = db.Column(db.String(50))
     lastname = db.Column(db.String(50))
     roles = db.relationship('Role', secondary='user_roles')
@@ -285,6 +285,13 @@ class User(db.Model, UserMixin):
         return self.username
     def is_active(self):
         return self.active
+    
+    def set_active(self):
+        self.active = True
+    
+    def set_inactive(self):
+        self.active = False
+    
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 

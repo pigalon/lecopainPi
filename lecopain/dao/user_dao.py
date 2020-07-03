@@ -46,6 +46,11 @@ class UserDao:
         return User.query \
         .order_by(User.name) \
         .all()
+        
+    @staticmethod
+    def get_one(id):
+        # Create the list of people from our data
+        return User.query.get_or_404(id)
 
 
 

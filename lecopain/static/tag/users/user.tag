@@ -25,7 +25,8 @@
                     <th width="20%">Login</th>
                     <th width="24%">Prénom Nom</th>
                     <th width="20%">Role</th>
-                    <th width="20%">id Compte</th>
+                    <th width="10%">id Compte</th>
+                    <th width="10%">Actif</th>
                 </tr>
             </table>
             </td>
@@ -38,7 +39,8 @@
                     <td width="20%">{user.username}</td>
                     <td width="24%">{user.firstname} {user.lastname}</td>
                     <td width="20%">{user.role_name}</td>
-                    <td width="20%">{user.account_id}</td>
+                    <td width="10%">{user.account_id}</td>
+                    <td width="10%">{user.active}</td>
                 </tr>
             </table>
             </td>

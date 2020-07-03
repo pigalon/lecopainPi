@@ -82,14 +82,14 @@ def create_user():
         db.session.commit()
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('user_page.users'))
-    return render_template('/users/create_user.html', title='Ajouter un Vendeur', form=form)
+    return render_template('/users/create_user.html', title='Ajouter un Utilisateur', form=form)
 
 
 @user_page.route("/users/<int:user_id>")
 @login_required
 def user(user_id):
     user = userServices.get_one(user_id)
-    return render_template('/users/user.html', user=user, title='Vendeur')
+    return render_template('/users/user.html', user=user, title='Utilisateur')
 
 
 #####################################################################
@@ -98,27 +98,35 @@ def user(user_id):
 @user_page.route("/users/update/<int:user_id>", methods=['GET', 'POST'])
 @login_required
 def display_update_order(user_id):
-    user = user.query.get_or_404(user_id)
+    user = userServices.get_one(user_id)
     form = UserForm()
 
     if form.validate_on_submit():
         print('update form validate : ' + str(user.id))
 
         #shipping_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.shipping_dt.data)
-        user.name = form.name.data
-        user.city = form.city.data
+        user.username = form.username.data
+        user.firstname = form.firstname.data
+        user.lastname = form.lastname.data
         user.email = form.email.data
+        
+        if form.active.data:
+            user.set_active()
+        else:
+            user.set_inactive()
 
         db.session.commit()
 
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('user_page.users'))
     else:
-        form.name.data = user.name
-        form.city.data = user.city
+        form.username.data = user.username
+        form.firstname.data = user.firstname
+        form.lastname.data = user.lastname
         form.email.data = user.email
+        form.active.data = user.active
 
-    return render_template('/users/update_user.html', user=user, title='Mise a jour du vendeur', form=form)
+    return render_template('/users/update_user.html', user=user, title='Mise a jour de l\'utilisateur', form=form)
 
 
 #####################################################################
@@ -128,7 +136,7 @@ def display_update_order(user_id):
 @login_required
 def display_delete_user(user_id):
     user = user.query.get_or_404(user_id)
-    return render_template('/users/delete_user.html', user=user, title='Suppression du vendeur')
+    return render_template('/users/delete_user.html', user=user, title='Suppression de l\'utilisateur')
 
 #####################################################################
 #                                                                   #

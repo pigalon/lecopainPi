@@ -12,4 +12,7 @@ class userManager():
         return UserDao.optim_read_all_role_pagination(role_name, page, per_page)
 
     def get_one(self,  user_id):
+        return UserDao.get_one(user_id)
+    
+    def read_one(self,  user_id):
         return UserDao.read_one(user_id)
