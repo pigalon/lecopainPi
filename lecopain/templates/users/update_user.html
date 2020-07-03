@@ -24,6 +24,18 @@
                 {{ form.email(class="form-control form-control-sm")}}
             </div>
             <div class="form-group">
+                Choix du role :
+                <select class="form-control" id="role_id" name="role_id">
+                    {% for role in roles %}
+                        {% if role.id == form.role_id.data %}
+                            <option value="{{ role.id }}" SELECTED>{{ role.name }}</option>
+                        {% else %}
+                            <option value="{{ role.id }}" >{{ role.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
                 {{ form.active.label(class="form-control-label")}}
                 {{ form.active(class="form-control form-control-sm")}}
             </div>

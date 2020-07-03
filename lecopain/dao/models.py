@@ -273,13 +273,12 @@ class User(db.Model, UserMixin):
     active = db.Column(db.Boolean, default=False)
     firstname = db.Column(db.String(50))
     lastname = db.Column(db.String(50))
-    roles = db.relationship('Role', secondary='user_roles')
+    roles = db.relationship('Role', secondary='user_roles',backref=db.backref('users', lazy='dynamic'))
 
 
     def __repr__(self):
         return 'username :' + self.username + \
         ', email :'+ self.email + ', password :'+ self.password + 'is_admin : '
-        # is_active : {self.is_active}'
 
     def get_id(self):
         return self.username
@@ -307,18 +306,16 @@ class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(50), unique=True)
-    users = db.relationship("User", secondary='user_roles', viewonly=True)
 
 # Define the UserRoles association table
 class UserRoles(db.Model):
     __tablename__ = 'user_roles'
-    id = db.Column(db.Integer(), primary_key=True)
-    user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
-    role_id = db.Column(db.Integer(), db.ForeignKey('roles.id', ondelete='CASCADE'))
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'),primary_key=True)
+    role_id = db.Column(db.Integer(), db.ForeignKey('roles.id', ondelete='CASCADE'),primary_key=True)
     user = db.relationship(User, backref=db.backref(
-        "users", cascade="all, delete-orphan"))
+        "users_roles", cascade="all, delete-orphan"))
     role = db.relationship(Role, backref=db.backref(
-        "roles", cascade="all, delete-orphan"))
+        "roles_users", cascade="all, delete-orphan"))
 
 
 
@@ -447,7 +444,10 @@ class UserSchema(SQLAlchemyAutoSchema):
         load_instance = True
     
     def format_role_name(self, user):
-        return "{}".format(user.roles[0].name)
+        if user.roles is not None and len(user.roles) > 0:
+            return "{}".format(user.roles[0].name)
+        else :
+            ''
         
 
 class RoleSchema(SQLAlchemyAutoSchema):

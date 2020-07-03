@@ -5,7 +5,7 @@ from werkzeug.urls import url_parse
 from sqlalchemy.orm import load_only
 from lecopain.form import LoginForm
 from lecopain.form import UserForm
-from lecopain.dao.models import User
+from lecopain.dao.models import User, UserRoles, Role
 from lecopain.dao.user_dao import UserDao
 from lecopain.services.user_manager import userManager
 from lecopain.services.role_manager import roleManager
@@ -82,7 +82,8 @@ def create_user():
         db.session.commit()
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('user_page.users'))
-    return render_template('/users/create_user.html', title='Ajouter un Utilisateur', form=form)
+    roles = roleServices.get_all()
+    return render_template('/users/create_user.html', title='Ajouter un Utilisateur', roles=roles, form=form)
 
 
 @user_page.route("/users/<int:user_id>")
@@ -109,7 +110,11 @@ def display_update_order(user_id):
         user.firstname = form.firstname.data
         user.lastname = form.lastname.data
         user.email = form.email.data
-        
+
+        role = roleServices.get_one(int(form.role_id.data))
+        user.roles = [role,]
+        db.session.flush()
+
         if form.active.data:
             user.set_active()
         else:
@@ -125,8 +130,9 @@ def display_update_order(user_id):
         form.lastname.data = user.lastname
         form.email.data = user.email
         form.active.data = user.active
-
-    return render_template('/users/update_user.html', user=user, title='Mise a jour de l\'utilisateur', form=form)
+        form.role_id.data = user.roles[0].id
+    roles = roleServices.get_all()
+    return render_template('/users/update_user.html', user=user, roles=roles, title='Mise a jour de l\'utilisateur', form=form)
 
 
 #####################################################################
