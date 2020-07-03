@@ -8,6 +8,8 @@ from lecopain.form import UserForm
 from lecopain.dao.models import User
 from lecopain.dao.user_dao import UserDao
 from lecopain.services.user_manager import userManager
+from lecopain.services.role_manager import roleManager
+from lecopain.helpers.pagination import Pagination
 
 from flask_login import current_user, login_user
 from flask_login import logout_user
@@ -23,6 +25,7 @@ user_page = Blueprint('user_page', __name__,
                       template_folder='../templates')
 
 userServices = userManager()
+roleServices = roleManager()
 
 
 @user_page.route('/login', methods=['GET', 'POST'])
@@ -68,7 +71,6 @@ def logout():
 def users():
     users = userServices.optim_get_all()
     return render_template('/users/users.html', users=users)
-
 
 @user_page.route("/users/new", methods=['GET', 'POST'])
 @login_required
@@ -139,9 +141,9 @@ def delete_user(user_id):
     db.session.commit()
     return jsonify({})
 
-@user_page.route('/api/users/')
+@user_page.route('/api/users/roles/<string:role_name>')
 @login_required
-def api_users():
+def api_users_by_role(role_name):
     page = request.args.get("page")
     per_page = request.args.get("per_page")
 
@@ -150,10 +152,22 @@ def api_users():
     if per_page is None:
         per_page=10
 
-    data, prev_page, next_page = userServices.optim_get_all_pagination(page=int(page), per_page=int(per_page))
+    data, prev_page, next_page = userServices.optim_get_all_pagination(role_name=role_name, page=int(page), per_page=int(per_page))
     
     return jsonify(Pagination.get_paginated_db(
         data, '/api/users/',
         page=request.args.get('page', page),
         per_page=request.args.get('per_page', per_page),
         prev_page=prev_page, next_page=next_page))
+
+@user_page.route("/api/users/", methods=['GET', 'POST'])
+@login_required
+def api_users_all():
+    return jsonify({'users': userServices.optim_get_all()})
+
+@user_page.route("/api/users/roles", methods=['GET', 'POST'])
+@login_required
+def api_roles():
+    return jsonify({'roles': roleServices.read_all()})
+
+

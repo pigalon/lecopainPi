@@ -273,6 +273,8 @@ class User(db.Model, UserMixin):
     active = db.Column(db.Boolean, default=0)
     firstname = db.Column(db.String(50))
     lastname = db.Column(db.String(50))
+    roles = db.relationship('Role', secondary='user_roles')
+
 
     def __repr__(self):
         return 'username :' + self.username + \
@@ -298,6 +300,7 @@ class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(50), unique=True)
+    users = db.relationship("User", secondary='user_roles', viewonly=True)
 
 # Define the UserRoles association table
 class UserRoles(db.Model):
@@ -305,6 +308,10 @@ class UserRoles(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
     role_id = db.Column(db.Integer(), db.ForeignKey('roles.id', ondelete='CASCADE'))
+    user = db.relationship(User, backref=db.backref(
+        "users", cascade="all, delete-orphan"))
+    role = db.relationship(Role, backref=db.backref(
+        "roles", cascade="all, delete-orphan"))
 
 
 
@@ -426,10 +433,21 @@ class SellerSchema(SQLAlchemyAutoSchema):
         load_instance = True
         
 class UserSchema(SQLAlchemyAutoSchema):
-
+    role_name = fields.Method("format_role_name", dump_only=True)
     class Meta:
         # Fields to expose
         model = User
+        load_instance = True
+    
+    def format_role_name(self, user):
+        return "{}".format(user.roles[0].name)
+        
+
+class RoleSchema(SQLAlchemyAutoSchema):
+
+    class Meta:
+        # Fields to expose
+        model = Role
         load_instance = True
 
 

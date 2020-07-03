@@ -1,14 +1,14 @@
 <search-user>
     <div class="form-group">
-        Villes:
+        Roles:
         <br>
         <select onchange={ load_users } class="form-control" name="role" id="role" ref="role" style="width: 12rem; display:inline-block" >
-            <option value="all" SELECTED>Touts</option>
-            <option each="{ role in roles }" value={role}>{role} </option>
+            <option value="all" SELECTED>Tous</option>
+            <option each="{ role in roles }" value={role.id}>{role.name} </option>
         </select>
         <select class="form-control" id="user_id" name="user_id" ref="user_id" style="width: 12rem; display:inline-block">
             <option value="0" SELECTED>Tous</option>
-            <option each="{ user_name in user_names }" value={user_name.id}> {user_name.firstname} {user_name.lastname} </option>
+            <option each="{ user_name in user_names }" value={user_name.id}> {user_name.username} </option>
         </select>
         <button type="button" id="search" onclick="{load_users}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
 
@@ -22,8 +22,9 @@
             <table width="100%">
                 <tr>
                     <th width="6%">id</th>
-                    <th width="44%">Nom - Prénom</th>
-                    <th width="40%">Role</th>
+                    <th width="20%">Login</th>
+                    <th width="24%">Prénom Nom</th>
+                    <th width="20%">Role</th>
                     <th width="20%">id Compte</th>
                 </tr>
             </table>
@@ -34,8 +35,9 @@
             <table width="100%" class="table table-striped" onclick={ show_user(user.id) }>
                 <tr>
                     <td width="6%" class="table-primary">{user.id}</td>
-                    <td width="44%">{user.firstname} {user.lastname}</td>
-                    <td width="40%">{user.role}</td>
+                    <td width="20%">{user.username}</td>
+                    <td width="24%">{user.firstname} {user.lastname}</td>
+                    <td width="20%">{user.role_name}</td>
                     <td width="20%">{user.account_id}</td>
                 </tr>
             </table>
@@ -70,9 +72,9 @@
 
 		this.on('mount', function() {
             
-            var ajaxCall_cities = self.load_cities();
-			ajaxCall_cities.done(function(data) {
-				$(self.refs.city).select2();
+            var ajaxCall_roles = self.load_roles();
+			ajaxCall_roles.done(function(data) {
+				$(self.refs.role).select2();
 			})
 
             var ajaxCall_user_names = self.load_user_names();
@@ -95,7 +97,7 @@
                 role = 'all'
             }
 
-            user_url = user_url.concat('role/',role);
+            user_url = user_url.concat('roles/',role);
 
             if ( user_id != undefined && user_id != '0'){
                 user_url = user_url.concat('/id/',user_id);
@@ -162,7 +164,7 @@
 					dataType: "json",
 					contentType: "application/json; charset=utf-8",
 					success: function(data) {
-						self.cities = data['roles']
+						self.roles = data['roles']
                         self.update()
 					}
 				});

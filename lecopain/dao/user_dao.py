@@ -1,7 +1,7 @@
 from lecopain.app import db
 
 from lecopain.dao.models import (
-    User, UserSchema,
+    User, UserSchema, Role, UserRoles
 )
 
 class UserDao:
@@ -20,13 +20,19 @@ class UserDao:
         return user_schema.dump(all_users)
     
     @staticmethod
-    def optim_read_all_pagination(page, per_page):
+    def optim_read_all_role_pagination(role_name, page, per_page):
 
         # Create the list of people from our data
 
-        all_users = User.query \
-        .order_by(User.name) \
+        all_users = User.query.join(UserRoles, UserRoles.user_id == User.id).join(Role, UserRoles.role_id == Role.id)
+        
+        if role_name != 'all':
+            all_users = all_users.filter(Role.name == role_name)
+            
+        all_users = all_users.order_by(User.username) \
         .paginate(page=page, per_page=per_page)
+        
+        
 
         # Serialize the data for the response
         user_schema = UserSchema(many=True)
