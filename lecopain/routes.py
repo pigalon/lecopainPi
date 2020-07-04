@@ -44,23 +44,23 @@ app.register_blueprint(report_page)
 
 
 customer_page = Blueprint('customer_page',  __name__,
-                          template_folder='./templates')
+                        template_folder='./templates')
 shipment_page = Blueprint('shipment_page',  __name__,
-                       template_folder='./templates')
+                        template_folder='./templates')
 order_page = Blueprint('order_page',  __name__,
-                       template_folder='./templates')
+                        template_folder='./templates')
 product_page = Blueprint('product_page',  __name__,
-                         template_folder='./templates')
+                        template_folder='./templates')
 seller_page = Blueprint('seller_page',  __name__,
                         template_folder='./templates')
 user_page = Blueprint('user_page',  __name__,
                         template_folder='./templates')
 user_page = Blueprint('user_page',  __name__,
-                      template_folder='./templates')
+                        template_folder='./templates')
 subscription_page = Blueprint('subscription_page',  __name__,
-                              template_folder='./templates')
+                        template_folder='./templates')
 report_page = Blueprint('report_page',  __name__,
-                              template_folder='./templates')
+                        template_folder='./templates')
 
 Swagger(app)
 
@@ -70,7 +70,7 @@ Swagger(app)
 def home():
     if current_user.is_authenticated:
         app.logger.info("User connected : " + str(current_user) +
-                             " with IP address : " + str(request.remote_addr))
+                            " with IP address : " + str(request.remote_addr))
         customers_nb = Customer.query.count()
         orders_nb = Order.query.count()
         products_nb = Product.query.count()

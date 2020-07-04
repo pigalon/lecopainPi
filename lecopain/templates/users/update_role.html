@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<role-user user_id={{user_id}}></role-user>
+
+{% endblock %}
+{% block scripts %}
+    <script src="{{ url_for('static', filename='tag/users/role_user.tag') }}" type="riot/tag"></script>
+
+    <script>
+        riot.mount("role-user");
+    </script>
+{% endblock %}
+

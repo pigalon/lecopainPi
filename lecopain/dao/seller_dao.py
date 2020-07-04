@@ -41,7 +41,10 @@ class SellerDao:
         .order_by(Seller.name) \
         .all()
 
-
+    @staticmethod
+    def get_one(id):
+        # Create the list of people from our data
+        return Seller.query.get_or_404(id)
 
     @staticmethod
     def read_one(id):

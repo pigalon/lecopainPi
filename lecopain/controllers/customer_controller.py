@@ -143,4 +143,9 @@ def api_customers_customer_id(city, customer_id):
         page=request.args.get('page', page),
         per_page=request.args.get('per_page', per_page),
         prev_page=prev_page, next_page=next_page))
+    
+@customer_page.route("/api/customers/<int:customer_id>")
+@login_required
+def api_customer(customer_id):
+    return jsonify({'customer':customerServices.read_one(customer_id)})
 

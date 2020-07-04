@@ -16,3 +16,6 @@ class roleManager():
     
     def get_one(self,  role_id):
         return RoleDao.get_one(role_id)
+    
+    def get_one_from_name(self,  role_name):
+        return RoleDao.get_one_from_name(role_name)

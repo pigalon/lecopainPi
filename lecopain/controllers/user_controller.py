@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, redirect, url_for, Flask, jsonify,
 from werkzeug.urls import url_parse
 from sqlalchemy.orm import load_only
 from lecopain.form import LoginForm
-from lecopain.form import UserForm
+from lecopain.form import UserForm, PasswordForm
 from lecopain.dao.models import User, UserRoles, Role
 from lecopain.dao.user_dao import UserDao
 from lecopain.services.user_manager import userManager
@@ -77,7 +77,14 @@ def users():
 def create_user():
     form = UserForm()
     if form.validate_on_submit():
-        user = user(name=form.name.data, email=form.email.data, city=form.city.data)
+        user = User(username=form.username.data, 
+                    email=form.email.data, 
+                    firstname=form.firstname.data,
+                    lastname=form.lastname.data)
+        user.set_password(form.password.data)
+        role = roleServices.get_one_from_name('user_role')
+        user.roles = [role]
+        user.set_active()
         db.session.add(user)
         db.session.commit()
         #flash(f'People created for {form.firstname.data}!', 'success')
@@ -98,7 +105,7 @@ def user(user_id):
 #####################################################################
 @user_page.route("/users/update/<int:user_id>", methods=['GET', 'POST'])
 @login_required
-def display_update_order(user_id):
+def update_user(user_id):
     user = userServices.get_one(user_id)
     form = UserForm()
 
@@ -113,17 +120,11 @@ def display_update_order(user_id):
 
         role = roleServices.get_one(int(form.role_id.data))
         user.roles = [role,]
-        db.session.flush()
-
-        if form.active.data:
-            user.set_active()
-        else:
-            user.set_inactive()
 
         db.session.commit()
 
         #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect(url_for('user_page.users'))
+        return redirect(f'/users/{user_id}')
     else:
         form.username.data = user.username
         form.firstname.data = user.firstname
@@ -133,6 +134,45 @@ def display_update_order(user_id):
         form.role_id.data = user.roles[0].id
     roles = roleServices.get_all()
     return render_template('/users/update_user.html', user=user, roles=roles, title='Mise a jour de l\'utilisateur', form=form)
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@user_page.route("/users/update/<int:user_id>/password", methods=['GET', 'POST'])
+@login_required
+def update_password(user_id):
+    
+    form = PasswordForm()
+
+    if form.validate_on_submit():
+        
+        userServices.change_password(user_id, form.password.data)
+        return redirect(f'/users/{user_id}')
+    
+    return render_template('/users/update_password.html', user=user, title='Mise à jour du mot de passe', form=form)
+
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@user_page.route("/users/update/<int:user_id>/role", methods=['GET', 'POST'])
+@login_required
+def update_role(user_id):
+    return render_template('/users/update_role.html', user_id=user_id, title='Mise à jour du role et compte associé')
+
+
+@user_page.route("/users/<int:user_id>/active", methods=['GET', 'POST'])
+@login_required
+def active_user(user_id):
+    userServices.active(user_id)
+    return redirect(f'/users/{user_id}')
+
+@user_page.route("/users/<int:user_id>/deactivate", methods=['GET', 'POST'])
+@login_required
+def deactivate_user(user_id):
+    userServices.deactivate(user_id)
+    return redirect(f'/users/{user_id}')
+
 
 
 #####################################################################
@@ -183,5 +223,19 @@ def api_users_all():
 @login_required
 def api_roles():
     return jsonify({'roles': roleServices.read_all()})
+
+@user_page.route("/api/users/update/<int:user_id>/role/<int:role_id>/account/<int:account_id>", methods=['GET', 'POST'])
+@login_required
+def api_change_role(user_id, role_id, account_id):
+    role = roleServices.get_one(role_id)
+    userServices.change_role(user_id, role, account_id)
+    return jsonify({})
+
+@user_page.route("/api/users/<int:user_id>")
+@login_required
+def api_user(user_id):
+    return jsonify({'user':userServices.read_one(user_id)})
+
+
 
 

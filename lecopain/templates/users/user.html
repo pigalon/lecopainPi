@@ -5,7 +5,16 @@
     <div class="card  ">
         <div class="card-header text-white bg-info">
             Client N° {{user.id}} 
-            <span class="right"><a href="/users/update/{{ user.id }}/password" class="btn btn-outline-dark">Changer le mot de passe</a></span><span class="right"><a href="/users/update/{{ user.id }}" class="btn btn-outline-dark">Modifier</a></span>
+            <span class="right">
+                {% if user.active %}
+                    <a href="/users/{{ user.id }}/deactivate" class="btn bg-danger btn-outline-dark" >Désactiver </a>
+                {% else %}
+                    <a href="/users/{{ user.id }}/active" class="btn bg-success btn-outline-dark"> Activer </a>
+                {% endif %}
+                <a href="/users/update/{{ user.id }}/role" class="btn bg-warning btn-outline-dark">Compte/Role</a> 
+                <a href="/users/update/{{ user.id }}/password" class="btn bg-warning btn-outline-dark">Changer le mot de passe</a> 
+                <a href="/users/update/{{ user.id }}" class="btn bg-warning btn-outline-dark">Modifier</a>
+            </span>
         </div>
         <div class="card-body">
             <ul class="list-group list-group-flush">
@@ -17,7 +26,7 @@
                     <b>Prénom Nom : </b>{{user.firstname}} {{user.lastname}}
                 </li>
                 <li class="list-group-item">
-                    <b>Role : </b> {{user.role_name}}
+                    <b>Role : </b> {{user.roles[0].name}}
                 </li>
                 <li class="list-group-item">
                     <b>Email : </b> {{user.email}}
@@ -29,7 +38,8 @@
     <div class="card">
         <div class="card-header text-white bg-info">
             Suppression <span class="float-right"><a href="/users/delete/{{ user.id }}"
-                    class="btn btn-light text-danger" alt="Supprimer"><i class="fas fa-trash-alt"></i></a></span>
+                    class="btn btn-light text-danger" alt="Supprimer"><i class="fas fa-trash-alt"></i></a>
+                    </span>
         </div>
     </div>
 

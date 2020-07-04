@@ -51,7 +51,7 @@ def seller(seller_id):
 @seller_page.route("/sellers/update/<int:seller_id>", methods=['GET', 'POST'])
 @login_required
 def display_update_order(seller_id):
-    seller = Seller.query.get_or_404(seller_id)
+    seller = sellerServices.get_one(seller_id)
     form = SellerForm()
 
     if form.validate_on_submit():
@@ -80,7 +80,7 @@ def display_update_order(seller_id):
 @seller_page.route("/sellers/delete/<int:seller_id>")
 @login_required
 def display_delete_seller(seller_id):
-    seller = Seller.query.get_or_404(seller_id)
+    seller =sellerServices.get_one(seller_id)(seller_id)
     return render_template('/sellers/delete_seller.html', seller=seller, title='Suppression du vendeur')
 
 #####################################################################
@@ -89,7 +89,7 @@ def display_delete_seller(seller_id):
 @seller_page.route("/sellers/<int:seller_id>", methods=['DELETE'])
 @login_required
 def delete_seller(seller_id):
-    seller = Seller.query.get_or_404(seller_id)
+    seller = sellerServices.get_one(seller_id)
     db.session.delete(seller)
     db.session.commit()
     return jsonify({})
@@ -114,3 +114,14 @@ def api_sellers():
         prev_page=prev_page, next_page=next_page))
     
     
+@seller_page.route("/api/sellers/<int:seller_id>")
+@login_required
+def api_seller(seller_id):
+    return jsonify({'seller':sellerServices.read_one(seller_id)})
+    
+
+@seller_page.route('/api/sellers/select')
+@login_required
+def api_sellers_select():
+    return jsonify({'sellers':sellerServices.optim_get_all()})
+        

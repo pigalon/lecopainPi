@@ -41,3 +41,8 @@ class RoleDao:
     def get_one(id):
         # Create the list of people from our data
         return Role.query.get_or_404(id)
+    
+    @staticmethod
+    def get_one_from_name(role_name):
+        # Create the list of people from our data
+        return Role.query.filter(Role.name == role_name).first()

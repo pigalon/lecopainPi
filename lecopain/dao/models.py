@@ -273,6 +273,7 @@ class User(db.Model, UserMixin):
     active = db.Column(db.Boolean, default=False)
     firstname = db.Column(db.String(50))
     lastname = db.Column(db.String(50))
+    account_id = db.Column(db.Integer)
     roles = db.relationship('Role', secondary='user_roles',backref=db.backref('users', lazy='dynamic'))
 
 
@@ -292,7 +293,7 @@ class User(db.Model, UserMixin):
         self.active = False
     
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.password = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
