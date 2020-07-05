@@ -184,7 +184,7 @@ def api_users_by_role(role_id):
     if per_page is None:
         per_page=10
 
-    data, prev_page, next_page = userServices.optim_get_all_pagination(role_id=role_id, page=int(page), per_page=int(per_page))
+    data, prev_page, next_page = userServices.optim_get_all_pagination(role_id=int(role_id), page=int(page), per_page=int(per_page))
     
     return jsonify(Pagination.get_paginated_db(
         data, '/api/users/',

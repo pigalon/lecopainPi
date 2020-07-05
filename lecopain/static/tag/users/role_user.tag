@@ -59,11 +59,6 @@
                 'lastname':' ', 
                 'role_name':' '}
 
-        
-
-        
-        
-
         moment.locale('fr');
 
 		this.on('mount', function() {
@@ -139,11 +134,7 @@
             });
 		}
         load_accounts(){
-            console.log("self.refs.role_id.value : " + self.refs.role_id.value)
-            console.log("self.refs.role_id.label : " + self.refs.role_id.selectedOptions + " - " +  self.refs.role_id.selectedIndex)
             var i = parseInt(self.refs.role_id.selectedIndex);
-            console.log("self.refs.role_id.label : " + self.refs.role_id.selectedOptions[0].text)
-
         }
         load_customer_names(){
 			var url = '/api/customers/';

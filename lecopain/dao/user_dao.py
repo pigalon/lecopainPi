@@ -24,10 +24,13 @@ class UserDao:
 
         # Create the list of people from our data
 
-        all_users = User.query.join(UserRoles, UserRoles.user_id == User.id).join(Role, UserRoles.role_id == Role.id)
+        
         
         if role_id != 0:
+            all_users = User.query.join(UserRoles, UserRoles.user_id == User.id).join(Role, UserRoles.role_id == Role.id)
             all_users = all_users.filter(Role.id == role_id)
+        else:
+            all_users = User.query
             
         all_users = all_users.order_by(User.username) \
         .paginate(page=page, per_page=per_page)

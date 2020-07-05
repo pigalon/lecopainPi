@@ -3,7 +3,7 @@
         Roles:
         <br>
         <select onchange={ load_users } class="form-control" name="role" id="role" ref="role" style="width: 12rem; display:inline-block" >
-            <option value="all" SELECTED>Tous</option>
+            <option value="0" SELECTED>Tous</option>
             <option each="{ role in roles }" value={role.id}>{role.name} </option>
         </select>
         <select class="form-control" id="user_id" name="user_id" ref="user_id" style="width: 12rem; display:inline-block">
