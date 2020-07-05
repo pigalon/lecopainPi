@@ -43,7 +43,7 @@
                     <td if={shipment.status == 'DEFAUT'} width="6%" class="table-danger">{shipment.id}</td>
 
                     <td width="20%">{moment(shipment.shipping_dt).format('ddd Do MMMM' )}</td>
-                    <td width="30%"><span onclick={ show_shipment(shipment.id) } class="badge badge-primary" style="font-size:14px;"><i class="fas fa-user"></i></span> {shipment.customer_name}</td>
+                    <td width="30%"><span onclick={ show_customer(shipment.customer_id) } class="badge badge-primary" style="font-size:14px;"><i class="fas fa-user"></i></span> {shipment.customer_name}</td>
                     <td width="15%">
                         <span if={shipment.shipping_status == 'OUI'} style="color:green" ><i class="fas fa-cart-arrow-down "></i></span>
                         <span if={shipment.shipping_status == 'NON'} style="color:grey" ><i class="fas fa-cart-arrow-down "></i></span>

@@ -602,6 +602,7 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
 
 class ShipmentSchema(SQLAlchemyAutoSchema):
     customer_name = fields.Method("format_customer_name", dump_only=True)
+    customer_id = fields.Method("format_customer_id", dump_only=True)
     subscription_id = fields.Method(
         "format_subscription_id", dump_only=True)
 
@@ -610,6 +611,10 @@ class ShipmentSchema(SQLAlchemyAutoSchema):
         model = Shipment
         load_instance = True
         include_relationships = True
+    
+    def format_customer_id(self, shipment):
+        if shipment != None:
+            return "{}".format(shipment.customer.id)
 
     def format_customer_name(self, shipment):
         if shipment != None:
