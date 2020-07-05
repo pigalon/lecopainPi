@@ -11,9 +11,9 @@
             <option value="month">Mois</option>
             <option value="all">Toutes</option>
         </select>
-        <button type="button" id="search" onclick="{load_shipments}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
+        <button type="button" ref="search" name="search" id="search" onclick="{load_shipments}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
         <div class="right">
-            <a role="button" href="/shipments/new" class="btn btn-primary display:inline-block">Ajouter</i></a>
+            <a role="button" href="/shipments/new" class="btn btn-primary display:inline-block">Ajouter</a>
         </div>
     </div>
     <table id="shipments_list" width="100%">
@@ -22,17 +22,19 @@
             <table width="100%">
                 <tr>
                     <th width="6%">id</th>
-                    <th width="20%">date</th>
-                    <th width="30%">client</th>
-                    <th width="20%">Status</th>
-                    <th width="20%">Liv.</th>
+                    <th width="20%">Date</th>
+                    <th width="30%">Client</th>
+                    <th width="15%">Status</th>
+                    <th width="10%">Liv.</th>
+                    <th width="15%">Actions</th>
                 </tr>
             </table>
             </td>
         </tr>
         <tr each="{ shipment in shipments }">
             <td>
-            <table width="100%" class="table table-striped" onclick={ show_shipment(shipment.id) }>
+            
+            <table width="100%" class="table table-striped">
                 <tr>
                     <td if={shipment.status == 'CREE' && shipment.updated_at == None} width="6%" class="table-primary">{shipment.id}</td>
                     <td if={shipment.status == 'CREE' && shipment.updated_at != None} width="6%" class="table-warning">{shipment.id}</td>
@@ -41,16 +43,21 @@
                     <td if={shipment.status == 'DEFAUT'} width="6%" class="table-danger">{shipment.id}</td>
 
                     <td width="20%">{moment(shipment.shipping_dt).format('ddd Do MMMM' )}</td>
-                    <td width="30%">{shipment.customer_name}</td>
-                    <td width="20%"><span if={shipment.shipping_status == 'OUI'} style="color:green" ><i class="fas fa-cart-arrow-down "></i></span>
-                    <span if={shipment.shipping_status == 'NON'} style="color:grey" ><i class="fas fa-cart-arrow-down "></i></span>
-                    <span if={shipment.payment_status == 'OUI'} style="color:green" ><i class="fas fa-credit-card"></i></i></span>
-                    <span if={shipment.payment_status == 'NON'} style="color:grey" ><i class="fas fa-credit-card"></i></i></span>
-                    <span if={shipment.subscription_id != None} class="badge badge-warning">Ab.</span>
+                    <td width="30%"><span onclick={ show_shipment(shipment.id) } class="badge badge-primary" style="font-size:14px;"><i class="fas fa-user"></i></span> {shipment.customer_name}</td>
+                    <td width="15%">
+                        <span if={shipment.shipping_status == 'OUI'} style="color:green" ><i class="fas fa-cart-arrow-down "></i></span>
+                        <span if={shipment.shipping_status == 'NON'} style="color:grey" ><i class="fas fa-cart-arrow-down "></i></span>
+                        <span if={shipment.payment_status == 'OUI'} style="color:green" ><i class="fas fa-credit-card"></i></span>
+                        <span if={shipment.payment_status == 'NON'} style="color:grey" ><i class="fas fa-credit-card"></i></span>
+                        <span <span onclick={ show_subscription(shipment.subscription_id) } if={shipment.subscription_id != None} class="badge badge-warning" style="font-size:16px;">Ab.</span>
                     </td>
-                    <td if={shipment.status == 'ANNULEE'} width="20%" >0.00 €</td>
-                    <td if={shipment.status != 'ANNULEE'} width="20%">
+                    <td if={shipment.status == 'ANNULEE'} width="10%" >0.00 €</td>
+                    <td if={shipment.status != 'ANNULEE'} width="10%">
                         {shipment.shipping_price.toFixed(2)} €
+                    </td>
+                     <td width="15%">
+                        <span onclick={ show_shipment(shipment.id) } class="badge badge-primary"><i class="fas fa-eye" style="font-size:18px;"></i></span>
+                        <input onclick={ check_shipement } type="checkbox" ref="ids_{shipment.id}" id="ids_{shipment.id}" name="ids_{shipment.id}">
                     </td>
                 </tr>
             </table>
@@ -72,6 +79,10 @@
             <td width="26%"> </td>
         </tr>
     </table>
+     <div class="right">
+        <a role="button" onclick="{ cancel_list }" style="color:white" class="btn btn-primary display:inline-block">Annulation Liste</a>
+    </div>
+
     <br>
     <br>
     <script>
@@ -79,6 +90,9 @@
         var per_page = 10
         var page= 1
         var next_url = ''
+
+        this.selected_shipments = []
+
 
         moment.locale('fr');
 
@@ -192,6 +206,49 @@
                 location = "/shipments/"+shipment_id;
             }
 		}
+        show_subscription(subscription_id){
+            return function(e) {
+                location = "/subscriptions/"+subscription_id;
+            }
+		}
+        show_customer(customer_id){
+            return function(e) {
+                location = "/customers/"+customer_id;
+            }
+		}
+
+        check_shipement(e){
+            if ($('#ids_'+e.item.shipment.id).is(':checked')) {
+                this.selected_shipments.push(e.item.shipment.id)
+            }
+            else{
+                for( var i = 0; i < this.selected_shipments.length; i++)
+                { 
+                    if ( this.selected_shipments[i] === e.item.shipment.id) { 
+                        this.selected_shipments.splice(i, 1); 
+                    }
+                }
+            }
+        }
+
+        cancel_list(){
+            var str_shipment_ids = ''
+            this.selected_shipments.forEach(
+                item => (str_shipment_ids = str_shipment_ids.concat(item,','))
+                )
+            var url = '/api/shipments/cancel/ids/'+str_shipment_ids;
+            return $.ajax({
+                url: url,
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function(data) {
+                    location.reload(); 
+                    self.update()
+                }
+            });
+		}
+
 
 	</script>
 </search-shipment>

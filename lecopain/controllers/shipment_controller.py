@@ -201,6 +201,20 @@ def delete_shipment(shipment_id):
 def api_shipments():
     return jsonify({'shipments': shipmentServices.get_all()})
 
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@shipment_page.route('/api/shipments/cancel/ids/<string:list_ids>')
+@login_required
+def pai_cancel_list(list_ids):
+    ids = list_ids.split(',')
+    for id in ids:
+        print('cancel id : ' + str(id))
+        if id != '':
+            shipmentServices.update_shipment_status(id, ShipmentStatus_Enum.ANNULEE.value)
+    return jsonify({'shipments': shipmentServices.get_all()})
+
 #####################################################################
 #                                                                   #
 #####################################################################

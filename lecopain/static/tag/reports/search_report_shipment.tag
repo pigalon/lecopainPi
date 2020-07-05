@@ -27,12 +27,38 @@
         <h4>Liste des livraisons:</h4> 
         <br>
         <table class="table table-bordered table-striped">
+            <thead>
+                <th>
+                    Date
+                </th>
+                <th>
+                    N° de Livraison
+                </th>
+                <th>
+                    Client
+                </th>
+                <th>
+                    Montant
+                </th>
+                <th>
+                    Informations
+                </th>
+            </thead>
             <tr each="{shipment in reports['shipments']}">
                 <td>
-                    <h5>Livraison N° : {shipment.id}</h5>
-                    <p>Livré le : {moment(shipment.shipping_dt).format('ddd Do MMMM' )} <br>
-                    Client :  {shipment.customer_name} <br>
-                    Montant livraison :  {shipment.shipping_price.toFixed(2)} €</p>
+                    {moment(shipment.shipping_dt).format('ddd Do MMMM' )}
+                </td>
+                <td>
+                    {shipment.id}
+                </td>
+                <td>
+                    {shipment.customer_name}
+                </td>
+                <td>
+                    {shipment.shipping_price.toFixed(2)} €
+                </td>
+                <td>
+                    <span if={shipment.subscription_id != None} class="badge badge-warning">Ab.</span>
                 </td>
             </tr>
         </table>
