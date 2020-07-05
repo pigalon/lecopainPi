@@ -38,7 +38,7 @@ class UserForm(FlaskForm):
     email = StringField('Email', validators=[
                         DataRequired(), Length(min=2, max=200)])
     password = PasswordField('Nouveau Mot de Passe', [
-        DataRequired(), Length(min=6, max=30),
+        DataRequired(), Length(min=6, max=30, message='Longueur minimale du Mot de passe : 6 caractères'),
         EqualTo('confirm', message='Les mots de passe doivent être identiques')])
     confirm = PasswordField('Confirmer le Mot de Passe ', validators=[DataRequired(), Length(min=6, max=30)])
     submit = SubmitField('Valider')
@@ -68,12 +68,10 @@ class ShipmentForm(FlaskForm):
     subscription_id = StringField('Id Abonnement')
     submit = SubmitField('Valider')
 
-
 class ShippingDtForm(FlaskForm):
     title = StringField('Titre')
     shipping_dt = DateTimeField('Date de Livraison', format='%d/%m/%Y %H:%M:%S')
     submit = SubmitField('Valider')
-
 
 class ProductForm(FlaskForm):
     name = StringField('Nom', validators=[DataRequired()])
@@ -84,7 +82,6 @@ class ProductForm(FlaskForm):
     category = StringField('Catégorie')
     submit = SubmitField('Valider')
 
-
 class ShippingForm(FlaskForm):
     reference = StringField('Référence', validators=[DataRequired()])
     order_id = IntegerField(
@@ -93,23 +90,19 @@ class ShippingForm(FlaskForm):
     status = StringField('Statut')
     submit = SubmitField('Valider')
 
-
 class CancellationForm(FlaskForm):
     submit = SubmitField('Annulation')
-
 
 class LoginForm(FlaskForm):
     username = StringField('Login')
     password = PasswordField('Mot de Passe')
     submit = SubmitField('Envoyer')
 
-
 class SubscriptionForm(FlaskForm):
     customer_id = IntegerField('Client Id:', validators=[DataRequired()])
     start_dt = DateTimeField('Date de debut', format='%d/%m/%Y')
     end_dt = DateTimeField('Date de fin', format='%d/%m/%Y')
     submit = SubmitField('Valider')
-    
 
 class SubscriptionDayForm(FlaskForm):
     category_name = StringField('Catégorie')

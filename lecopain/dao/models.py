@@ -318,8 +318,6 @@ class UserRoles(db.Model):
     role = db.relationship(Role, backref=db.backref(
         "roles_users", cascade="all, delete-orphan"))
 
-
-
 class Subscription(db.Model):
 
     __tablename__ = 'subscriptions'

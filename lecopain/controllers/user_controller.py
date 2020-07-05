@@ -77,16 +77,7 @@ def users():
 def create_user():
     form = UserForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, 
-                    email=form.email.data, 
-                    firstname=form.firstname.data,
-                    lastname=form.lastname.data)
-        user.set_password(form.password.data)
-        role = roleServices.get_one_from_name('user_role')
-        user.roles = [role]
-        user.set_active()
-        db.session.add(user)
-        db.session.commit()
+        userServices.create(form)
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(url_for('user_page.users'))
     roles = roleServices.get_all()
@@ -106,23 +97,12 @@ def user(user_id):
 @user_page.route("/users/update/<int:user_id>", methods=['GET', 'POST'])
 @login_required
 def update_user(user_id):
-    user = userServices.get_one(user_id)
+    
     form = UserForm()
 
     if form.validate_on_submit():
-        print('update form validate : ' + str(user.id))
-
-        #shipping_dt=datetime.strptime('YYYY-MM-DD HH:mm:ss', form.shipping_dt.data)
-        user.username = form.username.data
-        user.firstname = form.firstname.data
-        user.lastname = form.lastname.data
-        user.email = form.email.data
-
-        role = roleServices.get_one(int(form.role_id.data))
-        user.roles = [role,]
-
-        db.session.commit()
-
+        userServices.update(form)
+        
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(f'/users/{user_id}')
     else:
@@ -181,7 +161,7 @@ def deactivate_user(user_id):
 @user_page.route("/users/delete/<int:user_id>")
 @login_required
 def display_delete_user(user_id):
-    user = user.query.get_or_404(user_id)
+    user = userServices.get_one(user_id)
     return render_template('/users/delete_user.html', user=user, title='Suppression de l\'utilisateur')
 
 #####################################################################
@@ -190,14 +170,12 @@ def display_delete_user(user_id):
 @user_page.route("/users/<int:user_id>", methods=['DELETE'])
 @login_required
 def delete_user(user_id):
-    user = user.query.get_or_404(user_id)
-    db.session.delete(user)
-    db.session.commit()
+    userServices.delete(user_id)
     return jsonify({})
 
-@user_page.route('/api/users/roles/<string:role_name>')
+@user_page.route('/api/users/roles/<string:role_id>')
 @login_required
-def api_users_by_role(role_name):
+def api_users_by_role(role_id):
     page = request.args.get("page")
     per_page = request.args.get("per_page")
 
@@ -206,7 +184,7 @@ def api_users_by_role(role_name):
     if per_page is None:
         per_page=10
 
-    data, prev_page, next_page = userServices.optim_get_all_pagination(role_name=role_name, page=int(page), per_page=int(per_page))
+    data, prev_page, next_page = userServices.optim_get_all_pagination(role_id=role_id, page=int(page), per_page=int(per_page))
     
     return jsonify(Pagination.get_paginated_db(
         data, '/api/users/',
