@@ -54,16 +54,11 @@ class userManager():
         db.session.add(user)
         db.session.commit()
         
-    def update(self, user_id, form):
-        user = UserDao.get_one(user_id)
-        
+    def update(self, user, form):
         user.username = form.username.data
         user.firstname = form.firstname.data
         user.lastname = form.lastname.data
         user.email = form.email.data
-
-        role = RoleDao.get_one(int(form.role_id.data))
-        user.roles = [role,]
 
         db.session.commit()
         

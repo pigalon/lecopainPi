@@ -37,15 +37,11 @@ class UserForm(FlaskForm):
                        DataRequired(), Length(min=2, max=200)])
     email = StringField('Email', validators=[
                         DataRequired(), Length(min=2, max=200)])
-    password = PasswordField('Nouveau Mot de Passe', [
-        DataRequired(), Length(min=6, max=30, message='Longueur minimale du Mot de passe : 6 caractères'),
-        EqualTo('confirm', message='Les mots de passe doivent être identiques')])
-    confirm = PasswordField('Confirmer le Mot de Passe ', validators=[DataRequired(), Length(min=6, max=30)])
     submit = SubmitField('Valider')
 
 class PasswordForm(FlaskForm):
     password = PasswordField('Nouveau Mot de Passe', [
-        DataRequired(), Length(min=6, max=30),
+        DataRequired(), Length(min=6, max=30, message='Longueur minimale du Mot de passe : 6 caractères'),
         EqualTo('confirm', message='Les mots de passe doivent être identiques')])
     confirm = PasswordField('Confirmer le Mot de Passe ', validators=[DataRequired(), Length(min=6, max=30)])
     submit = SubmitField('Valider')

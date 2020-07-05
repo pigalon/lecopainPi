@@ -97,11 +97,11 @@ def user(user_id):
 @user_page.route("/users/update/<int:user_id>", methods=['GET', 'POST'])
 @login_required
 def update_user(user_id):
-    
+    user = userServices.get_one(user_id)
     form = UserForm()
 
     if form.validate_on_submit():
-        userServices.update(form)
+        userServices.update(user, form)
         
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(f'/users/{user_id}')
@@ -110,8 +110,6 @@ def update_user(user_id):
         form.firstname.data = user.firstname
         form.lastname.data = user.lastname
         form.email.data = user.email
-        form.active.data = user.active
-        form.role_id.data = user.roles[0].id
     roles = roleServices.get_all()
     return render_template('/users/update_user.html', user=user, roles=roles, title='Mise a jour de l\'utilisateur', form=form)
 
