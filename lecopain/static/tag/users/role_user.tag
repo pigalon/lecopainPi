@@ -116,6 +116,14 @@
 
             var customer_id = self.refs.customer_id.value;
             var seller_id = self.refs.seller_id.value;
+            var account_id = 0
+
+            if (customer_id > 0){
+                account_id = customer_id
+            }
+            else if (seller_id > 0){
+                account_id = seller_id
+            }
 
             user_url = user_url.concat('/', user_id);
 
