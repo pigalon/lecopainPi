@@ -151,7 +151,8 @@ def delete_subscription(subscription_id):
 @login_required
 def generate_shipments(subscription_id):
     subscription = subscriptionServices.get_one_db(subscription_id)
-    subscriptionServices.generate_shipments(subscription)
+    if len(subscription.shipments)<1:
+        subscriptionServices.generate_shipments(subscription)
     return render_template('/subscriptions/subscription.html', subscription=subscription)
 
 #####################################################################

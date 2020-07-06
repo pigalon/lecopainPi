@@ -61,7 +61,7 @@ class ShipmentManager():
 
     def delete_shipment(self, shipment_id):
         shipment = ShipmentDao.get_one(shipment_id)
-        if shipment.subscription_id is not None:
+        if shipment.subscription_id is not None and shipment.status != ShipmentStatus_Enum.ANNULEE.value:
             self.remove_shipment_subscriptions(shipment)
         ShipmentDao.delete(shipment_id)
         ShipmentDao.update_db(shipment)
