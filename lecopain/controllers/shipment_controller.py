@@ -74,7 +74,7 @@ def shipment_create():
 def shipment_update(shipment_id):
     form = ShipmentForm()
     
-
+    category = form.category_name.data
     lines = (
         request.form.getlist('product_id[]'),
         request.form.getlist('seller_id[]'),
@@ -83,7 +83,7 @@ def shipment_update(shipment_id):
     )
 
     if form.validate_on_submit():
-        shipmentServices.update_shipment_and_parse_line(
+        shipmentServices.update_shipment_and_parse_line(category=category,
             shipment_id=shipment_id, lines=lines)
         #flash(f'People created for {form.firstname.data}!', 'success')
         return redirect(f'/shipments/{shipment_id}')

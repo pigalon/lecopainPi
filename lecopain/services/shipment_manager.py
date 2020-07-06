@@ -66,8 +66,9 @@ class ShipmentManager():
         ShipmentDao.delete(shipment_id)
         ShipmentDao.update_db(shipment)
 
-    def update_shipment_and_parse_line(self, shipment_id, lines):
+    def update_shipment_and_parse_line(self, category, shipment_id, lines):
         shipment = ShipmentDao.get_one(shipment_id)
+        shipment.category = category
         
         #remove shipment from subscription
         if shipment.subscription != None:
@@ -90,7 +91,11 @@ class ShipmentManager():
         for grouped_lines in sorted_lines:
             self.orderService.update_by_shipment(shipment, grouped_lines['lines'], grouped_lines['seller_id'])
 
-        shipment.shipping_price, shipment.shipping_rules = self.businessService.apply_rules_for_shipment(
+        if shipment.category != Category_Enum.PRESTATION.value:
+            shipment.shipping_price, created_shipment.shipping_rules = self.businessService.apply_rules_for_shipment(
+            shipment)
+        else :
+            shipment.shipping_price, shipment.shipping_rules = self.businessService.prestation_rules_for_shipment(
             shipment)
         
         shipment.updated_at = datetime.now()

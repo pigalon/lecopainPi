@@ -7,6 +7,7 @@ from flask_login import login_required
 from sqlalchemy.orm import load_only
 from lecopain.services.product_manager import ProductManager
 from lecopain.services.seller_manager import SellerManager
+from lecopain.dao.models import Category_Enum
 
 app = Flask(__name__, instance_relative_config=True)
 
@@ -76,8 +77,11 @@ def display_update_product(product_id):
 
     productServices.convert_product_to_form(product=product, form=form)
     sellers = Seller.query.all()
+    categories = []
+    for category in Category_Enum:
+        categories.append(category.value)
 
-    return render_template('/products/update_product.html', product=product, title='Mise a jour du produit', form=form, sellers=sellers)
+    return render_template('/products/update_product.html', product=product, title='Mise a jour du produit', form=form, categories=categories, sellers=sellers)
 
 #####################################################################
 #                                                                   #
