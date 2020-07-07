@@ -92,7 +92,7 @@ class ShipmentManager():
             self.orderService.update_by_shipment(shipment, grouped_lines['lines'], grouped_lines['seller_id'])
 
         if shipment.category != Category_Enum.PRESTATION.value:
-            shipment.shipping_price, created_shipment.shipping_rules = self.businessService.apply_rules_for_shipment(
+            shipment.shipping_price, shipment.shipping_rules = self.businessService.apply_rules_for_shipment(
             shipment)
         else :
             shipment.shipping_price, shipment.shipping_rules = self.businessService.prestation_rules_for_shipment(
