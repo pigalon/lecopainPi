@@ -133,7 +133,14 @@
   <div class="col-sm">
   </div>
 </div>
+<reset-urls></reset-urls>
     
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='tag/reset_urls.tag') }}" type="riot/tag"></script>
+<script type="text/javascript">
+    riot.mount("reset-urls");
+</script>
 {% endblock %}
 
 

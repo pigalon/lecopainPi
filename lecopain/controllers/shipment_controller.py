@@ -86,7 +86,7 @@ def shipment_update(shipment_id):
         shipmentServices.update_shipment_and_parse_line(category=category,
             shipment_id=shipment_id, lines=lines)
         #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect(f'/shipments/{shipment_id}')
+        return redirect(f'/shipments')
 
     shipment = shipmentServices.get_one(shipment_id)
     str_lines = ''
@@ -122,7 +122,7 @@ def display_update_shipment_time(shipment_id):
     if form.validate_on_submit():
         shipmentServices.update_shipping_dt(
             shipment, shipping_dt=form.shipping_dt.data)
-        return redirect(f'/shipments/{shipment_id}')
+        return redirect(f'/shipments')
 
     return render_template('/shipments/update_shipping_dt.html', shipment=shipment, title='Mise a jour du jour de la livraison', form=form)
 

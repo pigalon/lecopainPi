@@ -80,6 +80,12 @@
 			})
             self.refs.day.value = moment().format('DD/MM/YYYY')
             const location  = $('window.location')
+
+            search_url = localStorage.getItem('search_subscription_url');
+			if(search_url != null){
+                this.load_subscriptions_from_url(search_url)
+			}
+
 		});
 
         $(function () {
@@ -106,6 +112,13 @@
             subscription_url = subscription_url.concat('date/', day.replaceAll("/",""),'/');
             subscription_url = subscription_url.concat('customers/',customer_id);
 
+            localStorage.setItem('search_subscription_url', subscription_url);
+
+			this.load_subscriptions_from_url(subscription_url)
+		}
+        
+        load_subscriptions_from_url(subscription_url){
+
 			$.ajax({
                 url: subscription_url,
                 type: "GET",
@@ -123,6 +136,7 @@
 		}
         load_subscriptions_next(){
             var subscription_url = self.next_url;
+            localStorage.setItem('search_subscription_url', subscription_url);
 
 			$.ajax({
                 url: subscription_url,
@@ -142,6 +156,7 @@
 		}
         load_subscriptions_previous(){
             var subscription_url = self.previous_url;
+            localStorage.setItem('search_subscription_url', subscription_url);
 
 			$.ajax({
                 url: subscription_url,

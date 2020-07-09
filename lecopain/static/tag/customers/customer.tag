@@ -81,6 +81,11 @@
 			})
             
             const location  = $('window.location')
+
+            search_url = localStorage.getItem('search_customer_url');
+			if(search_url != null){
+                this.load_customers_from_url(search_url)
+			}
 		});
 
 		/******************************************/
@@ -101,6 +106,13 @@
                 customer_url = customer_url.concat('/id/',customer_id);
             }
 
+            localStorage.setItem('search_customer_url', customer_url);
+
+			this.load_customers_from_url(customer_url)
+		}
+        
+        load_customers_from_url(customer_url){
+
 			$.ajax({
 					url: customer_url,
 					type: "GET",
@@ -118,6 +130,7 @@
 		}
         load_customers_next(){
             var customer_url = self.next_url;
+            localStorage.setItem('search_customer_url', customer_url);
 
 			$.ajax({
                 url: customer_url,
@@ -137,6 +150,7 @@
 		}
         load_customers_previous(){
             var customer_url = self.previous_url;
+            localStorage.setItem('search_customer_url', customer_url);
 
 			$.ajax({
                 url: customer_url,

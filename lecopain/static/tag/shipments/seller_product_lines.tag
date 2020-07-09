@@ -53,7 +53,7 @@
                             <td width="25%"><input type="hidden" ref="line_seller_id" id="line_seller_id" name="seller_id[]" value="{line.seller_id}"/ maxlength="2" readonly>{line.seller_name}</td>
 							<td width="25%">{line.product_name}</td>
                             <td width="15%"><input type="number" style="width: 5em" ref="quantity" name="quantity[]" value="{line.quantity}"/></td>
-                            <td width="15%"><input type="hidden" name="price[]" value="{line.price}"/>{line.price.toFixed(2)} €</td>
+                            <td width="15%"><input type="hidden" name="price[]" value="{line.price}"/>{line.price} €</td>
                             <td width="10%"><button type="button" id="remove" onclick="{remove_line}" class="btn btn-warning" ><i class="fa fa-minus"></i></button></td>
                         </tr>
                     </table>
@@ -160,6 +160,7 @@
 				self.refs.submit_button.disabled = false
 				self.refs.category.disabled = true
 			}
+
 		});
 
 		this.on('update', function() {

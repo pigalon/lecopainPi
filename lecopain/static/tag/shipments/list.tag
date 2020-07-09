@@ -97,7 +97,7 @@
         moment.locale('fr');
 
 		this.on('mount', function() {
-			this.load_shipments()
+			
             
             var ajaxCall_customers = self.load_customers();
 			ajaxCall_customers.done(function(data) {
@@ -105,6 +105,15 @@
 			})
             const location  = $('window.location')
             self.refs.day.value = moment().format('DD/MM/YYYY')
+
+            search_url = localStorage.getItem('search_shipment_url');
+			if(search_url != null){
+                this.load_shipments_from_url(search_url)
+			}
+            else{
+                this.load_shipments()
+            }
+
 		});
 
         $(function () {
@@ -125,7 +134,6 @@
             var day = self.refs.day.value;
 
             
-            
             if (period == undefined){
                 period = 'all'
             }
@@ -133,6 +141,13 @@
             shipment_url = shipment_url.concat('period/',period,'/');
             shipment_url = shipment_url.concat('date/', day.replaceAll("/",""),'/');
             shipment_url = shipment_url.concat('customers/',customer_id);
+
+            localStorage.setItem('search_shipment_url', shipment_url);
+
+            this.load_shipments_from_url(shipment_url);
+
+		}
+        load_shipments_from_url(shipment_url){
 
 			$.ajax({
                 url: shipment_url,
@@ -151,7 +166,7 @@
 		}
         load_shipments_next(){
             var shipment_url = self.next_url;
-
+            localStorage.setItem('search_shipment_url', shipment_url);
 			$.ajax({
                 url: shipment_url,
                 type: "GET",
@@ -170,7 +185,7 @@
 		}
         load_shipments_previous(){
             var shipment_url = self.previous_url;
-
+            localStorage.setItem('search_shipment_url', shipment_url);
 			$.ajax({
                 url: shipment_url,
                 type: "GET",

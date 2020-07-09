@@ -81,6 +81,11 @@
 			})
             //this.load_products()
             const location  = $('window.location')
+
+            search_url = localStorage.getItem('search_product_url');
+			if(search_url != null){
+                this.load_products_from_url(search_url)
+			}
 		});
 
 		/******************************************/
@@ -96,6 +101,13 @@
             if ( product_id != undefined && product_id != '0'){
                 product_url = product_url.concat('/id/',product_id);
             }
+
+            localStorage.setItem('search_product_url', product_url);
+
+            this.load_products_from_url(product_url);
+		}
+
+        load_products_from_url(product_url){
 
 			$.ajax({
 					url: product_url,
@@ -114,6 +126,7 @@
 		}
         load_products_next(){
             var product_url = self.next_url;
+            localStorage.setItem('search_product_url', product_url);
 
 			$.ajax({
                 url: product_url,
@@ -133,7 +146,7 @@
 		}
         load_products_previous(){
             var product_url = self.previous_url;
-
+            localStorage.setItem('search_product_url', product_url);
 			$.ajax({
                 url: product_url,
                 type: "GET",
