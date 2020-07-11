@@ -9,6 +9,7 @@ from lecopain.tests.factories import (AdminFactory,
     OrderFactory,
     SellerFactory,
     ShipmentFactory)
+from werkzeug.security import generate_password_hash
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -27,7 +28,7 @@ class BaseTestCase(unittest.TestCase):
         self.app = self.create_app()
         db.create_all()
 
-        self.create_users()
+        user = self.create_users()
         self.create_products()
         self.create_customers()
         self.create_shipments()
@@ -39,7 +40,7 @@ class BaseTestCase(unittest.TestCase):
         #order.add_products([(product, 6, 2)])
         #line = Line(order=order,product_id=product.id,quantity=2,price=1.00)
         #order.add_line(line)
-
+        
         db.session.commit()
 
     def login(self, username, password):
@@ -54,7 +55,7 @@ class BaseTestCase(unittest.TestCase):
         db.get_engine(self.app).dispose()
 
     def create_users(self):
-        AdminFactory.create()
+        return AdminFactory.create()
         
     def create_sellers(self):
         SellerFactory.create()
