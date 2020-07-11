@@ -9,4 +9,4 @@ aenum
 Werkzeug==0.16.1
 flasgger
 Flask-moment
-flask-ipban
+wrapt

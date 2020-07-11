@@ -13,6 +13,8 @@ from datetime import datetime
 from flask import Blueprint, render_template, redirect, url_for, Flask, request, jsonify
 from flask_login import login_required
 
+from lecopain.helpers.roles_utils import admin_login_required
+
 app = Flask(__name__, instance_relative_config=True)
 
 subscription_page = Blueprint('subscription_page', __name__,
@@ -28,6 +30,7 @@ sellerServices = SellerManager()
 #####################################################################
 @subscription_page.route("/subscriptions", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def subscriptions():
     return render_template('/subscriptions/subscriptions.html', title="Abonnements")
 
@@ -36,6 +39,7 @@ def subscriptions():
 #####################################################################
 @subscription_page.route("/subscriptions/<int:subscription_id>", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def subscription(subscription_id):
     subscription = subscriptionServices.get_one(subscription_id)
     return render_template('/subscriptions/subscription.html', subscription=subscription)
@@ -45,6 +49,7 @@ def subscription(subscription_id):
 #####################################################################
 @subscription_page.route('/api/subscriptions/')
 @login_required
+@admin_login_required
 def api_subscriptions():
     return jsonify({'subscriptions': subscriptionServices.get_all()})
 
@@ -53,6 +58,7 @@ def api_subscriptions():
 #####################################################################
 @subscription_page.route('/api/subscriptions/customers/<int:customer_id>')
 @login_required
+@admin_login_required
 def api_subscriptions_by_customer(customer_id):
     return jsonify({'subscriptions': subscriptionServices.get_all_by_customer(customer_id)})
 
@@ -61,6 +67,7 @@ def api_subscriptions_by_customer(customer_id):
 #####################################################################
 @subscription_page.route('/api/subscriptions/sellers/<int:seller_id>')
 @login_required
+@admin_login_required
 def api_subscriptions_by_seller(seller_id):
     return jsonify({'subscriptions': subscriptionServices.get_all_by_seller(seller_id)})
 
@@ -69,6 +76,7 @@ def api_subscriptions_by_seller(seller_id):
 #####################################################################
 @subscription_page.route('/api/subscriptions/period/<string:period>/date/<string:day>/customers/<int:customer_id>')
 @login_required
+@admin_login_required
 def api_day_subscriptions(period, day, customer_id):
     
     page = request.args.get("page")
@@ -93,6 +101,7 @@ def api_day_subscriptions(period, day, customer_id):
 #####################################################################
 @subscription_page.route("/subscriptions/new", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def subscription_create():
     form = SubscriptionForm()
 
@@ -131,6 +140,7 @@ def subscription_create():
 #####################################################################
 @subscription_page.route("/subscriptions/delete/<int:subscription_id>")
 @login_required
+@admin_login_required
 def display_delete_subscription(subscription_id):
     subscription = subscriptionServices.get_one(subscription_id)
     return render_template('/subscriptions/delete_subscription.html', subscription=subscription, title="Suppression d'abonnement")
@@ -140,6 +150,7 @@ def display_delete_subscription(subscription_id):
 #####################################################################
 @subscription_page.route("/subscriptions/<int:subscription_id>", methods=['DELETE'])
 @login_required
+@admin_login_required
 def delete_subscription(subscription_id):
     subscriptionServices.delete_subscription(subscription_id)
     return jsonify({})
@@ -149,6 +160,7 @@ def delete_subscription(subscription_id):
 #####################################################################
 @subscription_page.route("/subscriptions/generate/<int:subscription_id>")
 @login_required
+@admin_login_required
 def generate_shipments(subscription_id):
     subscription = subscriptionServices.get_one_db(subscription_id)
     if len(subscription.shipments)<1:
@@ -160,6 +172,7 @@ def generate_shipments(subscription_id):
 #####################################################################
 @subscription_page.route("/subscriptions/delete_shipments/<int:subscription_id>")
 @login_required
+@admin_login_required
 def delete_shipments(subscription_id):
     subscription = subscriptionServices.get_one_db(subscription_id)
     subscriptionServices.delete_all_shipments(subscription)
@@ -171,6 +184,7 @@ def delete_shipments(subscription_id):
 #####################################################################
 @subscription_page.route("/subscriptions/days/<int:subscription_day_id>", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def subscription_day(subscription_day_id):
     subscription_day = subscriptionServices.get_one_day(subscription_day_id)
     form = SubscriptionDayForm()
@@ -193,6 +207,7 @@ def subscription_day(subscription_day_id):
 #####################################################################
 @subscription_page.route("/subscriptions/<int:subscription_id>/weekdays/<int:week_day>", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def subscription_week_day(subscription_id, week_day):
     subscription_day = subscriptionServices.get_week_day(subscription_id, week_day)
     form = SubscriptionDayForm()
@@ -220,6 +235,7 @@ def subscription_week_day(subscription_id, week_day):
 #####################################################################
 @subscription_page.route("/subscriptions/days/<int:subscription_day_id>/cancel", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def cancel_subscription_day(subscription_day_id):
 
     subscription_day = subscriptionServices.cancel_day(

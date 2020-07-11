@@ -9,6 +9,8 @@ from lecopain.services.product_manager import ProductManager
 from lecopain.services.seller_manager import SellerManager
 from lecopain.dao.models import Category_Enum
 
+from lecopain.helpers.roles_utils import admin_login_required
+
 app = Flask(__name__, instance_relative_config=True)
 
 
@@ -23,6 +25,7 @@ sellerServices = SellerManager()
 #####################################################################
 @product_page.route("/products/<int:product_id>")
 @login_required
+@admin_login_required
 def product(product_id):
     product = Product.query.get_or_404(product_id)
     seller = Seller.query.get_or_404(product.seller_id)
@@ -32,6 +35,7 @@ def product(product_id):
 #####################################################################
 @product_page.route("/products", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def products():
     products = Product.query.order_by(Product.name.desc()).all()
     return render_template('/products/products.html', products=products, title="Tous les produits")
@@ -42,6 +46,7 @@ def products():
 #####################################################################
 @product_page.route("/products/new", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def product_create():
     form = ProductForm()
     
@@ -63,6 +68,7 @@ def product_create():
 #####################################################################
 @product_page.route("/products/update/<int:product_id>", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def display_update_product(product_id):
     product = Product.query.get_or_404(product_id)
     form = ProductForm()
@@ -88,6 +94,7 @@ def display_update_product(product_id):
 #####################################################################
 @product_page.route('/_get_product_status/')
 @login_required
+@admin_login_required
 def _get_product_status():
     productsStatusList = [(row.name) for row in ProductStatus.query.all()]
     return productsStatusList
@@ -97,6 +104,7 @@ def _get_product_status():
 #####################################################################
 @product_page.route("/products/delete/<int:product_id>")
 @login_required
+@admin_login_required
 def display_delete_product(product_id):
     product = Product.query.get_or_404(product_id)
     return render_template('/products/delete_product.html', product=product, title='Suppression du produit')
@@ -106,6 +114,7 @@ def display_delete_product(product_id):
 #####################################################################
 @product_page.route("/products/<int:product_id>", methods=['DELETE'])
 @login_required
+@admin_login_required
 def delete_order(product_id):
     product = Product.query.get_or_404(product_id)
     db.session.delete(product)
@@ -117,6 +126,7 @@ def delete_order(product_id):
 #####################################################################
 @product_page.route('/api/products/')
 @login_required
+@admin_login_required
 def api_products():
     return jsonify({'products': productServices.optim_get_all()})
     
@@ -126,6 +136,7 @@ def api_products():
 #####################################################################
 @product_page.route('/api/products/sellers/<int:seller_id>')
 @login_required
+@admin_login_required
 def api_products_by_seller(seller_id):
     page = request.args.get("page")
     per_page = request.args.get("per_page")
@@ -148,6 +159,7 @@ def api_products_by_seller(seller_id):
 #####################################################################
 @product_page.route('/api/products/categories')
 @login_required
+@admin_login_required
 def api_products_categories():
     return jsonify({'categories': productServices.get_all_categories()})
 
@@ -156,11 +168,13 @@ def api_products_categories():
 #####################################################################
 @product_page.route('/api/products/sellers/<int:seller_id>/categories/<string:category>')
 @login_required
+@admin_login_required
 def api_products_by_seller_and_category(seller_id, category):
     return jsonify({'products': productServices.get_all_by_seller_category(seller_id, category)})
 
 @product_page.route('/api/products/sellers/<int:seller_id>/id/<string:product_id>')
 @login_required
+@admin_login_required
 def api_products_by_product_id(seller_id, product_id):
     page = request.args.get("page")
     per_page = request.args.get("per_page")

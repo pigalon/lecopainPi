@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from aenum import Enum
 from marshmallow import fields
 from marshmallow_sqlalchemy import (ModelSchema, SQLAlchemySchema, SQLAlchemyAutoSchema, auto_field)
-
+ 
 class OrderStatus_Enum(Enum):
     ANNULEE = "ANNULEE"
     DEFAUT = "DEFAUT"
@@ -275,8 +275,7 @@ class User(db.Model, UserMixin):
     lastname = db.Column(db.String(50))
     account_id = db.Column(db.Integer)
     roles = db.relationship('Role', secondary='user_roles',backref=db.backref('users', lazy='dynamic'))
-
-
+    
     def __repr__(self):
         return 'username :' + self.username + \
         ', email :'+ self.email + ', password :'+ self.password + 'is_admin : '
@@ -297,6 +296,9 @@ class User(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+    
+    def get_main_role(self):
+        return self.roles[0].name
 
 @login_manager.user_loader
 def get_user(username):

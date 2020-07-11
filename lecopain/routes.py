@@ -68,9 +68,10 @@ Swagger(app)
 @app.route("/home", methods=['GET', 'POST'])
 @swag_from('specs/home.yml')
 def home():
-    if current_user.is_authenticated:
+    if current_user.is_authenticated and current_user.is_active:
         app.logger.info("User connected : " + str(current_user) +
                             " with IP address : " + str(request.remote_addr))
+        print('role !!!!! : ' + current_user.roles[0].name);
         customers_nb = Customer.query.count()
         orders_nb = Order.query.count()
         products_nb = Product.query.count()

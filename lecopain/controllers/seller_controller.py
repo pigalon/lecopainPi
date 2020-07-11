@@ -8,6 +8,8 @@ from flask import Blueprint, render_template, redirect, request, url_for, Flask,
 from flask_login import login_required
 from sqlalchemy.orm import load_only
 
+from lecopain.helpers.roles_utils import admin_login_required
+
 
 
 app = Flask(__name__, instance_relative_config=True)
@@ -20,6 +22,7 @@ sellerServices = SellerManager()
 
 @seller_page.route("/sellers", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def sellers():
     sellers = SellerDao.get_all()
     return render_template('/sellers/sellers.html', sellers=sellers)
@@ -27,6 +30,7 @@ def sellers():
 
 @seller_page.route("/sellers/new", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def create_seller():
     form = SellerForm()
     if form.validate_on_submit():
@@ -40,6 +44,7 @@ def create_seller():
 
 @seller_page.route("/sellers/<int:seller_id>")
 @login_required
+@admin_login_required
 def seller(seller_id):
     seller = sellerServices.get_one(seller_id)
     return render_template('/sellers/seller.html', seller=seller, title='Vendeur')
@@ -50,6 +55,7 @@ def seller(seller_id):
 #####################################################################
 @seller_page.route("/sellers/update/<int:seller_id>", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def display_update_order(seller_id):
     seller = sellerServices.get_one(seller_id)
     form = SellerForm()
@@ -79,6 +85,7 @@ def display_update_order(seller_id):
 #####################################################################
 @seller_page.route("/sellers/delete/<int:seller_id>")
 @login_required
+@admin_login_required
 def display_delete_seller(seller_id):
     seller =sellerServices.get_one(seller_id)(seller_id)
     return render_template('/sellers/delete_seller.html', seller=seller, title='Suppression du vendeur')
@@ -88,6 +95,7 @@ def display_delete_seller(seller_id):
 #####################################################################
 @seller_page.route("/sellers/<int:seller_id>", methods=['DELETE'])
 @login_required
+@admin_login_required
 def delete_seller(seller_id):
     seller = sellerServices.get_one(seller_id)
     db.session.delete(seller)
@@ -96,6 +104,7 @@ def delete_seller(seller_id):
 
 @seller_page.route('/api/sellers/')
 @login_required
+@admin_login_required
 def api_sellers():
     page = request.args.get("page")
     per_page = request.args.get("per_page")
@@ -116,12 +125,14 @@ def api_sellers():
     
 @seller_page.route("/api/sellers/<int:seller_id>")
 @login_required
+@admin_login_required
 def api_seller(seller_id):
     return jsonify({'seller':sellerServices.read_one(seller_id)})
     
 
 @seller_page.route('/api/sellers/select')
 @login_required
+@admin_login_required
 def api_sellers_select():
     return jsonify({'sellers':sellerServices.optim_get_all()})
         

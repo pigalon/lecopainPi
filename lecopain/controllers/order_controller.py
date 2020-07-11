@@ -13,6 +13,8 @@ from datetime import datetime
 from flask import Blueprint, render_template, redirect, url_for, Flask, request, jsonify
 from flask_login import login_required
 
+from lecopain.helpers.roles_utils import admin_login_required
+
 app = Flask(__name__, instance_relative_config=True)
 
 order_page = Blueprint('order_page', __name__,
@@ -29,6 +31,7 @@ productService = ProductManager()
 #####################################################################
 @order_page.route("/orders", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def orders():
     return render_template('/orders/orders.html', title="Commandes")
 
@@ -37,6 +40,7 @@ def orders():
 #####################################################################
 @order_page.route("/orders/new", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def order_create():
     form = OrderForm()
 
@@ -68,6 +72,7 @@ def order_create():
 #####################################################################
 @order_page.route("/orders/update/<int:order_id>", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def order_update(order_id):
     form = OrderForm()
 
@@ -95,6 +100,7 @@ def order_update(order_id):
 #####################################################################
 @order_page.route("/orders/<int:order_id>", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def order(order_id):
     order = orderServices.get_one(order_id)
     return render_template('/orders/order.html', order=order)
@@ -104,6 +110,7 @@ def order(order_id):
 #####################################################################
 @order_page.route("/orders/<int:order_id>/shipping_dt", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def display_update_order_time(order_id):
 
     order = orderServices.get_one(order_id)
@@ -121,6 +128,7 @@ def display_update_order_time(order_id):
 #####################################################################
 @order_page.route("/orders/<int:order_id>/cancel", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def display_update_order_annulation(order_id):
     order = orderServices.get_one(order_id)
     orderServices.update_order_status(order_id, OrderStatus_Enum.ANNULEE.value)
@@ -132,6 +140,7 @@ def display_update_order_annulation(order_id):
 
 @order_page.route("/orders/<int:order_id>/created", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def display_update_order_created(order_id):
     order = orderServices.get_one(order_id)
     orderServices.update_order_status(order_id, OrderStatus_Enum.CREE.value)
@@ -143,6 +152,7 @@ def display_update_order_created(order_id):
 
 @order_page.route("/orders/<int:order_id>/shipped/<string:status>", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def update_order_shipped(order_id, status):
     order = orderServices.get_one(order_id)
     if status == 'NON':
@@ -158,6 +168,7 @@ def update_order_shipped(order_id, status):
 
 @order_page.route("/orders/<int:order_id>/paid/<string:status>", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def update_order_paid(order_id, status):
     if status == 'NON':
         orderServices.update_order_payment_status(
@@ -173,6 +184,7 @@ def update_order_paid(order_id, status):
 #####################################################################
 @order_page.route("/orders/delete/<int:order_id>")
 @login_required
+@admin_login_required
 def display_delete_order(order_id):
     order = orderServices.get_one(order_id)
     return render_template('/orders/delete_order.html', order=order, title='Suppression de commande')
@@ -182,6 +194,7 @@ def display_delete_order(order_id):
 #####################################################################
 @order_page.route("/orders/<int:order_id>", methods=['DELETE'])
 @login_required
+@admin_login_required
 def delete_order(order_id):
     orderServices.delete_order(order_id)
     return jsonify(success=True)
@@ -191,6 +204,7 @@ def delete_order(order_id):
 #####################################################################
 @order_page.route('/api/orders/')
 @login_required
+@admin_login_required
 def api_orders():
     return jsonify({'orders': orderServices.get_all()})
 
@@ -199,6 +213,7 @@ def api_orders():
 #####################################################################
 @order_page.route('/api/orders/subscriptions/<int:subscription_id>')
 @login_required
+@admin_login_required
 def api_orders_by_subscription(subscription_id):
     return jsonify({'orders': orderServices.get_all_by_subscription(subscription_id)})
 
@@ -207,6 +222,7 @@ def api_orders_by_subscription(subscription_id):
 #####################################################################
 @order_page.route('/api/orders/sellers/<int:seller_id>')
 @login_required
+@admin_login_required
 def api_orders_by_seller(seller_id):
     page = request.args.get("page")
     per_page = request.args.get("per_page")

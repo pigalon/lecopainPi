@@ -1,5 +1,4 @@
 from lecopain.app import app, db, login_manager
-from flask_login import login_required
 from flask import Blueprint, render_template, redirect, url_for, Flask, jsonify, request, flash, session
 from werkzeug.urls import url_parse
 from sqlalchemy.orm import load_only
@@ -11,12 +10,14 @@ from lecopain.services.user_manager import userManager
 from lecopain.services.role_manager import roleManager
 from lecopain.helpers.pagination import Pagination
 
-from flask_login import current_user, login_user
-from flask_login import logout_user
+from flask_login import (current_user, 
+                         login_required, 
+                         logout_user, 
+                         login_user)
+
+from lecopain.helpers.roles_utils import admin_login_required
 
 from time import sleep
-
-
 
 
 app = Flask(__name__, instance_relative_config=True)
@@ -58,6 +59,7 @@ def login():
 
     else:
         return render_template('login.html', title='Se connecter', form=form)
+    
 
 
 @user_page.route("/logout")
@@ -68,12 +70,14 @@ def logout():
 
 @user_page.route("/users", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def users():
     users = userServices.optim_get_all()
     return render_template('/users/users.html', users=users)
 
 @user_page.route("/users/new", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def create_user():
     form = UserForm()
     if form.validate_on_submit():
@@ -83,9 +87,9 @@ def create_user():
     roles = roleServices.get_all()
     return render_template('/users/create_user.html', title='Ajouter un Utilisateur', roles=roles, form=form)
 
-
 @user_page.route("/users/<int:user_id>")
 @login_required
+@admin_login_required
 def user(user_id):
     user = userServices.get_one(user_id)
     return render_template('/users/user.html', user=user, title='Utilisateur')
@@ -96,6 +100,7 @@ def user(user_id):
 #####################################################################
 @user_page.route("/users/update/<int:user_id>", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def update_user(user_id):
     user = userServices.get_one(user_id)
     form = UserForm()
@@ -118,6 +123,7 @@ def update_user(user_id):
 #####################################################################
 @user_page.route("/users/update/<int:user_id>/password", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def update_password(user_id):
     
     form = PasswordForm()
@@ -135,18 +141,21 @@ def update_password(user_id):
 #####################################################################
 @user_page.route("/users/update/<int:user_id>/role", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def update_role(user_id):
     return render_template('/users/update_role.html', user_id=user_id, title='Mise à jour du role et compte associé')
 
 
 @user_page.route("/users/<int:user_id>/active", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def active_user(user_id):
     userServices.active(user_id)
     return redirect(f'/users/{user_id}')
 
 @user_page.route("/users/<int:user_id>/deactivate", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def deactivate_user(user_id):
     userServices.deactivate(user_id)
     return redirect(f'/users/{user_id}')
@@ -158,6 +167,7 @@ def deactivate_user(user_id):
 #####################################################################
 @user_page.route("/users/delete/<int:user_id>")
 @login_required
+@admin_login_required
 def display_delete_user(user_id):
     user = userServices.get_one(user_id)
     return render_template('/users/delete_user.html', user=user, title='Suppression de l\'utilisateur')
@@ -167,12 +177,14 @@ def display_delete_user(user_id):
 #####################################################################
 @user_page.route("/users/<int:user_id>", methods=['DELETE'])
 @login_required
+@admin_login_required
 def delete_user(user_id):
     userServices.delete(user_id)
     return jsonify({})
 
 @user_page.route('/api/users/roles/<string:role_id>')
 @login_required
+@admin_login_required
 def api_users_by_role(role_id):
     page = request.args.get("page")
     per_page = request.args.get("per_page")
@@ -192,16 +204,19 @@ def api_users_by_role(role_id):
 
 @user_page.route("/api/users/", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def api_users_all():
     return jsonify({'users': userServices.optim_get_all()})
 
 @user_page.route("/api/users/roles", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def api_roles():
     return jsonify({'roles': roleServices.read_all()})
 
 @user_page.route("/api/users/update/<int:user_id>/role/<int:role_id>/account/<int:account_id>", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def api_change_role(user_id, role_id, account_id):
     role = roleServices.get_one(role_id)
     userServices.change_role(user_id, role, account_id)
@@ -209,6 +224,7 @@ def api_change_role(user_id, role_id, account_id):
 
 @user_page.route("/api/users/<int:user_id>")
 @login_required
+@admin_login_required
 def api_user(user_id):
     return jsonify({'user':userServices.read_one(user_id)})
 

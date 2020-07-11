@@ -12,6 +12,8 @@ from datetime import datetime
 from flask import Blueprint, render_template, redirect, url_for, Flask, request, jsonify
 from flask_login import login_required
 
+from lecopain.helpers.roles_utils import admin_login_required
+
 app = Flask(__name__, instance_relative_config=True)
 
 shipment_page = Blueprint('shipment_page', __name__,
@@ -28,6 +30,7 @@ productService = ProductManager()
 #####################################################################
 @shipment_page.route("/shipments", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def shipments():
     return render_template('/shipments/shipments.html', title="Livraisons")
 
@@ -36,6 +39,7 @@ def shipments():
 #####################################################################
 @shipment_page.route("/shipments/new", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def shipment_create():
     form = ShipmentForm()
 
@@ -71,6 +75,7 @@ def shipment_create():
 #####################################################################
 @shipment_page.route("/shipments/update/<int:shipment_id>", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def shipment_update(shipment_id):
     form = ShipmentForm()
     
@@ -105,6 +110,7 @@ def shipment_update(shipment_id):
 #####################################################################
 @shipment_page.route("/shipments/<int:shipment_id>", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def shipment(shipment_id):
     shipment = shipmentServices.get_one(shipment_id)
     return render_template('/shipments/shipment.html', shipment=shipment)
@@ -114,6 +120,7 @@ def shipment(shipment_id):
 #####################################################################
 @shipment_page.route("/shipments/<int:shipment_id>/shipping_dt", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def display_update_shipment_time(shipment_id):
 
     shipment = shipmentServices.get_one(shipment_id)
@@ -131,6 +138,7 @@ def display_update_shipment_time(shipment_id):
 #####################################################################
 @shipment_page.route("/shipments/<int:shipment_id>/cancel", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def display_update_shipment_annulation(shipment_id):
     shipmentServices.update_shipment_status(shipment_id, ShipmentStatus_Enum.ANNULEE.value)
     return redirect(f'/shipments/{shipment_id}')
@@ -141,6 +149,7 @@ def display_update_shipment_annulation(shipment_id):
 
 @shipment_page.route("/shipments/<int:shipment_id>/created", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def display_update_shipment_created(shipment_id):
     shipmentServices.update_shipment_status(shipment_id, ShipmentStatus_Enum.CREE.value)
     return redirect(f'/shipments/{shipment_id}')
@@ -151,6 +160,7 @@ def display_update_shipment_created(shipment_id):
 
 @shipment_page.route("/shipments/<int:shipment_id>/shipped/<string:status>", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def update_shipment_shipped(shipment_id, status):
     if status == 'NON':
         shipmentServices.update_shipment_shipping_status(shipment_id, ShippingStatus_Enum.NON.value)
@@ -165,6 +175,7 @@ def update_shipment_shipped(shipment_id, status):
 
 @shipment_page.route("/shipments/<int:shipment_id>/paid/<string:status>", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def update_shipment_paid(shipment_id, status):
     if status == 'NON':
         shipmentServices.update_shipment_payment_status(
@@ -180,6 +191,7 @@ def update_shipment_paid(shipment_id, status):
 #####################################################################
 @shipment_page.route("/shipments/delete/<int:shipment_id>")
 @login_required
+@admin_login_required
 def display_delete_shipment(shipment_id):
     shipment = shipmentServices.get_one(shipment_id)
     return render_template('/shipments/delete_shipment.html', shipment=shipment, title='Suppression de livraison')
@@ -189,6 +201,7 @@ def display_delete_shipment(shipment_id):
 #####################################################################
 @shipment_page.route("/shipments/<int:shipment_id>", methods=['DELETE'])
 @login_required
+@admin_login_required
 def delete_shipment(shipment_id):
     shipmentServices.delete_shipment(shipment_id)
     return jsonify(success=True)
@@ -198,6 +211,7 @@ def delete_shipment(shipment_id):
 #####################################################################
 @shipment_page.route('/api/shipments/')
 @login_required
+@admin_login_required
 def api_shipments():
     return jsonify({'shipments': shipmentServices.get_all()})
 
@@ -207,6 +221,7 @@ def api_shipments():
 #####################################################################
 @shipment_page.route('/api/shipments/cancel/ids/<string:list_ids>')
 @login_required
+@admin_login_required
 def pai_cancel_list(list_ids):
     ids = list_ids.split(',')
     for id in ids:
@@ -220,6 +235,7 @@ def pai_cancel_list(list_ids):
 #####################################################################
 @shipment_page.route('/api/shipments/subscriptions/<int:subscription_id>')
 @login_required
+@admin_login_required
 def api_shipments_by_subscription(subscription_id):
     
     page = request.args.get("page")
@@ -245,6 +261,7 @@ def api_shipments_by_subscription(subscription_id):
 #####################################################################
 @shipment_page.route('/api/shipments/customers/<int:customer_id>')
 @login_required
+@admin_login_required
 def api_shipments_by_customer(customer_id):
     page = request.args.get("page")
     per_page = request.args.get("per_page")
@@ -268,6 +285,7 @@ def api_shipments_by_customer(customer_id):
 #####################################################################
 @shipment_page.route('/api/shipments/sellers/<int:seller_id>')
 @login_required
+@admin_login_required
 def api_shipments_by_seller(seller_id):
     return jsonify({'shipments': shipmentServices.get_all_by_seller(seller_id)})
 
@@ -277,6 +295,7 @@ def api_shipments_by_seller(seller_id):
 #####################################################################
 @shipment_page.route('/api/shipments/period/<string:period>/date/<string:day>/customers/<int:customer_id>')
 @login_required
+@admin_login_required
 def api_day_shipments(period, day, customer_id):
     page = request.args.get("page")
     per_page = request.args.get("per_page")

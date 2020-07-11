@@ -8,6 +8,8 @@ from flask_login import login_required
 import json
 from collections import namedtuple
 
+from lecopain.helpers.roles_utils import admin_login_required
+
 
 app = Flask(__name__, instance_relative_config=True)
 
@@ -22,6 +24,7 @@ customer_page = Blueprint('customer_page', __name__,
 #####################################################################
 @customer_page.route("/customers", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def customers():
     return render_template('/customers/customers.html')
 
@@ -30,6 +33,7 @@ def customers():
 #####################################################################
 @customer_page.route("/customers/new", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def create_customer():
     form = PersonForm()
     if form.validate_on_submit():
@@ -44,6 +48,7 @@ def create_customer():
 #####################################################################
 @customer_page.route("/customers/<int:customer_id>", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def customer(customer_id):
     customer = customerServices.read_one(customer_id)
     return render_template('/customers/customer.html', customer=customer, title='Clients')
@@ -53,6 +58,7 @@ def customer(customer_id):
 #####################################################################
 @customer_page.route("/customers/update/<int:customer_id>", methods=['GET', 'POST'])
 @login_required
+@admin_login_required
 def display_update_order(customer_id):
     customer = customerServices.get_one(customer_id)
     form = PersonForm()
@@ -78,6 +84,7 @@ def display_update_order(customer_id):
 #####################################################################
 @customer_page.route("/customers/delete/<int:customer_id>")
 @login_required
+@admin_login_required
 def display_delete_customer(customer_id):
     customer = customerServices.get_one(customer_id)
     return render_template('/customers/delete_customer.html', customer=customer, title='Suppression de client')
@@ -87,6 +94,7 @@ def display_delete_customer(customer_id):
 #####################################################################
 @customer_page.route("/customers/<int:customer_id>", methods=['DELETE'])
 @login_required
+@admin_login_required
 def delete_customer(customer_id):
     
     return jsonify({})
@@ -94,16 +102,19 @@ def delete_customer(customer_id):
 
 @customer_page.route('/api/customers/')
 @login_required
+@admin_login_required
 def api_customers():
     return jsonify({'customers': customerServices.optim_get_all()})
 
 @customer_page.route('/api/customers/cities')
 @login_required
+@admin_login_required
 def api_cities():
     return jsonify({'cities': customerServices.get_all_cities()})
 
 @customer_page.route('/api/customers/cities/<string:city>')
 @login_required
+@admin_login_required
 def api_customers_cities(city):
     page = request.args.get("page")
     per_page = request.args.get("per_page")
@@ -124,6 +135,7 @@ def api_customers_cities(city):
     
 @customer_page.route('/api/customers/cities/<string:city>/id/<string:customer_id>')
 @login_required
+@admin_login_required
 def api_customers_customer_id(city, customer_id):
     page = request.args.get("page")
     per_page = request.args.get("per_page")
@@ -146,6 +158,7 @@ def api_customers_customer_id(city, customer_id):
     
 @customer_page.route("/api/customers/<int:customer_id>")
 @login_required
+@admin_login_required
 def api_customer(customer_id):
     return jsonify({'customer':customerServices.read_one(customer_id)})
 
