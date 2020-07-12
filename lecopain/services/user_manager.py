@@ -1,5 +1,5 @@
 from lecopain.app import app, db
-from lecopain.dao.models import User
+from lecopain.dao.models import User, Role
 from lecopain.dao.user_dao import UserDao
 from lecopain.dao.role_dao import RoleDao
 from datetime import datetime
@@ -48,10 +48,11 @@ class userManager():
                     lastname=form.lastname.data)
         user.set_password(form.password.data)
         user.joined_at = datetime.today()
-        role = RoleDao.get_one_from_name('user_role')
-        user.roles = [role]
         user.set_active()
         db.session.add(user)
+        db.session.commit()
+        role = RoleDao.get_one_from_name('user_role')
+        user.roles.append(role)
         db.session.commit()
         
     def update(self, user, form):
