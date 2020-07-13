@@ -47,6 +47,25 @@
             </table>
             </td>
         </tr>
+        <tr>
+             <table width="100%" >
+                <tr class="bg-warning">
+                    <td width="6%">
+                    </td>
+                    <td width="20%">
+                    </td>
+                    <td width="30%">
+                    </td>
+                    <td width="15%">
+                    </td>
+                    <td width="10%">
+                     = {shipping_sum} €
+                    </td>
+                    <td width="15%">
+                    </td>
+                </tr>
+            </table>
+        </tr>
     </table>
     <table width="100%">
         <tr>
@@ -75,6 +94,7 @@
         var page= 1
         var next_url = ''
         var previous_url = ''
+        var shipping_sum = 0.0
 
         moment.locale('fr');
         this.selected_shipments = []
@@ -82,8 +102,7 @@
         subscription_id =  opts.subscription_id
 
 		this.on('mount', function() {
-            console.log('call load ship : '+ subscription_id)
-			this.load_shipments(subscription_id)
+			this.load_shipments(subscription_id);
             const location  = $('window.location')
 		});
 
@@ -91,9 +110,9 @@
        	// load products list
     	/*******************************************/
 		load_shipments(subscription_id){
-             var shipment_url = '/api/shipments/subscriptions/'+subscription_id;
-             console.log('call load ship : '+ shipment_url)
-			$.ajax({
+            var shipment_url = '/api/shipments/subscriptions/'+subscription_id;
+            console.log('call load ship : '+ shipment_url)
+			return $.ajax({
 					url: shipment_url,
 					type: "GET",
 					dataType: "json",
@@ -105,6 +124,11 @@
                         self.page = data['page']
                         self.next_url = data['next']
                         self.previous_url = data['previous']
+                        self.shipping_sum = 0.0
+                        self.shipments.forEach((shipment) => {
+                            self.shipping_sum = shipment.shipping_price  + self.shipping_sum;
+                        });
+
                         self.update()
 					}
 				});

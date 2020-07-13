@@ -153,6 +153,22 @@ class SubscriptionManager():
             current_dt = current_dt + timedelta(days=1)
             nb_days = nb_days + 1
 
+    def calculate(self, subscription):
+        subscription.nb_products = 0
+        subscription.nb_orders = 0
+        subscription.price = 0.0
+        subscription.shipping_price = 0.0
+        subscription.nb_shipments = 0
+        db.session.commit()
+        for shipment in subscription.shipments:
+            subscription.nb_shipments = subscription.nb_shipments + 1
+            subscription.shipping_price = subscription.shipping_price + shipment.shipping_price
+            for order in shipment.orders:
+                subscription.nb_orders = subscription.nb_orders + 1
+                subscription.price = subscription.price + order.price
+                subscription.nb_products = subscription.nb_products + order.nb_products
+
+
     def delete_all_shipments(self, subscription):
         for shipment in subscription.shipments:
             ShipmentDao.delete(shipment.id)

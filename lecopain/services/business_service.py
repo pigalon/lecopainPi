@@ -96,7 +96,8 @@ class BusinessService:
                 else:
                     nb_far_products = nb_far_products + order.nb_products
         
-        if self.is_petitou(shipment.category):
+        #if self.is_petitou(shipment.category):
+        if shipment.shipping_city is not None:
             city = shipment.shipping_city.lower()
         
         return self.get_price_and_associated_rules(shipment.category, nb_local_products, nb_far_products, city)

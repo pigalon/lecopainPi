@@ -170,6 +170,17 @@ def generate_shipments(subscription_id):
 #####################################################################
 #                                                                   #
 #####################################################################
+@subscription_page.route("/subscriptions/calculation/<int:subscription_id>")
+@login_required
+@admin_login_required
+def calculatee_shipments(subscription_id):
+    subscription = subscriptionServices.get_one_db(subscription_id)
+    subscriptionServices.calculate(subscription)
+    return render_template('/subscriptions/subscription.html', subscription=subscription)
+
+#####################################################################
+#                                                                   #
+#####################################################################
 @subscription_page.route("/subscriptions/delete_shipments/<int:subscription_id>")
 @login_required
 @admin_login_required
