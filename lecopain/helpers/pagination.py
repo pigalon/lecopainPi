@@ -32,5 +32,5 @@ class Pagination:
         else:
             obj['next'] = url + '?page=%d&per_page=%d' % (next_page, per_page)
         # finally extract result according to bounds
-        obj['results'] = results[0:per_page]
+        obj['results'] = results[0:per_page+1]
         return obj

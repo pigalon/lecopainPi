@@ -39,7 +39,7 @@
       {% endif %}
         
 
-          Livraison N° {{shipment.id}} - Statut : {{shipment.status}} <span class="right">{{ moment(shipment.shipping_dt).format('Do MMMM YYYY' )  }}</span>
+          Livraison N° {{shipment.id}} - Statut : {{shipment.status}} <span class="right">{{ moment(shipment.shipping_dt).format('ddd Do MMMM YYYY' )  }}</span>
         </div>
         <div class="card-body">
           <ul class="list-group list-group-flush">

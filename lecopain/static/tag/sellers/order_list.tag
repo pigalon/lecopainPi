@@ -43,13 +43,13 @@
         <tr>
             <td width="24%"> </td>
             <td width="24%">
-                <a if={ page > 1 } role="button" onclick="{load_orders_previous}"  style="color:white" class="btn btn-primary display:inline-block"> <i class="fas fa-arrow-left"></i> Commandes précédentes </a>
+                <a if={ previous_url != '' && previous_url != undefined} role="button" onclick="{load_orders_previous}"  style="color:white" class="btn btn-primary display:inline-block"> <i class="fas fa-arrow-left"></i> Commandes précédentes </a>
             </td>
             <td width="2%">
                 |
             </td>
             <td width="22%">
-                <a if={ per_page <= count } role="button" onclick="{load_orders_next}"  style="color:white" class="btn btn-primary display:inline-block"> Commandes suivantes <i class="fas fa-arrow-right"></i> </a>
+                <a if={ next_rul != '' && next_url != undefined } role="button" onclick="{load_orders_next}"  style="color:white" class="btn btn-primary display:inline-block"> Commandes suivantes <i class="fas fa-arrow-right"></i> </a>
             </td>
             <td width="26%"> </td>
         </tr>
@@ -61,6 +61,7 @@
         var limit = 10
         var start= 1
         var next_url = ''
+        var previous_url = ''
 
 
         seller_id =  opts.seller_id
@@ -89,6 +90,7 @@
                         self.per_page = data['per_page']
                         self.page = data['page']
                         self.next_url = data['next']
+                        self.previous_url = data['previous']
                         self.update()
 					}
 				});

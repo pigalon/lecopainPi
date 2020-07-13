@@ -55,7 +55,7 @@
                     <td if={shipment.status != 'ANNULEE'} width="10%">
                         {shipment.shipping_price.toFixed(2)} €
                     </td>
-                     <td width="15%">
+                    <td width="15%">
                         <span onclick={ show_shipment(shipment.id) } class="badge badge-primary"><i class="fas fa-eye" style="font-size:18px;"></i></span>
                         <input onclick={ check_shipement } type="checkbox" ref="ids_{shipment.id}" id="ids_{shipment.id}" name="ids_{shipment.id}">
                     </td>
@@ -68,18 +68,18 @@
         <tr>
             <td width="24%"> </td>
             <td width="24%">
-                <a if={ page > 1 } role="button" onclick="{load_shipments_previous}"  style="color:white" class="btn btn-primary display:inline-block"> <i class="fas fa-arrow-left"></i> Livraisons précédentes </a>
+                <a if={ previous_url != '' && previous_url != undefined} role="button" onclick="{load_shipments_previous}"  style="color:white" class="btn btn-primary display:inline-block"> <i class="fas fa-arrow-left"></i> Livraisons précédentes </a>
             </td>
             <td width="2%">
                 |
             </td>
             <td width="22%">
-                <a if={ per_page <= count } role="button" onclick="{load_shipments_next}"  style="color:white" class="btn btn-primary display:inline-block"> Livraisons suivantes <i class="fas fa-arrow-right"></i> </a>
+                <a if={ next_url != '' && next_url != undefined} role="button" onclick="{load_shipments_next}"  style="color:white" class="btn btn-primary display:inline-block"> Livraisons suivantes <i class="fas fa-arrow-right"></i> </a>
             </td>
             <td width="26%"> </td>
         </tr>
     </table>
-     <div class="right">
+    <div class="right">
         <a role="button" onclick="{ cancel_list }" style="color:white" class="btn btn-primary display:inline-block">Annulation Liste</a>
     </div>
 
@@ -90,6 +90,7 @@
         var per_page = 10
         var page= 1
         var next_url = ''
+        var previous_url = ''
 
         this.selected_shipments = []
 
@@ -160,6 +161,7 @@
                     self.per_page = data['per_page']
                     self.page = data['page']
                     self.next_url = data['next']
+                    self.previous_url = data['previous']
                     self.update()
                 }
             });
