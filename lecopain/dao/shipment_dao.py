@@ -117,6 +117,8 @@ class ShipmentDao:
         if customer_id != 0:
             all_shipments = all_shipments.filter(
                 Shipment.customer_id == customer_id)
+            
+        all_shipments = all_shipments.order_by(Shipment.id.desc())
 
         all_shipments = all_shipments.order_by(Shipment.shipping_dt.desc()) \
         .paginate(page=page, per_page=per_page)
