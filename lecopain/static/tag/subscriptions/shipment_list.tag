@@ -59,7 +59,7 @@
                     <td width="15%">
                     </td>
                     <td width="10%">
-                     = {shipping_sum} €
+                     = {shipping_sum.toFixed(2)} €
                     </td>
                     <td width="15%">
                     </td>
@@ -148,6 +148,10 @@
                     self.page = data['page']
                     self.next_url = data['next']
                     self.previous_url = data['previous']
+                    self.shipping_sum = 0.0
+                        self.shipments.forEach((shipment) => {
+                            self.shipping_sum = shipment.shipping_price  + self.shipping_sum;
+                        });
                     self.update()
                 }
             });
@@ -167,6 +171,10 @@
                     self.page = data['page']
                     self.next_url = data['next']
                     self.previous_url = data['previous']
+                    self.shipping_sum = 0.0
+                        self.shipments.forEach((shipment) => {
+                            self.shipping_sum = shipment.shipping_price  + self.shipping_sum;
+                        });
                     self.update()
                 }
             });

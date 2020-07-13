@@ -77,7 +77,7 @@
                   <span class="right"><a href="/subscriptions/calculation/{{ subscription.id }}" class="btn btn-outline-dark">Recalculer l'abonnement</a></span>
           </li>
           <li class="list-group-item">
-                <b><span >Prix des livraisons pour l'abonnement : {{subscription.shipping_price}} €</span></b>
+                <b><span >Prix des livraisons pour l'abonnement : {{ "%.2f"|format(subscription.shipping_price|float) }} €</span></b>
                 <br>
                 <br>
                 <p><b>Nombres total de Livraisons : </b> {{subscription.nb_shipments}}</p>
