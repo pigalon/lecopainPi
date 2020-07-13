@@ -26,7 +26,7 @@
                     <b>Prénom Nom : </b>{{user.firstname}} {{user.lastname}}
                 </li>
                 <li class="list-group-item">
-                    <b>Role : </b> {{user.roles[0].name}}
+                    <b>Role : </b> {% if user.roles | length > 0 %} {{user.roles[0].name}} {% endif %}
                 </li>
                 <li class="list-group-item">
                     <b>Email : </b> {{user.email}}

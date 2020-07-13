@@ -49,10 +49,8 @@ class userManager():
         user.set_password(form.password.data)
         user.joined_at = datetime.today()
         user.set_active()
+        user.roles.append(RoleDao.get_one_from_name('user_role'))
         db.session.add(user)
-        db.session.commit()
-        role = RoleDao.get_one_from_name('user_role')
-        user.roles.append(role)
         db.session.commit()
         
     def update(self, user, form):

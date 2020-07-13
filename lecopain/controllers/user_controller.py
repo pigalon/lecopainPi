@@ -57,8 +57,13 @@ def login():
             return redirect(url_for('user_page.login'))
 
         login_user(user)
-
+        #admin
         return redirect(url_for('home'))
+        #customer
+            #home stats from id_customer : ship and sub : menu ship and sub
+        #seller
+            #home stats from id_seller : order  and products: menu product & order / by customer / date
+        # simple user
 
     else:
         return render_template('login.html', title='Se connecter', form=form)
