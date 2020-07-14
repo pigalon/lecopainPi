@@ -58,8 +58,12 @@ def login():
 
         login_user(user)
         #admin
-        return redirect(url_for('home'))
+        if user.get_main_role() == 'admin_role':
+            return redirect(url_for('home'))
+        
         #customer
+        if user.get_main_role() == 'customer_role':
+            return redirect(url_for('customer_main_page.home'))
             #home stats from id_customer : ship and sub : menu ship and sub
         #seller
             #home stats from id_seller : order  and products: menu product & order / by customer / date

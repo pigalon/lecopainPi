@@ -22,10 +22,11 @@ from lecopain.controllers.order_controller import order_page
 from lecopain.controllers.product_controller import product_page
 from lecopain.controllers.seller_controller import seller_page
 from lecopain.controllers.user_controller import user_page
-from lecopain.controllers.user_controller import user_page
 from lecopain.controllers.subscription_controller import subscription_page
 from lecopain.controllers.report_controller import report_page
 
+from lecopain.controllers.customer.shipment_controller import customer_shipment_page
+from lecopain.controllers.customer.main_controller import customer_main_page
 
 
 from flasgger import Swagger
@@ -38,9 +39,11 @@ app.register_blueprint(order_page)
 app.register_blueprint(product_page)
 app.register_blueprint(seller_page)
 app.register_blueprint(user_page)
-app.register_blueprint(user_page)
 app.register_blueprint(subscription_page)
 app.register_blueprint(report_page)
+
+app.register_blueprint(customer_main_page)
+app.register_blueprint(customer_shipment_page)
 
 
 customer_page = Blueprint('customer_page',  __name__,
@@ -55,12 +58,16 @@ seller_page = Blueprint('seller_page',  __name__,
                         template_folder='./templates')
 user_page = Blueprint('user_page',  __name__,
                         template_folder='./templates')
-user_page = Blueprint('user_page',  __name__,
-                        template_folder='./templates')
 subscription_page = Blueprint('subscription_page',  __name__,
                         template_folder='./templates')
 report_page = Blueprint('report_page',  __name__,
                         template_folder='./templates')
+
+customer_main_page = Blueprint('customer_main_page',  __name__,
+                        template_folder='./templates')
+customer_shipment_page = Blueprint('customer_shipment_page',  __name__,
+                        template_folder='./templates')
+
 
 Swagger(app)
 

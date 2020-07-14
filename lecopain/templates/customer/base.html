@@ -1,0 +1,63 @@
+
+{% extends "layout.html" %}
+{% block content %}
+<br>
+<br>
+<br>
+<div class="row">
+  <div class="col-xl-3 col-sm-6 mb-3">
+    <div class="card text-white bg-dark o-hidden h-100">
+      <div class="card-body">
+        <div class="card-body-icon">
+          <i class="fas fa-fw fa-list"></i>
+        </div>
+        <div class="mr-6">{{subscriptions_nb}} Abonnements</div>
+      </div>
+      <a class="card-footer text-white clearfix small z-1" href="/subscriptions">
+        <span class="float-left">View Details</span>
+        <span class="float-right">
+          <i class="fas fa-angle-right"></i>
+        </span>
+      </a>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 mb-3">
+    <div class="card text-black bg-light o-hidden h-100">
+      <div class="card-body">
+        <div class="card-body-icon">
+          <i class="fas fa-fw fa-calendar"></i>
+        </div>
+        <div class="mr-6">{{shipments_nb}} Livraisons</div>
+      </div>
+      <a class="card-footer text-black clearfix small z-1" href="/shipments">
+        <span class="float-left">View Details</span>
+        <span class="float-right">
+          <i class="fas fa-angle-right"></i>
+        </span>
+      </a>
+    </div>
+  </div>
+</div>
+<div class="row" style="margin-top:50px;">
+  <div class="col-sm">
+  </div>
+  <div class="col-sm">
+  <h4>Liste des statistiques</h4>
+  </div>
+  <div class="col-sm">
+  </div>
+</div>
+<reset-urls></reset-urls>
+    
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='tag/reset_urls.tag') }}" type="riot/tag"></script>
+<script type="text/javascript">
+    riot.mount("reset-urls");
+</script>
+{% endblock %}
+
+
+
+
+
