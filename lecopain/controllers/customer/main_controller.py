@@ -35,8 +35,10 @@ def home():
     
     customer = customerService.get_one(current_user.account_id)
     
+    shipments_nb = shipmentServices.count_by_customer(customer_id=customer.id)
+    
     subscriptions_nb = 0#Subscription.query.count()
-    shipments_nb = 0#Shipment.query.count()
+    #shipments_nb = 0#Shipment.query.count()
         
     
         

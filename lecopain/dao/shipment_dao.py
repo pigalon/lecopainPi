@@ -53,10 +53,15 @@ class ShipmentDao:
             .filter(Shipment.customer_id == customer_id) \
             .order_by(Shipment.shipping_dt.desc()) \
             .all()
+            
+    @staticmethod
+    def count_by_customer(customer_id):
+        return Shipment.query \
+            .filter(Shipment.customer_id == customer_id) \
+            .order_by(Shipment.shipping_dt.desc()) \
+            .count()
 
-        # Serialize the data for the response
-        shipment_schema = ShipmentSchema(many=True)
-        return shipment_schema.dump(all_shipments)
+      
     
     @staticmethod
     def read_by_customer_pagination(customer_id, page, per_page):
