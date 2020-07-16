@@ -32,5 +32,7 @@ services:
 
 volumes:
   lecopain-db:
+    external: true
+    name: lecopain-db
   lecopain-tmp:
     external: true
