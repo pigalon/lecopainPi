@@ -11,7 +11,7 @@ class ReportManager():
 
     def prepareAmount(self, orders):
         amount = {'price': 0.0,
-                  'nb_products': 0, 'nb_orders': 0}
+                    'nb_products': 0, 'nb_orders': 0}
         products = []
         amount_shipping_price = 0.0
         amount_price = 0.0

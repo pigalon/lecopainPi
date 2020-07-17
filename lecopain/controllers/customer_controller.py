@@ -96,7 +96,7 @@ def display_delete_customer(customer_id):
 @login_required
 @admin_login_required
 def delete_customer(customer_id):
-    
+    customerServices.delete(id=customer_id)
     return jsonify({})
 
 
