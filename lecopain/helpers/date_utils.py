@@ -24,8 +24,8 @@ def get_day_range(day):
 
 def get_week_range(year, calendar_week):
     monday = datetime.strptime(
-        f'{year}-{calendar_week}-1', "%Y-%W-%w").replace(hour=0).replace(minute=0).replace(second=0)
-    return monday - timedelta(days=7), monday
+        f'{year}-{calendar_week}-1', "%Y-%W-%w").replace(hour=23).replace(minute=59).replace(second=59)
+    return monday - timedelta(days=8), monday - timedelta(days=1)
 
 
 def get_month_range(year, calendar_month):
