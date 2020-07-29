@@ -1,4 +1,7 @@
 <search-report>
+    <div>
+        <button type="button" id="excel" onclick="{excel}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
+    </div>
     <div class="form-group">
         Vendeur:
         <br>
@@ -150,6 +153,9 @@
 				}
 			});
             
+        }
+        excel(){
+            window.location='/api/reports/excel'
         }
          /******************************************
 		load customers list

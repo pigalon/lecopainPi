@@ -3,6 +3,7 @@ from lecopain.helpers.date_utils import dates_range, Period_Enum
 from lecopain.services.order_manager import OrderManager
 from lecopain.services.shipment_manager import ShipmentManager
 from datetime import datetime, date, timedelta
+import xlsxwriter
 
 class ReportManager():
 
@@ -95,4 +96,12 @@ class ReportManager():
         report['shipments'] = shipments                       
 
         return report
+    
+    def test_excel_report(self):
+        workbook = xlsxwriter.Workbook('lecopain/hello.xlsx')
+        worksheet = workbook.add_worksheet()
 
+        worksheet.write('A1', 'Hello world')
+
+        workbook.close()
+        return 'hello.xlsx'
