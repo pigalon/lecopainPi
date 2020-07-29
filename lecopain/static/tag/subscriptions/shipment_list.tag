@@ -126,7 +126,9 @@
                         self.previous_url = data['previous']
                         self.shipping_sum = 0.0
                         self.shipments.forEach((shipment) => {
-                            self.shipping_sum = shipment.shipping_price  + self.shipping_sum;
+                            if(shipment.status != 'ANNULEE'){
+                                self.shipping_sum = shipment.shipping_price  + self.shipping_sum;
+                            }
                         });
 
                         self.update()

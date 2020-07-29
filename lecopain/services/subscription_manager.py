@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from lecopain.app import app, db
-from lecopain.dao.models import Customer, Subscription, Order
+from lecopain.dao.models import Customer, Subscription, Order, ShipmentStatus_Enum
 from lecopain.dao.shipment_dao import ShipmentDao
 from lecopain.dao.subscription_dao import SubscriptionDao
 from lecopain.dao.subscription_day_dao import SubscriptionDayDao
@@ -161,12 +161,14 @@ class SubscriptionManager():
         subscription.nb_shipments = 0
         db.session.commit()
         for shipment in subscription.shipments:
-            subscription.nb_shipments = subscription.nb_shipments + 1
-            subscription.shipping_price = subscription.shipping_price + shipment.shipping_price
-            for order in shipment.orders:
-                subscription.nb_orders = subscription.nb_orders + 1
-                subscription.price = subscription.price + order.price
-                subscription.nb_products = subscription.nb_products + order.nb_products
+            if shipment.status != ShipmentStatus_Enum.ANNULEE.value:
+                subscription.nb_shipments = subscription.nb_shipments + 1
+                subscription.shipping_price = subscription.shipping_price + shipment.shipping_price
+                for order in shipment.orders:
+                    subscription.nb_orders = subscription.nb_orders + 1
+                    subscription.price = subscription.price + order.price
+                    subscription.nb_products = subscription.nb_products + order.nb_products
+        db.session.commit()
 
 
     def delete_all_shipments(self, subscription):
