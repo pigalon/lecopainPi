@@ -97,11 +97,24 @@ class ReportManager():
 
         return report
     
-    def test_excel_report(self):
+    def test_excel_report(self, seller_id, customer_id, period, day):
+
+        days = self.get_reports_by_seller(seller_id, customer_id, period, day)
         workbook = xlsxwriter.Workbook('lecopain/hello.xlsx')
         worksheet = workbook.add_worksheet()
 
-        worksheet.write('A1', 'Hello world')
+        row = 0
+        col = 0
+        #cpt_days = 0
+        for day in days :
+            #cpt_days = cpt_days + 1
+            for line in day['lines']:
+                worksheet.write(row, col, line['customer'])
+                #each="{product in line['products']}">
+                #{product['name']}: x{product['quantity']},
+                worksheet.write(row, col+1, str(line['products']))
+                row = row + 1
+            col = col + 2
 
         workbook.close()
         return 'hello.xlsx'
