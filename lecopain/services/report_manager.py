@@ -55,6 +55,9 @@ class ReportManager():
         datetime_day = datetime.strptime(day, '%d%m%Y')
         start, end = dates_range(period, datetime_day)
         
+        if period == Period_Enum.DAY.value:
+            start = start + timedelta(seconds=1)
+        
         while start <= end:
             end_day = start + timedelta(days=1)
             
