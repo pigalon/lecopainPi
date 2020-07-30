@@ -54,13 +54,13 @@ class ReportManager():
         days=[]
         datetime_day = datetime.strptime(day, '%d%m%Y')
         start, end = dates_range(period, datetime_day)
-
-        while start < end:
+        
+        while start <= end:
             end_day = start + timedelta(days=1)
             
             day = {}
             orders = self.orderServices.get_all_by_seller_customer_period_valid(
-                seller_id, customer_id, start, end_day - timedelta(seconds=1))
+                seller_id, customer_id, start, end_day)
             
             start = start + timedelta(seconds=1)
             day['date'] = start
@@ -108,7 +108,7 @@ class ReportManager():
         row = 0
         col = 0
         column_width = 0
-        #cpt_days = 0
+       
         cell_format_date = workbook.add_format({'num_format': 'ddd dd mmm yyyy'})
         cell_format_date.set_pattern(1)  # This is optional when using a solid fill.
         cell_format_date.set_bg_color('yellow')
