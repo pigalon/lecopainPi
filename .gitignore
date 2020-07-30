@@ -115,3 +115,4 @@ infra/terraform/.terraform/plugins/linux_amd64/terraform-provider-aws_v2.63.0_x4
 terraform.tfstate
 lecopain.pem
 infra/terraform/.terraform/plugins/linux_amd64/terraform-provider-aws_v2.64.0_x4
+lecopain/report.xlsx
