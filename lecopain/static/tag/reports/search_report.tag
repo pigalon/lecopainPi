@@ -16,6 +16,7 @@
 		    <option each="{ customer in customers }" value={customer.id}> {customer.firstname} {customer.lastname} </option>
         </select>
         <button type="button" id="search" onclick="{search}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
+        <button type="button" id="excel" onclick="{excel}" class="btn btn-success" >Excel</button>
 
         <ul class="list-group" width="100%">
             <li class="list-group-item" width="100%">
@@ -150,6 +151,21 @@
 				}
 			});
             
+        }
+        excel(){
+            var url = '/api/reports/excel/'
+
+            var seller_id = self.refs.seller_id.value;
+            var customer_id = self.refs.customer_id.value;
+            var period = self.refs.period.value;
+            var day = self.refs.day.value;
+
+            url = url.concat('period/',period,'/');
+            url = url.concat('date/', day.replaceAll("/",""),'/');
+            url = url.concat('sellers/',seller_id, '/');
+            url = url.concat('customers/',customer_id);
+
+            window.location=url
         }
          /******************************************
 		load customers list

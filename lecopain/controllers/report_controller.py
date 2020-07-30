@@ -5,7 +5,7 @@ from lecopain.services.report_manager import ReportManager
 from sqlalchemy import extract
 from datetime import datetime
 
-from flask import Blueprint, render_template, redirect, url_for, Flask, request, jsonify
+from flask import Blueprint, render_template, redirect, url_for, Flask, request, jsonify, send_file, send_from_directory
 from flask_login import login_required
 
 app = Flask(__name__, instance_relative_config=True)
@@ -55,4 +55,10 @@ def amounts_seller_period(period, day, seller_id, customer_id):
 @login_required
 def list_shipements_customer_period(period, day, customer_id):
     return jsonify({'reports': reportServices.get_reports_by_customer(customer_id, period, day)})
+
+
+@report_page.route("/api/reports/excel/period/<string:period>/date/<string:day>/sellers/<int:seller_id>/customers/<int:customer_id>", methods=['GET', 'POST'])
+@login_required
+def excel(period, day, seller_id, customer_id):
+    return send_file(reportServices.test_excel_report(seller_id, customer_id, period, day), as_attachment=True, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 

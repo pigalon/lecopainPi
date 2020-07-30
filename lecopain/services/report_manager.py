@@ -3,6 +3,8 @@ from lecopain.helpers.date_utils import dates_range, Period_Enum
 from lecopain.services.order_manager import OrderManager
 from lecopain.services.shipment_manager import ShipmentManager
 from datetime import datetime, date, timedelta
+import xlsxwriter
+import json
 
 class ReportManager():
 
@@ -95,4 +97,56 @@ class ReportManager():
         report['shipments'] = shipments                       
 
         return report
+    
+    def test_excel_report(self, seller_id, customer_id, period, day):
 
+        days = self.get_reports_by_seller(seller_id, customer_id, period, day)
+        workbook = xlsxwriter.Workbook('lecopain/report.xlsx')
+        worksheet = workbook.add_worksheet()
+        
+
+        row = 0
+        col = 0
+        column_width = 0
+        #cpt_days = 0
+        cell_format_date = workbook.add_format({'num_format': 'ddd dd mmm yyyy'})
+        cell_format_date.set_pattern(1)  # This is optional when using a solid fill.
+        cell_format_date.set_bg_color('yellow')
+        cell_format_date.set_border()
+        cell_format_date.set_align('center')
+        
+        cell_format_name = workbook.add_format()
+        cell_format_name.set_pattern(1)  # This is optional when using a solid fill.
+        cell_format_name.set_bg_color('#bffcf9')
+        cell_format_name.set_left()
+        cell_format_name.set_right()
+        
+        cell_format_products = workbook.add_format()
+        cell_format_products.set_pattern(1)  # This is optional when using a solid fill.
+        cell_format_products.set_bg_color('#ffffff')
+        cell_format_products.set_left()
+        cell_format_products.set_right()
+        
+        
+        for day in days :
+            row = 0
+            worksheet.merge_range(row, col, row, col+1, '')
+            worksheet.write_datetime(row, col, day['date'], cell_format_date)
+            row = row + 1
+            for line in day['lines']:
+                worksheet.set_column(col, col, 20)
+                worksheet.write(row, col, line['customer'], cell_format_name)
+                products_line = ''
+                for line_product in line['products']:
+                    products_line = products_line + (str(line_product['name']) + ' x'+ str(line_product['quantity']) + ', ')
+                if (len(products_line) > column_width):
+                    width = len(products_line)
+                    worksheet.set_column(col+1, col+1, 30)
+                worksheet.write(row, col+1, products_line, cell_format_products)
+                row = row + 1
+            col = col + 3
+            column_width = 0
+
+        workbook.close()
+        return 'report.xlsx'
+    
