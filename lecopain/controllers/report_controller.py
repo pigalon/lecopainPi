@@ -60,6 +60,5 @@ def list_shipements_customer_period(period, day, customer_id):
 @report_page.route("/api/reports/excel/period/<string:period>/date/<string:day>/sellers/<int:seller_id>/customers/<int:customer_id>", methods=['GET', 'POST'])
 @login_required
 def excel(period, day, seller_id, customer_id):
-    #return send_from_directory(directory="./", filename=reportServices.test_excel_report(), as_attachment=True, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") #
     return send_file(reportServices.test_excel_report(seller_id, customer_id, period, day), as_attachment=True, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
