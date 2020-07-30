@@ -101,7 +101,7 @@ class ReportManager():
     def test_excel_report(self, seller_id, customer_id, period, day):
 
         days = self.get_reports_by_seller(seller_id, customer_id, period, day)
-        workbook = xlsxwriter.Workbook('lecopain/report.xlsx')
+        workbook = xlsxwriter.Workbook('/tmp/report.xlsx')
         worksheet = workbook.add_worksheet()
         
 
@@ -148,5 +148,5 @@ class ReportManager():
             column_width = 0
 
         workbook.close()
-        return 'report.xlsx'
+        return '/tmp/report.xlsx'
     
