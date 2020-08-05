@@ -11,6 +11,29 @@ class ReportManager():
     orderServices = OrderManager()
     shipmentServices = ShipmentManager()
 
+    def prepareAmount_day(self, orders, dt):
+        amount = {'price': 0.0,
+                    'nb_products': 0, 'nb_orders': 0}
+        products = []
+        amount_shipping_price = 0.0
+        amount_price = 0.0
+        
+        for order in orders:
+            shipping_day = order['shipping_dt'].day
+            if int(shipping_day) == dt.day:
+                amount_price = (amount_price + order['price'])
+                amount['nb_products'] = int(amount['nb_products']) + \
+                    order['nb_products']
+    
+            amount['price'] = format(amount_price, '.2f')
+        if amount_price > 0:
+            amount['products'] = self.orderServices.extract_products_from_orders(orders)
+            amount['nb_orders'] = len(orders)
+        else:
+            amount['products'] = None
+            amount['nb_orders'] = 0
+        return amount
+    
     def prepareAmount(self, orders):
         amount = {'price': 0.0,
                     'nb_products': 0, 'nb_orders': 0}
@@ -19,10 +42,6 @@ class ReportManager():
         amount_price = 0.0
         for order in orders:
             shipping_day = order['shipping_dt'].day
-
-            #amount_shipping_price = amount_shipping_price + \
-            #    float(order['shipping_price'])
-
             amount_price = (amount_price + order['price'])
             amount['nb_products'] = int(amount['nb_products']) + \
                 order['nb_products']
@@ -46,7 +65,7 @@ class ReportManager():
         return lines
 
     def prepareDay(self, day, orders, dt):
-        day['amount'] = self.prepareAmount(orders)
+        day['amount'] = self.prepareAmount_day(orders, dt)
         day['lines'] = self.prepareLines_by_customer(orders, dt)
         return day
 
