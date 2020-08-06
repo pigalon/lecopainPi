@@ -117,7 +117,7 @@ class ShipmentDao:
         if(start != 0 ):
             all_shipments = all_shipments.filter(
                 Shipment.shipping_dt >= start).filter(
-                Shipment.shipping_dt < end)
+                Shipment.shipping_dt <= end)
 
         if customer_id != 0:
             all_shipments = all_shipments.filter(

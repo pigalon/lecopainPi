@@ -9,13 +9,6 @@ class Period_Enum(Enum):
     WEEK = 'week'
     MONTH = 'month'
 
-
-# def get_day_range():
-#     start = (datetime.now() - timedelta(days=1)
-#              ).replace(hour=23).replace(minute=59).replace(second=59)
-#     end = datetime.today().replace(hour=23).replace(minute=59).replace(second=59)
-#     return start, end
-
 def get_day_range(day):
     start = (day - timedelta(days=1)
              ).replace(hour=23).replace(minute=59).replace(second=59)
@@ -24,16 +17,14 @@ def get_day_range(day):
 
 def get_week_range(year, calendar_week):
     monday = datetime.strptime(
-        f'{year}-{calendar_week}-1', "%Y-%W-%w").replace(hour=23).replace(minute=59).replace(second=59)
-    return monday - timedelta(days=8), monday - timedelta(days=1)
+        f'{year}-{calendar_week}-1', "%Y-%W-%w") #.replace(hour=23).replace(minute=59).replace(second=59)
+    return monday - timedelta(days=7), monday - timedelta(days=1)
 
 
 def get_month_range(year, calendar_month):
     start = datetime.strptime(f'{year}-{calendar_month}-01', '%Y-%m-%d')
-    #start = datetime.today().replace(day=1)-timedelta(days=1)
     tmp, day_end = calendar.monthrange(year, calendar_month)
     end = datetime.strptime(f'{year}-{calendar_month}-{day_end}', '%Y-%m-%d')
-    #end = datetime.today().replace(day=day_end)
     return start, end
 
 def dates_range(period, day=datetime.now()):
