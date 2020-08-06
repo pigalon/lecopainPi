@@ -9,7 +9,7 @@ class ReportManager():
     orderServices = OrderManager()
     shipmentServices = ShipmentManager()
 
-    def prepareAmount(self, orders):
+    def prepareAmount(self, orders, dt=None):
         amount = {'price': 0.0,
                     'nb_products': 0, 'nb_orders': 0}
         products = []
@@ -17,18 +17,17 @@ class ReportManager():
         amount_price = 0.0
         for order in orders:
             shipping_day = order['shipping_dt'].day
+            if dt is None or int(shipping_day) == dt.day:
 
-            #amount_shipping_price = amount_shipping_price + \
-            #    float(order['shipping_price'])
-
-            amount_price = (amount_price + order['price'])
-            amount['nb_products'] = int(amount['nb_products']) + \
+                amount_price = (amount_price + order['price'])
+                amount['nb_products'] = int(amount['nb_products']) + \
                 order['nb_products']
         
         amount['price'] = format(amount_price, '.2f')
         amount['products'] = self.orderServices.extract_products_from_orders(orders)
         amount['nb_orders'] = len(orders)
         return amount
+
 
     def prepareLines_by_customer(self, orders, dt):
         lines = []
@@ -44,7 +43,7 @@ class ReportManager():
         return lines
 
     def prepareDay(self, day, orders, dt):
-        day['amount'] = self.prepareAmount(orders)
+        day['amount'] = self.prepareAmount(orders, dt)
         day['lines'] = self.prepareLines_by_customer(orders, dt)
         return day
 
