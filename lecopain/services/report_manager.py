@@ -117,6 +117,12 @@ class ReportManager():
         cell_format_date.set_border()
         cell_format_date.set_align('center')
         
+        cell_format_amounts = workbook.add_format()
+        cell_format_amounts.set_pattern(1)  # This is optional when using a solid fill.
+        cell_format_amounts.set_bg_color('#e6e8e8')
+        cell_format_amounts.set_border()
+        cell_format_amounts.set_align('center')
+        
         cell_format_name = workbook.add_format()
         cell_format_name.set_pattern(1)  # This is optional when using a solid fill.
         cell_format_name.set_bg_color('#bffcf9')
@@ -134,6 +140,12 @@ class ReportManager():
             row = 0
             worksheet.merge_range(row, col, row, col+1, '')
             worksheet.write_datetime(row, col, day['date'], cell_format_date)
+            row = row + 1
+            amounts_line = 'Prix : ' + str(day['amount']['price']) + ' € - Nb. commandes : ' + str(day['amount']['nb_orders']) + ' - Totaux :'
+            for product_amounts in day['amount']['products']:
+                    amounts_line = amounts_line + (str(product_amounts['short_name']) + ' x'+ str(product_amounts['quantity']) + ', ')
+            worksheet.merge_range(row, col, row, col+1, '')
+            worksheet.write(row, col, amounts_line, cell_format_amounts)
             row = row + 1
             for line in day['lines']:
                 worksheet.set_column(col, col, 20)

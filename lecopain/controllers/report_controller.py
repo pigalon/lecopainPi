@@ -48,7 +48,6 @@ def list_orders_seller_period(period, day, seller_id, customer_id):
 @report_page.route("/api/reports/amounts/period/<string:period>/date/<string:day>/sellers/<int:seller_id>/customers/<int:customer_id>", methods=['GET', 'POST'])
 @login_required
 def amounts_seller_period(period, day, seller_id, customer_id):
-
     return jsonify({'amounts': reportServices.get_main_amounts_by_seller(seller_id, customer_id, period, day)})
 
 @report_page.route("/api/reports/shipments/period/<string:period>/date/<string:day>/customers/<int:customer_id>", methods=['GET', 'POST'])
