@@ -26,7 +26,7 @@ class ReportManager():
                 order['nb_products']
         
         amount['price'] = format(amount_price, '.2f')
-        amount['products'] = self.orderServices.extract_products_from_orders(orders)
+        amount['products'] = self.orderServices.extract_products_from_orders(orders, dt)
         amount['nb_orders'] = len(orders)
         return amount
 
