@@ -2,41 +2,60 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, IntegerField, DateTimeField, DecimalField, BooleanField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 
+def strip_filter(value):
+    if value is not None and hasattr(value, 'strip'):
+        return value.strip()
+    return value
+
+def title_filter(value):
+    if value is not None and hasattr(value, 'title'):
+        return value.title()
+    return value
+
+class FlexibleDecimalField(DecimalField):
+
+    def process_formdata(self, valuelist):
+        if valuelist:
+            valuelist[0] = valuelist[0].replace(",", ".")
+        return super(FlexibleDecimalField, self).process_formdata(valuelist)   
+
+            
+
 
 class PersonForm(FlaskForm):
     firstname = StringField('Prénom', validators=[
-                            DataRequired(), Length(min=2, max=20)])
+                            DataRequired(), Length(min=2, max=20)], filters=[lambda x: strip_filter(x), lambda x: title_filter(x)])
     lastname = StringField('Nom', validators=[
-                           DataRequired(), Length(min=2, max=20)])
+                        DataRequired(), Length(min=2, max=20)], filters=[lambda x: strip_filter(x), lambda x: title_filter(x)])
     email = StringField('Email', validators=[
-                        DataRequired(), Length(min=2, max=200)])
+                        DataRequired(), Length(min=2, max=200)], filters=[lambda x: strip_filter(x)])
     address = StringField('Adresse', validators=[
-                          DataRequired(), Length(min=2, max=200)])
+                        DataRequired(), Length(min=2, max=200)], filters=[lambda x: strip_filter(x)])
     cp = StringField('Code Postal', validators=[
-                     DataRequired(), Length(min=2, max=200)])
+                        DataRequired(), Length(min=2, max=200)], filters=[lambda x: strip_filter(x), lambda x: title_filter(x)])
     city = StringField('Ville', validators=[
-                       DataRequired(), Length(min=2, max=200)])
+                        DataRequired(), Length(min=2, max=200)], filters=[lambda x: strip_filter(x), lambda x: title_filter(x)])
     submit = SubmitField('Valider')
 
 
 class SellerForm(FlaskForm):
     name = StringField('Nom', validators=[
-                       DataRequired(), Length(min=2, max=200)])
+                    DataRequired(), Length(min=2, max=200)], filters=[lambda x: strip_filter(x), lambda x: title_filter(x)])
     city = StringField('Ville', validators=[
-                       DataRequired(), Length(min=2, max=200)])
+                    DataRequired(), Length(min=2, max=200)])
     email = StringField('Email', validators=[
-                        DataRequired(), Length(min=2, max=200)])
+                        DataRequired(), Length(min=2, max=200)], filters=[lambda x: strip_filter(x)])
     submit = SubmitField('Valider')
     
 class UserForm(FlaskForm):
     username = StringField('Login', validators=[
-                       DataRequired(), Length(min=2, max=200)])
+                    DataRequired(), Length(min=2, max=200)], filters=[lambda x: strip_filter(x)])
     firstname = StringField('Prénom', validators=[
-                       DataRequired(), Length(min=2, max=200)])
+                    DataRequired(), Length(min=2, max=200)], filters=[lambda x: strip_filter(x), lambda x: title_filter(x)])
     lastname = StringField('Nom', validators=[
-                       DataRequired(), Length(min=2, max=200)])
+                    DataRequired(), Length(min=2, max=200)], filters=[lambda x: strip_filter(x), lambda x: title_filter(x)] )
     email = StringField('Email', validators=[
-                        DataRequired(), Length(min=2, max=200)])
+                        DataRequired(), Length(min=2, max=200)], filters=[lambda x: strip_filter(x)])
     password = PasswordField('Nouveau Mot de Passe', [
         DataRequired(), Length(min=6, max=30, message='Longueur minimale du Mot de passe : 6 caractères'),
         EqualTo('confirm', message='Les mots de passe doivent être identiques')])
@@ -74,9 +93,9 @@ class ShippingDtForm(FlaskForm):
     submit = SubmitField('Valider')
 
 class ProductForm(FlaskForm):
-    name = StringField('Nom', validators=[DataRequired()])
-    short_name = StringField('Nom court', validators=[DataRequired()])
-    price = DecimalField('Prix')
+    name = StringField('Nom', validators=[DataRequired()], filters=[lambda x: strip_filter(x), lambda x: title_filter(x)])
+    short_name = StringField('Nom court', validators=[DataRequired()], filters=[lambda x: strip_filter(x)])
+    price = FlexibleDecimalField('Prix')
     description = StringField('Description')
     seller_id = IntegerField('Vendeur Id:', validators=[DataRequired()])
     category = StringField('Catégorie')
