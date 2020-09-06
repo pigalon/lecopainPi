@@ -1,7 +1,19 @@
 {% extends "layout.html" %}
 {% block content %}
     <div class="content-section">
-        <form method="POST" action="">    
+        <form method="POST" action="">
+            <span class="error">
+                Liste des erreurs à corriger : <br>
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <ul class="flashes">
+                        {% for message in messages %}
+                        <li style='color:red;'>{{ message }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+            </span>
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
             <div class="form-group">

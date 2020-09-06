@@ -26,7 +26,7 @@
         <div class="form-group">
             Roles:
             <select onchange={ load_accounts } class="form-control" name="role_id" id="role_id" ref="role_id" style="width: 12rem; display:inline-block" >
-                <option value="all" SELECTED>Tous</option>
+                <option value="0" SELECTED>Aucun</option>
                 <option each="{ role in roles }" value={role.id}>{role.name} </option>
             </select>
             <br>
@@ -108,7 +108,7 @@
 		});
 
 		/******************************************/
-       	// load products list
+       	// change role
         /*******************************************/
 		change_role(){
             var user_url = '/api/users/update';
@@ -138,6 +138,7 @@
                 contentType: "application/json; charset=utf-8",
                 success: function(data) {
                     self.update()
+                    location='/users/update/'+user_id+'/role'
                 }
             });
 		}

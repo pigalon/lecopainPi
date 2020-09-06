@@ -11,9 +11,9 @@ from lecopain.services.role_manager import roleManager
 from lecopain.helpers.pagination import Pagination
 
 from flask_login import (current_user, 
-                         login_required, 
-                         logout_user, 
-                         login_user)
+                        login_required, 
+                        logout_user, 
+                        login_user)
 
 from lecopain.helpers.roles_utils import admin_login_required
 
@@ -23,7 +23,7 @@ from time import sleep
 app = Flask(__name__, instance_relative_config=True)
 
 user_page = Blueprint('user_page', __name__,
-                      template_folder='../templates')
+                    template_folder='../templates')
 
 userServices = userManager()
 roleServices = roleManager()
@@ -35,11 +35,11 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         
-        user = User.query.filter_by(username=form.username.data).first()
+        user = userServices.get_by_username(username=form.username.data)
 
         if user is None: 
             app.logger.error(" fails not found authentication: " + str(form.username.data) +
-                             " - " + str(form.password.data) +
+                            " - " + str(form.password.data) +
                             " with IP address : " + str(request.remote_addr))
             flash("L'utilisateur n'existe pas !")
             sleep(3)
@@ -51,7 +51,7 @@ def login():
             flash("Le mot de passe est incorrect")
             sleep(3)
             app.logger.error(" fails authentication: " + str(form.username.data) +
-                             " - " + str(form.password.data) +
+                            " - " + str(form.password.data) +
                             " with IP address : " + str(request.remote_addr))
 
             return redirect(url_for('user_page.login'))
@@ -93,11 +93,27 @@ def users():
 def create_user():
     form = UserForm()
     if form.validate_on_submit():
-        userServices.create(form)
-        #flash(f'People created for {form.firstname.data}!', 'success')
-        return redirect(url_for('user_page.users'))
+        if userServices.login_already_used(form.username.data):
+            flash(f'Login déjà utilisé : {form.username.data}!', 'error')
+        else:                
+            userServices.create(form)
+            #flash(f'People created for {form.firstname.data}!', 'success')
+            return redirect(url_for('user_page.users'))
+    else :
+        flash_errors(form)
     roles = roleServices.get_all()
     return render_template('/users/create_user.html', title='Ajouter un Utilisateur', roles=roles, form=form)
+
+def flash_errors(form):
+    """Flashes form errors"""
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(u" %s : %s" % (
+                getattr(form, field).label.text,
+                error
+            ), 'error')
+
+
 
 @user_page.route("/users/<int:user_id>")
 @login_required

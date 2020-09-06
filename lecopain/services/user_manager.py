@@ -41,7 +41,18 @@ class userManager():
             user.account_id = account_id
         db.session.commit()
         
+    def login_already_used(self, username):
+        if self.get_by_username(username) is not None :
+            return True
+        else :
+            return False
+    
+    def get_by_username(self, username):
+        return UserDao.get_by_username(username)
+        
     def create(self, form):
+        
+        
         user = User(username=form.username.data, 
                     email=form.email.data, 
                     firstname=form.firstname.data,

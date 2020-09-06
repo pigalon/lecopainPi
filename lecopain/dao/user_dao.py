@@ -54,7 +54,11 @@ class UserDao:
     def get_one(id):
         # Create the list of people from our data
         return User.query.get_or_404(id)
-
+    
+    @staticmethod
+    def get_by_username(username):
+        # Create the list of people from our data
+        return User.query.filter(User.username == username).first()
 
 
     @staticmethod
