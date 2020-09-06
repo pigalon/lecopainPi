@@ -439,6 +439,7 @@ class SellerSchema(SQLAlchemyAutoSchema):
         
 class UserSchema(SQLAlchemyAutoSchema):
     role_name = fields.Method("format_role_name", dump_only=True)
+    role_id = fields.Method("format_role_id", dump_only=True)
     class Meta:
         # Fields to expose
         model = User
@@ -447,6 +448,11 @@ class UserSchema(SQLAlchemyAutoSchema):
     def format_role_name(self, user):
         if user.roles is not None and len(user.roles) > 0:
             return "{}".format(user.roles[0].name)
+        else :
+            ''
+    def format_role_id(self, user):
+        if user.roles is not None and len(user.roles) > 0:
+            return "{}".format(user.roles[0].id)
         else :
             ''
         
