@@ -125,5 +125,12 @@ class SubscriptionDao:
         for item in items:
             setattr(subscription, item['name'], item['value'])
         db.session.commit()
+        
+    @staticmethod
+    def count_by_customer(customer_id):
+        return Subscription.query \
+            .filter(Subscription.customer_id == customer_id) \
+            .order_by(Subscription.start_dt.desc()) \
+            .count()
 
 

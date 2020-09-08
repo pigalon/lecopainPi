@@ -4,6 +4,7 @@ from lecopain.form import ShipmentForm, ShippingDtForm, CancellationForm
 from lecopain.services.shipment_manager import ShipmentManager, Period_Enum
 from lecopain.services.customer_manager import CustomerManager
 from lecopain.services.product_manager import ProductManager
+from lecopain.services.subscription_manager import SubscriptionManager
 from lecopain.helpers.pagination import Pagination
 
 from sqlalchemy import extract
@@ -17,11 +18,12 @@ from lecopain.helpers.roles_utils import customer_login_required
 app = Flask(__name__, instance_relative_config=True)
 
 customer_main_page = Blueprint('customer_main_page', __name__,
-                       template_folder='../templates')
+                        template_folder='../templates')
 
-shipmentServices = ShipmentManager()
-customerService = CustomerManager()
-productService = ProductManager()
+shipmentServices        = ShipmentManager()
+subscriptionServices    = SubscriptionManager()
+customerService         = CustomerManager()
+productService          = ProductManager()
 
 
 
@@ -37,11 +39,11 @@ def home():
     
     shipments_nb = shipmentServices.count_by_customer(customer_id=customer.id)
     
-    subscriptions_nb = 0#Subscription.query.count()
+    subscriptions_nb = subscriptionServices.count_by_customer(customer_id=customer.id)
     #shipments_nb = 0#Shipment.query.count()
         
     
         
-    return render_template('/customer/base.html', subscriptions_nb=subscriptions_nb, shipments_nb=shipments_nb)
+    return render_template('/customer/base.html', subscriptions_nb=subscriptions_nb, shipments_nb=shipments_nb, customer_id=customer.id)
 
 

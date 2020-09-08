@@ -46,6 +46,9 @@ class SubscriptionManager():
 
     def get_all_by_customer(self, customer_id):
         return SubscriptionDao.read_all_by_customer(customer_id)
+    
+    def count_by_customer(self, customer_id):
+        return SubscriptionDao.count_by_customer(customer_id)
 
     def get_all_by_seller(self, seller_id):
         return SubscriptionDao.read_all_by_seller(seller_id)

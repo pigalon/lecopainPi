@@ -1,0 +1,103 @@
+
+{% extends "layout.html" %}
+{% block content %}
+
+
+<br>
+    <div class="card " >
+      {% if shipment.status == 'ANNULEE' %}
+          <div class="card-header text-white bg-dark">
+      {% else %}
+        <div class="card-header text-white bg-info">
+      {% endif %}
+        
+
+          Livraison N° {{shipment.id}} - Statut : {{shipment.status}} <span class="right">{{ moment(shipment.shipping_dt).format('ddd Do MMMM YYYY' )  }}</span>
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+          {% set total = {'value': 0.00} %}
+
+          <li class="list-group-item bg-light">
+            Client : <b>{{shipment.customer_name}}</b> 
+          </li>
+          <li class="list-group-item">
+
+            <table align="center" class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Vendeur</th>
+                <th scope="col">N° Commande</th>
+                <th scope="col">Produit</th>
+                <th scope="col">Quantité</th>
+                <th scope="col">Prix</th>
+              </tr>
+            </thead>
+            <tbody>
+          {% for order in shipment.orders %}
+          {% for line in order.lines %}
+              <tr>
+                <td valign="center">{{order.seller_name}}</td>
+                <td valign="center">
+                  <span>
+                      {{order.id}}
+                  </span>
+                </td>
+                <td valign="center">{{line.product_name}}</td>
+                <td valign="center">
+                  {% if order.status =='ANNULEE' %} Annulé {%endif%}
+                  {% if order.status =='CREE' %} x {{line.quantity}} {%endif%}
+                </td>
+                <td valign="center">
+                  {% if order.status =='ANNULEE' %} 0 {%endif%}
+                  {% if order.status =='CREE' %} {{line.price}} {%endif%}
+                    €
+                </td>
+              </tr>
+          {% endfor %}
+          {% endfor %}
+          </tbody>
+          </table>
+          </li>
+
+          <li class="list-group-item">
+                <b><span style="float: right">Nb articles : x{{shipment.nb_products}} </span></b>
+          </li>
+          <li class="list-group-item">
+                <b><span style="float: right">Prix de la livraison : {{shipment.shipping_price}} €</span></b>
+                <br>
+                <br>
+                {% if shipment.subscription_id != None %}
+                  <span class="float-right"><a href="/subscriptions/{{ shipment.subscription_id }}" class="btn btn-warning">Abonnement</a></span>
+                {% endif %}
+          </li>
+        </ul>
+        </div>
+      </div>
+      <br>
+      <div class="card">
+        {% if shipment.status == 'ANNULEE' %}
+          <div class="card-header text-white bg-dark">
+        {% else %}
+          <div class="card-header text-white bg-info">
+        {% endif %}
+                  Livraison
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Date de livraison {{ moment(shipment.shipping_dt).format('Do MMMM YYYY' )  }}</h5>
+            <p class="card-text">Adresse  :  {{ shipment.shipping_address }} {{ shipment.shipping_cp }} {{ shipment.shipping_city }}</p>
+          </div>
+        </div>
+        <br>
+        <div class="card">
+          {% if shipment.status == 'ANNULEE' %}
+            <div class="card-header text-white bg-dark">
+          {% else %}
+            <div class="card-header text-white bg-info">
+          {% endif %}
+          </div>
+        </div>
+
+
+{% endblock %}
+

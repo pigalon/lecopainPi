@@ -6,7 +6,7 @@ from lecopain.form import LoginForm
 from lecopain.form import UserForm, PasswordForm
 from lecopain.dao.models import User, UserRoles, Role
 from lecopain.dao.user_dao import UserDao
-from lecopain.services.user_manager import userManager
+from lecopain.services.user_manager import UserManager
 from lecopain.services.role_manager import roleManager
 from lecopain.helpers.pagination import Pagination
 
@@ -25,7 +25,7 @@ app = Flask(__name__, instance_relative_config=True)
 user_page = Blueprint('user_page', __name__,
                     template_folder='../templates')
 
-userServices = userManager()
+userServices = UserManager()
 roleServices = roleManager()
 
 

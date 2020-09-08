@@ -5,7 +5,7 @@ from lecopain.dao.role_dao import RoleDao
 from datetime import datetime
 
 
-class userManager():
+class UserManager():
 
     def optim_get_all(self):
         return UserDao.optim_read_all()
