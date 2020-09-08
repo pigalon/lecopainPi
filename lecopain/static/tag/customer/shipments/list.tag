@@ -116,7 +116,6 @@
     	/*******************************************/
 		load_shipments(){
             var shipment_url = '/api/customer/shipments/';
-            //var customer_id = thiscustomer_id;
             var period = self.refs.period.value;
 
             var day = self.refs.day.value;

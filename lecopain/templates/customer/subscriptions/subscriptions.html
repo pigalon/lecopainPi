@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<search-subscription></search-subscription>
+
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='tag/customer/subscriptions/list.tag') }}" type="riot/tag"></script>
+<script>
+    riot.mount("search-subscription");
+</script>
+{% endblock %}
