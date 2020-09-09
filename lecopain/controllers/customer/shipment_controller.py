@@ -25,8 +25,6 @@ customerService = CustomerManager()
 productService = ProductManager()
 userServices = UserManager()
 
-
-
 #####################################################################
 #                                                                   #
 #####################################################################
@@ -36,11 +34,7 @@ userServices = UserManager()
 def shipments():
     user_id = current_user.get_id()
     user = userServices.get_by_username(user_id)
-    
-    
     return render_template('/customer/shipments/shipments.html', title="Livraisons", customer_id=user.account_id)
-
-
 
 #####################################################################
 #                                                                   #
@@ -51,9 +45,6 @@ def shipments():
 def shipment(shipment_id):
     shipment = shipmentServices.get_one(shipment_id)
     return render_template('/customer/shipments/shipment.html', shipment=shipment)
-
-
-
 
 #####################################################################
 #                                                                   #
@@ -78,7 +69,6 @@ def api_shipments_by_subscription(subscription_id):
         page=request.args.get('page', page),
         per_page=request.args.get('per_page', per_page),
         prev_page=prev_page, next_page=next_page ))
-
 
 #####################################################################
 #                                                                   #

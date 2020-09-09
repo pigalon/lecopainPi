@@ -25,13 +25,24 @@ from lecopain.controllers.user_controller import user_page
 from lecopain.controllers.subscription_controller import subscription_page
 from lecopain.controllers.report_controller import report_page
 
+from lecopain.controllers.customer.report_controller import customer_report_page
 from lecopain.controllers.customer.subscription_controller import customer_subscription_page
 from lecopain.controllers.customer.shipment_controller import customer_shipment_page
 from lecopain.controllers.customer.main_controller import customer_main_page
 
 
+from lecopain.services.user_manager import UserManager
+from lecopain.services.shipment_manager import ShipmentManager
+from lecopain.services.subscription_manager import SubscriptionManager
+from lecopain.services.customer_manager import CustomerManager
+
 from flasgger import Swagger
 from flasgger.utils import swag_from
+
+userServices = UserManager()
+shipmentServices = ShipmentManager()
+subscriptionServices = SubscriptionManager()
+customerServices = CustomerManager()
 
 
 app.register_blueprint(customer_page)
@@ -46,6 +57,8 @@ app.register_blueprint(report_page)
 app.register_blueprint(customer_main_page)
 app.register_blueprint(customer_shipment_page)
 app.register_blueprint(customer_subscription_page)
+app.register_blueprint(customer_report_page)
+
 
 
 customer_page = Blueprint('customer_page',  __name__,
@@ -71,6 +84,8 @@ customer_shipment_page = Blueprint('customer_shipment_page',  __name__,
                         template_folder='./templates')
 customer_subscription_page = Blueprint('customer_subscription_page',  __name__,
                         template_folder='./templates')
+customer_subscription_page = Blueprint('customer_report_page',  __name__,
+                        template_folder='./templates')
 
 
 Swagger(app)
@@ -82,16 +97,24 @@ def home():
     if current_user.is_authenticated and current_user.is_active:
         app.logger.info("User connected : " + str(current_user) +
                             " with IP address : " + str(request.remote_addr))
-        customers_nb = Customer.query.count()
-        orders_nb = Order.query.count()
-        products_nb = Product.query.count()
-        sellers_nb = Seller.query.count()
-        subscriptions_nb = Subscription.query.count()
-        shipments_nb = Shipment.query.count()
         
-        stat = Stat.query.get_or_404(1)
         
-        return render_template('base.html', customers_nb=customers_nb, orders_nb=orders_nb, products_nb=products_nb, sellers_nb=sellers_nb, subscriptions_nb=subscriptions_nb, shipments_nb=shipments_nb, stat=stat)
+        user_id = current_user.get_id()
+        user = userServices.get_by_username(user_id)
+        if user.get_main_role() == 'customer_role':
+            customer = customerServices.get_one(current_user.account_id)
+            shipments_nb = shipmentServices.count_by_customer(customer_id=customer.id)
+            subscriptions_nb = subscriptionServices.count_by_customer(customer_id=customer.id)
+            return render_template('/customer/base.html', subscriptions_nb=subscriptions_nb, shipments_nb=shipments_nb, customer_id=user.account_id)
+        if user.get_main_role() == 'admin_role':
+            customers_nb = Customer.query.count()
+            orders_nb = Order.query.count()
+            products_nb = Product.query.count()
+            sellers_nb = Seller.query.count()
+            subscriptions_nb = Subscription.query.count()
+            shipments_nb = Shipment.query.count()
+            stat = Stat.query.get_or_404(1)
+            return render_template('base.html', customers_nb=customers_nb, orders_nb=orders_nb, products_nb=products_nb, sellers_nb=sellers_nb, subscriptions_nb=subscriptions_nb, shipments_nb=shipments_nb, stat=stat)
     else:
         app.logger.info("Need to be authenticated: " +
                         " with IP address : " + str(request.remote_addr))

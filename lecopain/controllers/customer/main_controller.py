@@ -36,11 +36,9 @@ productService          = ProductManager()
 def home():
     
     customer = customerService.get_one(current_user.account_id)
-    
     shipments_nb = shipmentServices.count_by_customer(customer_id=customer.id)
-    
     subscriptions_nb = subscriptionServices.count_by_customer(customer_id=customer.id)
-    #shipments_nb = 0#Shipment.query.count()
+
         
     
         

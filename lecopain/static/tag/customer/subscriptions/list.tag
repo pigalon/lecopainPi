@@ -66,11 +66,9 @@
         moment.locale('fr');
 
 		this.on('mount', function() {
-            var ajaxCall_customers = self.load_customers();
-			ajaxCall_customers.done(function(data) {
-				$(self.refs.customer_id).select2();
-			})
+            
             self.refs.day.value = moment().format('DD/MM/YYYY')
+            
             const location  = $('window.location')
 
             search_url = localStorage.getItem('search_subscription_url');
