@@ -5,9 +5,8 @@
 <br>
   <table width="100%" align="center">
     <tr>
-      <td width="60%" style="text-align:right"><span class="float-left"><a href="/subscriptions/{{ subscription_day.subscription }}" class="btn btn-outline-dark">Retour List</a></span>Changer le statut : </td>
+      <td width="60%" style="text-align:right"><span class="float-left"><a href="/customer/subscriptions/{{ subscription_day.subscription }}" class="btn btn-outline-dark">Retour List</a></span>Changer le statut : </td>
       <td width="40%"  style="text-align:right">
-          <a href="/subscriptions/days/{{ subscription_day.id }}/cancel" class="btn btn-outline-dark" > Remettre à zéro </a>
       </td>
     </tr>
   </table>
@@ -25,7 +24,6 @@
         <p>
           <b>Vendeur : {{subscription_day.seller_name}}</b>
         </p>
-        {%if subscription_day.lines | length > 0 %}
           <li class="list-group-item">
 
             <table align="center" class="table table-striped">
@@ -49,9 +47,6 @@
               </tbody>
             </table>
           </li>
-        {%else%}
-          <seller-product-line sub_category='{{subscription_day.category}}'></seller-product-line>
-        {%endif%}
 
       </div>
     </div>

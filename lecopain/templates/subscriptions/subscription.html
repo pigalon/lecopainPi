@@ -14,7 +14,7 @@
 
 
 <br>
-    <div class="card  " >
+    <div class="card" >
         <div class="card-header text-white bg-info">
           Abonnement N° {{subscription.id}} - De : {{subscription.customer_name}} - Catégorie : {{subscription.category}} 
           {% if subscription.nb_shipments < 1 %}
@@ -33,43 +33,34 @@
             <span class="right"><a href="/subscriptions/new?subscription_id={{ subscription.id }}" class="btn btn-outline-dark">Dupliquer l'abonnement</a></span>
           </li>
           <li class="list-group-item">
-            Jour de la semaine:
-            <table align="center" class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col"><a href="/subscriptions/{{subscription.id}}/weekdays/1" class="btn btn-outline-dark">Lundi</a></th>
-                <th scope="col"><a href="/subscriptions/{{subscription.id}}/weekdays/2" class="btn btn-outline-dark">Mardi</a></th>
-                <th scope="col"><a href="/subscriptions/{{subscription.id}}/weekdays/3" class="btn btn-outline-dark">Mercredi</a></th>
-                <th scope="col"><a href="/subscriptions/{{subscription.id}}/weekdays/4" class="btn btn-outline-dark">Jeudi</a></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td valign="center">nb articles : {{subscription.days[0].nb_products}} <br> livraison : {{subscription.days[0].shipping_price}} <br> prix : {{subscription.days[0].price}} </td>
-                <td valign="center">nb articles : {{subscription.days[1].nb_products}} <br> livraison : {{subscription.days[1].shipping_price}} <br> prix :
-                {{subscription.days[1].price}}</td>
-                <td valign="center">nb articles : {{subscription.days[2].nb_products}} <br> livraison : {{subscription.days[2].shipping_price}} <br> prix :
-                {{subscription.days[2].price}}</td>
-                <td valign="center">nb articles : {{subscription.days[3].nb_products}} <br> livraison : {{subscription.days[3].shipping_price}} <br> prix :
-                {{subscription.days[3].price}}</td>
-              </tr>
-              <tr>
-                <td scope="col"><a href="/subscriptions/{{subscription.id}}/weekdays/5" class="btn btn-outline-dark">Vendredi</a></td>
-                <td scope="col"><a href="/subscriptions/{{subscription.id}}/weekdays/6" class="btn btn-outline-dark">Samedi</a></td>
-                <td scope="col"><a href="/subscriptions/{{subscription.id}}/weekdays/7" class="btn btn-outline-dark">Dimanche</a></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td valign="center">nb articles : {{subscription.days[4].nb_products}} <br> livraison : {{subscription.days[4].shipping_price}} <br> prix :
-                {{subscription.days[4].price}}</td>
-                <td valign="center">nb articles : {{subscription.days[5].nb_products}} <br> livraison : {{subscription.days[5].shipping_price}} <br> prix :
-                {{subscription.days[5].price}}</td>
-                <td valign="center">nb articles : {{subscription.days[6].nb_products}} <br> livraison : {{subscription.days[6].shipping_price}} <br> prix :
-                {{subscription.days[6].price}}</td>
-                <td></td>
-              </tr>
-          </tbody>
-          </table>
+            <h5>Jour de la semaine: </h5>
+            <div class="row">
+            {% for index in range(7) %}
+              <div class="card border-dark bg-light shadow-sm col-sm-3 m-2" style="text-align:center; padding-left:0;padding-right: 0;">
+                <div class="card-header">
+                  <h5>{{week_days[index]}}</h5>
+                </div>
+                <div class="card-body" style="text-align:left">
+                  <table class="table table-responsive-sm">
+                    <tbody>
+                      <tr width="20px">
+                        <td><b>Prix Livraison :</b></td><td>{{subscription.days[index].shipping_price}}€</td>
+                      </tr>
+                      <tr>
+                        <td><b>Nb Articles :</b></td><td>x{{subscription.days[index].nb_products}}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Prix Articles:</b></td><td>{{subscription.days[index].price}}€</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="card-footer" style="text-align:center">
+                  <a href="/subscriptions/{{subscription.id}}/weekdays/{{index+1}}" class="btn btn-primary">Détails</a>
+                </div>
+              </div>
+            {% endfor %}
+            </div>
           </li>
 
           <li class="list-group-item">

@@ -6,6 +6,7 @@ from lecopain.services.customer_manager import CustomerManager
 from lecopain.services.seller_manager import SellerManager
 from lecopain.services.user_manager import UserManager
 from lecopain.helpers.pagination import Pagination
+from lecopain.helpers.date_utils import get_week_names
 
 
 from sqlalchemy import extract
@@ -47,7 +48,8 @@ def subscriptions():
 @customer_login_required
 def subscription(subscription_id):
     subscription = subscriptionServices.get_one(subscription_id)
-    return render_template('/customer/subscriptions/subscription.html', subscription=subscription)
+    week_days = get_week_names()
+    return render_template('/customer/subscriptions/subscription.html', subscription=subscription, week_days=week_days)
 
 #####################################################################
 #                                                                   #

@@ -41,3 +41,6 @@ def dates_range(period, day=datetime.now()):
             day.year, day.month)
     return start,end
 
+def get_week_names():
+    return {0 : 'Lundi', 1: 'Mardi', 2: 'Mercredi', 3 : 'Jeudi', 4 : 'Vendredi', 5 : 'Samedi', 6 : 'Dimanche'}
+
