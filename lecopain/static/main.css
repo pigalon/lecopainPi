@@ -6,6 +6,7 @@ body {
 .container {
   margin-left: 0px;
   min-height: 500px;
+  min-width: 400px;
   background: #ffffff;
 }
 footer {
