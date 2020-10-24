@@ -638,6 +638,7 @@ class CompleteShipmentSchema(SQLAlchemyAutoSchema):
     shipping_formatted_dt = fields.Method("format_shipping_dt", dump_only=True)
     shipping_dt = fields.Method("return_shipping_dt", dump_only=True)
     orders = fields.Method("format_orders", dump_only=True)
+    price = fields.Method("format_price", dump_only=True)
     subscription_id = fields.Method("format_subscription_id", dump_only=True)
 
     class Meta:
@@ -663,9 +664,15 @@ class CompleteShipmentSchema(SQLAlchemyAutoSchema):
     def format_orders(self, shipment):
         orders = []
         order_schema = CompleteOrderSchema(many=False)
-        for shipment in shipment.orders:
-            orders.append(order_schema.dump(shipment))
+        for order in shipment.orders:
+            orders.append(order_schema.dump(order))
         return orders
+    
+    def format_price(self, shipment):
+        price = 0.0
+        for order in shipment.orders:
+            price = price + order.price
+        return price
 
     def format_shipping_dt(self, shipment):
         return shipment.shipping_dt.strftime('%A %d %B %Y')

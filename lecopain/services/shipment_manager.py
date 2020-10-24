@@ -241,6 +241,12 @@ class ShipmentManager():
                 else :
                     products.append({'short_name':line['product_short_name'], 'quantity':int(line['quantity'])})
         return products
+    
+    def get_total_price(self, shipment):
+        price = 0.0
+        for order in shipment.orders:
+            price = price + order.price
+        
 
 
 

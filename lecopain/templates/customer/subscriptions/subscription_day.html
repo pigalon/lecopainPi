@@ -41,7 +41,7 @@
                   <td valign="center">{{line.product_name}}</td>
                   <td valign="center">{{line.seller_name}}</td>
                   <td valign="center">x {{line.quantity}}</td>
-                  <td valign="center">{{line.price}} €</td>
+                  <td valign="center">{{ "%.2f"|format((line.price|float) * 0.8|float)}} €</td>
                 </tr>
                 {% endfor %}
               </tbody>

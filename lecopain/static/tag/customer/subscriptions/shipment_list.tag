@@ -10,7 +10,6 @@
                     <th width="6%">id</th>
                     <th width="20%">date</th>
                     <th width="30%">client</th>
-                    <th width="15%">Status</th>
                     <th width="10%">Liv.</th>
                     <th width="15%">Actions</th>
                 </tr>
@@ -27,14 +26,8 @@
                     <td if={shipment.status == 'TERMINEE'} width="6%" class="table-success">{shipment.id}</td>
                     <td if={shipment.status == 'DEFAUT'} width="6%" class="table-danger">{shipment.id}</td>
 
-                    <td width="20%">{moment(shipment.shipping_dt).format('ddd Do MMMM' )}</td>
+                    <td width="20%">{moment(shipment.shipping_dt).format('ddd Do MMM' )}</td>
                     <td width="30%"><span onclick={ show_customer(shipment.customer_id) } class="badge badge-primary" style="font-size:14px;"><i class="fas fa-user"></i></span> {shipment.customer_name}</td>
-                    <td width="15%"><span if={shipment.shipping_status == 'OUI'} style="color:green" ><i class="fas fa-cart-arrow-down "></i></span>
-                    <span if={shipment.shipping_status == 'NON'} style="color:grey" ><i class="fas fa-cart-arrow-down "></i></span>
-                    <span if={shipment.payment_status == 'OUI'} style="color:green" ><i class="fas fa-credit-card"></i></i></span>
-                    <span if={shipment.payment_status == 'NON'} style="color:grey" ><i class="fas fa-credit-card"></i></i></span>
-                    <span if={shipment.subscription_id != None} class="badge badge-warning" style="font-size:16px;">Ab.</span>
-                    </td>
                     <td if={shipment.status == 'ANNULEE'} width="10%" >0.00 €</td>
                     <td if={shipment.status != 'ANNULEE'} width="10%">
                         {shipment.shipping_price.toFixed(2)} €
@@ -48,7 +41,7 @@
             </td>
         </tr>
         <tr>
-             <table width="100%" >
+            <table width="100%" >
                 <tr class="bg-warning">
                     <td width="6%">
                     </td>
@@ -59,7 +52,7 @@
                     <td width="15%">
                     </td>
                     <td width="10%">
-                     = {shipping_sum.toFixed(2)} €
+                        = {shipping_sum.toFixed(2)} €
                     </td>
                     <td width="15%">
                     </td>

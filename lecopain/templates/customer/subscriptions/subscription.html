@@ -44,7 +44,7 @@
                         <td><b>Nb Articles :</b></td><td>x{{subscription.days[index].nb_products}}</td>
                       </tr>
                       <tr>
-                        <td><b>Prix Articles:</b></td><td>{{subscription.days[index].price}}€</td>
+                        <td><b>Prix Panier:</b></td><td>{{ "%.2f"|format((subscription.days[index].price|float) * 0.8|float)}}€</td>
                       </tr>
                     </tbody>
                   </table>

@@ -15,7 +15,6 @@
                     <th width="6%">id</th>
                     <th width="34%">Période</th>
                     <th width="30%">client</th>
-                    <th width="20%">Catégorie</th>
                     <th width="10%">Liv.</th>
                 </tr>
             </table>
@@ -31,7 +30,6 @@
                     <td if={subscription.status == 'DEFAUT'} width="6%" class="table-danger">{subscription.id}</td>
                     <td width="34%">du <b>{moment(subscription.start_dt).format('ddd Do MMM' )}</b> au <b>{moment(subscription.end_dt).format('ddd Do MMM YY' )}</b></td>
                     <td width="30%">{subscription.customer_name}</td>
-                    <td width="20%">{subscription.category}</td>
                     <td width="10%">{subscription.shipping_price.toFixed(2)} €</td>
                 </tr>
             </table>

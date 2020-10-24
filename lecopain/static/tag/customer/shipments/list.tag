@@ -17,9 +17,7 @@
                     <th width="6%">id</th>
                     <th width="20%">Date</th>
                     <th width="30%">Client</th>
-                    <th width="15%">Status</th>
                     <th width="10%">Liv.</th>
-                    <th width="15%">Actions</th>
                 </tr>
             </table>
             </td>
@@ -28,28 +26,18 @@
             <td>
             
             <table width="100%" class="table table-striped">
-                <tr>
+                <tr onclick={ show_shipment(shipment.id) }>
                     <td if={shipment.status == 'CREE' && shipment.updated_at == None} width="6%" class="table-primary">{shipment.id}</td>
                     <td if={shipment.status == 'CREE' && shipment.updated_at != None} width="6%" class="table-warning">{shipment.id}</td>
                     <td if={shipment.status == 'ANNULEE'} width="6%" class="table-dark">{shipment.id}</td>
                     <td if={shipment.status == 'TERMINEE'} width="6%" class="table-success">{shipment.id}</td>
                     <td if={shipment.status == 'DEFAUT'} width="6%" class="table-danger">{shipment.id}</td>
 
-                    <td width="20%">{moment(shipment.shipping_dt).format('ddd Do MMMM' )}</td>
+                    <td width="20%">{moment(shipment.shipping_dt).format('ddd Do MMM' )}</td>
                     <td width="30%">{shipment.customer_name}</td>
-                    <td width="15%">
-                        <span if={shipment.shipping_status == 'OUI'} style="color:green" ><i class="fas fa-cart-arrow-down "></i></span>
-                        <span if={shipment.shipping_status == 'NON'} style="color:grey" ><i class="fas fa-cart-arrow-down "></i></span>
-                        <span if={shipment.payment_status == 'OUI'} style="color:green" ><i class="fas fa-credit-card"></i></span>
-                        <span if={shipment.payment_status == 'NON'} style="color:grey" ><i class="fas fa-credit-card"></i></span>
-                        <span <span onclick={ show_subscription(shipment.subscription_id) } if={shipment.subscription_id != None} class="badge badge-warning" style="font-size:16px;">Ab.</span>
-                    </td>
                     <td if={shipment.status == 'ANNULEE'} width="10%" >0.00 €</td>
                     <td if={shipment.status != 'ANNULEE'} width="10%">
                         {shipment.shipping_price.toFixed(2)} €
-                    </td>
-                    <td width="15%">
-                        <span onclick={ show_shipment(shipment.id) } class="badge badge-primary"><i class="fas fa-eye" style="font-size:18px;"></i></span>
                     </td>
                 </tr>
             </table>
