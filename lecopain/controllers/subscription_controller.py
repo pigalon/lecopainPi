@@ -164,9 +164,10 @@ def delete_subscription(subscription_id):
 @admin_login_required
 def generate_shipments(subscription_id):
 	subscription = subscriptionServices.get_one_db(subscription_id)
-	if len(subscription.shipments)<1:
+	if len(subscription.shipments)<1 :
 		subscriptionServices.generate_shipments(subscription)
-	return render_template('/subscriptions/subscription.html', subscription=subscription)
+	week_days = get_week_names()
+	return render_template('/subscriptions/subscription.html', subscription=subscription, week_days=week_days)
 
 #####################################################################
 #                                                                   #
@@ -188,7 +189,8 @@ def calculatee_shipments(subscription_id):
 def delete_shipments(subscription_id):
 	subscription = subscriptionServices.get_one_db(subscription_id)
 	subscriptionServices.delete_all_shipments(subscription)
-	return render_template('/subscriptions/subscription.html', subscription=subscription)
+	week_days = get_week_names()
+	return render_template('/subscriptions/subscription.html', subscription=subscription, week_days=week_days)
 
 #####################################################################
 #                                                                   #

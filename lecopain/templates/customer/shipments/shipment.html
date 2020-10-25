@@ -23,26 +23,20 @@
           </li>
           <li class="list-group-item">
 
-            <table align="center" class="table table-striped">
+            
+          {% for order in shipment.orders %}
+          <span class="badge badge-warning" style="font-size:24px;">{{order.seller_name}} - N° Commande {{order.id}}</span>
+          <table align="center" class="table table-striped">
             <thead>
               <tr>
-                <th scope="col">Vendeur</th>
-                <th scope="col">N° Commande</th>
                 <th scope="col">Produit</th>
                 <th scope="col">Quantité</th>
                 <th scope="col">Prix</th>
               </tr>
             </thead>
-            <tbody>
-          {% for order in shipment.orders %}
+            <tbody> 
           {% for line in order.lines %}
               <tr>
-                <td valign="center">{{order.seller_name}}</td>
-                <td valign="center">
-                  <span>
-                      {{order.id}}
-                  </span>
-                </td>
                 <td valign="center">{{line.product_name}}</td>
                 <td valign="center">
                   {% if order.status =='ANNULEE' %} Annulé {%endif%}
@@ -54,9 +48,10 @@
                 </td>
               </tr>
           {% endfor %}
-          {% endfor %}
-          </tbody>
+            </tbody>
           </table>
+
+          {% endfor %}
           </li>
 
           <li class="list-group-item">
@@ -69,7 +64,7 @@
                 <br>
                 <br>
                 {% if shipment.subscription_id != None %}
-                  <span class="float-right"><a href="/subscriptions/{{ shipment.subscription_id }}" class="btn btn-warning">Abonnement</a></span>
+                  <span class="float-right"><a href="/customer/subscriptions/{{ shipment.subscription_id }}" class="btn btn-warning">Abonnement</a></span>
                 {% endif %}
           </li>
         </ul>

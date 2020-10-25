@@ -53,30 +53,26 @@
           </li>
           <li class="list-group-item">
 
-            <table align="center" class="table table-striped">
+          {% for order in shipment.orders %}
+            <span> <a href="/sellers/{{ order.seller_id }}" class="badge badge-warning" style="font-size:24px;"> {{order.seller_name}}</a></span> -                   
+            <span>
+                    {% if order.status =='CREE' %} <a href="/orders/{{ order.id }}" class="badge badge-info" style="font-size:24px;"> {%endif%}
+                    {% if order.status =='ANNULEE' %} <a href="/orders/{{ order.id }}" class="badge badge-dark" style="font-size:24px;"> {%endif%}
+                    {% if order.status =='DEFAULT' %} <a href="/orders/{{ order.id }}" class="badge badge-danger" style="font-size:24px;"> {%endif%}
+                      N° Commande : {{order.id}}
+                    </a>
+            </span>
+          <table align="center" class="table table-striped">
             <thead>
               <tr>
-                <th scope="col">Vendeur</th>
-                <th scope="col">N° Commande</th>
                 <th scope="col">Produit</th>
                 <th scope="col">Quantité</th>
                 <th scope="col">Prix</th>
               </tr>
             </thead>
-            <tbody>
-          {% for order in shipment.orders %}
+            <tbody> 
           {% for line in order.lines %}
               <tr>
-                <td valign="center">{{order.seller_name}}</td>
-                <td valign="center">
-                  <span>
-                    {% if order.status =='CREE' %} <a href="/orders/{{ order.id }}" class="btn btn-info"> {%endif%}
-                    {% if order.status =='ANNULEE' %} <a href="/orders/{{ order.id }}" class="btn btn-dark"> {%endif%}
-                    {% if order.status =='DEFAULT' %} <a href="/orders/{{ order.id }}" class="btn btn-danger"> {%endif%}
-                      {{order.id}}
-                    </a>
-                  </span>
-                </td>
                 <td valign="center">{{line.product_name}}</td>
                 <td valign="center">
                   {% if order.status =='ANNULEE' %} Annulé {%endif%}
@@ -89,9 +85,9 @@
                 </td>
               </tr>
           {% endfor %}
-          {% endfor %}
           </tbody>
           </table>
+          {% endfor %}
           </li>
 
           <li class="list-group-item">

@@ -49,7 +49,7 @@ def shipment(shipment_id):
 #####################################################################
 #                                                                   #
 #####################################################################
-@customer_shipment_page.route('/api/shipments/subscriptions/<int:subscription_id>')
+@customer_shipment_page.route('/api/customer/shipments/subscriptions/<int:subscription_id>')
 @login_required
 @customer_login_required
 def api_shipments_by_subscription(subscription_id):
