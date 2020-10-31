@@ -1,6 +1,6 @@
 <shipment-list>
     <p>
-        <h4>Liste des livraisons </h4>
+        <h4>Liste des livraisons prévues pour cet abonnement</h4>
     </p>
     <table id="shipments_list" width="100%">
         <tr>
@@ -9,9 +9,7 @@
                 <tr>
                     <th width="6%">id</th>
                     <th width="20%">date</th>
-                    <th width="30%">client</th>
                     <th width="10%">Liv.</th>
-                    <th width="15%">Actions</th>
                 </tr>
             </table>
             </td>
@@ -20,22 +18,16 @@
             <td>
             <table width="100%" class="table table-striped">
                 <tr>
-                    <td if={shipment.status == 'CREE' && shipment.updated_at == None} width="6%" class="table-primary">{shipment.id}</td>
-                    <td if={shipment.status == 'CREE' && shipment.updated_at != None} width="6%" class="table-warning">{shipment.id}</td>
-                    <td if={shipment.status == 'ANNULEE'} width="6%" class="table-dark">{shipment.id}</td>
-                    <td if={shipment.status == 'TERMINEE'} width="6%" class="table-success">{shipment.id}</td>
+                    <td onmouseover="changeBackgroundColor(this)" onmouseout="restoreBackgroundColor(this)" style="cursor: pointer" onclick={ show_shipment(shipment.id) } if={shipment.status == 'CREE'} width="6%" class="table-primary">{shipment.id}</td>
                     <td if={shipment.status == 'DEFAUT'} width="6%" class="table-danger">{shipment.id}</td>
 
                     <td width="20%">{moment(shipment.shipping_dt).format('ddd Do MMM' )}</td>
-                    <td width="30%"><span onclick={ show_customer(shipment.customer_id) } class="badge badge-primary" style="font-size:14px;"><i class="fas fa-user"></i></span> {shipment.customer_name}</td>
+
                     <td if={shipment.status == 'ANNULEE'} width="10%" >0.00 €</td>
                     <td if={shipment.status != 'ANNULEE'} width="10%">
                         {shipment.shipping_price.toFixed(2)} €
                     </td>
-                    <td width="15%">
-                        <span onclick={ show_shipment(shipment.id) } class="badge badge-primary"><i class="fas fa-eye" style="font-size:18px;"></i></span>
-                        <input onclick={ check_shipement } type="checkbox" ref="ids_{shipment.id}" id="ids_{shipment.id}" name="ids_{shipment.id}">
-                    </td>
+
                 </tr>
             </table>
             </td>
@@ -84,7 +76,7 @@
         var page= 1
         var next_url = ''
         var previous_url = ''
-        var shipping_sum = 0.0
+        shipping_sum = 0.0
 
         moment.locale('fr');
         this.selected_shipments = []
@@ -101,7 +93,6 @@
     	/*******************************************/
 		load_shipments(subscription_id){
             var shipment_url = '/api/customer/shipments/subscriptions/'+subscription_id;
-            console.log('call load ship : '+ shipment_url)
 			return $.ajax({
 					url: shipment_url,
 					type: "GET",

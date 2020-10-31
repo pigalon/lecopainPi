@@ -1,11 +1,10 @@
 <search-subscription>
     <div class="form-group">
-        <input type="text"style="width:200px; display: inline-block;" name="day" ref="day" id="datepicker_day" data-language='fr' class="form-control datepicker-input" />
-        <select class="form-control" name="period" id="period" ref="period" style="width: 12rem; display:inline-block">
-            <option value="month">Mois</option>
-            <option value="all">Tous</option>
-        </select>
-        <button type="button" id="search" onclick="{load_subscriptions}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
+        <!--<input type="text"style="width:200px; display: inline-block;" name="day" ref="day" id="datepicker_day" data-language='fr' class="form-control datepicker-input" />
+        <button type="button" id="search" onclick="{load_subscriptions}" class="btn btn-primary" ><i class="fa fa-search"></i></button>-->
+        <input type="text" style="width:200px; display: inline-block;" name="month" ref="month" id="datepicker_day"  class="form-control datepicker-here" data-language='fr'  data-min-view="months"  data-view="months" data-date-format="mm/yyyy" />
+        <button type="button" style="display: inline-block;" ref="search" name="search" id="search" onclick="{load_subscriptions}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
+        <b><span style="font-size:20px;"> &nbsp; &nbsp; &nbsp; Sélection du mois : {monthTitle}</span></b>
     </div>
     <table id="subscriptions_list" width="100%">
         <tr>
@@ -14,8 +13,6 @@
                 <tr>
                     <th width="6%">id</th>
                     <th width="34%">Période</th>
-                    <th width="30%">client</th>
-                    <th width="10%">Liv.</th>
                 </tr>
             </table>
             </td>
@@ -24,13 +21,8 @@
             <td>
             <table width="100%" class="table table-striped" onclick={ show_subscription(subscription.id) }>
                 <tr>
-                    <td if={subscription.status == 'CREE'} width="6%" class="table-primary">{subscription.id}</td>
-                    <td if={subscription.status == 'ANNULE'} width="6%" class="table-dark">{subscription.id}</td>
-                    <td if={subscription.status == 'TERMINE'} width="6%" class="table-success">{subscription.id}</td>
-                    <td if={subscription.status == 'DEFAUT'} width="6%" class="table-danger">{subscription.id}</td>
+                    <td onmouseover="changeBackgroundColor(this)" onmouseout="restoreBackgroundColor(this)" style="cursor: pointer" if={subscription.status == 'CREE'} width="6%" class="table-primary">{subscription.id} <span class="badge badge-warning" style="font-size:16px;">Ab.</span></td>
                     <td width="34%">du <b>{moment(subscription.start_dt).format('ddd Do MMM' )}</b> au <b>{moment(subscription.end_dt).format('ddd Do MMM YY' )}</b></td>
-                    <td width="30%">{subscription.customer_name}</td>
-                    <td width="10%">{subscription.shipping_price.toFixed(2)} €</td>
                 </tr>
             </table>
             </td>
@@ -65,14 +57,15 @@
 
 		this.on('mount', function() {
             
-            self.refs.day.value = moment().format('DD/MM/YYYY')
+            self.refs.month.value = moment().format('MM/YYYY')
+
+            var dateMomentObject = moment('01/'+self.refs.month.value, "DD/MM/YYYY");
+            
+            monthTitle = moment(dateMomentObject).format('MMMM').charAt(0).toUpperCase() + moment(dateMomentObject).format('MMMM').slice(1)
             
             const location  = $('window.location')
 
-            search_url = localStorage.getItem('search_subscription_url');
-			if(search_url != null){
-                this.load_subscriptions_from_url(search_url)
-			}
+            this.load_subscriptions()
 
 		});
 
@@ -88,9 +81,11 @@
     	/*******************************************/
 		load_subscriptions(){
             var subscription_url = '/api/customer/subscriptions/';
-            var period = self.refs.period.value;
-            var day = self.refs.day.value;
+            var period = 'month';
 
+            var day = "01/"+self.refs.month.value;
+            var date = moment(day).format('DD/MM/YYYY');
+            monthTitle = moment(date).format('MMMM').charAt(0).toUpperCase() + moment(date).format('MMMM').slice(1)
             if (period == undefined){
                 period = 'all'
             }

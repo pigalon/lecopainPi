@@ -7,3 +7,13 @@ String.prototype.replaceAll = function(str1, str2, ignore)
 function getNameFromNumberofDayWeek(number){
     return moment().day(number);
 }
+
+function changeBackgroundColor(object) {
+    console.log(object.style.backgroundColor)
+    object.style.backgroundColor = "#eeeeff";
+    
+}
+
+function restoreBackgroundColor(row) {
+    row.style.backgroundColor = "#b8daff";
+}

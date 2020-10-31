@@ -1,22 +1,18 @@
 <search-shipment>
     <div class="form-group">
-        <input type="text"style="width:200px; display: inline-block;" name="day" ref="day" id="datepicker_day" data-language='fr' class="form-control datepicker-input" />
-        <select class="form-control" name="period" id="period" ref="period" style="width: 12rem; display:inline-block">
-            <option value="day">Jour</option>
-            <option value="week">Semaine</option>
-            <option value="month">Mois</option>
-            <option value="all">Toutes</option>
-        </select>
-        <button type="button" ref="search" name="search" id="search" onclick="{load_shipments}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
+        <input type="text" style="width:200px; display: inline-block;" name="month" ref="month" id="datepicker_day"  class="form-control datepicker-here" data-language='fr'  data-min-view="months"  data-view="months" data-date-format="mm/yyyy" />
+        <button type="button" style="display: inline-block;" ref="search" name="search" id="search" onclick="{load_shipments}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
+        <b><span style="font-size:20px;"> &nbsp; &nbsp; &nbsp; Sélection du mois : {monthTitle}</span></b>
     </div>
+    
     <table id="shipments_list" width="100%">
         <tr>
             <td>
             <table width="100%">
                 <tr>
-                    <th width="6%">id</th>
-                    <th width="20%">Date</th>
-                    <th width="30%">Client</th>
+                    <th width="6%">N°</th>
+                    <th width="30%">Date</th>
+                    <th widht="10%">Nb Articles</th>
                     <th width="10%">Liv.</th>
                 </tr>
             </table>
@@ -27,20 +23,19 @@
             
             <table width="100%" class="table table-striped">
                 <tr>
-                    <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'CREE' && shipment.updated_at == None} width="6%" class="table-primary">{shipment.id}</td>
-                    <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'CREE' && shipment.updated_at != None} width="6%" class="table-warning">{shipment.id}</td>
-                    <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'ANNULEE'} width="6%" class="table-dark">{shipment.id}</td>
-                    <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'TERMINEE'} width="6%" class="table-success">{shipment.id}</td>
-                    <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'DEFAUT'} width="6%" class="table-danger">{shipment.id}</td>
+                    <td onmouseover="changeBackgroundColor(this)" onmouseout="restoreBackgroundColor(this)" style="cursor: pointer" onclick={ show_shipment(shipment.id) } width="6%" class="table-primary"><i class="fas fa-cart-arrow-down "></i>{shipment.id}</td>
+                    
+                    <td width="30%">{moment(shipment.shipping_dt).format('ddd Do MMM' )}</td>
+                    
+                    <td widht="10%">x{shipment.nb_products}</td>
 
-                    <td width="20%">{moment(shipment.shipping_dt).format('ddd Do MMM' )}</td>
-                    <td width="30%">{shipment.customer_name}</td>
                     <td if={shipment.status == 'ANNULEE' && shipment.subscription_id == None} width="10%" >0.00 € </td>
                     <td if={shipment.status != 'ANNULEE' && shipment.subscription_id == None} width="10%">
                         {shipment.shipping_price.toFixed(2)} €
                     </td>
+
                     <td if={shipment.subscription_id != None} width="10%">
-                        <span <span onclick={ show_subscription(shipment.subscription_id) } class="badge badge-warning" style="font-size:16px;">Ab.</span>
+                        <span nmouseover="" onclick={ show_subscription(shipment.subscription_id) } class="badge badge-warning" style="cursor: pointer;font-size:16px;">Ab.</span>
                     </td>
                 </tr>
             </table>
@@ -75,30 +70,24 @@
         this.selected_shipments = []
 
         customer_id = opts.customer_id
-
-
         moment.locale('fr');
 
 		this.on('mount', function() {
-			
             
             const location  = $('window.location')
-            self.refs.day.value = moment().format('DD/MM/YYYY')
+            self.refs.month.value = moment().format('MM/YYYY')
 
-            search_url = localStorage.getItem('search_shipment_url');
-			if(search_url != null){
-                this.load_shipments_from_url(search_url)
-			}
-            else{
-                this.load_shipments()
-            }
+            var dateMomentObject = moment('01/'+self.refs.month.value, "DD/MM/YYYY");
+            
+            monthTitle = moment(dateMomentObject).format('MMMM').charAt(0).toUpperCase() + moment(dateMomentObject).format('MMMM').slice(1)
+
+            this.load_shipments()
 
 		});
 
         $(function () {
             $("#datepicker_day").datepicker(
                 {autoClose: true}
-                
             );
         });
 
@@ -107,10 +96,11 @@
     	/*******************************************/
 		load_shipments(){
             var shipment_url = '/api/customer/shipments/';
-            var period = self.refs.period.value;
+            var period = 'month';
 
-            var day = self.refs.day.value;
-
+            var day = "01/"+self.refs.month.value;
+            var date = moment(day).format('DD/MM/YYYY');
+            monthTitle = moment(date).format('MMMM').charAt(0).toUpperCase() + moment(date).format('MMMM').slice(1)
             
             if (period == undefined){
                 period = 'all'
@@ -241,7 +231,6 @@
                 }
             });
 		}
-
 
 	</script>
 </search-shipment>

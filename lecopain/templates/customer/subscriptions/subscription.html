@@ -58,14 +58,13 @@
           </li>
 
           <li class="list-group-item">
-                <b>Nb articles de l'abonnement: {{subscription.nb_products}}
+                <b>Nb articles de l'abonnement par jour: {{subscription.nb_products}}
           </li>
           <li class="list-group-item">
-                <b><span >Prix des livraisons pour l'abonnement : {{ "%.2f"|format(subscription.shipping_price|float) }} €</span></b>
+                <b><span >Prix Total des livraisons pour cet abonnement : {{ "%.2f"|format(subscription.shipping_price|float) }} €</span></b>
                 <br>
                 <br>
-                <p><b>Nombres total de Livraisons : </b> {{subscription.nb_shipments}}</p>
-                <p><b>Nombres total de commandes : </b> {{subscription.nb_orders}}</p>
+                <p><b>Nombres total de Livraisons pour cet abonnement: </b> {{subscription.nb_shipments}}</p>
           </li>
         </ul>
         </div>
