@@ -37,7 +37,7 @@ class ReportManager():
         for order in orders:
             shipping_day = order['shipping_dt'].day
             if int(shipping_day) == dt.day:
-                line = {'customer':order['customer_name']}
+                line = {'customer':order['customer_name'], 'address':order['customer_address']}
                 line['products'] = []
                 for order_line in order['lines']:
                     line['products'].append({'name':order_line['product_short_name'], 'quantity':order_line['quantity']})
@@ -128,6 +128,7 @@ class ReportManager():
         cell_format_name.set_bg_color('#bffcf9')
         cell_format_name.set_left()
         cell_format_name.set_right()
+        cell_format_name.set_text_wrap()
         
         cell_format_products = workbook.add_format()
         cell_format_products.set_pattern(1)  # This is optional when using a solid fill.
@@ -148,8 +149,9 @@ class ReportManager():
             worksheet.write(row, col, amounts_line, cell_format_amounts)
             row = row + 1
             for line in day['lines']:
+                worksheet.set_row(row, 40)
                 worksheet.set_column(col, col, 20)
-                worksheet.write(row, col, line['customer'], cell_format_name)
+                worksheet.write(row, col, line['customer'] +'\n'+ line['address'], cell_format_name)
                 products_line = ''
                 for line_product in line['products']:
                     products_line = products_line + (str(line_product['name']) + ' x'+ str(line_product['quantity']) + ', ')

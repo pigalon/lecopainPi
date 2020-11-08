@@ -63,29 +63,38 @@
 				<ul class="navbar-nav mr-auto">
 				{% if  current_user.__class__.__name__ != 'AnonymousUserMixin' and current_user.get_main_role() == 'admin_role' %}
 					<li class="nav-item">
-						<a class="nav-link" href="/customers">Clients</a>
+						<a class="nav-link" href="/customers" style="font-size:22px; text-align:center;" title="Clients"><i class="fa fa-user-tag" ></i>
+						<br><span style="font-size:12px;">Client</span></a>
+						
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/shipments">Livraisons</a>
+						<a class="nav-link" href="/shipments" style="font-size:22px; text-align:center;" title="Livraisons"><i class="fa fa-truck" ></i>
+						<br><span style="font-size:12px;">Livraisons</span></a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/products">Produits</a>
+						<a class="nav-link" href="/products" style="font-size:22px; text-align:center;" title="Produits"><i class="fa fa-pizza-slice" ></i>
+						<br><span style="font-size:12px;">Produits</span></a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/sellers">Vendeurs</a>
+						<a class="nav-link" href="/sellers" style="font-size:22px; text-align:center;" title="Vendeurs"><i class="fa fa-store" ></i>
+						<br><span style="font-size:12px;">Vendeurs</span></a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/subscriptions">Abonnements</a
+						<a class="nav-link" href="/subscriptions" style="font-size:22px; text-align:center;" title="Abonnement"><i class="fa fa-calendar-alt" ></i>
+						<br><span style="font-size:12px;">Abonnements</span></a>
 						>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/reports">Rapports  <br> Vendeurs</a>
+						<a class="nav-link" href="/reports" style="font-size:22px; text-align:center;" title="Rapports Vendeurs"><i class="fa fa-file-excel" ></i>
+						<br><span style="font-size:12px;">Rapports.V</span></a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/reports/shipements">Rapports <br> Livraisons</a>
+						<a class="nav-link" href="/reports/shipements"  style="font-size:22px; text-align:center;" title="Rapports Livraisons"><i class="fa fa-file-contract" ></i>
+						<br><span style="font-size:12px;">Rapports.L</span></a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/users">Utilisateurs</a>
+						<a class="nav-link" href="/users" style="font-size:22px; text-align:center;" title="Utilisateurs"><i class="fa fa-users"></i>
+						<br><span style="font-size:12px;">Utilisateurs</span></a>
 					</li>
 				{% endif %}
 				{% if  current_user.__class__.__name__ != 'AnonymousUserMixin' and current_user.get_main_role() == 'customer_role' %}

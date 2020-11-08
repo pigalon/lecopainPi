@@ -550,6 +550,7 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
     seller_name = fields.Method("format_seller_name", dump_only=True)
     seller_city = fields.Method("format_seller_city", dump_only=True)
     customer_name = fields.Method("format_customer_name", dump_only=True)
+    customer_address = fields.Method("format_customer_address", dump_only=True)
     seller_id = fields.Method("format_seller_id", dump_only=True)
     nb_products = fields.Method("format_nb_products", dump_only=True)
     lines = fields.Method("format_lines", dump_only=True)
@@ -579,6 +580,9 @@ class CompleteOrderSchema(SQLAlchemyAutoSchema):
 
     def format_customer_name(self, order):
         return "{} {}".format(order.shipment.customer.firstname, order.shipment.customer.lastname)
+    
+    def format_customer_address(self, order):
+        return "{} {} {}".format(order.shipment.customer.address, order.shipment.customer.cp, order.shipment.customer.city)
 
     def format_seller_name(self, order):
         return "{}".format(order.seller.name)
