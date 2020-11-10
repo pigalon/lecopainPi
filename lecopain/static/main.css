@@ -1,7 +1,19 @@
+html, body {
+  height: 100%;
+}
+
+html {
+  display: table;
+  margin: auto;
+}
+
 body {
-    background: #343A40;
-    color: #333333;
-    margin-top: 0rem;
+  display: table-cell;
+  vertical-align: middle;  
+  background: #343A40;
+  color: #333333;
+  margin-top: 0rem;
+
 }
 .container {
   margin-left: 0px;
