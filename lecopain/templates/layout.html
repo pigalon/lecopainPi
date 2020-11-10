@@ -99,14 +99,17 @@
 				{% endif %}
 				{% if  current_user.__class__.__name__ != 'AnonymousUserMixin' and current_user.get_main_role() == 'customer_role' %}
 					<li class="nav-item">
-						<a class="nav-link" href="/customer/shipments">Livraisons</a>
+						<a class="nav-link" href="/customer/shipments" style="font-size:22px; text-align:center;" title="Livraisons"><i class="fa fa-truck" ></i>
+						<br><span style="font-size:12px;">Livraisons</span></a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/customer/subscriptions">Abonnements</a
+						<a class="nav-link" href="/customer/subscriptions" style="font-size:22px; text-align:center;" title="Abonnement"><i class="fa fa-calendar-alt" ></i>
+						<br><span style="font-size:12px;">Abonnements</span></a>
 						>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/customer/reports/shipements">Rapports <br> Livraisons</a>
+						<a class="nav-link" href="/customer/reports/shipements"  style="font-size:22px; text-align:center;" title="Rapports Livraisons"><i class="fa fa-file-contract" ></i>
+						<br><span style="font-size:12px;">Rapports.L</span></a>
 					</li>
 				{% endif %}
 				</ul>
