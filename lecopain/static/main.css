@@ -15,11 +15,6 @@ html {
     color: #333333;
     margin-top: 0rem;
     min-width: 800px;
-
-    /*background-image: url('/static/img/back_baguettes.jpg');
-    background-repeat: no-repeat;
-    background-size: 100%;
-    background-position: center top;*/
   }
 }
 @media only screen and (max-width: 600px) {
@@ -27,13 +22,6 @@ html {
     vertical-align: middle;  
     background: #343A40;
     color: #333333;
-    /*
-    background-image: url('/static/img/back_baguettes.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-size: 100%;
-    background-position: center;*/
-
     margin-top: 0rem;
   }
 }

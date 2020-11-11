@@ -25,6 +25,7 @@
                     <th width="20%">Date</th>
                     <th width="30%">Client</th>
                     <th width="10%">Liv.</th>
+                    <th width="2%"></th>
                 </tr>
             </table>
             </td>
@@ -45,6 +46,9 @@
                     <td if={shipment.status == 'ANNULEE'} width="10%" >0.00 € <span <span onclick={ show_subscription(shipment.subscription_id) } if={shipment.subscription_id != None} class="badge badge-warning" style="font-size:16px;">Ab.</span></td>
                     <td if={shipment.status != 'ANNULEE'} width="10%">
                         {shipment.shipping_price.toFixed(2)} € <span onclick={ show_subscription(shipment.subscription_id) } if={shipment.subscription_id != None} class="badge badge-warning" style="font-size:16px;">Ab.</span>
+                    </td>
+                    <td width="2%">
+                        <input onclick={ check_shipement } type="checkbox" ref="ids_{shipment.id}" id="ids_{shipment.id}" name="ids_{shipment.id}">
                     </td>
                 </tr>
             </table>
