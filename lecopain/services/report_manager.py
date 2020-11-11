@@ -106,14 +106,16 @@ class ReportManager():
         workbook = xlsxwriter.Workbook('/tmp/report.xlsx')
         worksheet = workbook.add_worksheet()
         
+        LIGHT_BLUE= '#dbfcfd'
+        LIGHT_YELLOW= '#fcfddb'
 
         row = 0
         col = 0
         column_width = 0
-       
         cell_format_date = workbook.add_format({'num_format': 'ddd dd mmm yyyy'})
         cell_format_date.set_pattern(1)  # This is optional when using a solid fill.
-        cell_format_date.set_bg_color('yellow')
+        cell_format_date.set_bg_color('white')
+        cell_format_date.set_bold(True)
         cell_format_date.set_border()
         cell_format_date.set_align('center')
         
@@ -125,10 +127,17 @@ class ReportManager():
         
         cell_format_name = workbook.add_format()
         cell_format_name.set_pattern(1)  # This is optional when using a solid fill.
-        cell_format_name.set_bg_color('#bffcf9')
+        cell_format_name.set_bg_color(LIGHT_BLUE)
         cell_format_name.set_left()
         cell_format_name.set_right()
         cell_format_name.set_text_wrap()
+        
+        cell_format_address = workbook.add_format()
+        cell_format_address.set_pattern(1)  # This is optional when using a solid fill.
+        cell_format_address.set_bg_color(LIGHT_BLUE)
+        cell_format_address.set_left()
+        cell_format_address.set_right()
+        cell_format_address.set_text_wrap()
         
         cell_format_products = workbook.add_format()
         cell_format_products.set_pattern(1)  # This is optional when using a solid fill.
@@ -151,7 +160,7 @@ class ReportManager():
             for line in day['lines']:
                 worksheet.set_row(row, 40)
                 worksheet.set_column(col, col, 20)
-                worksheet.write(row, col, line['customer'] +'\n'+ line['address'], cell_format_name)
+                worksheet.write(row, col, line['customer'], cell_format_name)
                 products_line = ''
                 for line_product in line['products']:
                     products_line = products_line + (str(line_product['name']) + ' x'+ str(line_product['quantity']) + ', ')
@@ -160,6 +169,15 @@ class ReportManager():
                     worksheet.set_column(col+1, col+1, 30)
                 worksheet.write(row, col+1, products_line, cell_format_products)
                 row = row + 1
+                worksheet.merge_range(first_col=col, first_row=row, last_col=col+1, last_row=row, data='')
+                worksheet.write(row, col, line['address'], cell_format_address)
+                row = row + 1
+                if cell_format_address.bg_color == LIGHT_BLUE :
+                    cell_format_address.set_bg_color(LIGHT_YELLOW)
+                    cell_format_name.set_bg_color(LIGHT_YELLOW)
+                else :
+                    cell_format_address.set_bg_color(LIGHT_BLUE)
+                    cell_format_name.set_bg_color(LIGHT_BLUE)
             col = col + 3
             column_width = 0
 

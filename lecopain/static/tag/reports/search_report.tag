@@ -42,8 +42,7 @@
                 <table class="table table-bordered" style="margin-top: 0px; padding-top: 0px">
                     <tr each="{line in day_report['lines']}">
                         <td class="table-primary" width="15%">
-                            {line['customer']} <br>
-                            <span style="font-size:12px;"> {line['address']}</span>
+                            {line['customer']}
                         </td>
                         <td>
                             <span each="{product in line['products']}">
