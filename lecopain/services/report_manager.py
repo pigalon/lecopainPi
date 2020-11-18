@@ -119,6 +119,7 @@ class ReportManager():
         cell_format_date.set_border()
         cell_format_date.set_align('center')
         
+        
         cell_format_amounts = workbook.add_format()
         cell_format_amounts.set_pattern(1)  # This is optional when using a solid fill.
         cell_format_amounts.set_bg_color('#e6e8e8')
@@ -129,21 +130,25 @@ class ReportManager():
         cell_format_name.set_pattern(1)  # This is optional when using a solid fill.
         cell_format_name.set_bg_color(LIGHT_BLUE)
         cell_format_name.set_left()
-        cell_format_name.set_right()
+        cell_format_name.set_right(right=0)
         cell_format_name.set_text_wrap()
+    
         
         cell_format_address = workbook.add_format()
         cell_format_address.set_pattern(1)  # This is optional when using a solid fill.
         cell_format_address.set_bg_color(LIGHT_BLUE)
         cell_format_address.set_left()
         cell_format_address.set_right()
-        cell_format_address.set_text_wrap()
+        cell_format_address.set_bottom()
         
         cell_format_products = workbook.add_format()
         cell_format_products.set_pattern(1)  # This is optional when using a solid fill.
         cell_format_products.set_bg_color('#ffffff')
         cell_format_products.set_left()
         cell_format_products.set_right()
+        
+        customer_addresses = []
+        
         
         
         for day in days :
@@ -158,6 +163,13 @@ class ReportManager():
             worksheet.write(row, col, amounts_line, cell_format_amounts)
             row = row + 1
             for line in day['lines']:
+                not_found = False
+                for customer_address in customer_addresses:
+                    if customer_address['name'] == line['customer']:
+                        not_found = True
+                if not_found is False:
+                    customer_addresses.append({"name" : line['customer'], "address" : line['address']})
+                            
                 worksheet.set_row(row, 40)
                 worksheet.set_column(col, col, 20)
                 worksheet.write(row, col, line['customer'], cell_format_name)
@@ -169,9 +181,6 @@ class ReportManager():
                     worksheet.set_column(col+1, col+1, 30)
                 worksheet.write(row, col+1, products_line, cell_format_products)
                 row = row + 1
-                worksheet.merge_range(first_col=col, first_row=row, last_col=col+1, last_row=row, data='')
-                worksheet.write(row, col, line['address'], cell_format_address)
-                row = row + 1
                 if cell_format_address.bg_color == LIGHT_BLUE :
                     cell_format_address.set_bg_color(LIGHT_YELLOW)
                     cell_format_name.set_bg_color(LIGHT_YELLOW)
@@ -180,6 +189,14 @@ class ReportManager():
                     cell_format_name.set_bg_color(LIGHT_BLUE)
             col = col + 3
             column_width = 0
+        
+        row = 0
+        worksheet.write(row, col, 'Adresses', cell_format_date)    
+        row = 1
+        for customer_address in customer_addresses :
+            worksheet.merge_range(row, col, row, col+6, '')
+            worksheet.write(row, col, customer_address['name'] + " : " + customer_address['address'], cell_format_address)
+            row = row + 1
 
         workbook.close()
         return '/tmp/report.xlsx'
