@@ -1,4 +1,5 @@
 <search-shipment>
+
     <div class="form-group">
         <select class="form-control" name="customer_id" id="customer_id" ref="customer_id" style="width: 12rem; display:inline-block" >
             <option value="0" SELECTED>Tous</option>
@@ -13,9 +14,17 @@
         </select>
         <button type="button" ref="search" name="search" id="search" onclick="{load_shipments}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
         <div class="right">
-            <a role="button" href="/shipments/new" class="btn btn-primary display:inline-block">Ajouter</a>
+            
         </div>
     </div>
+    <nav class="navbar navbar-light bg-light right">
+        <form class="form-inline">
+            <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#modificationModal">Modification Liste</button>
+            <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#paymentModal">Payer Liste</button>
+            <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#cancelModal">Annulation Liste</button>
+            <a role="button" href="/shipments/new" class="btn btn-sm btn-outline-secondary display:inline-block">Ajouter</a>
+        </form>
+    </nav>
     <table id="shipments_list" width="100%">
         <tr>
             <td>
@@ -59,88 +68,168 @@
         <tr>
             <td width="24%"> </td>
             <td width="24%">
-                <a if={ previous_url != '' && previous_url != undefined} role="button" onclick="{load_shipments_previous}"  style="color:white" class="btn btn-primary display:inline-block"> <i class="fas fa-arrow-left"></i> Livraisons précédentes </a>
+                <a if={ previous_url != '' && previous_url != undefined} role="button" onclick="{load_shipments_previous}"  style="color:white" class="btn btn-sm btn-primary display:inline-block"> <i class="fas fa-arrow-left"></i> Précédent </a>
             </td>
             <td width="2%">
                 |
             </td>
             <td width="22%">
-                <a if={ next_url != '' && next_url != undefined} role="button" onclick="{load_shipments_next}"  style="color:white" class="btn btn-primary display:inline-block"> Livraisons suivantes <i class="fas fa-arrow-right"></i> </a>
+                <a if={ next_url != '' && next_url != undefined} role="button" onclick="{load_shipments_next}"  style="color:white" class="btn btn-sm btn-primary display:inline-block"> Suivant <i class="fas fa-arrow-right"></i> </a>
             </td>
             <td width="26%"> </td>
         </tr>
     </table>
-    <div class="right">
-        <a role="button" onclick="{ cancel_list }" style="color:white" class="btn btn-primary display:inline-block">Annulation Liste</a>
+    
+    <br>
+    <br>
+    <div class="modal fade" id="modificationModal" tabindex="-1" role="dialog" aria-labelledby="modificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modificationModalLabel">Modification</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Passer à la page modification des livraisons sélectionnées ?
+            </div>
+            <div class="modal-footer">
+                <button  type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                <button  type="button" class="btn btn-primary">Confirmer</button>
+            </div>
+            </div>
+        </div>
     </div>
 
-    <br>
-    <br>
-    <script>
+    <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentModalLabel">P</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Etes-vous sur de passer à "payé" les livraisons sélectionnées"  ?
+            </div>
+            <div class="modal-footer">
+                <button  type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                <button  type="button" class="btn btn-primary">Confirmer</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="cancelModal" ref="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Annulation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Etes-vous sur d'annuler les livraisons sélectionnées?
+            </div>
+            <div class="modal-footer">
+                <button  type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                <button onclick={cancel_list} type="button" class="btn btn-primary">Confirmer</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+
+
+  <script>
 		var self = this
-        var per_page = 10
-        var page= 1
-        var next_url = ''
-        var previous_url = ''
+    var per_page = 10
+    var page= 1
+    var next_url = ''
+    var previous_url = ''
 
-        this.selected_shipments = []
+    this.selected_shipments = []
 
 
-        moment.locale('fr');
+    moment.locale('fr');
 
 		this.on('mount', function() {
 			
-            
-            var ajaxCall_customers = self.load_customers();
+      var ajaxCall_customers = self.load_customers();
 			ajaxCall_customers.done(function(data) {
 				$(self.refs.customer_id).select2();
 			})
-            const location  = $('window.location')
-            self.refs.day.value = moment().format('DD/MM/YYYY')
+      const location  = $('window.location')
+      self.refs.day.value = moment().format('DD/MM/YYYY')
 
-            search_url = localStorage.getItem('search_shipment_url');
+      search_url = localStorage.getItem('search_shipment_url');
 			if(search_url != null){
                 this.load_shipments_from_url(search_url)
 			}
-            else{
-                this.load_shipments()
-            }
+      else{
+        this.load_shipments()
+      }
 
 		});
 
-        $(function () {
-            $("#datepicker_day").datepicker(
-                {autoClose: true}
-                
-            );
-        });
+    $(function () {
+      $("#datepicker_day").datepicker(
+        {autoClose: true}
+      );
+    });
 
 		/******************************************/
        	// load shipments list
-    	/*******************************************/
+    /*******************************************/
 		load_shipments(){
-            var shipment_url = '/api/shipments/';
-            var customer_id = self.refs.customer_id.value;
-            var period = self.refs.period.value;
+      var shipment_url = '/api/shipments/';
+      var customer_id = self.refs.customer_id.value;
+      var period = self.refs.period.value;
 
-            var day = self.refs.day.value;
+      var day = self.refs.day.value;
 
-            
-            if (period == undefined){
-                period = 'all'
-            }
+      
+      if (period == undefined){
+          period = 'all'
+      }
 
-            shipment_url = shipment_url.concat('period/',period,'/');
-            shipment_url = shipment_url.concat('date/', day.replaceAll("/",""),'/');
-            shipment_url = shipment_url.concat('customers/',customer_id);
+      shipment_url = shipment_url.concat('period/',period,'/');
+      shipment_url = shipment_url.concat('date/', day.replaceAll("/",""),'/');
+      shipment_url = shipment_url.concat('customers/',customer_id);
 
-            localStorage.setItem('search_shipment_url', shipment_url);
+      localStorage.setItem('search_shipment_url', shipment_url);
 
-            this.load_shipments_from_url(shipment_url);
-
+      this.load_shipments_from_url(shipment_url);
 		}
-        load_shipments_from_url(shipment_url){
-
+    /**
+      Load shipment from url
+    */
+    load_shipments_from_url(shipment_url){
+			$.ajax({
+        url: shipment_url,
+        type: "GET",
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(data) {
+          self.shipments = data['results']
+          self.count = data['count']
+          self.per_page = data['per_page']
+          self.page = data['page']
+          self.next_url = data['next']
+          self.previous_url = data['previous']
+          self.update()
+        }
+      });
+		}
+    /** 
+      Load shipment next 
+    **/
+    load_shipments_next(){
+      var shipment_url = self.next_url;
+      localStorage.setItem('search_shipment_url', shipment_url);
 			$.ajax({
                 url: shipment_url,
                 type: "GET",
@@ -157,45 +246,32 @@
                 }
             });
 		}
-        load_shipments_next(){
-            var shipment_url = self.next_url;
-            localStorage.setItem('search_shipment_url', shipment_url);
+    /**
+      Load shipment from previous
+    **/
+    load_shipments_previous(){
+      var shipment_url = self.previous_url;
+      localStorage.setItem('search_shipment_url', shipment_url);
 			$.ajax({
-                url: shipment_url,
-                type: "GET",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function(data) {
-                    self.shipments = data['results']
-                    self.count = data['count']
-                    self.per_page = data['per_page']
-                    self.page = data['page']
-                    self.next_url = data['next']
-                    self.previous_url = data['previous']
-                    self.update()
-                }
-            });
+          url: shipment_url,
+          type: "GET",
+          dataType: "json",
+          contentType: "application/json; charset=utf-8",
+          success: function(data) {
+              self.shipments = data['results']
+              self.count = data['count']
+              self.per_page = data['per_page']
+              self.page = data['page']
+              self.next_url = data['next']
+              self.previous_url = data['previous']
+              self.update()
+          }
+      });
 		}
-        load_shipments_previous(){
-            var shipment_url = self.previous_url;
-            localStorage.setItem('search_shipment_url', shipment_url);
-			$.ajax({
-                url: shipment_url,
-                type: "GET",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function(data) {
-                    self.shipments = data['results']
-                    self.count = data['count']
-                    self.per_page = data['per_page']
-                    self.page = data['page']
-                    self.next_url = data['next']
-                    self.previous_url = data['previous']
-                    self.update()
-                }
-            });
-		}
-        load_customers(){
+    /**
+      Load Customers
+    **/
+    load_customers(){
 			var url = '/api/customers/';
 			return $.ajax({
                 url: url,
@@ -208,13 +284,18 @@
                 }
             });
 		}
-
-        show_shipment(shipment_id){
+  /**
+    Show shipment
+  **/
+    show_shipment(shipment_id){
             return function(e) {
                 location = "/shipments/"+shipment_id;
             }
 		}
-        show_subscription(subscription_id){
+    /**
+      Show subscription
+    **/
+    show_subscription(subscription_id){
             return function(e) {
                 location = "/subscriptions/"+subscription_id;
             }
@@ -224,39 +305,46 @@
                 location = "/customers/"+customer_id;
             }
 		}
-
-        check_shipement(e){
-            if ($('#ids_'+e.item.shipment.id).is(':checked')) {
-                this.selected_shipments.push(e.item.shipment.id)
-            }
-            else{
-                for( var i = 0; i < this.selected_shipments.length; i++)
-                { 
-                    if ( this.selected_shipments[i] === e.item.shipment.id) { 
-                        this.selected_shipments.splice(i, 1); 
-                    }
-                }
-            }
-        }
-
-        cancel_list(){
-            var str_shipment_ids = ''
-            this.selected_shipments.forEach(
-                item => (str_shipment_ids = str_shipment_ids.concat(item,','))
-                )
-            var url = '/api/shipments/cancel/ids/'+str_shipment_ids;
-            return $.ajax({
-                url: url,
-                type: "GET",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function(data) {
-                    location.reload(); 
-                    self.update()
-                }
-            });
-		}
-
-
+    /**
+      Check shipment
+    **/
+    check_shipement(e){
+      if ($('#ids_'+e.item.shipment.id).is(':checked')) {
+          this.selected_shipments.push(e.item.shipment.id)
+      }
+      else{
+          for( var i = 0; i < this.selected_shipments.length; i++)
+          { 
+              if ( this.selected_shipments[i] === e.item.shipment.id) { 
+                  this.selected_shipments.splice(i, 1); 
+              }
+          }
+      }
+    }
+    /**
+      Cancel list
+    **/
+    cancel_list(){
+      console.log('cancel1');
+      var str_shipment_ids = ''
+      this.selected_shipments.forEach(
+        item => (str_shipment_ids = str_shipment_ids.concat(item,','))
+      )
+      if(str_shipment_ids.length >0){
+        var url = '/api/shipments/cancel/ids/'+str_shipment_ids;
+        return $.ajax({
+          url: url,
+          type: "GET",
+          dataType: "json",
+          contentType: "application/json; charset=utf-8",
+          success: function(data) {
+            location.reload(); 
+            self.update()
+          }
+        });
+      }
+      console.log('cancel2');
+      $('#cancelModal').modal('hide');
+    }
 	</script>
 </search-shipment>
