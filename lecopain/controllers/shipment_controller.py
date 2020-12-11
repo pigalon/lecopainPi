@@ -51,10 +51,10 @@ def shipment_create():
     )
 
     shipment = {'title': form.title.data,
-             'customer_id': form.customer_id.data,
-             'shipping_dt': form.shipping_dt.data,
-             'category': form.category_name.data,
-             'subscription_id': form.subscription_id.data,
+            'customer_id': form.customer_id.data,
+            'shipping_dt': form.shipping_dt.data,
+            'category': form.category_name.data,
+            'subscription_id': form.subscription_id.data,
     }
     
 
@@ -303,7 +303,7 @@ def api_day_shipments(period, day, customer_id):
     if page is None:
         page = 1
     if per_page is None:
-        per_page=10
+        per_page=30
     
     data, prev_page, next_page = shipmentServices.get_some_pagination(period=period, day=day, customer_id=customer_id, page=int(page), per_page=int(per_page))
 
