@@ -31,7 +31,7 @@
             <th width="20%">Date</th>
             <th width="30%">Client</th>
             <th width="10%">Liv.</th>
-            <th width="2%"></th>
+            <th width="2%"><input  type="checkbox" id="checkAll" name="checkAll"></th>
           </tr>
         </table>
         </td>
@@ -49,12 +49,12 @@
 
             <td width="20%">{moment(shipment.shipping_dt).format('ddd Do MMM' )}</td>
             <td width="30%"><span onclick={ show_customer(shipment.customer_id) } class="badge badge-primary" style="font-size:14px;"><i class="fas fa-user"></i></span> {shipment.customer_name}</td>
-            <td if={shipment.status == 'ANNULEE'} width="10%" >0.00 € <span <span onclick={ show_subscription(shipment.subscription_id) } if={shipment.subscription_id != None} class="badge badge-warning" style="font-size:16px;">Ab.</span></td>
+            <td if={shipment.status == 'ANNULEE'} width="10%" >0.00 € <br><span onclick={ show_subscription(shipment.subscription_id) } if={shipment.subscription_id != None} class="badge badge-warning" style="font-size:16px;">Ab.</span></td>
             <td if={shipment.status != 'ANNULEE'} width="10%">
-              {shipment.shipping_price.toFixed(2)} € <span onclick={ show_subscription(shipment.subscription_id) } if={shipment.subscription_id != None} class="badge badge-warning" style="font-size:16px;">Ab.</span>
+              {shipment.shipping_price.toFixed(2)} € <br><span onclick={ show_subscription(shipment.subscription_id) } if={shipment.subscription_id != None} class="badge badge-warning" style="font-size:16px;">Ab.</span>
             </td>
             <td width="2%">
-              <input onclick={ check_shipement } type="checkbox" ref="ids_{shipment.id}" id="ids_{shipment.id}" name="ids_{shipment.id}">
+              <input onclick={ check_shipement } type="checkbox" ref="ids-{shipment.id}" id="ids" name="ids-{shipment.id}">
             </td>
           </tr>
         </table>
@@ -139,8 +139,6 @@
       </div>
     </div>
 
-
-
   <script>
 		var self = this
     var per_page = 10
@@ -177,6 +175,10 @@
       $("#datepicker_day").datepicker(
         {autoClose: true}
       );
+
+      $("#checkAll").click(function () {
+            $('input:checkbox').not(this).prop('checked', this.checked);
+      });
     });
 
 		/******************************************/
@@ -306,7 +308,7 @@
       Check shipment
     **/
     check_shipement(e){
-      if ($('#ids_'+e.item.shipment.id).is(':checked')) {
+      if ($('#ids-'+e.item.shipment.id).is(':checked')) {
         this.selected_shipments.push(e.item.shipment.id)
       }
       else{
@@ -318,6 +320,7 @@
         }
       }
     }
+    
     /**
       Cancel list
     **/
