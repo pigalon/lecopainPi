@@ -31,7 +31,7 @@
             <th width="20%">Date</th>
             <th width="30%">Client</th>
             <th width="10%">Liv.</th>
-            <th width="2%"><input  type="checkbox" id="checkAll" name="checkAll"></th>
+            <th width="2%"><input  onclick={ check_all } type="checkbox" id="checkAll" name="checkAll"></th>
           </tr>
         </table>
         </td>
@@ -54,7 +54,7 @@
               {shipment.shipping_price.toFixed(2)} € <br><span onclick={ show_subscription(shipment.subscription_id) } if={shipment.subscription_id != None} class="badge badge-warning" style="font-size:16px;">Ab.</span>
             </td>
             <td width="2%">
-              <input onclick={ check_shipement } type="checkbox" ref="ids-{shipment.id}" id="ids" name="ids-{shipment.id}">
+              <input onclick={ check_shipement } onchange={ check_shipement } type="checkbox" ref="ids_{shipment.id}" id="ids_{shipment.id}" name="ids_{shipment.id}">
             </td>
           </tr>
         </table>
@@ -178,6 +178,15 @@
 
       $("#checkAll").click(function () {
             $('input:checkbox').not(this).prop('checked', this.checked);
+            self.check_it();
+            var inputs = document.getElementsByTagName("input");
+
+            for(var i = 0; i < inputs.length; i++) {
+              if(inputs[i].type == "checkbox" && inputs[i].checked) {
+                self.check_one(inputs[i].id); //selected.push(inputs[i].id);
+              }
+            }
+
       });
     });
 
@@ -299,7 +308,7 @@
         location = "/subscriptions/"+subscription_id;
       }
 		}
-        show_customer(customer_id){
+    show_customer(customer_id){
       return function(e) {
         location = "/customers/"+customer_id;
       }
@@ -308,7 +317,7 @@
       Check shipment
     **/
     check_shipement(e){
-      if ($('#ids-'+e.item.shipment.id).is(':checked')) {
+      if ($('#ids_'+e.item.shipment.id).is(':checked')) {
         this.selected_shipments.push(e.item.shipment.id)
       }
       else{
@@ -319,6 +328,30 @@
           }
         }
       }
+    }
+    check_one(id){
+      idOnly = id.substring(4, id.length);
+      console.log('idOnly : ' + idOnly);
+      if (id != 'checkAll' && $('#'+id).is(':checked')) {
+        this.selected_shipments.push(idOnly)
+      }
+      else{
+        for( var i = 0; i < this.selected_shipments.length; i++)
+        { 
+          if ( this.selected_shipments[i] === idOnly) { 
+            this.selected_shipments.splice(i, 1); 
+          }
+        }
+      }
+    }
+    check_all(){
+      //var choice = $("input[name='ids']:checked")
+      console.log('check all');
+    }
+
+    check_it(){
+      //var choice = $("input[name='ids']:checked")
+      console.log('check it');
     }
     
     /**
