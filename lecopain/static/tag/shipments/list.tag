@@ -18,6 +18,7 @@
         <form class="form-inline">
             <button if={customer_id != undefined && customer_id.value != "0"} class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#modificationModal">Modification Liste</button>
             <button if={customer_id != undefined && customer_id.value != "0"} class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#paymentModal">Payer Liste</button>
+            <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#undoModal">Rétablir Liste</button>
             <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#cancelModal">Annulation Liste</button>
             <a role="button" href="/shipments/new" class="btn btn-sm btn-outline-secondary display:inline-block">Ajouter</a>
         </form>
@@ -133,7 +134,27 @@
           </div>
           <div class="modal-footer">
             <button  type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-            <button onclick={cancel_list} type="button" class="btn btn-primary">Confirmer</button>
+            <button onclick={cancel_list} type="button" class="btn btn-primary" id="ok_cancel" name="ok_cancel">Confirmer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="undoModal" ref="undoModal" tabindex="-1" role="dialog" aria-labelledby="undoModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Rétablir</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Etes-vous sûr de vouloir rétablir les livraisons sélectionnées?
+          </div>
+          <div class="modal-footer">
+            <button  type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+            <button onclick={undo_list} type="button" class="btn btn-primary" id="ok_undo" name="ok_undo">Confirmer</button>
           </div>
         </div>
       </div>
@@ -148,7 +169,7 @@
     var customer_id='0';
 
     this.selected_shipments = []
-
+    this.id_shipments = []
 
     moment.locale('fr');
 
@@ -178,15 +199,24 @@
 
       $("#checkAll").click(function () {
             $('input:checkbox').not(this).prop('checked', this.checked);
-            self.check_it();
             var inputs = document.getElementsByTagName("input");
 
             for(var i = 0; i < inputs.length; i++) {
               if(inputs[i].type == "checkbox" && inputs[i].checked) {
-                self.check_one(inputs[i].id); //selected.push(inputs[i].id);
+                self.add_one_in_checked_list(inputs[i].id);
               }
             }
 
+      });
+      $("#ok_cancel").click(function (){
+        $('#cancelModal').modal('hide');
+        //setTimeout('', 1000);
+        //location.reload(); 
+      });
+      $("#ok_undo").click(function (){
+        $('#undoModal').modal('hide');
+        //setTimeout('', 1000);
+        //location.reload();
       });
     });
 
@@ -329,9 +359,8 @@
         }
       }
     }
-    check_one(id){
+    add_one_in_checked_list(id){
       idOnly = id.substring(4, id.length);
-      console.log('idOnly : ' + idOnly);
       if (id != 'checkAll' && $('#'+id).is(':checked')) {
         this.selected_shipments.push(idOnly)
       }
@@ -344,40 +373,53 @@
         }
       }
     }
-    check_all(){
-      //var choice = $("input[name='ids']:checked")
-      console.log('check all');
-    }
-
-    check_it(){
-      //var choice = $("input[name='ids']:checked")
-      console.log('check it');
-    }
     
     /**
       Cancel list
     **/
     cancel_list(){
-      console.log('cancel1');
-      var str_shipment_ids = ''
       this.selected_shipments.forEach(
-        item => (str_shipment_ids = str_shipment_ids.concat(item,','))
-      )
-      if(str_shipment_ids.length >0){
-        var url = '/api/shipments/cancel/ids/'+str_shipment_ids;
+        item => (this.id_shipments.push({"id" : item}))
+      )      
+      if(this.id_shipments.length >0){
+        var url = '/api/shipments/cancel/';
+        var data = JSON.stringify(this.id_shipments);
         return $.ajax({
           url: url,
-          type: "GET",
+          data: data,
+          type: "POST",
           dataType: "json",
           contentType: "application/json; charset=utf-8",
           success: function(data) {
             location.reload(); 
-            self.update()
+            self.update();
           }
         });
       }
-      console.log('cancel2');
-      $('#cancelModal').modal('hide');
     }
+    /**
+      Undo list
+    **/
+    undo_list(){
+      this.selected_shipments.forEach(
+        item => (this.id_shipments.push({"id" : item}))
+      )      
+      if(this.id_shipments.length >0){
+        var url = '/api/shipments/undo/';
+        var data = JSON.stringify(this.id_shipments);
+        return $.ajax({
+          url: url,
+          type: "POST",
+          dataType: "json",
+          data: data,
+          contentType: "application/json; charset=utf-8",
+          success: function(data) {
+            location.reload(); 
+            self.update();
+          }
+        });
+      }
+    }
+
 	</script>
 </search-shipment>

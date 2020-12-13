@@ -13,6 +13,7 @@ from flask import Blueprint, render_template, redirect, url_for, Flask, request,
 from flask_login import login_required
 
 from lecopain.helpers.roles_utils import admin_login_required
+import json
 
 app = Flask(__name__, instance_relative_config=True)
 
@@ -219,16 +220,28 @@ def api_shipments():
 #####################################################################
 #                                                                   #
 #####################################################################
-@shipment_page.route('/api/shipments/cancel/ids/<string:list_ids>')
+@shipment_page.route('/api/shipments/cancel/', methods=['POST'])
 @login_required
 @admin_login_required
-def pai_cancel_list(list_ids):
-    ids = list_ids.split(',')
-    for id in ids:
-        print('cancel id : ' + str(id))
-        if id != '':
-            shipmentServices.update_shipment_status(id, ShipmentStatus_Enum.ANNULEE.value)
-    return jsonify({'shipments': shipmentServices.get_all()})
+def pai_cancel_list():
+    data = json.loads(request.data)
+    for item in data :
+        if item['id'] != '':
+            shipmentServices.update_shipment_status(item['id'], ShipmentStatus_Enum.ANNULEE.value)
+    return jsonify({'shipments': ''})
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@shipment_page.route('/api/shipments/undo/', methods=['POST'])
+@login_required
+@admin_login_required
+def pai_undo_list():
+    data = json.loads(request.data)
+    for item in data :
+        if item['id'] != '':
+            shipmentServices.update_shipment_status(item['id'], ShipmentStatus_Enum.CREE.value)
+    return jsonify({'shipments': ''})
 
 #####################################################################
 #                                                                   #

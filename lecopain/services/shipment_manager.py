@@ -155,7 +155,6 @@ class ShipmentManager():
 
             for order in shipment.orders:
                 order.status = shipment_status
-
             ShipmentDao.update_status(shipment_id, shipment_status)
 
     # @
