@@ -224,11 +224,11 @@ def api_shipments():
 @login_required
 @admin_login_required
 def pai_cancel_list():
-    data = json.loads(request.data)
-    for item in data :
-        if item['id'] != '':
-            shipmentServices.update_shipment_status(item['id'], ShipmentStatus_Enum.ANNULEE.value)
-    return jsonify({'shipments': ''})
+  data = json.loads(request.data)
+  for item in data :
+    if item['id'] != '':
+      shipmentServices.update_shipment_status(item['id'], ShipmentStatus_Enum.ANNULEE.value)
+  return jsonify({'shipments': ''})
 
 #####################################################################
 #                                                                   #
@@ -237,11 +237,11 @@ def pai_cancel_list():
 @login_required
 @admin_login_required
 def pai_undo_list():
-    data = json.loads(request.data)
-    for item in data :
-        if item['id'] != '':
-            shipmentServices.update_shipment_status(item['id'], ShipmentStatus_Enum.CREE.value)
-    return jsonify({'shipments': ''})
+  data = json.loads(request.data)
+  for item in data :
+    if item['id'] != '':
+      shipmentServices.update_shipment_status(item['id'], ShipmentStatus_Enum.CREE.value)
+  return jsonify({'shipments': ''})
 
 #####################################################################
 #                                                                   #

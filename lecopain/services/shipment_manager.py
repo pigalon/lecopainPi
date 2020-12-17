@@ -245,8 +245,3 @@ class ShipmentManager():
         price = 0.0
         for order in shipment.orders:
             price = price + order.price
-        
-
-
-
-
