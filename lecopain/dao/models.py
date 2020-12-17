@@ -8,16 +8,16 @@ from marshmallow import fields
 from marshmallow_sqlalchemy import (ModelSchema, SQLAlchemySchema, SQLAlchemyAutoSchema, auto_field)
  
 class OrderStatus_Enum(Enum):
-    ANNULEE = "ANNULEE"
-    DEFAUT = "DEFAUT"
-    CREE = "CREE"
-    TERMINEE = "TERMINEE"
+    ANNULEE   = "ANNULEE"
+    DEFAUT    = "DEFAUT"
+    CREE      = "CREE"
+    TERMINEE  = "TERMINEE"
 
 class ShipmentStatus_Enum(Enum):
-    ANNULEE = "ANNULEE"
-    DEFAUT = "DEFAUT"
-    CREE = "CREE"
-    TERMINEE = "TERMINEE"
+    ANNULEE   = "ANNULEE"
+    DEFAUT    = "DEFAUT"
+    CREE      = "CREE"
+    TERMINEE  = "TERMINEE"
 
 
 class ShippingStatus_Enum(Enum):
@@ -30,23 +30,24 @@ class PaymentStatus_Enum(Enum):
 
 
 class SubscriptionStatus_Enum(Enum):
-    CREE = "CREE"
+    CREE    = "CREE"
     TERMINE = "TERMINE"
 
 
 class SubscriptionFrequency_Enum(Enum):
-    JOUR = "JOUR"
+    JOUR    = "JOUR"
     SEMAINE = "SEMAINE"
-    MOIS = "MOIS"
+    MOIS    = "MOIS"
     
 
 class Category_Enum(Enum):
-    ARTICLE = "ARTICLE"
-    COURSE = "COURSE"
-    COURSETTE = "COURSETTE"
-    DRIVE = "DRIVE"
-    PETITOU = "PETITOU"
-    PRESTATION = "PRESTATION"
+  ARTICLE     = "ARTICLE"
+  COURSE      = "COURSE"
+  COURSETTE   = "COURSETTE"
+  DRIVE       = "DRIVE"
+  PETITOU     = "PETITOU"
+  PRESTATION  = "PRESTATION"
+  BUCHE       = "BUCHE"
 
 class ProductStatus(db.Model):
     name = db.Column(db.String(50), primary_key=True)

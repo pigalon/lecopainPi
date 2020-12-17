@@ -7,6 +7,7 @@ class BusinessService:
     coursette = {'langlade': 5.0, '!langlade': 6.0}
     course = {'langlade': 12.0, '!langlade': 12.0}
     drive = {'langlade': 8.0, '!langlade': 8.0}
+    buche = {'langlade': 5.0, '!langlade': 7.0}
     petitou = {'langlade': 5.0, 
                       'nages':6,
                       'stdionisy':6, 
@@ -17,58 +18,57 @@ class BusinessService:
                       'boissières':8} 
                       
     def is_from_local_area(self, city):
-        return city.lower().replace(" ", "") == 'langlade'
+      return city.lower().replace(" ", "") == 'langlade'
     
     def is_from_foreign_area(self, city):
-        return city.lower().replace(" ", "") != 'langlade'
+      return city.lower().replace(" ", "") != 'langlade'
     
     def is_from_clarensac_area(self, city):
-        return city.lower().replace(" ", "") == 'clarensac'
+      return city.lower().replace(" ", "") == 'clarensac'
     
     def is_from_stdionisy_area(self, city):
-        return city.lower().replace(" ", "") == 'stdionisy'
+      return city.lower().replace(" ", "") == 'stdionisy'
     
     def is_from_nages_area(self, city):
-        return city.lower().replace(" ", "") == 'nages et solorgues'
+      return city.lower().replace(" ", "") == 'nages et solorgues'
     
     def is_from_caveirac_area(self, city):
-        return city.lower().replace(" ", "") == 'caveirac'
+      return city.lower().replace(" ", "") == 'caveirac'
     
     def is_from_calvisson_bizac_area(self, city):
-        return 'calvisson' in city.lower().replace(" ", "") or 'bizac' in city.lower().replace(" ", "")
-    
+      return 'calvisson' in city.lower().replace(" ", "") or 'bizac' in city.lower().replace(" ", "")
     
     def is_from_boissieres_area(self, city):
-        return city.lower().replace(" ", "") == 'boissières'
+      return city.lower().replace(" ", "") == 'boissières'
 
     def is_article(self, category):
-        return category == Category_Enum.ARTICLE.value
+      return category == Category_Enum.ARTICLE.value
 
     def is_coursette(self, category):
-        return category == Category_Enum.COURSETTE.value
+      return category == Category_Enum.COURSETTE.value
 
     def is_course(self, category):
-        return category == Category_Enum.COURSE.value
+      return category == Category_Enum.COURSE.value
 
     def is_drive(self, category):
-        return category == Category_Enum.DRIVE.value
+      return category == Category_Enum.DRIVE.value
     
     def is_petitou(self, category):
-        return category == Category_Enum.PETITOU.value
-
-    # def apply_rules_just_order(self, order):
-    #     return self.get_price_and_associated_rules(order.shipment.category, order.shipment.shipping_city, order.seller.city, order.nb_products)
+      return category == Category_Enum.PETITOU.value
     
+    def is_buche(self, category):
+      return category == Category_Enum.BUCHE.value
+
     def get_all_products_numbers(self, subscription_day):
-        nb_local_products = 0
-        nb_far_products = 0
-        
-        for line in subscription_day.lines:
-            if self.is_from_local_area(line.product.seller.city) and self.is_from_local_area(subscription_day.subscription.customer.city):
-                nb_local_products = nb_local_products + line.quantity
-            else :
-                nb_far_products = nb_far_products + line.quantity
-        return nb_local_products, nb_far_products
+      nb_local_products = 0
+      nb_far_products = 0
+      
+      for line in subscription_day.lines:
+        if self.is_from_local_area(line.product.seller.city) and self.is_from_local_area(subscription_day.subscription.customer.city):
+          nb_local_products = nb_local_products + line.quantity
+        else :
+          nb_far_products = nb_far_products + line.quantity
+      return nb_local_products, nb_far_products
 
     def apply_rules_for_subscription_day(self, subscription_day):
         amount = 0.0
@@ -76,32 +76,32 @@ class BusinessService:
         nb_far_products = 0
 
         nb_local_products, nb_far_products = self.get_all_products_numbers(subscription_day)
-        
         subscription = subscription_day.subscription
-        
         city = subscription.customer.city.lower()
-                
         return self.get_price_and_associated_rules(category=subscription_day.subscription.category, nb_local_products=nb_local_products, nb_far_products=nb_far_products, city=city)
 
     def apply_rules_for_shipment(self, shipment):
-        amount = 0.0
-        nb_local_products = 0
-        nb_far_products = 0
-        city=''
-                
-        for order in shipment.orders:
-            if order.status != OrderStatus_Enum.ANNULEE.value:
-                if(self.is_from_local_area(order.seller.city) and self.is_from_local_area(shipment.shipping_city)):
-                    nb_local_products = nb_local_products + order.nb_products
-                else:
-                    nb_far_products = nb_far_products + order.nb_products
-        
-        #if self.is_petitou(shipment.category):
-        if shipment.shipping_city is not None:
-            city = shipment.shipping_city.lower()
-        
-        return self.get_price_and_associated_rules(shipment.category, nb_local_products, nb_far_products, city)
-            #self.get_price_and_associated_rules(shipment.category, shipment.shipping_city, shipment.nb_products)
+      amount = 0.0
+      nb_local_products = 0
+      nb_far_products = 0
+      city=''
+      seller_city=''
+      for order in shipment.orders:
+          seller_city = order.seller.city
+          if order.status != OrderStatus_Enum.ANNULEE.value:
+              if(self.is_from_local_area(order.seller.city) and self.is_from_local_area(shipment.shipping_city)):
+                  nb_local_products = nb_local_products + order.nb_products
+              else:
+                  nb_far_products = nb_far_products + order.nb_products
+      
+
+      if is_buche(shipment.category):
+          city = seller_city
+      elif shipment.shipping_city is not None:
+          city = shipment.shipping_city.lower()
+      
+      return self.get_price_and_associated_rules(shipment.category, nb_local_products, nb_far_products, city)
+
             
     def get_price_and_associated_rules(self, category=Category_Enum.ARTICLE.value,  nb_local_products=0.0, nb_far_products=0, city=''):
         shipping_price = 0.0
@@ -165,6 +165,11 @@ class BusinessService:
         
         elif self.is_petitou(category) and self.is_from_calvisson_bizac_area(city):
             ret, rules = self.petitou.get('bizac'), "petitou_calvi_bizac"
+
+        if self.is_buche(category) and self.is_from_local_area(city):
+          ret, rules = self.buche.get('langlade'), "buche_local"
+        else :
+          ret, rules = self.buche.get('!langlade'), "course_non-local"
         
         if ret == None:
             ret = 0.0
