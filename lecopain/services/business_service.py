@@ -95,7 +95,7 @@ class BusinessService:
                   nb_far_products = nb_far_products + order.nb_products
       
 
-      if is_buche(shipment.category):
+      if self.is_buche(shipment.category):
           city = seller_city
       elif shipment.shipping_city is not None:
           city = shipment.shipping_city.lower()
