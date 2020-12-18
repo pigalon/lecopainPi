@@ -168,7 +168,7 @@ class BusinessService:
 
         if self.is_buche(category) and self.is_from_local_area(city):
           ret, rules = self.buche.get('langlade'), "buche_local"
-        else :
+        elif self.is_buche(category) and self.is_from_foreign_area(city):
           ret, rules = self.buche.get('!langlade'), "course_non-local"
         
         if ret == None:
