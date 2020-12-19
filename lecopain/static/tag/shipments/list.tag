@@ -13,14 +13,18 @@
             <option value="all">Toutes</option>
         </select>
         <button type="button" ref="search" name="search" id="search" onclick="{load_shipments}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
-        <label class="switch">
-          <input type="checkbox" ref="nocanceled">
+        <label class="switch" title="masquer annulations">
+          <input type="checkbox" ref="nocanceled" id="nocanceled" title="masquer annulations">
           <span class="slider round"></span>
-        </label>Masquer
+        </label>
+        <label class="switch" title="masquer payés">
+          <input type="checkbox" ref="nopaid" id="nopaid"  title="masquer payées">
+          <span class="slider round"></span>
+        </label>
     </div>
     <nav class="navbar navbar-light bg-light right">
         <form class="form-inline">
-          <button if={customer_id != undefined && customer_id.value != "0"} class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#modificationModal">Modification Liste</button>
+          <!--<button if={customer_id != undefined && customer_id.value != "0"} class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#modificationModal">Modification Liste</button>-->
           <button if={customer_id != undefined && customer_id.value != "0"} class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#paymentModal">Payer Liste</button>
           <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#undoModal">Rétablir Liste</button>
           <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#cancelModal">Annulation Liste</button>
@@ -117,8 +121,8 @@
           Etes-vous sur de passer à "payé" les livraisons sélectionnées"  ?
         </div>
         <div class="modal-footer">
-          <button  type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-          <button  type="button" class="btn btn-primary">Confirmer</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+          <button onclick={pay_list} type="button" class="btn btn-primary" id="ok_pay" name="ok_pay">Confirmer</button>
         </div>
         </div>
       </div>
@@ -244,6 +248,10 @@
       
       if(self.refs.nocanceled.checked){
         shipment_url = shipment_url.concat('/nocanceled');
+      }
+
+      if(self.refs.nopaid.checked){
+        shipment_url = shipment_url.concat('/nopaid');
       }
 
       localStorage.setItem('search_shipment_url', shipment_url);
@@ -391,6 +399,29 @@
       )      
       if(this.id_shipments.length >0){
         var url = '/api/shipments/cancel/';
+        var data = JSON.stringify(this.id_shipments);
+        return $.ajax({
+          url: url,
+          data: data,
+          type: "POST",
+          dataType: "json",
+          contentType: "application/json; charset=utf-8",
+          success: function(data) {
+            location.reload(); 
+            self.update();
+          }
+        });
+      }
+    }
+    /**
+      Pay list
+    **/
+    pay_list(){
+      this.selected_shipments.forEach(
+        item => (this.id_shipments.push({"id" : item}))
+      )      
+      if(this.id_shipments.length >0){
+        var url = '/api/shipments/pay/';
         var data = JSON.stringify(this.id_shipments);
         return $.ajax({
           url: url,

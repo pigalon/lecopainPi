@@ -7,7 +7,8 @@ from lecopain.dao.models import (
     Customer, 
     ShipmentSchema, 
     CompleteShipmentSchema,
-    ShipmentStatus_Enum
+    ShipmentStatus_Enum,
+    PaymentStatus_Enum
 )
 
 class ShipmentDao:
@@ -110,7 +111,7 @@ class ShipmentDao:
         return shipment_schema.dump(all_shipments)
     
     @staticmethod
-    def read_some_pagination(customer_id, start, end, page, per_page, nocanceled):
+    def read_some_pagination(customer_id, start, end, page, per_page, nocanceled, nopaid):
 
         all_shipments = Shipment.query
 
@@ -121,6 +122,9 @@ class ShipmentDao:
                 
         if nocanceled is True:
             all_shipments = all_shipments.filter(Shipment.status != ShipmentStatus_Enum.ANNULEE.value)
+        
+        if nopaid is True:
+            all_shipments = all_shipments.filter(Shipment.payment_status != PaymentStatus_Enum.OUI.value)
 
         if customer_id != 0:
             all_shipments = all_shipments.filter(

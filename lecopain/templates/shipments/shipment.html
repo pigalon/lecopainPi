@@ -7,23 +7,23 @@
     <tr>
       <td width="60%" style="text-align:right"><span class="float-left"><a href="/shipments" class="btn btn-outline-dark">Retour List</a></span>Changer le statut : </td>
       <td width="40%"  style="text-align:right">
-        {% if shipment.status != 'ANNULEE' %}
+        {% if shipment.status != 'ANNULEE' and shipment.payment_status != 'OUI' %}
           <a href="/shipments/{{ shipment.id }}/cancel" class="btn btn-outline-dark" >Annuler </a>
         {% endif %}
         {% if shipment.status == 'ANNULEE' %}
         <a href="/shipments/{{ shipment.id }}/created" class="btn btn-outline-dark"> Rétablir </a>
         {% endif %}
         {% if shipment.payment_status != 'OUI' %}
-          <a href="/shipments/{{ shipment.id }}/paid/OUI" class="btn btn-outline-dark">Payée </a>
+          <a href="/shipments/{{ shipment.id }}/paid/OUI" class="btn btn-outline-dark">Payée</a>
         {% endif %}
         {% if shipment.payment_status == 'OUI' %}
-        <a href="/shipments/{{ shipment.id }}/paid/NON" class="btn btn-outline-dark">Non Payée </a>
+        <a href="/shipments/{{ shipment.id }}/paid/NON" class="btn btn-outline-dark">Non Payée</a>
         {% endif %}
         {% if shipment.shipping_status != 'OUI' %}
-        <a href="/shipments/{{ shipment.id }}/shipped/OUI" class="btn btn-outline-dark">Livrée </a>
+        <a href="/shipments/{{ shipment.id }}/shipped/OUI" class="btn btn-outline-dark">Livrée</a>
         {% endif %}
         {% if shipment.shipping_status == 'OUI' %}
-        <a href="/shipments/{{ shipment.id }}/shipped/NON" class="btn btn-outline-dark">Non Livrée </a>
+        <a href="/shipments/{{ shipment.id }}/shipped/NON" class="btn btn-outline-dark">Non Livrée</a>
         {% endif %}
       </td>
     </tr>
@@ -34,12 +34,14 @@
     <div class="card " >
       {% if shipment.status == 'ANNULEE' %}
           <div class="card-header text-white bg-dark">
-      {% else %}
+      {% elif shipment.status == 'CREE' and shipment.payment_status == 'NON' %}
         <div class="card-header text-white bg-info">
+      {% elif shipment.status == 'CREE' and shipment.payment_status == 'OUI' %}
+          <div class="card-header text-white bg-success">    
       {% endif %}
         
 
-          Livraison N° {{shipment.id}} - Statut : {{shipment.status}} <span class="right">{{ moment(shipment.shipping_dt).format('ddd Do MMMM YYYY' )  }}</span>
+          Livraison N° {{shipment.id}} <span class="right">{{ moment(shipment.shipping_dt).format('ddd Do MMMM YYYY' )  }}</span>
         </div>
         <div class="card-body">
           <ul class="list-group list-group-flush">
@@ -47,7 +49,7 @@
 
           <li class="list-group-item bg-light">
             Client : <b>{{shipment.customer_name}}</b> 
-            {% if shipment.status != 'ANNULEE' %}
+            {% if shipment.status != 'ANNULEE' and shipment.payment_status != 'OUI' %}
               <span class="float-right"><a href="/shipments/update/{{ shipment.id }}" class="btn btn-info">Modifier Articles</a></span>
             {% endif %}  
           </li>
@@ -56,13 +58,13 @@
           {% for order in shipment.orders %}
             <span> <a href="/sellers/{{ order.seller_id }}" class="badge badge-warning" style="font-size:24px;"> {{order.seller_name}}</a></span> -                   
             <span>
-                    {% if order.status =='CREE' %} <a href="/orders/{{ order.id }}" class="badge badge-info" style="font-size:24px;"> {%endif%}
+                    {% if order.status =='CREE' %} <a href="/orders/{{ order.id }}" class="badge badge-secondary" style="font-size:24px;"> {%endif%}
                     {% if order.status =='ANNULEE' %} <a href="/orders/{{ order.id }}" class="badge badge-dark" style="font-size:24px;"> {%endif%}
                     {% if order.status =='DEFAULT' %} <a href="/orders/{{ order.id }}" class="badge badge-danger" style="font-size:24px;"> {%endif%}
                       N° Commande : {{order.id}}
                     </a>
             </span>
-          <table align="center" class="table table-striped">
+          <table class="table table-striped">
             <thead>
               <tr>
                 <th scope="col">Produit</th>
@@ -109,8 +111,10 @@
       <div class="card">
         {% if shipment.status == 'ANNULEE' %}
           <div class="card-header text-white bg-dark">
-        {% else %}
+        {% elif shipment.status == 'CREE' and shipment.payment_status == 'NON' %}
           <div class="card-header text-white bg-info">
+        {% elif shipment.status == 'CREE' and shipment.payment_status == 'OUI' %}
+          <div class="card-header text-white bg-success"> 
         {% endif %}
                   Livraison <span class="float-right"><a href="/shipments/{{ shipment.id }}/shipping_dt" class="btn btn-light">Changer Date</a></span>
           </div>
@@ -123,8 +127,10 @@
         <div class="card">
           {% if shipment.status == 'ANNULEE' %}
             <div class="card-header text-white bg-dark">
-          {% else %}
+          {% elif shipment.status == 'CREE' and shipment.payment_status == 'NON' %}
             <div class="card-header text-white bg-info">
+          {% elif shipment.status == 'CREE' and shipment.payment_status == 'OUI' %}
+            <div class="card-header text-white bg-success"> 
           {% endif %}
             Suppression <span class="float-right"><a href="/shipments/delete/{{ shipment.id }}" class="btn btn-light text-danger" alt="Supprimer"><i class="fas fa-trash-alt"></i></a></span>
           </div>

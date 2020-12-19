@@ -216,6 +216,18 @@ def delete_shipment(shipment_id):
 def api_shipments():
     return jsonify({'shipments': shipmentServices.get_all()})
 
+#####################################################################
+#                                                                   #
+#####################################################################
+@shipment_page.route('/api/shipments/pay/', methods=['POST'])
+@login_required
+@admin_login_required
+def pai_pay_list():
+  data = json.loads(request.data)
+  for item in data :
+    if item['id'] != '':
+      shipmentServices.update_shipment_payment_status(item['id'], PaymentStatus_Enum.OUI.value)
+  return jsonify({'shipments': ''})
 
 #####################################################################
 #                                                                   #
@@ -341,7 +353,57 @@ def api_day_shipments_no_canceled(period, day, customer_id):
     if per_page is None:
         per_page=30
     
-    data, prev_page, next_page = shipmentServices.get_some_pagination(period=period, day=day, customer_id=customer_id, page=int(page), per_page=int(per_page), nocanceled=True)
+    data, prev_page, next_page = shipmentServices.get_some_pagination(
+        period=period, day=day, customer_id=customer_id, page=int(page), per_page=int(per_page), nocanceled=True, nopaid=False)
+
+    return jsonify(Pagination.get_paginated_db(
+        data, '/api/shipments/period/'+period+'/date/'+day+'/customers/'+str(customer_id)+'/nocanceled',
+        page=request.args.get('page', page),
+        per_page=request.args.get('per_page', per_page),
+        prev_page=prev_page, next_page=next_page))
+
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@shipment_page.route('/api/shipments/period/<string:period>/date/<string:day>/customers/<int:customer_id>/nopaid')
+@login_required
+@admin_login_required
+def api_day_shipments_no_paid(period, day, customer_id):
+    page = request.args.get("page")
+    per_page = request.args.get("per_page")
+
+    if page is None:
+        page = 1
+    if per_page is None:
+        per_page=30
+    
+    data, prev_page, next_page = shipmentServices.get_some_pagination(
+        period=period, day=day, customer_id=customer_id, page=int(page), per_page=int(per_page), nocanceled=False, nopaid=True)
+
+    return jsonify(Pagination.get_paginated_db(
+        data, '/api/shipments/period/'+period+'/date/'+day+'/customers/'+str(customer_id)+'/paid',
+        page=request.args.get('page', page),
+        per_page=request.args.get('per_page', per_page),
+        prev_page=prev_page, next_page=next_page))
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@shipment_page.route('/api/shipments/period/<string:period>/date/<string:day>/customers/<int:customer_id>/nocanceled/nopaid')
+@login_required
+@admin_login_required
+def api_day_shipments_no_canceled_no_paid(period, day, customer_id):
+    page = request.args.get("page")
+    per_page = request.args.get("per_page")
+
+    if page is None:
+        page = 1
+    if per_page is None:
+        per_page=30
+    
+    data, prev_page, next_page = shipmentServices.get_some_pagination(
+        period=period, day=day, customer_id=customer_id, page=int(page), per_page=int(per_page), nocanceled=True, nopaid=True)
 
     return jsonify(Pagination.get_paginated_db(
         data, '/api/shipments/period/'+period+'/date/'+day+'/customers/'+str(customer_id)+'/nocanceled',
