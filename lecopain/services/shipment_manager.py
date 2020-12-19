@@ -201,10 +201,10 @@ class ShipmentManager():
         start, end = dates_range(period, datetime_day)
         return ShipmentDao.read_some(customer_id=customer_id, start=start, end=end)
     
-    def get_some_pagination(self,  customer_id=0, day=datetime.utcnow, period=Period_Enum.ALL.value, page=1, per_page=30):
+    def get_some_pagination(self,  customer_id=0, day=datetime.utcnow, period=Period_Enum.ALL.value, page=1, per_page=30, nocanceled=False):
         datetime_day = datetime.strptime(day, '%d%m%Y')
         start, end = dates_range(period, datetime_day)
-        return ShipmentDao.read_some_pagination(customer_id=customer_id, start=start, end=end, page=page, per_page=per_page)
+        return ShipmentDao.read_some_pagination(customer_id=customer_id, start=start, end=end, page=page, per_page=per_page, nocanceled=nocanceled)
     
     def get_some_valid(self,  customer_id=0, day=datetime.utcnow, period=Period_Enum.ALL.value):
         datetime_day = datetime.strptime(day, '%d%m%Y')

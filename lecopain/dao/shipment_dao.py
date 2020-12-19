@@ -110,7 +110,7 @@ class ShipmentDao:
         return shipment_schema.dump(all_shipments)
     
     @staticmethod
-    def read_some_pagination(customer_id, start, end, page, per_page):
+    def read_some_pagination(customer_id, start, end, page, per_page, nocanceled):
 
         all_shipments = Shipment.query
 
@@ -118,6 +118,9 @@ class ShipmentDao:
             all_shipments = all_shipments.filter(
                 Shipment.shipping_dt >= start).filter(
                 Shipment.shipping_dt <= end)
+                
+        if nocanceled is True:
+            all_shipments = all_shipments.filter(Shipment.status != ShipmentStatus_Enum.ANNULEE.value)
 
         if customer_id != 0:
             all_shipments = all_shipments.filter(

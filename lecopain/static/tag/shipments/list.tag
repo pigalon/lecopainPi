@@ -13,14 +13,18 @@
             <option value="all">Toutes</option>
         </select>
         <button type="button" ref="search" name="search" id="search" onclick="{load_shipments}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
+        <label class="switch">
+          <input type="checkbox" ref="nocanceled">
+          <span class="slider round"></span>
+        </label>Masquer
     </div>
     <nav class="navbar navbar-light bg-light right">
         <form class="form-inline">
-            <button if={customer_id != undefined && customer_id.value != "0"} class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#modificationModal">Modification Liste</button>
-            <button if={customer_id != undefined && customer_id.value != "0"} class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#paymentModal">Payer Liste</button>
-            <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#undoModal">Rétablir Liste</button>
-            <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#cancelModal">Annulation Liste</button>
-            <a role="button" href="/shipments/new" class="btn btn-sm btn-outline-secondary display:inline-block">Ajouter</a>
+          <button if={customer_id != undefined && customer_id.value != "0"} class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#modificationModal">Modification Liste</button>
+          <button if={customer_id != undefined && customer_id.value != "0"} class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#paymentModal">Payer Liste</button>
+          <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#undoModal">Rétablir Liste</button>
+          <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#cancelModal">Annulation Liste</button>
+          <a role="button" href="/shipments/new" class="btn btn-sm btn-outline-secondary display:inline-block">Ajouter</a>
         </form>
     </nav>
     <table id="shipments_list" width="100%">
@@ -167,7 +171,7 @@
     var next_url = ''
     var previous_url = ''
     var customer_id='0';
-
+ 
     this.selected_shipments = []
     this.id_shipments = []
 
@@ -237,6 +241,10 @@
       shipment_url = shipment_url.concat('period/',period,'/');
       shipment_url = shipment_url.concat('date/', day.replaceAll("/",""),'/');
       shipment_url = shipment_url.concat('customers/',customer_id);
+      
+      if(self.refs.nocanceled.checked){
+        shipment_url = shipment_url.concat('/nocanceled');
+      }
 
       localStorage.setItem('search_shipment_url', shipment_url);
 
