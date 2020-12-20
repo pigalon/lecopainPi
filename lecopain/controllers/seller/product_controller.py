@@ -50,7 +50,7 @@ def products():
 #####################################################################
 #                                                                   #
 #####################################################################
-@seller_product_page.route('/seller/api/products/')
+@seller_product_page.route('/seller/api/products')
 @login_required
 @seller_login_required
 def api_products_by_seller():
@@ -64,12 +64,12 @@ def api_products_by_seller():
     if page is None:
         page = 1
     if per_page is None:
-        per_page=10
+        per_page=30
         
     data, prev_page, next_page = productServices.get_all_by_seller_pagination(seller_id=seller_id, page=int(page), per_page=int(per_page))
 
     return jsonify(Pagination.get_paginated_db(
-        data, '/seller/api/products/sellers/'+str(seller_id),
+        data, '/seller/api/products',
         page=request.args.get('page', page),
         per_page=request.args.get('per_page', per_page),
         prev_page=prev_page, next_page=next_page))

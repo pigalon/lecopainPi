@@ -224,21 +224,20 @@ def api_orders_by_subscription(subscription_id):
 @login_required
 @admin_login_required
 def api_orders_by_seller(seller_id):
-    page = request.args.get("page")
-    per_page = request.args.get("per_page")
- 
-    if page is None:
-        page = 1
-    if per_page is None:
-        per_page=10
-        
-    data, prev_page, next_page = orderServices.get_all_by_seller_pagination(seller_id, page=int(page), per_page=int(per_page))
-    
-    
-    return jsonify(Pagination.get_paginated_db(
-        data, '/api/orders/sellers/'+str(seller_id),
-        page=request.args.get('page', page),
-        per_page=request.args.get('per_page', per_page),
-        prev_page=prev_page, next_page=next_page))
+  page = request.args.get("page")
+  per_page = request.args.get("per_page")
+
+  if page is None:
+    page = 1
+  if per_page is None:
+    per_page=10
+
+  data, prev_page, next_page = orderServices.get_all_by_seller_pagination(seller_id, page=int(page), per_page=int(per_page))
+  return jsonify(Pagination.get_paginated_db(
+    data, '/api/orders/sellers/'+str(seller_id),
+    page=request.args.get('page', page),
+    per_page=request.args.get('per_page', per_page),
+    prev_page=prev_page, next_page=next_page))
+
 
 

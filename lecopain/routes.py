@@ -32,7 +32,6 @@ from lecopain.controllers.customer.main_controller         import customer_main_
 
 from lecopain.controllers.seller.report_controller          import seller_report_page
 from lecopain.controllers.seller.product_controller         import seller_product_page
-from lecopain.controllers.seller.order_controller           import seller_order_page
 from lecopain.controllers.seller.main_controller            import seller_main_page
 
 from lecopain.services.user_manager                         import UserManager
@@ -40,6 +39,9 @@ from lecopain.services.shipment_manager                     import ShipmentManag
 from lecopain.services.subscription_manager                 import SubscriptionManager
 from lecopain.services.customer_manager                     import CustomerManager
 from lecopain.services.seller_manager                       import SellerManager
+from lecopain.services.product_manager                      import ProductManager
+from lecopain.services.order_manager                        import OrderManager
+
 
 from flasgger import Swagger
 from flasgger.utils import swag_from
@@ -49,6 +51,8 @@ shipmentServices     = ShipmentManager()
 subscriptionServices = SubscriptionManager()
 customerServices     = CustomerManager()
 sellerServices       = SellerManager()
+productServices      = ProductManager()
+orderServices        = OrderManager()
 
 app.register_blueprint(seller_page)
 app.register_blueprint(customer_page)
@@ -66,7 +70,6 @@ app.register_blueprint(customer_subscription_page)
 app.register_blueprint(customer_report_page)
 
 app.register_blueprint(seller_main_page)
-app.register_blueprint(seller_order_page)
 app.register_blueprint(seller_product_page)
 app.register_blueprint(seller_report_page)
 

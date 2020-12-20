@@ -9,6 +9,7 @@ import json
 from collections import namedtuple
 
 from lecopain.helpers.roles_utils import admin_login_required
+from lecopain.helpers.roles_utils import global_login_required
 
 
 app = Flask(__name__, instance_relative_config=True)
@@ -102,7 +103,7 @@ def delete_customer(customer_id):
 
 @customer_page.route('/api/customers/')
 @login_required
-@admin_login_required
+@global_login_required
 def api_customers():
     return jsonify({'customers': customerServices.optim_get_all()})
 
@@ -158,7 +159,7 @@ def api_customers_customer_id(city, customer_id):
     
 @customer_page.route("/api/customers/<int:customer_id>")
 @login_required
-@admin_login_required
+@global_login_required
 def api_customer(customer_id):
     return jsonify({'customer':customerServices.read_one(customer_id)})
 
