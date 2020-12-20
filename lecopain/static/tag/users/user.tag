@@ -50,13 +50,13 @@
         <tr>
             <td width="24%"> </td>
             <td width="24%">
-                <a if={ previous_url != '' && previous_url != undefined} role="button" onclick="{load_users_previous}"  style="color:white" class="btn btn-primary display:inline-block"> <i class="fas fa-arrow-left"></i> Clients précédents </a>
+                <a if={ previous_url != '' && previous_url != undefined} role="button" onclick="{load_users_previous}"  style="color:white" class="btn btn-primary display:inline-block"> <i class="fas fa-arrow-left"></i> précédents </a>
             </td>
             <td width="2%">
                 |
             </td>
             <td width="22%">
-                <a if={ next_url != '' && next_url != undefined} role="button" onclick="{load_users_next}"  style="color:white" class="btn btn-primary display:inline-block"> Clients suivants <i class="fas fa-arrow-right"></i> </a>
+                <a if={ next_url != '' && next_url != undefined} role="button" onclick="{load_users_next}"  style="color:white" class="btn btn-primary display:inline-block"> suivants <i class="fas fa-arrow-right"></i> </a>
             </td>
             <td width="26%"> </td>
         </tr>

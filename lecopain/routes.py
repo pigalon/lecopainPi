@@ -13,7 +13,7 @@ from datetime import datetime
 import locale
 from lecopain.app import app, db
 from lecopain.form import PersonForm, OrderForm, ProductForm, LoginForm
-from lecopain.dao.models import Customer, Order, Product, Seller, User, Subscription, Shipment, Stat
+from lecopain.dao.models import Customer, Seller, Order, Product, Seller, User, Subscription, Shipment, Stat
 import lecopain.dao.events_session
 
 from lecopain.controllers.customer_controller import customer_page
@@ -25,26 +25,32 @@ from lecopain.controllers.user_controller import user_page
 from lecopain.controllers.subscription_controller import subscription_page
 from lecopain.controllers.report_controller import report_page
 
-from lecopain.controllers.customer.report_controller import customer_report_page
+from lecopain.controllers.customer.report_controller       import customer_report_page
 from lecopain.controllers.customer.subscription_controller import customer_subscription_page
-from lecopain.controllers.customer.shipment_controller import customer_shipment_page
-from lecopain.controllers.customer.main_controller import customer_main_page
+from lecopain.controllers.customer.shipment_controller     import customer_shipment_page
+from lecopain.controllers.customer.main_controller         import customer_main_page
 
+from lecopain.controllers.seller.report_controller          import seller_report_page
+from lecopain.controllers.seller.product_controller         import seller_product_page
+from lecopain.controllers.seller.order_controller           import seller_order_page
+from lecopain.controllers.seller.main_controller            import seller_main_page
 
-from lecopain.services.user_manager import UserManager
-from lecopain.services.shipment_manager import ShipmentManager
-from lecopain.services.subscription_manager import SubscriptionManager
-from lecopain.services.customer_manager import CustomerManager
+from lecopain.services.user_manager                         import UserManager
+from lecopain.services.shipment_manager                     import ShipmentManager
+from lecopain.services.subscription_manager                 import SubscriptionManager
+from lecopain.services.customer_manager                     import CustomerManager
+from lecopain.services.seller_manager                       import SellerManager
 
 from flasgger import Swagger
 from flasgger.utils import swag_from
 
-userServices = UserManager()
-shipmentServices = ShipmentManager()
+userServices         = UserManager()
+shipmentServices     = ShipmentManager()
 subscriptionServices = SubscriptionManager()
-customerServices = CustomerManager()
+customerServices     = CustomerManager()
+sellerServices       = SellerManager()
 
-
+app.register_blueprint(seller_page)
 app.register_blueprint(customer_page)
 app.register_blueprint(shipment_page)
 app.register_blueprint(order_page)
@@ -59,8 +65,13 @@ app.register_blueprint(customer_shipment_page)
 app.register_blueprint(customer_subscription_page)
 app.register_blueprint(customer_report_page)
 
+app.register_blueprint(seller_main_page)
+app.register_blueprint(seller_order_page)
+app.register_blueprint(seller_product_page)
+app.register_blueprint(seller_report_page)
 
-
+seller_page = Blueprint('seller_page',  __name__,
+                        template_folder='./templates')
 customer_page = Blueprint('customer_page',  __name__,
                         template_folder='./templates')
 shipment_page = Blueprint('shipment_page',  __name__,
@@ -87,6 +98,14 @@ customer_subscription_page = Blueprint('customer_subscription_page',  __name__,
 customer_subscription_page = Blueprint('customer_report_page',  __name__,
                         template_folder='./templates')
 
+seller_main_page = Blueprint('seller_main_page',  __name__,
+                        template_folder='./templates')
+seller_shipment_page = Blueprint('seller_order_page',  __name__,
+                        template_folder='./templates')
+seller_subscription_page = Blueprint('seller_products_page',  __name__,
+                        template_folder='./templates')
+seller_subscription_page = Blueprint('seller_report_page',  __name__,
+                        template_folder='./templates')
 
 Swagger(app)
 
@@ -106,6 +125,11 @@ def home():
             shipments_nb = shipmentServices.count_by_customer(customer_id=customer.id)
             subscriptions_nb = subscriptionServices.count_by_customer(customer_id=customer.id)
             return render_template('/customer/base.html', subscriptions_nb=subscriptions_nb, shipments_nb=shipments_nb, customer_id=user.account_id)
+        if user.get_main_role() == 'seller_role':
+            seller = sellerServices.get_one(current_user.account_id)
+            products_nb = productServices.count_by_seller(seller_id=seller.id)
+            orders_nb = orderServices.count_by_seller(seller_id=seller.id)
+            return render_template('/seller/base.html', products_nb=products_nb, orders_nb=orders_nb, seller_id=user.account_id)
         if user.get_main_role() == 'admin_role':
             customers_nb = Customer.query.count()
             orders_nb = Order.query.count()

@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <search-report></search-report>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='tag/seller/reports/search_report.tag') }}" type="riot/tag"></script>
+<script>
+    riot.mount("search-report");
+</script>
+{% endblock %}
+
+
+
+

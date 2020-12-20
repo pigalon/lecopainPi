@@ -23,9 +23,8 @@ class UserDao:
     def optim_read_all_role_pagination(role_id, page, per_page):
 
         # Create the list of people from our data
+        print('role_id : ' + str(role_id))
 
-        
-        
         if role_id != 0:
             all_users = User.query.join(UserRoles, UserRoles.user_id == User.id).join(Role, UserRoles.role_id == Role.id)
             all_users = all_users.filter(Role.id == role_id)

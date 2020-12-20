@@ -112,6 +112,21 @@
 						<br><span style="font-size:12px;">Rapports.L</span></a>
 					</li>
 				{% endif %}
+				{% if  current_user.__class__.__name__ != 'AnonymousUserMixin' and current_user.get_main_role() == 'seller_role' %}
+					<li class="nav-item">
+						<a class="nav-link" href="/seller/orders" style="font-size:22px; text-align:center;" title="Commandes"><i class="fa fa-truck" ></i>
+						<br><span style="font-size:12px;">Commandes</span></a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/seller/products" style="font-size:22px; text-align:center;" title="Produits"><i class="fa fa-calendar-alt" ></i>
+						<br><span style="font-size:12px;">Produits</span></a>
+						>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/seller/reports"  style="font-size:22px; text-align:center;" title="Rapports Vendeur"><i class="fa fa-file-contract" ></i>
+						<br><span style="font-size:12px;">Rapports.V</span></a>
+					</li>
+				{% endif %}
 				</ul>
 				<div style="text-align:center">
 					<span class="navbar-text" style="margin: 10px 10px 0 0;">

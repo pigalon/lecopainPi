@@ -46,8 +46,6 @@ def login():
             return redirect(url_for('user_page.login'))
             
         if not user.check_password(form.password.data):
-            print('form.password.data : ' + form.password.data)
-            print('user.password : ' + user.password)
             flash("Le mot de passe est incorrect")
             sleep(3)
             app.logger.error(" fails authentication: " + str(form.username.data) +
@@ -60,13 +58,10 @@ def login():
         #admin
         if user.get_main_role() == 'admin_role':
             return redirect(url_for('home'))
-        
-        #customer
-        if user.get_main_role() == 'customer_role':
+        elif user.get_main_role() == 'customer_role':
             return redirect(url_for('customer_main_page.home'))
-            #home stats from id_customer : ship and sub : menu ship and sub
-        #seller
-            #home stats from id_seller : order  and products: menu product & order / by customer / date
+        elif user.get_main_role() == 'seller_role':
+            return redirect(url_for('seller_main_page.home'))
         # simple user
 
     else:
@@ -86,6 +81,7 @@ def logout():
 def users():
     users = userServices.optim_get_all()
     return render_template('/users/users.html', users=users)
+
 
 @user_page.route("/users/new", methods=['GET', 'POST'])
 @login_required
@@ -222,10 +218,11 @@ def api_users_by_role(role_id):
     if per_page is None:
         per_page=10
 
-    data, prev_page, next_page = userServices.optim_get_all_pagination(role_id=int(role_id), page=int(page), per_page=int(per_page))
+    data, prev_page, next_page = userServices.optim_get_all_pagination(
+        role_id=int(role_id), page=int(page), per_page=int(per_page))
     
     return jsonify(Pagination.get_paginated_db(
-        data, '/api/users/',
+        data, '/api/users/roles/'+role_id,
         page=request.args.get('page', page),
         per_page=request.args.get('per_page', per_page),
         prev_page=prev_page, next_page=next_page))
