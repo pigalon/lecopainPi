@@ -13,28 +13,36 @@
             <option value="all">Toutes</option>
         </select>
         <button type="button" ref="search" name="search" id="search" onclick="{load_shipments}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
-        <label class="switch" title="masquer annulations">
-          <input type="checkbox" ref="nocanceled" id="nocanceled" title="masquer annulations">
+        <label id="nocanceled" class="switch" title="masquer annulations">
+          <input type="checkbox" ref="nocanceled" title="masquer annulations">
           <span class="slider round"></span>
         </label>
-        <label class="switch" title="masquer payés">
-          <input type="checkbox" ref="nopaid" id="nopaid"  title="masquer payées">
+        <label id="nopaid" class="switch" title="masquer payés">
+          <input type="checkbox" ref="nopaid"  title="masquer payées">
           <span class="slider round"></span>
         </label>
     </div>
     <nav class="navbar navbar-light bg-light right">
         <form class="form-inline">
           <!--<button if={customer_id != undefined && customer_id.value != "0"} class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#modificationModal">Modification Liste</button>-->
-          <button if={customer_id != undefined && customer_id.value != "0"} class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#paymentModal">Payer Liste</button>
-          <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#undoModal">Rétablir Liste</button>
-          <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#cancelModal">Annulation Liste</button>
+          <button id="paymentModal" class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#paymentModal">Payer Liste</button>
+          <button id="undoModal" class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#undoModal">Rétablir Liste</button>
+          <button id="cancelModal" class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#cancelModal">Annulation Liste</button>
           <a role="button" href="/shipments/new" class="btn btn-sm btn-outline-secondary display:inline-block">Ajouter</a>
         </form>
     </nav>
     <table id="shipments_list" width="100%">
       <tr>
         <td>
-        <table width="100%">
+        <table id="table_title_mobile" width="100%">
+          <tr>
+            <th width="6%">id</th>
+            <th width="20%">Date</th>
+            <th width="30%">Client</th>
+            <th width="10%">Liv.</th>
+          </tr>
+        </table>
+        <table id="table_title_site" width="100%">
           <tr>
             <th width="6%">id</th>
             <th width="20%">Date</th>
@@ -47,7 +55,24 @@
       </tr>
       <tr each="{ shipment in shipments }">
         <td>
-        <table width="100%" class="table table-striped">
+        <table id="table_mobile" width="100%" class="table table-striped">
+          <tr>
+            <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'CREE' && shipment.updated_at == None && shipment.payment_status == 'NON'} width="6%" class="table-primary">{shipment.id}</td>
+            <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'CREE' && shipment.updated_at != None && shipment.payment_status == 'NON'} width="6%" class="table-warning">{shipment.id}</td>
+            <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'CREE' && shipment.payment_status == 'OUI'} width="6%" class="table-success">{shipment.id}</td>
+            <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'ANNULEE'} width="6%" class="table-dark">{shipment.id}</td>
+            <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'TERMINEE'} width="6%" class="table-success">{shipment.id}</td>
+            <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'DEFAUT'} width="6%" class="table-danger">{shipment.id}</td>
+
+            <td width="20%">{moment(shipment.shipping_dt).format('ddd Do MMM' )}</td>
+            <td width="30%"><a onclick={ show_customer(shipment.customer_id) }>{shipment.customer_name}</a></td>
+            <td if={shipment.status == 'ANNULEE'} width="10%" >0.00 € <br><span onclick={ show_subscription(shipment.subscription_id) } if={shipment.subscription_id != None} class="badge badge-warning" style="font-size:16px;">Ab.</span></td>
+            <td if={shipment.status != 'ANNULEE'} width="10%">
+              {shipment.shipping_price.toFixed(2)} € <br><span onclick={ show_subscription(shipment.subscription_id) } if={shipment.subscription_id != None} class="badge badge-warning" style="font-size:16px;">Ab.</span>
+            </td>
+          </tr>
+        </table>
+        <table id="table_site" width="100%" class="table table-striped">
           <tr>
             <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'CREE' && shipment.updated_at == None && shipment.payment_status == 'NON'} width="6%" class="table-primary">{shipment.id}</td>
             <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'CREE' && shipment.updated_at != None && shipment.payment_status == 'NON'} width="6%" class="table-warning">{shipment.id}</td>
