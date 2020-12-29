@@ -14,11 +14,11 @@
         </select>
         <button type="button" ref="search" name="search" id="search" onclick="{load_shipments}" class="btn btn-primary" ><i class="fa fa-search"></i></button>
         <label id="nocanceled" class="switch" title="masquer annulations">
-          <input type="checkbox" ref="nocanceled" title="masquer annulations">
+          <input type="checkbox" id="check_nocanceled" ref="nocanceled" title="masquer annulations">
           <span class="slider round"></span>
         </label>
         <label id="nopaid" class="switch" title="masquer payés">
-          <input type="checkbox" ref="nopaid"  title="masquer payées">
+          <input type="checkbox" id="check_nopaid" ref="nopaid"  title="masquer payées">
           <span class="slider round"></span>
         </label>
     </div>
@@ -48,7 +48,7 @@
             <th width="20%">Date</th>
             <th width="30%">Client</th>
             <th width="10%">Liv.</th>
-            <th width="2%"><input  onclick={ check_all } type="checkbox" id="checkAll" name="checkAll"></th>
+            <th width="2%"><input  type="checkbox" id="checkAll" name="checkAll"></th>
           </tr>
         </table>
         </td>
@@ -88,7 +88,7 @@
               {shipment.shipping_price.toFixed(2)} € <br><span onclick={ show_subscription(shipment.subscription_id) } if={shipment.subscription_id != None} class="badge badge-warning" style="font-size:16px;">Ab.</span>
             </td>
             <td width="2%">
-              <input onclick={ check_shipement } onchange={ check_shipement } type="checkbox" ref="ids_{shipment.id}" id="ids_{shipment.id}" name="ids_{shipment.id}">
+              <input class="check_list" onclick={ check_shipement } onchange={ check_shipement } type="checkbox" ref="ids_{shipment.id}" id="ids_{shipment.id}" name="ids_{shipment.id}">
             </td>
           </tr>
         </table>
@@ -200,7 +200,7 @@
     var next_url = ''
     var previous_url = ''
     var customer_id='0';
- 
+
     this.selected_shipments = []
     this.id_shipments = []
 
@@ -231,25 +231,21 @@
       );
 
       $("#checkAll").click(function () {
-            $('input:checkbox').not(this).prop('checked', this.checked);
-            var inputs = document.getElementsByTagName("input");
-
-            for(var i = 0; i < inputs.length; i++) {
-              if(inputs[i].type == "checkbox" && inputs[i].checked) {
-                self.add_one_in_checked_list(inputs[i].id);
-              }
-            }
-
+        $('input:checkbox').not(this).filter('.check_list').prop('checked', this.checked);
+        var inputs = document.getElementsByTagName("input");
+        
+        for(var i = 0; i < inputs.length; i++) {
+          if(inputs[i].type == "checkbox" && inputs[i].id != 'check_nocanceled' && inputs[i].id != "check_nopaid" && inputs[i].checked) {
+            self.add_one_in_checked_list(inputs[i].id);
+          }
+        }
       });
+
       $("#ok_cancel").click(function (){
         $('#cancelModal').modal('hide');
-        //setTimeout('', 1000);
-        //location.reload(); 
       });
       $("#ok_undo").click(function (){
         $('#undoModal').modal('hide');
-        //setTimeout('', 1000);
-        //location.reload();
       });
     });
 
@@ -388,7 +384,7 @@
       Check shipment
     **/
     check_shipement(e){
-      if ($('#ids_'+e.item.shipment.id).is(':checked')) {
+      if ($('ids_'+e.item.shipment.id).is(':checked')) {
         this.selected_shipments.push(e.item.shipment.id)
       }
       else{
@@ -402,7 +398,7 @@
     }
     add_one_in_checked_list(id){
       idOnly = id.substring(4, id.length);
-      if (id != 'checkAll' && $('#'+id).is(':checked')) {
+      if (id != 'checkAll' && $(''+id).is(':checked')) {
         this.selected_shipments.push(idOnly)
       }
       else{
