@@ -176,9 +176,10 @@ def generate_shipments(subscription_id):
 @login_required
 @admin_login_required
 def calculatee_shipments(subscription_id):
-	subscription = subscriptionServices.get_one_db(subscription_id)
-	subscriptionServices.calculate(subscription)
-	return render_template('/subscriptions/subscription.html', subscription=subscription)
+  subscription = subscriptionServices.get_one_db(subscription_id)
+  subscriptionServices.calculate(subscription)
+  week_days = get_week_names()
+  return render_template('/subscriptions/subscription.html', subscription=subscription, week_days=week_days)
 
 #####################################################################
 #                                                                   #

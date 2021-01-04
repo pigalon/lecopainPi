@@ -5,87 +5,96 @@
 <br>
   <table width="100%" align="center">
     <tr>
-      <td width="60%" style="text-align:right"><span class="float-left"><a href="/subscriptions" class="btn btn-outline-dark">Retour List</a></span></td>
-      <td width="40%"  style="text-align:right"> 
-        
+      <td width="10%" style="text-align:right"><span class="float-left"><a href="/subscriptions" class="btn btn-outline-dark">Retour List</a></span></td>
+      <td width="90%"  style="text-align:center; font-size: 24px;"> 
+        Abonnement N° <b>{{subscription.id}}</b> - <b>{{subscription.customer_name}}</b>
       </td>
     </tr>
   </table>
-
-
 <br>
-    <div class="card" >
-        <div class="card-header text-white bg-info">
-          Abonnement N° {{subscription.id}} - De : {{subscription.customer_name}} - Catégorie : {{subscription.category}} 
-          {% if subscription.nb_shipments < 1 %}
-            <span class="right"><a href="/subscriptions/generate/{{ subscription.id }}" class="btn btn-outline-dark">Générer livraisons/commandes</a></span>
-          {% else %}
-            <span class="right"><a href="/subscriptions/delete_shipments/{{ subscription.id }}" class="btn btn-outline-dark">Effacer toutes les livraisons/commandes</a></span>
-          {% endif %}
-        </div>
-        <div class="card-body">
-          
-          <ul class="list-group list-group-flush">
-          {% set total = {'value': 0.00} %}
-
-          <li class="list-group-item bg-light">
-            Vendeur : <b>{{subscription.seller_name}}</b>
-            <span class="right"><a href="/subscriptions/new?subscription_id={{ subscription.id }}" class="btn btn-outline-dark">Dupliquer l'abonnement</a></span>
-          </li>
-          <li class="list-group-item">
-            <h5>Jour de la semaine: </h5>
-            <div class="row">
-            {% for index in range(7) %}
-              <div class="card border-dark bg-light shadow-sm col-sm-3 m-2" style="text-align:center; padding-left:0;padding-right: 0;">
-                <div class="card-header">
-                  <h5>{{week_days[index]}}</h5>
-                </div>
-                <div class="card-body" style="text-align:left">
-                  <table class="table table-responsive-sm">
-                    <tbody>
-                      <tr width="20px">
-                        <td><b>Prix Livraison :</b></td><td>{{subscription.days[index].shipping_price}}€</td>
-                      </tr>
-                      <tr>
-                        <td><b>Nb Articles :</b></td><td>x{{subscription.days[index].nb_products}}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Prix Panier:</b></td><td>{{subscription.days[index].price}}€</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div class="card-footer" style="text-align:center">
-                  <a href="/subscriptions/{{subscription.id}}/weekdays/{{index+1}}" class="btn btn-primary">Détails</a>
-                </div>
-              </div>
-            {% endfor %}
-            </div>
-          </li>
-
-          <li class="list-group-item">
-                <b><span >Nb articles de l'abonnement: {{subscription.nb_products}}
-                  <span class="right"><a href="/subscriptions/calculation/{{ subscription.id }}" class="btn btn-outline-dark">Recalculer l'abonnement</a></span>
-          </li>
-          <li class="list-group-item">
-                <b><span >Prix des livraisons pour l'abonnement : {{ "%.2f"|format(subscription.shipping_price|float) }} €</span></b>
-                <br>
-                <br>
-                <p><b>Nombres total de Livraisons : </b> {{subscription.nb_shipments}}</p>
-                <p><b>Nombres total de commandes : </b> {{subscription.nb_orders}}</p>
-          </li>
-        </ul>
-        </div>
+  <div class="card" >
+      <div class="card-header text-white bg-info">
+        Catégorie : <b>{{subscription.category}}</b>
       </div>
-      <span class="right"><a href="/shipments/new?subscription_id={{ subscription.id }}" class="btn btn-outline-dark">Ajouter une livraison à l'abonnement</a></span>
-        <shipment-list subscription_id='{{subscription.id}}'></shipment-list>
-      
-      <br>
-        <div class="card">
-          <div class="card-header text-white bg-info">
-            Suppression <span class="float-right"><a href="/subscriptions/delete/{{ subscription.id }}" class="btn btn-light text-danger" alt="Supprimer"><i class="fas fa-trash-alt"></i></a></span>
+      <div class="card-body">
+        
+        <ul class="list-group list-group-flush">
+        {% set total = {'value': 0.00} %}
+
+        <li class="list-group-item bg-light">
+          {% if subscription.nb_shipments < 1 %}
+            <span class="right"><a href="/subscriptions/generate/{{ subscription.id }}" class="btn btn-outline-dark">Générer</a></span>
+          {% else %}
+            <span class="right"><a href="/subscriptions/delete_shipments/{{ subscription.id }}" class="btn btn-outline-dark">Effacer tout</a></span>
+          {% endif %}
+          <span class="right"><a href="/subscriptions/new?subscription_id={{ subscription.id }}" class="btn btn-outline-dark">Dupliquer</a></span>
+          <span class="right"><a href="/subecriptions/shipments/subscription_id={{ subscription.id }}" class="btn btn-outline-dark">Livraisons</a></span>
+        </li>
+        <li class="list-group-item">
+          <h5>Jour de la semaine: </h5>
+          <div class="row">
+          {% for index in range(7) %}
+            <div class="card border-dark bg-light shadow-sm col-sm-2 m-1" style="text-align:center; padding-left:0;padding-right: 0;">
+              <div class="card-header">
+                <h5>{{week_days[index]}}</h5>
+              </div>
+              <div class="card-body" style="text-align:left">
+                <table class="table table-responsive-sm">
+                  <tbody>
+                    <tr width="10px">
+                      <td><b>Liv. :</b></td><td>{{subscription.days[index].shipping_price}}€</td>
+                    </tr>
+                    <tr>
+                      <td><b>Art. :</b></td><td>x{{subscription.days[index].nb_products}}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Panier:</b></td><td>{{subscription.days[index].price}}€</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-footer" style="text-align:center">
+                <a href="/subscriptions/{{subscription.id}}/weekdays/{{index+1}}" class="btn btn-primary">Détails</a>
+              </div>
+            </div>
+          {% endfor %}
+          <div class="card border-dark bg-light shadow-sm col-sm-4 m-1" style="text-align:center; padding-left:0;padding-right: 0;">
+              <div class="card-header bg-danger">
+                <h5 class="text-white">Totaux</h5>
+              </div>
+              <div class="card-body" style="text-align:left">
+                <table class="table table-responsive-sm">
+                  <tbody>
+                    <tr width="10px">
+                      <td><b>Nb livraisons :</b></td><td>x{{subscription.nb_shipments}}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Nb articles : </b></td><td>x{{subscription.nb_products}}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Prix Abonnement:</b></td><td>{{subscription.nb_orders}} €</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-footer" style="text-align:center">
+                <a href="/subscriptions/calculation/{{ subscription.id }}" class="btn btn-primary">Recalculer l'abonnement</a>
+              </div>
+            </div>
           </div>
-        </div>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+  <span class="right"><a href="/shipments/new?subscription_id={{ subscription.id }}" class="btn btn-outline-dark">Ajouter une livraison à l'abonnement</a></span>
+  <shipment-list subscription_id='{{subscription.id}}'></shipment-list>
+  <br>
+  <div class="card">
+    <div class="card-header text-white bg-info">
+      Suppression <span class="float-right"><a href="/subscriptions/delete/{{ subscription.id }}" class="btn btn-light text-danger" alt="Supprimer"><i class="fas fa-trash-alt"></i></a></span>
+    </div>
+  </div>
 {% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='tag/subscriptions/shipment_list.tag') }}" type="riot/tag"></script>
