@@ -267,5 +267,6 @@ def cancel_subscription_day(subscription_day_id):
 @admin_login_required
 def subscription_shipments(subscription_id):
   subscription = subscriptionServices.get_one(subscription_id)
-  return render_template('/subscriptions/shipments/shipments.html', title="Livraisons", subscription=subscription)
+  customer_name = subscription['customer_name']
+  return render_template('/subscriptions/shipments/shipments.html', title="Livraisons", subscription=subscription, customer_name=subscription['customer_name'])
 

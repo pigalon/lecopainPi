@@ -25,9 +25,9 @@
     <nav class="navbar navbar-light bg-light right">
         <form class="form-inline">
           <!--<button if={customer_id != undefined && customer_id.value != "0"} class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#modificationModal">Modification Liste</button>-->
-          <button id="paymentModal" class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#paymentModal">Payer Liste</button>
-          <button id="undoModal" class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#undoModal">Rétablir Liste</button>
-          <button id="cancelModal" class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#cancelModal">Annulation Liste</button>
+          <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#paymentModal">Payer Liste</button>
+          <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#undoModal">Rétablir Liste</button>
+          <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#cancelModal">Annulation Liste</button>
           <a role="button" href="/shipments/new" class="btn btn-sm btn-outline-secondary display:inline-block">Ajouter</a>
         </form>
     </nav>
@@ -88,7 +88,7 @@
               {shipment.shipping_price.toFixed(2)} € <br><span onclick={ show_subscription(shipment.subscription_id) } if={shipment.subscription_id != None} class="badge badge-warning" style="font-size:16px;">Ab.</span>
             </td>
             <td width="2%">
-              <input class="check_list" onclick={ check_shipement } onchange={ check_shipement } type="checkbox" ref="ids_{shipment.id}" id="ids_{shipment.id}" name="ids_{shipment.id}">
+              <input class="check_list" onclick={ check_shipment } onchange={ check_shipment } type="checkbox" ref="ids_{shipment.id}" id="ids_{shipment.id}" name="ids_{shipment.id}">
             </td>
           </tr>
         </table>
@@ -113,25 +113,6 @@
     
     <br>
     <br>
-    <div class="modal fade" id="modificationModal" tabindex="-1" role="dialog" aria-labelledby="modificationModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modificationModalLabel">Modification</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-            Passer à la page modification des livraisons sélectionnées ?
-        </div>
-        <div class="modal-footer">
-          <button  type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-          <button  type="button" class="btn btn-primary">Confirmer</button>
-        </div>
-        </div>
-      </div>
-    </div>
 
     <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -383,8 +364,8 @@
     /**
       Check shipment
     **/
-    check_shipement(e){
-      if ($('ids_'+e.item.shipment.id).is(':checked')) {
+    check_shipment(e){
+      if ($('#ids_'+e.item.shipment.id).is(':checked')) {
         this.selected_shipments.push(e.item.shipment.id)
       }
       else{
@@ -396,9 +377,12 @@
         }
       }
     }
+    /**
+      add one item in checked list
+    **/
     add_one_in_checked_list(id){
       idOnly = id.substring(4, id.length);
-      if (id != 'checkAll' && $(''+id).is(':checked')) {
+      if (id != 'checkAll' && $('#'+id).is(':checked')) {
         this.selected_shipments.push(idOnly)
       }
       else{
@@ -415,10 +399,13 @@
       Cancel list
     **/
     cancel_list(){
+      console.log('1' +  this.selected_shipments)
       this.selected_shipments.forEach(
         item => (this.id_shipments.push({"id" : item}))
-      )      
+      )
+            
       if(this.id_shipments.length >0){
+        console.log('3')
         var url = '/api/shipments/cancel/';
         var data = JSON.stringify(this.id_shipments);
         return $.ajax({
@@ -428,7 +415,8 @@
           dataType: "json",
           contentType: "application/json; charset=utf-8",
           success: function(data) {
-            location.reload(); 
+            location.reload();
+            console.log('4')
             self.update();
           }
         });

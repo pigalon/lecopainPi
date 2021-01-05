@@ -406,7 +406,55 @@ def api_day_shipments_no_canceled_no_paid(period, day, customer_id):
         period=period, day=day, customer_id=customer_id, page=int(page), per_page=int(per_page), nocanceled=True, nopaid=True)
 
     return jsonify(Pagination.get_paginated_db(
-        data, '/api/shipments/period/'+period+'/date/'+day+'/customers/'+str(customer_id)+'/nocanceled',
+        data, '/api/shipments/period/'+period+'/date/'+day+'/customers/'+str(customer_id)+'/nocanceled/nopaid',
         page=request.args.get('page', page),
         per_page=request.args.get('per_page', per_page),
         prev_page=prev_page, next_page=next_page))
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@shipment_page.route('/api/shipments/subscriptions/<int:subscription_id>/nocanceled')
+@login_required
+@admin_login_required
+def api_shipments_by_subscription_no_canceled(subscription_id):
+    
+  page = request.args.get("page")
+  per_page = request.args.get("per_page")
+
+  if page is None:
+    page = 1
+  if per_page is None:
+    per_page=10
+
+  data, prev_page, next_page = shipmentServices.get_all_by_subscription_pagination(subscription_id, page=int(page), per_page=int(per_page))
+
+  return jsonify(Pagination.get_paginated_db(
+    data, '/api/shipments/subscriptions/'+str(subscription_id)+'/nocanceled',
+    page=request.args.get('page', page),
+    per_page=request.args.get('per_page', per_page),
+    prev_page=prev_page, next_page=next_page ))
+  
+  #####################################################################
+#                                                                   #
+#####################################################################
+@shipment_page.route('/api/shipments/subscriptions/<int:subscription_id>/nopaid')
+@login_required
+@admin_login_required
+def api_shipments_by_subscription_no_paid(subscription_id):
+    
+  page = request.args.get("page")
+  per_page = request.args.get("per_page")
+
+  if page is None:
+    page = 1
+  if per_page is None:
+    per_page=10
+
+  data, prev_page, next_page = shipmentServices.get_all_by_subscription_pagination(subscription_id, page=int(page), per_page=int(per_page))
+
+  return jsonify(Pagination.get_paginated_db(
+    data, '/api/shipments/subscriptions/'+str(subscription_id)+'/nopaid',
+    page=request.args.get('page', page),
+    per_page=request.args.get('per_page', per_page),
+    prev_page=prev_page, next_page=next_page ))

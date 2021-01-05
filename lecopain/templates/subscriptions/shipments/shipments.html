@@ -1,12 +1,12 @@
 {% extends "layout.html" %}
 
 {% block content %}
-     <search-shipment subscription_id='{{subscription.id}}'></search-shipment>
+  <search-shipment subscription_id='{{subscription.id}}' subscription_start='{{subscription.start_dt}}' subscription_end='{{subscription.end_dt}}' customer_name='{{customer_name}}'></search-shipment>
 {% endblock %}
 
 {% block scripts %}
-    <script src="{{ url_for('static', filename='tag/subscriptions/shipments/list.tag') }}" type="riot/tag"></script>
-    <script>
-        riot.mount("search-shipment");
-    </script>
+  <script src="{{ url_for('static', filename='tag/subscriptions/shipments/list.tag') }}" type="riot/tag"></script>
+  <script>
+    riot.mount("search-shipment");
+  </script>
 {% endblock %}
