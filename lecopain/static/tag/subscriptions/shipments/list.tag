@@ -86,6 +86,7 @@
       var page= 1
       var next_url = ''
       var previous_url = ''
+      subscription_id =  opts.subscription_id
 
       this.selected_shipments = []
 
@@ -95,11 +96,7 @@
       this.on('mount', function() {
             
             const location  = $('window.location')
-            self.refs.month.value = moment().format('MM/YYYY')
-            var dateMomentObject = moment('01/'+self.refs.month.value, "DD/MM/YYYY");
-            
-            monthTitle = moment(dateMomentObject).format('MMMM').charAt(0).toUpperCase() + moment(dateMomentObject).format('MMMM').slice(1)
-            this.load_shipments()
+            this.load_shipments(subscription_id);
       });
 
       $(function () {
@@ -111,147 +108,77 @@
       /******************************************/
       // load shipments list
       /*******************************************/
-      load_shipments(){
-        var shipment_url = '/api/customer/shipments/';
-        var period = 'month';
-
-        var day = "01/"+self.refs.month.value;
-        var date = moment(day).format('DD/MM/YYYY');
-        monthTitle = moment(date).format('MMMM').charAt(0).toUpperCase() + moment(date).format('MMMM').slice(1)
-        
-        if (period == undefined){
-          period = 'all'
-        }
-
-        shipment_url = shipment_url.concat('period/',period,'/');
-        shipment_url = shipment_url.concat('date/', day.replaceAll("/",""));
-
-        localStorage.setItem('search_shipment_url', shipment_url);
-
-        this.load_shipments_from_url(shipment_url);
-      }
       /******************************************/
-      // load shipments list from url
-      /*******************************************/
-      load_shipments_from_url(shipment_url){
-        $.ajax({
-          url: shipment_url,
-          type: "GET",
-          dataType: "json",
-          contentType: "application/json; charset=utf-8",
-          success: function(data) {
+       	// load products list
+    	/*******************************************/
+		load_shipments(subscription_id){
+            var shipment_url = '/api/shipments/subscriptions/'+subscription_id;
+            console.log('call load ship : '+ shipment_url)
+			return $.ajax({
+					url: shipment_url,
+					type: "GET",
+					dataType: "json",
+					contentType: "application/json; charset=utf-8",
+					success: function(data) {
             self.shipments = data['results']
             self.count = data['count']
-            self.per_page = data['per_page']
-            self.page = data['page']
-            self.next_url = data['next']
-            self.previous_url = data['previous']
+            self.shipping_sum = 0.0
+            self.shipments.forEach((shipment) => {
+                if(shipment.status != 'ANNULEE'){
+                    self.shipping_sum = shipment.shipping_price  + self.shipping_sum;
+                }
+            });
             self.update()
-          }
-        });
+					}
+				});
+		}
+      
+    show_shipment(shipment_id){
+      return function(e) {
+          location = "/customer/shipments/"+shipment_id;
       }
-      /*
-      */
-      load_shipments_next(){
-        var shipment_url = self.next_url;
-        localStorage.setItem('search_shipment_url', shipment_url);
-        $.ajax({
-          url: shipment_url,
-          type: "GET",
-          dataType: "json",
-          contentType: "application/json; charset=utf-8",
-          success: function(data) {
-            self.shipments = data['results']
-            self.count = data['count']
-            self.per_page = data['per_page']
-            self.page = data['page']
-            self.next_url = data['next']
-            self.previous_url = data['previous']
-            self.update()
-          }
-        });
+		}
+    show_subscription(subscription_id){
+      return function(e) {
+        location = "/customer/subscriptions/"+subscription_id;
       }
-    /*
-    */
-    load_shipments_previous(){
-      var shipment_url = self.previous_url;
-      localStorage.setItem('search_shipment_url', shipment_url);
-      $.ajax({
-        url: shipment_url,
+		}
+    show_customer(customer_id){
+      return function(e) {
+        location = "/customers/"+customer_id;
+      }
+		}
+
+    check_shipement(e){
+      if ($('#ids_'+e.item.shipment.id).is(':checked')) {
+        this.selected_shipments.push(e.item.shipment.id)
+      }
+      else{
+        for( var i = 0; i < this.selected_shipments.length; i++)
+        { 
+          if ( this.selected_shipments[i] === e.item.shipment.id) { 
+              this.selected_shipments.splice(i, 1); 
+          }
+        }
+      }
+    }
+
+    cancel_list(){
+      var str_shipment_ids = ''
+      this.selected_shipments.forEach(
+        item => (str_shipment_ids = str_shipment_ids.concat(item,','))
+      )
+      var url = '/api/shipments/cancel/ids/'+str_shipment_ids;
+      return $.ajax({
+        url: url,
         type: "GET",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function(data) {
-          self.shipments = data['results']
-          self.count = data['count']
-          self.per_page = data['per_page']
-          self.page = data['page']
-          self.next_url = data['next']
-          self.previous_url = data['previous']
+          location.reload(); 
           self.update()
         }
       });
-		}
-        load_customers(){
-			var url = '/api/customers/';
-			return $.ajax({
-                url: url,
-                type: "GET",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function(data) {
-                    self.customers = data['customers']
-                    self.update()
-                }
-            });
-		}
-
-        show_shipment(shipment_id){
-            return function(e) {
-                location = "/customer/shipments/"+shipment_id;
-            }
-		}
-        show_subscription(subscription_id){
-            return function(e) {
-                location = "/customer/subscriptions/"+subscription_id;
-            }
-		}
-        show_customer(customer_id){
-            return function(e) {
-                location = "/customers/"+customer_id;
-            }
-		}
-
-        check_shipement(e){
-            if ($('#ids_'+e.item.shipment.id).is(':checked')) {
-                this.selected_shipments.push(e.item.shipment.id)
-            }
-            else{
-                for( var i = 0; i < this.selected_shipments.length; i++)
-                { 
-                    if ( this.selected_shipments[i] === e.item.shipment.id) { 
-                        this.selected_shipments.splice(i, 1); 
-                    }
-                }
-            }
-        }
-
-        cancel_list(){
-            var str_shipment_ids = ''
-            this.selected_shipments.forEach(
-                item => (str_shipment_ids = str_shipment_ids.concat(item,','))
-                )
-            var url = '/api/shipments/cancel/ids/'+str_shipment_ids;
-            return $.ajax({
-                url: url,
-                type: "GET",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function(data) {
-                    location.reload(); 
-                    self.update()
-                }
-            });
 		}
 
 	</script>
