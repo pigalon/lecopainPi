@@ -181,12 +181,12 @@ class ShipmentManager():
     def get_all(self):
         return ShipmentDao.read_all()
 
-    def get_all_by_subscription(self, subscription_id):
-        return ShipmentDao.read_by_subscription(subscription_id)
+    def get_all_by_subscription(self, subscription_id, nocanceled, nopaid):
+        return ShipmentDao.read_by_subscription(subscription_id, nocanceled, nopaid)
     
     def get_all_by_subscription_pagination(self, subscription_id, page=1, per_page=10):
         return ShipmentDao.read_by_subscription_pagination(subscription_id, page, per_page)
-
+    
     def get_all_by_customer(self, customer_id):
         return ShipmentDao.read_by_customer(customer_id)
     

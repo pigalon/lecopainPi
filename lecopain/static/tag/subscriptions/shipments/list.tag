@@ -18,7 +18,7 @@
         <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#paymentModal">Payer Liste</button>
         <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#undoModal">Rétablir Liste</button>
         <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#cancelModal">Annulation Liste</button>
-        <a role="button" href="/shipments/new" class="btn btn-sm btn-outline-secondary display:inline-block">Ajouter</a>
+        <a role="button" href="/shipments/new?subscription_id={subscription_id }" class="btn btn-sm btn-outline-secondary display:inline-block">Ajouter</a>
       </form>
     </nav>
     <table id="shipments_list" width="100%">
@@ -29,6 +29,7 @@
               <th width="10%">N°</th>
               <th width="30%">Date</th>
               <th widht="10%">Nb Articles</th>
+              <th widht="10%">Prix</th>
               <th width="2%"><input  type="checkbox" id="checkAll" name="checkAll"></th>
             </tr>
           </table>
@@ -51,11 +52,9 @@
                 <td widht="10%">
                   x{shipment.nb_products}
                 </td>
-                <td if={shipment.status == 'ANNULEE' && shipment.subscription_id == None} width="10%">
-                  0.00 €
-                </td>
-                <td if={shipment.status != 'ANNULEE' && shipment.subscription_id == None} width="10%">
-                    {shipment.shipping_price.toFixed(2)} €
+                <td if={shipment.status == 'ANNULEE'} width="10%" >0.00 €</td>
+                <td if={shipment.status != 'ANNULEE'} width="10%">
+                  {shipment.shipping_price.toFixed(2)} €
                 </td>
                 <td width="2%">
                   <input class="check_list" onclick={ check_shipment } onchange={ check_shipment } type="checkbox" ref="ids_{shipment.id}" id="ids_{shipment.id}" name="ids_{shipment.id}">
@@ -63,6 +62,23 @@
               </tr>
             </table>
           </td>
+        </tr>
+        <tr>
+          <table width="100%" >
+              <tr class="bg-warning">
+                <td width="10%">
+                </td>
+                <td width="30%">
+                </td>
+                <td width="10%">
+                </td>
+                <td width="10%">
+                  = {shipping_sum.toFixed(2)} €
+                </td>
+                <td width="2%">
+                </td>
+              </tr>
+          </table>
         </tr>
     </table>
     <br>
@@ -135,6 +151,8 @@
       var next_url = ''
       var previous_url = ''
       
+      shipping_sum = 0.0
+      
       subscription_id =  opts.subscription_id
       subscription_start = opts.subscription_start
       subscription_end = opts.subscription_end
@@ -150,6 +168,7 @@
         this.load_shipments();
       });
 
+
       $(function () {
         $("#datepicker_day").datepicker(
           {autoClose: true}
@@ -158,10 +177,15 @@
         $("#checkAll").click(function () {
           $('input:checkbox').not(this).filter('.check_list').prop('checked', this.checked);
           var inputs = document.getElementsByTagName("input");
-          
+          var checkbox = document.getElementById("checkAll");
           for(var i = 0; i < inputs.length; i++) {
-            if(inputs[i].type == "checkbox" && inputs[i].id != 'check_nocanceled' && inputs[i].id != "check_nopaid" && inputs[i].checked) {
-              self.add_one_in_checked_list(inputs[i].id);
+            if(inputs[i].type == "checkbox" && inputs[i].id != 'check_nocanceled' && inputs[i].id != "check_nopaid") {
+              if (checkbox.checked == true){
+                self.add_one_in_checked_list(inputs[i].id);
+              }
+              else{
+                self.remove_one_in_checked_list(inputs[i].id);
+              }
             }
           }
         });
@@ -178,9 +202,11 @@
       // load shipments list
       /*******************************************/
       load_shipments(){
+        
         var shipment_url = '/api/shipments/subscriptions/'+subscription_id;
 
         if(self.refs.nocanceled.checked){
+          console.log('!!! can')
           shipment_url = shipment_url.concat('/nocanceled');
         }
 
@@ -193,8 +219,7 @@
           dataType: "json",
           contentType: "application/json; charset=utf-8",
           success: function(data) {
-            self.shipments = data['results']
-            self.count = data['count']
+            self.shipments = data['shipments']
             self.shipping_sum = 0.0
             self.shipments.forEach((shipment) => {
               if(shipment.status != 'ANNULEE'){
@@ -237,6 +262,21 @@
       idOnly = id.substring(4, id.length);
       if (id != 'checkAll' && $('#'+id).is(':checked')) {
         this.selected_shipments.push(idOnly)
+      }
+      else{
+        for( var i = 0; i < this.selected_shipments.length; i++)
+        { 
+          if ( this.selected_shipments[i] === idOnly) { 
+            this.selected_shipments.splice(i, 1); 
+          }
+        }
+      }
+    }
+
+    remove_one_in_checked_list(id){
+      idOnly = id.substring(4, id.length);
+      if (id != 'checkAll' && $('#'+id).is(':checked')) {
+        this.selected_shipments.pop(idOnly)
       }
       else{
         for( var i = 0; i < this.selected_shipments.length; i++)

@@ -27,11 +27,17 @@ class ShipmentDao:
         return shipment_schema.dump(all_shipments)
 
     @staticmethod
-    def read_by_subscription(subscription_id):
+    def read_by_subscription(subscription_id, nocanceled, nopaid):
         all_shipments = Shipment.query \
-            .filter(Shipment.subscription_id == subscription_id) \
-            .order_by(Shipment.shipping_dt.desc()) \
-            .all()
+            .filter(Shipment.subscription_id == subscription_id)
+        
+        if nocanceled is True:
+            all_shipments = all_shipments.filter(Shipment.status != ShipmentStatus_Enum.ANNULEE.value)
+        
+        if nopaid is True:
+            all_shipments = all_shipments.filter(Shipment.payment_status != PaymentStatus_Enum.OUI.value)
+        
+        all_shipments =  all_shipments.order_by(Shipment.shipping_dt.desc()).all()
 
         # Serialize the data for the response
         shipment_schema = ShipmentSchema(many=True)
@@ -40,6 +46,7 @@ class ShipmentDao:
     @staticmethod
     def read_by_subscription_pagination(subscription_id, page, per_page):
         all_shipments = Shipment.query \
+            .filter(Shipment.subscription_id == subscription_id) \
             .filter(Shipment.subscription_id == subscription_id) \
             .order_by(Shipment.shipping_dt.desc()) \
             .paginate(page=page, per_page=per_page)
@@ -62,7 +69,6 @@ class ShipmentDao:
             .order_by(Shipment.shipping_dt.desc()) \
             .count()
 
-      
     
     @staticmethod
     def read_by_customer_pagination(customer_id, page, per_page):
