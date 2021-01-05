@@ -28,7 +28,7 @@
             <span class="right"><a href="/subscriptions/delete_shipments/{{ subscription.id }}" class="btn btn-outline-dark">Effacer tout</a></span>
           {% endif %}
           <span class="right"><a href="/subscriptions/new?subscription_id={{ subscription.id }}" class="btn btn-outline-dark">Dupliquer</a></span>
-          <span class="right"><a href="/subecriptions/shipments/subscription_id={{ subscription.id }}" class="btn btn-outline-dark">Livraisons</a></span>
+          <span class="right"><a href="/subscriptions/{{ subscription.id }}/shipments" class="btn btn-outline-dark">Livraisons</a></span>
         </li>
         <li class="list-group-item">
           <h5>Jour de la semaine: </h5>

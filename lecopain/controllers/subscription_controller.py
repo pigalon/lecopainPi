@@ -2,6 +2,7 @@ from lecopain.dao.models import Subscription, Product, Customer
 from lecopain.app import app, db
 from lecopain.form import SubscriptionForm, SubscriptionDayForm
 from lecopain.services.subscription_manager import SubscriptionManager
+from lecopain.services.shipment_manager import ShipmentManager
 from lecopain.services.customer_manager import CustomerManager
 from lecopain.services.seller_manager import SellerManager
 from lecopain.helpers.pagination import Pagination
@@ -22,6 +23,7 @@ subscription_page = Blueprint('subscription_page', __name__,
         template_folder='../templates')
 
 subscriptionServices = SubscriptionManager()
+shipmentServices = ShipmentManager()
 customerServices = CustomerManager()
 sellerServices = SellerManager()
 
@@ -256,3 +258,14 @@ def cancel_subscription_day(subscription_day_id):
 		subscription_day_id=subscription_day_id)
 
 	return redirect('/subscriptions/'+str(subscription_day.subscription_id))
+
+#####################################################################
+#                                                                   #
+#####################################################################
+@subscription_page.route("/subscriptions/<int:subscription_id>/shipments", methods=['GET', 'POST'])
+@login_required
+@admin_login_required
+def subscription_shipments(subscription_id):
+  subscription = subscriptionServices.get_one(subscription_id)
+  return render_template('/subscriptions/shipments/shipments.html', title="Livraisons", subscription=subscription)
+
