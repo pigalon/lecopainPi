@@ -1,49 +1,185 @@
 {% extends "layout.html" %}
 {% block content %}
-
-
-    <div class="card  ">
-        <div class="card-header text-white bg-info">
-            Client N° {{customer.id}} <span class="right"><a href="/customers/update/{{ customer.id }}" class="btn btn-outline-dark">Modifier
-                    </a></span>
-        </div>
-        <div class="card-body">
-            <ul class="list-group list-group-flush">
-                {% set total = {'value': 0.00} %}
-                <li class="list-group-item">
-                    <b>Prénom Nom : </b>{{customer.firstname}} {{customer.lastname}}
-                </li>
-                <li class="list-group-item">
-                    <b>Adresse : </b> {{customer.address}} {{customer.cp}} {{customer.city}}
-                </li>
-                <li class="list-group-item">
-                    <b>Email : </b> {{customer.email}}
-                </li>
-            </ul>
-        </div>
+  <nav class="navbar navbar-light bg-light right">
+    <form class="form-inline">
+      <a role="button" href="/customers/shipments" class="btn btn-sm btn-outline-secondary display:inline-block">Livraisons</a>
+      <a role="button" href="/customers/update/{{ customer.id }}" class="btn btn-sm btn-outline-secondary display:inline-block">Modifier</a>
+    </form>
+  </nav>
+  <br/>
+  <br/>
+  <div class="card">
+    <div class="card-header text-white bg-info">
+      Client N° {{customer.id}} 
     </div>
-    {%if customer.nb_subscriptions | int > 0 %}
-    <subscription-list customer_id='{{customer.id}}'></subscription-list>
-    {%endif%}
-    <br>
-    {%if customer.nb_shipments | int > 0 %}
-    <shipment-list customer_id='{{customer.id}}'></shipment-list>
-    {%endif%}
-
-    <div class="card">
-        <div class="card-header text-white bg-info">
-            Suppression <span class="float-right"><a href="/customers/delete/{{ customer.id }}"
-                    class="btn btn-light text-danger" alt="Supprimer"><i class="fas fa-trash-alt"></i></a></span>
-        </div>
+    <div class="card-body">
+      <ul class="list-group list-group-flush">
+        {% set total = {'value': 0.00} %}
+        <li class="list-group-item">
+          <b>Prénom Nom : </b>{{customer.firstname}} {{customer.lastname}}
+        </li>
+        <li class="list-group-item">
+          <b>Adresse : </b> {{customer.address}} {{customer.cp}} {{customer.city}}
+        </li>
+        <li class="list-group-item">
+          <b>Email : </b> {{customer.email}}
+        </li>
+      </ul>
     </div>
+  </div>
+
+  <div class="card">
+    <div class="col-12 card-header text-white bg-info">
+      <div class="col-6" style="display: inline-block;">
+        Livraisons mois en cours
+      </div>
+      <div class="col-5" style="display: inline-block; col-6">
+        Livraisons mois dernier
+      </div>
+    </div>
+    <div class="col-12 card-body">
+      <div class="col-6" style="display: inline-block;">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <b>Nbre total : </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Nbre annulées: </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Nbre effectives: </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Nbre payées : </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Nbre dans un abo. : </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Nbre hors abo. : </b> __ 
+          </li>
+          <li class="list-group-item">
+            <b>Montants total : </b> __
+          </li>
+        </ul>
+      </div>
+      <div class="col-5" style="display: inline-block;">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <b>Nbre total : </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Nbre annulées: </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Nbre effectives: </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Nbre payées : </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Nbre dans un abo. : </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Nbre hors abo. : </b> __ 
+          </li>
+          <li class="list-group-item">
+            <b>Montants total : </b> __
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+  <div class="card">
+    <div class="col-12 card-header text-white bg-info">
+      <div class="col-6" style="display: inline-block;">
+        Total Livraisons
+      </div>
+      <div class="col-5" style="display: inline-block; col-6">
+        Moyenne Livraisons
+      </div>
+    </div>
+    <div class="col-12 card-body">
+      <div class="col-6" style="display: inline-block;">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <b>Toutes : </b> {{reports['global'].shipments_count}}
+          </li>
+          <li class="list-group-item">
+            <b>Annulées: </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Effectives: </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Payées : </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Abonnement : </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Hors Abonnement : </b> __ 
+          </li>
+          <li class="list-group-item">
+            <b>Montants : </b> __
+          </li>
+        </ul>
+      </div>
+      <div class="col-5" style="display: inline-block;">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <b>Toutes : </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Annulées: </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Effectives: </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Payées : </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Abonnement : </b> __
+          </li>
+          <li class="list-group-item">
+            <b>Hors Abonnement : </b> __ 
+          </li>
+          <li class="list-group-item">
+            <b>Montants : </b> __
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+
+
+
+  {%if customer.nb_subscriptions | int > 0 %}
+  <subscription-list customer_id='{{customer.id}}'></subscription-list>
+  {%endif%}
+  <br>
+  {%if customer.nb_shipments | int > 0 %}
+  <shipment-list customer_id='{{customer.id}}'></shipment-list>
+  {%endif%}
+
+  <div class="card">
+    <div class="card-header text-white bg-info">
+      Suppression <span class="float-right"><a href="/customers/delete/{{ customer.id }}"
+        class="btn btn-light text-danger" alt="Supprimer"><i class="fas fa-trash-alt"></i></a></span>
+    </div>
+  </div>
 
 {% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='tag/customers/shipment_list.tag') }}" type="riot/tag"></script>
 <script src="{{ url_for('static', filename='tag/customers/subscription_list.tag') }}" type="riot/tag"></script>
 <script>
-    riot.mount("shipment-list");
-    riot.mount("subscription-list");
+  riot.mount("shipment-list");
+  riot.mount("subscription-list");
 </script>
 {% endblock %}
 

@@ -52,7 +52,8 @@ def create_customer():
 @admin_login_required
 def customer(customer_id):
     customer = customerServices.read_one(customer_id)
-    return render_template('/customers/customer.html', customer=customer, title='Clients')
+    customerReports = customerServices.getAllReports(customer_id)
+    return render_template('/customers/customer.html', customer=customer, reports=customerReports, title='Clients')
 
 #####################################################################
 #                                                                   #
