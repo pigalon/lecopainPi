@@ -107,22 +107,22 @@
             <b>Toutes : </b> {{reports['global'].shipments_count}}
           </li>
           <li class="list-group-item">
-            <b>Annulées: </b> __
+            <b>Annulées: </b> {{reports['global'].canceled_count}}
           </li>
           <li class="list-group-item">
-            <b>Effectives: </b> __
+            <b>Effectives: </b> {{reports['global'].effective_count}}
           </li>
           <li class="list-group-item">
-            <b>Payées : </b> __
+            <b>Payées : </b> {{reports['global'].paid_count}}
           </li>
           <li class="list-group-item">
-            <b>Abonnement : </b> __
+            <b>Abonnement : </b> {{reports['global'].in_sub_count}}
           </li>
           <li class="list-group-item">
-            <b>Hors Abonnement : </b> __ 
+            <b>Hors Abonnement : </b> {{reports['global'].out_sub_count}} 
           </li>
           <li class="list-group-item">
-            <b>Montants : </b> __
+            <b>Montants : </b> {{reports['global'].shipments_sum}}
           </li>
         </ul>
       </div>
@@ -151,7 +151,6 @@
           </li>
         </ul>
       </div>
-
     </div>
   </div>
 
@@ -182,6 +181,3 @@
   riot.mount("subscription-list");
 </script>
 {% endblock %}
-
-
-

@@ -5,12 +5,12 @@ from lecopain.dao.shipment_dao import ShipmentDao
 
 class Report():
   shipments_count  = 0
-  Keeped_count     = 0
+  effective_count  = 0
   canceled_count   = 0
   paid_count       = 0
   in_sub_count     = 0
   out_sub_count    = 0
-  shipments_amount = 0
+  shipments_sum    = 0
 
 class CustomerManager():
 
@@ -75,4 +75,11 @@ class CustomerManager():
     #get_current_month() and get_current_year
     #get_last_month() and get_last_year
     reports['global'].shipments_count =  ShipmentDao.count_by_customer(id)
+    reports['global'].shipments_sum =  ShipmentDao.sum_by_customer(id)
+    reports['global'].canceled_count = ShipmentDao.count_canceled_by_customer(id)
+    reports['global'].paid_count = ShipmentDao.count_paid_by_customer(id)
+    reports['global'].effective_count = ShipmentDao.count_effective_by_customer(id)
+    reports['global'].in_sub_count = ShipmentDao.count_in_sub_by_customer(id)
+    reports['global'].out_sub_count = ShipmentDao.count_out_sub_by_customer(id)
+    
     return reports

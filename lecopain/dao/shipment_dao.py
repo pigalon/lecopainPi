@@ -1,5 +1,6 @@
 from lecopain.app import db
 from flask import jsonify
+from sqlalchemy import func
 
 from lecopain.dao.models import (
     Shipment, 
@@ -63,11 +64,54 @@ class ShipmentDao:
             .all()
             
     @staticmethod
-    def count_by_customer(customer_id):
+    def count_by_customer(customer_id, start=None, end=None):
+        query = Shipment.query \
+            .filter(Shipment.customer_id == customer_id)
+        if start != None and end != None:
+            query = query.filter(Shipment.shipping_dt >= start)\
+            .filter(Shipment.shipping_dt <= end)
+        return query.count()
+    
+    @staticmethod
+    def count_canceled_by_customer(customer_id):
         return Shipment.query \
             .filter(Shipment.customer_id == customer_id) \
-            .order_by(Shipment.shipping_dt.desc()) \
+            .filter(Shipment.shipping_status == ShipmentStatus_Enum.ANNULEE.value) \
             .count()
+    
+    @staticmethod
+    def count_effective_by_customer(customer_id):
+        return Shipment.query \
+            .filter(Shipment.customer_id == customer_id) \
+            .filter(Shipment.shipping_status != ShipmentStatus_Enum.ANNULEE.value) \
+            .count()
+
+    @staticmethod
+    def count_paid_by_customer(customer_id):
+        return Shipment.query \
+            .filter(Shipment.customer_id == customer_id) \
+            .filter(Shipment.payment_status == PaymentStatus_Enum.OUI.value) \
+            .count()
+
+    @staticmethod
+    def count_in_sub_by_customer(customer_id):
+        return Shipment.query \
+            .filter(Shipment.customer_id == customer_id) \
+            .filter(Shipment.subscription_id != None) \
+            .count()
+    
+    @staticmethod
+    def count_out_sub_by_customer(customer_id):
+        return Shipment.query \
+            .filter(Shipment.customer_id == customer_id) \
+            .filter(Shipment.subscription_id == None) \
+            .count()
+
+    @staticmethod
+    def sum_by_customer(customer_id):
+        return db.session.query(func.sum(Shipment.shipping_price))\
+            .filter(Shipment.customer_id == customer_id)\
+            .filter(Shipment.shipping_status != ShipmentStatus_Enum.ANNULEE.value).scalar() or 0
 
     
     @staticmethod

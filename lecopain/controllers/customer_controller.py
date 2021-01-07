@@ -53,6 +53,7 @@ def create_customer():
 def customer(customer_id):
     customer = customerServices.read_one(customer_id)
     customerReports = customerServices.getAllReports(customer_id)
+    
     return render_template('/customers/customer.html', customer=customer, reports=customerReports, title='Clients')
 
 #####################################################################

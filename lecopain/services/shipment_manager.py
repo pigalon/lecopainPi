@@ -192,6 +192,12 @@ class ShipmentManager():
     
     def count_by_customer(self, customer_id):
         return ShipmentDao.count_by_customer(customer_id)
+
+    def sum_by_customer(self, customer_id):
+        return ShipmentDao.sum_by_customer(customer_id)
+
+    def count_canceled_by_customer(self, customer_id):
+        return ShipmentDao.count_canceled_by_customer(customer_id)
     
     def get_all_by_customer_pagination(self, customer_id, page=1, per_page=10):
         return ShipmentDao.read_by_customer_pagination(customer_id, page, per_page)
