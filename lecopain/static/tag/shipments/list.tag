@@ -214,12 +214,18 @@
       $("#checkAll").click(function () {
         $('input:checkbox').not(this).filter('.check_list').prop('checked', this.checked);
         var inputs = document.getElementsByTagName("input");
+        var checkbox = document.getElementById("checkAll");
         
         for(var i = 0; i < inputs.length; i++) {
-          if(inputs[i].type == "checkbox" && inputs[i].id != 'check_nocanceled' && inputs[i].id != "check_nopaid" && inputs[i].checked) {
-            self.add_one_in_checked_list(inputs[i].id);
+            if(inputs[i].type == "checkbox" && inputs[i].id != 'check_nocanceled' && inputs[i].id != "check_nopaid") {
+              if (checkbox.checked == true){
+                self.add_one_in_checked_list(inputs[i].id);
+              }
+              else{
+                self.remove_one_in_checked_list(inputs[i].id);
+              }
+            }
           }
-        }
       });
 
       $("#ok_cancel").click(function (){
@@ -384,6 +390,20 @@
       idOnly = id.substring(4, id.length);
       if (id != 'checkAll' && $('#'+id).is(':checked')) {
         this.selected_shipments.push(idOnly)
+      }
+      else{
+        for( var i = 0; i < this.selected_shipments.length; i++)
+        { 
+          if ( this.selected_shipments[i] === idOnly) { 
+            this.selected_shipments.splice(i, 1); 
+          }
+        }
+      }
+    }
+    remove_one_in_checked_list(id){
+      idOnly = id.substring(4, id.length);
+      if (id != 'checkAll' && $('#'+id).is(':checked')) {
+        this.selected_shipments.pop(idOnly)
       }
       else{
         for( var i = 0; i < this.selected_shipments.length; i++)
