@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <search-shipment customer_id='{{customer_id}}'></search-shipment>
+
+{% endblock %}
+{% block scripts %}
+    <script src="{{ url_for('static', filename='tag/customers/shipments/list.tag') }}" type="riot/tag"></script>
+    <script>
+        riot.mount("search-shipment");
+    </script>
+{% endblock %}
+
+
+
+

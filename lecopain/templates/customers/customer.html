@@ -2,7 +2,7 @@
 {% block content %}
   <nav class="navbar navbar-light bg-light right">
     <form class="form-inline">
-      <a role="button" href="/customers/shipments" class="btn btn-sm btn-outline-secondary display:inline-block">Livraisons</a>
+      <a role="button" href="/shipments/customers/{{customer.id}}" class="btn btn-sm btn-outline-secondary display:inline-block">Livraisons</a>
       <a role="button" href="/customers/update/{{ customer.id }}" class="btn btn-sm btn-outline-secondary display:inline-block">Modifier</a>
     </form>
   </nav>

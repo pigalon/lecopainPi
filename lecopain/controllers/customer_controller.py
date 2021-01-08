@@ -1,9 +1,11 @@
 from lecopain.services.customer_manager import CustomerManager
+from lecopain.services.user_manager import UserManager
+from lecopain.services.shipment_manager import ShipmentManager
 from lecopain.app import app
 from lecopain.form import PersonForm
 from lecopain.helpers.pagination import Pagination
 from flask import Blueprint, render_template, request, redirect, url_for, Flask, jsonify
-from flask_login import login_required
+from flask_login import login_required, current_user
 #import requests
 import json
 from collections import namedtuple
@@ -15,6 +17,8 @@ from lecopain.helpers.roles_utils import global_login_required
 app = Flask(__name__, instance_relative_config=True)
 
 customerServices = CustomerManager()
+userServices = UserManager()
+shipmentServices = ShipmentManager()
 
 
 customer_page = Blueprint('customer_page', __name__,

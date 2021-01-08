@@ -65,7 +65,7 @@ def api_shipments_by_subscription(subscription_id):
     data, prev_page, next_page = shipmentServices.get_all_by_subscription_pagination(subscription_id, page=int(page), per_page=int(per_page))
     
     return jsonify(Pagination.get_paginated_db(
-        data, '/api//customer/shipments/subscriptions/'+str(subscription_id),
+        data, '/api/customer/shipments/subscriptions/'+str(subscription_id),
         page=request.args.get('page', page),
         per_page=request.args.get('per_page', per_page),
         prev_page=prev_page, next_page=next_page ))
