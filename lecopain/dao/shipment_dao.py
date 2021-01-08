@@ -73,45 +73,119 @@ class ShipmentDao:
         return query.count()
     
     @staticmethod
-    def count_canceled_by_customer(customer_id):
-        return Shipment.query \
-            .filter(Shipment.customer_id == customer_id) \
-            .filter(Shipment.shipping_status == ShipmentStatus_Enum.ANNULEE.value) \
-            .count()
+    def sum_by_customer(customer_id, start=None, end=None):
+        query = db.session.query(func.sum(Shipment.shipping_price))\
+            .filter(Shipment.customer_id == customer_id)
+        if start != None and end != None:
+            query = query.filter(Shipment.shipping_dt >= start)\
+            .filter(Shipment.shipping_dt <= end)
+        return query.scalar() or 0
     
     @staticmethod
-    def count_effective_by_customer(customer_id):
-        return Shipment.query \
+    def count_canceled_by_customer(customer_id, start=None, end=None):
+        query = Shipment.query \
             .filter(Shipment.customer_id == customer_id) \
-            .filter(Shipment.shipping_status != ShipmentStatus_Enum.ANNULEE.value) \
-            .count()
+            .filter(Shipment.shipping_status == ShipmentStatus_Enum.ANNULEE.value)
+        if start != None and end != None:
+            query = query.filter(Shipment.shipping_dt >= start)\
+            .filter(Shipment.shipping_dt <= end)
+        return query.count()
+    
+    @staticmethod
+    def sum_canceled_by_customer(customer_id, start=None, end=None):
+        query = db.session.query(func.sum(Shipment.shipping_price))\
+            .filter(Shipment.customer_id == customer_id)\
+            .filter(Shipment.shipping_status == ShipmentStatus_Enum.ANNULEE.value)
+        if start != None and end != None:
+            query = query.filter(Shipment.shipping_dt >= start)\
+            .filter(Shipment.shipping_dt <= end)
+        return query.scalar() or 0
+    
+    @staticmethod
+    def count_effective_by_customer(customer_id, start=None, end=None):
+        query = Shipment.query \
+            .filter(Shipment.customer_id == customer_id) \
+            .filter(Shipment.shipping_status != ShipmentStatus_Enum.ANNULEE.value)
+        if start != None and end != None:
+            query = query.filter(Shipment.shipping_dt >= start)\
+            .filter(Shipment.shipping_dt <= end)
+        return query.count()
+    
+    @staticmethod
+    def sum_effective_by_customer(customer_id, start=None, end=None):
+        query = db.session.query(func.sum(Shipment.shipping_price))\
+            .filter(Shipment.customer_id == customer_id)\
+            .filter(Shipment.shipping_status != ShipmentStatus_Enum.ANNULEE.value)
+        if start != None and end != None:
+            query = query.filter(Shipment.shipping_dt >= start)\
+            .filter(Shipment.shipping_dt <= end)
+        return query.scalar() or 0
 
     @staticmethod
-    def count_paid_by_customer(customer_id):
-        return Shipment.query \
+    def count_paid_by_customer(customer_id, start=None, end=None):
+        query = Shipment.query \
             .filter(Shipment.customer_id == customer_id) \
-            .filter(Shipment.payment_status == PaymentStatus_Enum.OUI.value) \
-            .count()
+            .filter(Shipment.payment_status == PaymentStatus_Enum.OUI.value)\
+            .filter(Shipment.shipping_status != ShipmentStatus_Enum.ANNULEE.value)
+        if start != None and end != None:
+            query = query.filter(Shipment.shipping_dt >= start)\
+            .filter(Shipment.shipping_dt <= end)
+        return query.count()
+    
+    @staticmethod
+    def sum_paid_by_customer(customer_id, start=None, end=None):
+        query = db.session.query(func.sum(Shipment.shipping_price))\
+            .filter(Shipment.customer_id == customer_id)\
+            .filter(Shipment.payment_status == PaymentStatus_Enum.OUI.value)\
+            .filter(Shipment.shipping_status != ShipmentStatus_Enum.ANNULEE.value)
+        if start != None and end != None:
+            query = query.filter(Shipment.shipping_dt >= start)\
+            .filter(Shipment.shipping_dt <= end)
+        return query.scalar() or 0
 
     @staticmethod
-    def count_in_sub_by_customer(customer_id):
-        return Shipment.query \
+    def count_in_sub_by_customer(customer_id, start=None, end=None):
+        query = Shipment.query \
             .filter(Shipment.customer_id == customer_id) \
             .filter(Shipment.subscription_id != None) \
-            .count()
+            .filter(Shipment.shipping_status != ShipmentStatus_Enum.ANNULEE.value)
+        if start != None and end != None:
+            query = query.filter(Shipment.shipping_dt >= start)\
+            .filter(Shipment.shipping_dt <= end)
+        return query.count()
     
     @staticmethod
-    def count_out_sub_by_customer(customer_id):
-        return Shipment.query \
+    def sum_in_sub_by_customer(customer_id, start=None, end=None):
+        query = db.session.query(func.sum(Shipment.shipping_price))\
+            .filter(Shipment.customer_id == customer_id)\
+            .filter(Shipment.subscription_id != None)\
+            .filter(Shipment.shipping_status != ShipmentStatus_Enum.ANNULEE.value)
+        if start != None and end != None:
+            query = query.filter(Shipment.shipping_dt >= start)\
+            .filter(Shipment.shipping_dt <= end)
+        return query.scalar() or 0
+    
+    @staticmethod
+    def count_out_sub_by_customer(customer_id, start=None, end=None):
+        query = Shipment.query \
             .filter(Shipment.customer_id == customer_id) \
             .filter(Shipment.subscription_id == None) \
-            .count()
-
+            .filter(Shipment.shipping_status != ShipmentStatus_Enum.ANNULEE.value)
+        if start != None and end != None:
+            query = query.filter(Shipment.shipping_dt >= start)\
+            .filter(Shipment.shipping_dt <= end)
+        return query.count()
+    
     @staticmethod
-    def sum_by_customer(customer_id):
-        return db.session.query(func.sum(Shipment.shipping_price))\
+    def sum_out_sub_by_customer(customer_id, start=None, end=None):
+        query = db.session.query(func.sum(Shipment.shipping_price))\
             .filter(Shipment.customer_id == customer_id)\
-            .filter(Shipment.shipping_status != ShipmentStatus_Enum.ANNULEE.value).scalar() or 0
+            .filter(Shipment.subscription_id == None)\
+            .filter(Shipment.shipping_status != ShipmentStatus_Enum.ANNULEE.value)
+        if start != None and end != None:
+            query = query.filter(Shipment.shipping_dt >= start)\
+            .filter(Shipment.shipping_dt <= end)
+        return query.scalar() or 0
 
     
     @staticmethod

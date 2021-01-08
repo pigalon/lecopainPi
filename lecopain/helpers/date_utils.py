@@ -1,5 +1,5 @@
 import calendar
-from datetime import datetime
+from datetime import datetime, date
 from datetime import timedelta
 from aenum import Enum
 
@@ -27,20 +27,27 @@ def get_month_range(year, calendar_month):
     end = datetime.strptime(f'{year}-{calendar_month}-{day_end}', '%Y-%m-%d')
     return start, end
 
-def dates_range(period, day=datetime.now()):
+def dates_range(period, day=datetime.now(), before=0):
     start = 0
     end = 0
 
     if period == Period_Enum.DAY.value:
+        if before > 0:
+            day = day- timedelta(days=1)
         start, end = get_day_range(day)
     elif period == Period_Enum.WEEK.value:
-        start, end = get_week_range(
-            day.year, day.isocalendar()[1])
+        start, end = get_week_range(day.year, day.isocalendar()[1])
     elif period == Period_Enum.MONTH.value:
-        start, end = get_month_range(
-            day.year, day.month)
+        if before > 0:
+            day = day.replace(day=1) - timedelta(days=1)
+
+        start, end = get_month_range(day.year, day.month)
     return start,end
 
 def get_week_names():
     return {0 : 'Lundi', 1: 'Mardi', 2: 'Mercredi', 3 : 'Jeudi', 4 : 'Vendredi', 5 : 'Samedi', 6 : 'Dimanche'}
+
+
+#start,end = dates_range(period=Period_Enum.MONTH.value,  before=2)
+#print('start : ' + str(start) + ' - ' + str(end))
 

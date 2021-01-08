@@ -41,54 +41,47 @@
       <div class="col-6" style="display: inline-block;">
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
-            <b>Nbre total : </b> __
+            <b>Nbre total : </b> x{{reports['current'].shipments_count}} | {{"%.2f"|format(reports['current'].shipments_sum)}}€
           </li>
           <li class="list-group-item">
-            <b>Nbre annulées: </b> __
+            <b>Nbre annulées: </b> x{{reports['current'].canceled_count}} | {{"%.2f"|format(reports['current'].canceled_sum)}}€
           </li>
           <li class="list-group-item">
-            <b>Nbre effectives: </b> __
+            <b>Nbre effectives: </b> x{{reports['current'].effective_count}} | {{"%.2f"|format(reports['current'].effective_sum)}}€
           </li>
           <li class="list-group-item">
-            <b>Nbre payées : </b> __
+            <b>Nbre payées : </b> x{{reports['current'].paid_count}} | {{"%.2f"|format(reports['current'].paid_sum)}}€
           </li>
           <li class="list-group-item">
-            <b>Nbre dans un abo. : </b> __
+            <b>Nbre dans un abo. : </b> x{{reports['current'].in_sub_count}} | {{"%.2f"|format(reports['current'].in_sub_sum)}}€
           </li>
           <li class="list-group-item">
-            <b>Nbre hors abo. : </b> __ 
-          </li>
-          <li class="list-group-item">
-            <b>Montants total : </b> __
+            <b>Nbre hors abo. : </b> x{{reports['current'].out_sub_count}} | {{"%.2f"|format(reports['current'].out_sub_sum)}}€
           </li>
         </ul>
       </div>
       <div class="col-5" style="display: inline-block;">
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
-            <b>Nbre total : </b> __
+            <b>Nbre total : </b> {{reports['last'].shipments_count}} | {{"%.2f"|format(reports['last'].shipments_sum)}}€
           </li>
           <li class="list-group-item">
-            <b>Nbre annulées: </b> __
+            <b>Nbre annulées: </b> x{{reports['last'].canceled_count}} | {{"%.2f"|format(reports['last'].canceled_sum)}}€
           </li>
           <li class="list-group-item">
-            <b>Nbre effectives: </b> __
+            <b>Nbre effectives: </b> x{{reports['last'].effective_count}} | {{"%.2f"|format(reports['last'].effective_sum)}}€
           </li>
           <li class="list-group-item">
-            <b>Nbre payées : </b> __
+            <b>Nbre payées : </b> x{{reports['last'].paid_count}} | {{"%.2f"|format(reports['last'].paid_sum)}}€
           </li>
           <li class="list-group-item">
-            <b>Nbre dans un abo. : </b> __
+            <b>Nbre dans un abo. : </b> x{{reports['last'].in_sub_count}} | {{"%.2f"|format(reports['last'].in_sub_sum)}}€
           </li>
           <li class="list-group-item">
-            <b>Nbre hors abo. : </b> __ 
-          </li>
-          <li class="list-group-item">
-            <b>Montants total : </b> __
+            <b>Nbre hors abo. : </b> x{{reports['last'].out_sub_count}} | {{"%.2f"|format(reports['last'].out_sub_sum)}}€
           </li>
         </ul>
       </div>
-
     </div>
   </div>
   <div class="card">
@@ -104,50 +97,22 @@
       <div class="col-6" style="display: inline-block;">
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
-            <b>Toutes : </b> {{reports['global'].shipments_count}}
+            <b>Toutes : </b> x{{reports['global'].shipments_count}} | {{"%.2f"|format(reports['global'].shipments_sum)}}€
           </li>
           <li class="list-group-item">
-            <b>Annulées: </b> {{reports['global'].canceled_count}}
+            <b>Annulées: </b> x{{reports['global'].canceled_count}}  | {{"%.2f"|format(reports['global'].canceled_sum)}}€
           </li>
           <li class="list-group-item">
-            <b>Effectives: </b> {{reports['global'].effective_count}}
+            <b>Effectives: </b> x{{reports['global'].effective_count}}  | {{"%.2f"|format(reports['global'].effective_sum)}}€
           </li>
           <li class="list-group-item">
-            <b>Payées : </b> {{reports['global'].paid_count}}
+            <b>Payées : </b> x{{reports['global'].paid_count}}  | {{"%.2f"|format(reports['global'].paid_sum)}}€
           </li>
           <li class="list-group-item">
-            <b>Abonnement : </b> {{reports['global'].in_sub_count}}
+            <b>Abonnement : </b> x{{reports['global'].in_sub_count}}  | {{"%.2f"|format(reports['global'].in_sub_sum)}}€
           </li>
           <li class="list-group-item">
-            <b>Hors Abonnement : </b> {{reports['global'].out_sub_count}} 
-          </li>
-          <li class="list-group-item">
-            <b>Montants : </b> {{reports['global'].shipments_sum}}
-          </li>
-        </ul>
-      </div>
-      <div class="col-5" style="display: inline-block;">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">
-            <b>Toutes : </b> __
-          </li>
-          <li class="list-group-item">
-            <b>Annulées: </b> __
-          </li>
-          <li class="list-group-item">
-            <b>Effectives: </b> __
-          </li>
-          <li class="list-group-item">
-            <b>Payées : </b> __
-          </li>
-          <li class="list-group-item">
-            <b>Abonnement : </b> __
-          </li>
-          <li class="list-group-item">
-            <b>Hors Abonnement : </b> __ 
-          </li>
-          <li class="list-group-item">
-            <b>Montants : </b> __
+            <b>Hors Abonnement : </b> x{{reports['global'].out_sub_count}}  | {{"%.2f"|format(reports['global'].out_sub_sum)}}€
           </li>
         </ul>
       </div>

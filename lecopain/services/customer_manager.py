@@ -2,6 +2,7 @@ from lecopain.app import app, db
 from lecopain.dao.models import Customer, Order
 from lecopain.dao.customer_dao import CustomerDao
 from lecopain.dao.shipment_dao import ShipmentDao
+from lecopain.helpers.date_utils import dates_range
 
 class Report():
   shipments_count  = 0
@@ -11,18 +12,24 @@ class Report():
   in_sub_count     = 0
   out_sub_count    = 0
   shipments_sum    = 0
-
+  effective_sum    = 0
+  canceled_sum     = 0
+  paid_sum         = 0
+  in_sub_sum       = 0
+  out_sub_sum      = 0
+  
+  
 class CustomerManager():
 
   def get_last_order(self, customer):
     newer_order = None
     for order in customer.orders:
-        if(newer_order == None):
-            print("newer from null")
-            newer_order = order
-        elif (order.shipping_dt > newer_order.shipping_dt):
-            newer_order = order
-            print("newer from other")
+      if(newer_order == None):
+        print("newer from null")
+        newer_order = order
+      elif (order.shipping_dt > newer_order.shipping_dt):
+        newer_order = order
+        print("newer from other")
     return newer_order
 
   def get_all(self):
@@ -77,9 +84,43 @@ class CustomerManager():
     reports['global'].shipments_count =  ShipmentDao.count_by_customer(id)
     reports['global'].shipments_sum =  ShipmentDao.sum_by_customer(id)
     reports['global'].canceled_count = ShipmentDao.count_canceled_by_customer(id)
+    reports['global'].canceled_sum =  ShipmentDao.sum_canceled_by_customer(id)
     reports['global'].paid_count = ShipmentDao.count_paid_by_customer(id)
+    reports['global'].paid_sum =  ShipmentDao.sum_paid_by_customer(id)
     reports['global'].effective_count = ShipmentDao.count_effective_by_customer(id)
+    reports['global'].effective_sum =  ShipmentDao.sum_effective_by_customer(id)
     reports['global'].in_sub_count = ShipmentDao.count_in_sub_by_customer(id)
+    reports['global'].in_sub_sum =  ShipmentDao.sum_in_sub_by_customer(id)
     reports['global'].out_sub_count = ShipmentDao.count_out_sub_by_customer(id)
+    reports['global'].out_sub_sum =  ShipmentDao.sum_out_sub_by_customer(id)
+    
+    start,end = dates_range(period='month')
+    reports['current'].shipments_count =  ShipmentDao.count_by_customer(id, start=start, end=end)
+    reports['current'].shipments_sum =  ShipmentDao.sum_by_customer(id, start=start, end=end)
+    reports['current'].canceled_count =  ShipmentDao.count_canceled_by_customer(id, start=start, end=end)
+    reports['current'].canceled_sum =  ShipmentDao.sum_canceled_by_customer(id, start=start, end=end)
+    reports['current'].paid_count =  ShipmentDao.count_paid_by_customer(id, start=start, end=end)
+    reports['current'].paid_sum =  ShipmentDao.sum_paid_by_customer(id, start=start, end=end)
+    reports['current'].effective_count =  ShipmentDao.count_effective_by_customer(id, start=start, end=end)
+    reports['current'].effective_sum =  ShipmentDao.sum_effective_by_customer(id, start=start, end=end)
+    reports['current'].in_sub_count = ShipmentDao.count_in_sub_by_customer(id, start=start, end=end)
+    reports['current'].in_sub_sum =  ShipmentDao.sum_in_sub_by_customer(id, start=start, end=end)
+    reports['current'].out_sub_count = ShipmentDao.count_out_sub_by_customer(id, start=start, end=end)
+    reports['current'].out_sub_sum =  ShipmentDao.sum_out_sub_by_customer(id, start=start, end=end)
+
+    
+    start,end = dates_range(period='month', before=1)
+    reports['last'].shipments_count =  ShipmentDao.count_by_customer(id, start=start, end=end)
+    reports['last'].shipments_sum =  ShipmentDao.sum_by_customer(id, start=start, end=end)
+    reports['last'].canceled_count =  ShipmentDao.count_canceled_by_customer(id, start=start, end=end)
+    reports['last'].canceled_sum =  ShipmentDao.sum_canceled_by_customer(id, start=start, end=end)
+    reports['last'].paid_count =  ShipmentDao.count_paid_by_customer(id, start=start, end=end)
+    reports['last'].paid_sum =  ShipmentDao.sum_paid_by_customer(id, start=start, end=end)
+    reports['last'].effective_count =  ShipmentDao.count_effective_by_customer(id, start=start, end=end)
+    reports['last'].effective_sum =  ShipmentDao.sum_effective_by_customer(id, start=start, end=end)
+    reports['last'].in_sub_count = ShipmentDao.count_in_sub_by_customer(id, start=start, end=end)
+    reports['last'].in_sub_sum =  ShipmentDao.sum_in_sub_by_customer(id, start=start, end=end)
+    reports['last'].out_sub_count = ShipmentDao.count_out_sub_by_customer(id, start=start, end=end)
+    reports['last'].out_sub_sum =  ShipmentDao.sum_out_sub_by_customer(id, start=start, end=end)
     
     return reports
