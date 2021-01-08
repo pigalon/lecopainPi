@@ -44,6 +44,10 @@ def shipments():
 def shipment_create():
     form = ShipmentForm()
 
+    customer_id = request.args.get("customer_id")
+    if customer_id != None:
+        form.subscription_id.data = None
+
     lines = (
         request.form.getlist('product_id[]'),
         request.form.getlist('seller_id[]'),
@@ -67,6 +71,9 @@ def shipment_create():
 
     customers = customerService.optim_get_all()
     subscription_id = request.args.get("subscription_id")
+    
+    if customer_id != None:
+        return render_template('/customers/shipments/create_shipment.html', title='Creation de livraison', form=form, customer_id=customer_id)
 
     return render_template('/shipments/create_shipment.html', title='Creation de livraison', form=form, customers=customers, subscription_id=subscription_id)
 

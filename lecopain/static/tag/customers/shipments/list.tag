@@ -18,7 +18,7 @@
       <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#paymentModal">Payer Liste</button>
       <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#undoModal">Rétablir Liste</button>
       <button class="btn btn-sm btn-outline-secondary" type="button" style="float: right;" data-toggle="modal" data-target="#cancelModal">Annulation Liste</button>
-      <a role="button" href="/shipments/new?subscription_id={subscription_id }" class="btn btn-sm btn-outline-secondary display:inline-block">Ajouter</a>
+      <a role="button" href="/shipments/new?customer_id={customer_id }" class="btn btn-sm btn-outline-secondary display:inline-block">Ajouter</a>
     </form>
   </nav>
     
