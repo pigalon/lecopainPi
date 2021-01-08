@@ -206,7 +206,6 @@
         var shipment_url = '/api/shipments/subscriptions/'+subscription_id;
 
         if(self.refs.nocanceled.checked){
-          console.log('!!! can')
           shipment_url = shipment_url.concat('/nocanceled');
         }
 

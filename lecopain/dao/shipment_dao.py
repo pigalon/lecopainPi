@@ -57,11 +57,26 @@ class ShipmentDao:
         return shipment_schema.dump(all_shipments.items), all_shipments.prev_num, all_shipments.next_num
 
     @staticmethod
-    def read_by_customer(customer_id):
-        all_shipments = Shipment.query \
-            .filter(Shipment.customer_id == customer_id) \
-            .order_by(Shipment.shipping_dt.desc()) \
-            .all()
+    def read_by_customer_by_period(customer_id, start=0, end=None, nocanceled=False, nopaid=False):
+      all_shipments = Shipment.query \
+        .filter(Shipment.customer_id == customer_id)
+      
+      if nocanceled is True:
+        all_shipments = all_shipments.filter(Shipment.status != ShipmentStatus_Enum.ANNULEE.value)
+        
+      if nopaid is True:
+        all_shipments = all_shipments.filter(Shipment.payment_status != PaymentStatus_Enum.OUI.value)
+      
+      if(start != 0 ):
+            all_shipments = all_shipments.filter(
+                Shipment.shipping_dt >= start).filter(
+                Shipment.shipping_dt <= end)
+        
+      all_shipments = all_shipments.order_by(Shipment.shipping_dt.desc()).all()
+      
+      # Serialize the data for the response
+      shipment_schema = ShipmentSchema(many=True)
+      return shipment_schema.dump(all_shipments)
             
     @staticmethod
     def count_by_customer(customer_id, start=None, end=None):
@@ -190,14 +205,14 @@ class ShipmentDao:
     
     @staticmethod
     def read_by_customer_pagination(customer_id, page, per_page):
-        all_shipments = Shipment.query \
-            .filter(Shipment.customer_id == customer_id) \
-            .order_by(Shipment.shipping_dt.desc()) \
-            .paginate(page=page, per_page=per_page)
+      all_shipments = Shipment.query \
+        .filter(Shipment.customer_id == customer_id) \
+        .order_by(Shipment.shipping_dt.desc()) \
+        .paginate(page=page, per_page=per_page)
 
-        # Serialize the data for the response
-        shipment_schema = ShipmentSchema(many=True)
-        return shipment_schema.dump(all_shipments.items), all_shipments.prev_num, all_shipments.next_num
+      # Serialize the data for the response
+      shipment_schema = ShipmentSchema(many=True)
+      return shipment_schema.dump(all_shipments.items), all_shipments.prev_num, all_shipments.next_num
 
     @staticmethod
     def get_one(id):

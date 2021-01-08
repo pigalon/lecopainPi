@@ -187,8 +187,10 @@ class ShipmentManager():
     def get_all_by_subscription_pagination(self, subscription_id, page=1, per_page=10):
         return ShipmentDao.read_by_subscription_pagination(subscription_id, page, per_page)
     
-    def get_all_by_customer(self, customer_id):
-        return ShipmentDao.read_by_customer(customer_id)
+    def get_by_customer_by_period(self, customer_id=0, day=datetime.utcnow, period=Period_Enum.ALL.value, nocanceled=False, nopaid=False):
+        datetime_day = datetime.strptime(day, '%d%m%Y')
+        start, end = dates_range(period, datetime_day)
+        return ShipmentDao.read_by_customer_by_period(customer_id, start=start, end=end, nocanceled=nocanceled, nopaid=nopaid)
     
     def count_by_customer(self, customer_id):
         return ShipmentDao.count_by_customer(customer_id)
