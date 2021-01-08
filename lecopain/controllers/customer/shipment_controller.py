@@ -83,7 +83,7 @@ def api_day_shipments(period, day):
     if page is None:
         page = 1
     if per_page is None:
-        per_page=10
+        per_page=40
     
     user_id = current_user.get_id()
     user = userServices.get_by_username(user_id)

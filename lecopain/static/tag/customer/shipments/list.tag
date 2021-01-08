@@ -13,7 +13,8 @@
                     <th width="6%">N°</th>
                     <th width="30%">Date</th>
                     <th widht="10%">Nb Articles</th>
-                    <th width="10%">Liv.</th>
+                    <th width="30%">Prix Livraison</th>
+                    <th width="10%">Abo.</th>
                 </tr>
             </table>
             </td>
@@ -23,14 +24,19 @@
             
             <table width="100%" class="table table-striped">
                 <tr>
-                    <td onmouseover="changeBackgroundColor(this)" onmouseout="restoreBackgroundColor(this)" style="cursor: pointer" onclick={ show_shipment(shipment.id) } width="6%" class="table-primary"><i class="fas fa-cart-arrow-down "></i>{shipment.id}</td>
-                    
+                    <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'CREE' && shipment.updated_at == None && shipment.payment_status == 'NON'} width="6%" class="table-primary">{shipment.id}</td>
+                    <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'CREE' && shipment.updated_at != None && shipment.payment_status == 'NON'} width="6%" class="table-warning">{shipment.id}</td>
+                    <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'CREE' && shipment.payment_status == 'OUI'} width="6%" class="table-success">{shipment.id}</td>
+                    <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'ANNULEE'} width="6%" class="table-dark">{shipment.id}</td>
+                    <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'TERMINEE'} width="6%" class="table-success">{shipment.id}</td>
+                    <td onclick={ show_shipment(shipment.id) } if={shipment.status == 'DEFAUT'} width="6%" class="table-danger">{shipment.id}</td>
+
                     <td width="30%">{moment(shipment.shipping_dt).format('ddd Do MMM' )}</td>
                     
                     <td widht="10%">x{shipment.nb_products}</td>
 
-                    <td if={shipment.status == 'ANNULEE' && shipment.subscription_id == None} width="10%" >0.00 € </td>
-                    <td if={shipment.status != 'ANNULEE' && shipment.subscription_id == None} width="10%">
+                    <td if={shipment.status == 'ANNULEE' } width="30%" >0.00 € </td>
+                    <td if={shipment.status != 'ANNULEE' } width="30%">
                         {shipment.shipping_price.toFixed(2)} €
                     </td>
 
@@ -41,18 +47,35 @@
             </table>
             </td>
         </tr>
+        <tr>
+            <table width="100%" >
+                <tr class="bg-warning">
+                <td width="6%">
+                </td>
+                <td width="30%">
+                </td>
+                <td width="13%">
+                </td>
+                <td width="22%">
+                    = {shipping_sum.toFixed(2)} €
+                </td>
+                <td width="10%">
+                </td>
+                </tr>
+            </table>
+        </tr>
     </table>
     <table width="100%">
         <tr>
             <td width="24%"> </td>
             <td width="24%">
-                <a if={ previous_url != '' && previous_url != undefined} role="button" onclick="{load_shipments_previous}"  style="color:white" class="btn btn-primary display:inline-block"> <i class="fas fa-arrow-left"></i> Livraisons précédentes </a>
+                <a if={ previous_url != '' && previous_url != undefined} role="button" onclick="{load_shipments_previous}"  style="color:white" class="btn btn-primary display:inline-block"> <i class="fas fa-arrow-left"></i> précédentes </a>
             </td>
             <td width="2%">
                 |
             </td>
             <td width="22%">
-                <a if={ next_url != '' && next_url != undefined} role="button" onclick="{load_shipments_next}"  style="color:white" class="btn btn-primary display:inline-block"> Livraisons suivantes <i class="fas fa-arrow-right"></i> </a>
+                <a if={ next_url != '' && next_url != undefined} role="button" onclick="{load_shipments_next}"  style="color:white" class="btn btn-primary display:inline-block"> suivantes <i class="fas fa-arrow-right"></i> </a>
             </td>
             <td width="26%"> </td>
         </tr>
@@ -66,6 +89,7 @@
         var page= 1
         var next_url = ''
         var previous_url = ''
+        shipping_sum = 0.0
 
         this.selected_shipments = []
 
@@ -81,7 +105,13 @@
             
             monthTitle = moment(dateMomentObject).format('MMMM').charAt(0).toUpperCase() + moment(dateMomentObject).format('MMMM').slice(1)
 
-            this.load_shipments()
+            search_url = localStorage.getItem('search_customer_shipments_url');
+            if(search_url != null){
+                this.load_shipments_from_url(search_url)
+                    }
+            else{
+                this.load_shipments()
+            }
 
 		});
 
@@ -109,7 +139,7 @@
             shipment_url = shipment_url.concat('period/',period,'/');
             shipment_url = shipment_url.concat('date/', day.replaceAll("/",""));
 
-            localStorage.setItem('search_shipment_url', shipment_url);
+            localStorage.setItem('search_customer_shipments_url', shipment_url);
 
             this.load_shipments_from_url(shipment_url);
 
@@ -123,6 +153,12 @@
                 contentType: "application/json; charset=utf-8",
                 success: function(data) {
                     self.shipments = data['results']
+                    self.shipping_sum = 0.0
+                    self.shipments.forEach((shipment) => {
+                        if(shipment.status != 'ANNULEE'){
+                        self.shipping_sum = (shipment.shipping_price*0.8)  + self.shipping_sum;
+                        }
+                    });
                     self.count = data['count']
                     self.per_page = data['per_page']
                     self.page = data['page']
