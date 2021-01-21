@@ -11,13 +11,18 @@ class Period_Enum(Enum):
 
 def get_day_range(day):
     start = (day - timedelta(days=1)
-             ).replace(hour=23).replace(minute=59).replace(second=59)
+            ).replace(hour=23).replace(minute=59).replace(second=59)
     end = day.replace(hour=23).replace(minute=59).replace(second=59)
     return start, end
 
 def get_week_range(year, calendar_week):
+    
+    week = calendar_week
+    if year == datetime.now().year:
+        week = calendar_week +1
+    
     monday = datetime.strptime(
-        f'{year}-{calendar_week}-1', "%Y-%W-%w") #.replace(hour=23).replace(minute=59).replace(second=59)
+        f'{year}-{week}-1', "%Y-%W-%w")
     return monday - timedelta(days=7), monday - timedelta(days=1)
 
 
