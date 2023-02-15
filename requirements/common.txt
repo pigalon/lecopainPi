@@ -6,7 +6,7 @@ flask-login
 marshmallow-sqlalchemy
 psycopg2-binary
 aenum
-Werkzeug==0.16.1
+Werkzeug==2.2.3
 flasgger
 Flask-moment
 wrapt
