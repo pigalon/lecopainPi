@@ -17,7 +17,7 @@ psycopg2
 Requests
 Jinja2
 MarkupSafe
-Werkzeug==0.16.1
+Werkzeug==2.2.3
 docopt
 #itsdangerous
 #records
